@@ -1,0 +1,69 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://api.openai.com/v1/completions
+    body:
+      encoding: UTF-8
+      string: '{"prompt":["You are GPT-3, and you can''t do math.\n\nYou can do basic
+        math, and your memorization abilities are impressive, but you can''t do any
+        complex calculations that a human could not do in their head. You also have
+        an annoying tendency to just make up highly specific, but wrong, answers.\n\nSo
+        we hooked you up to a Ruby 3 kernel, and now you can execute ruby code. If
+        anyone gives you a hard math problem, just use this format and we’ll take
+        care of the rest:\n\nQuestion: ${{Question with hard calculation.}}\n```ruby\n${{Code
+        that prints what you need to know}}\n```\n\nOtherwise, use this simpler format:\n\nQuestion:
+        ${{Question without hard calculation}}\nAnswer: ${{Answer}}\n\nBegin.\n\nQuestion:
+        What is 37593 * 67?\n```ruby\nputs(37593 * 67)\n```\n\nQuestion: what is 2518731
+        + 0?\nAnswer: 2518731\n\nQuestion: what is the square root of 2 to the power
+        of 22 diveded by 27?\n"],"model":"text-davinci-003","temperature":0.7,"max_tokens":256}'
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer <openai_access_token>
+      Openai-Organization:
+      - org-omSBgRreqZHXs8SSgtrWd3Bx
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Thu, 09 Feb 2023 23:26:06 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '307'
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - no-cache, must-revalidate
+      Openai-Model:
+      - text-davinci-003
+      Openai-Organization:
+      - user-ri9zw9ahumb1bo9vs73mudbi
+      Openai-Processing-Ms:
+      - '2436'
+      Openai-Version:
+      - '2020-10-01'
+      Strict-Transport-Security:
+      - max-age=15724800; includeSubDomains
+      X-Request-Id:
+      - 3c8f046ec123c29ae6b7a623aedc8947
+    body:
+      encoding: UTF-8
+      string: '{"id":"cmpl-6iAai1bQ3COuTk5rn4m70yoT0bkrG","object":"text_completion","created":1675985164,"model":"text-davinci-003","choices":[{"text":"\n```ruby\nputs(Math.sqrt(2**22
+        / 27))\n```","index":0,"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":241,"completion_tokens":22,"total_tokens":263}}
+
+        '
+  recorded_at: Thu, 09 Feb 2023 23:26:06 GMT
+recorded_with: VCR 6.1.0
