@@ -58,7 +58,7 @@ module Boxcars
              set_val
            else
              # otherwise, dig out of the environment
-             new_key = ENV[key.to_s.upcase]
+             new_key = ENV.fetch(key.to_s.upcase, nil)
              send("#{key}=", new_key) if new_key
              new_key
            end
@@ -82,7 +82,7 @@ module Boxcars
 end
 
 require "boxcars/version"
-require "boxcars/prompt_template"
+require "boxcars/llm_prompt"
 require "boxcars/generation"
 require "boxcars/ruby_repl"
 require "boxcars/llm"
