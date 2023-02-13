@@ -4,7 +4,7 @@
 module Boxcars
   # A Boxcar that interprets a prompt and executes SQL code to get answers
   class SQL < BoxcarWithLLM
-    SSQLDESC = "useful for when you need to query a SQL database"
+    SQLDESC = "useful for when you need to query a SQL database"
     attr_accessor :connection, :input_key
 
     # @param connection [ActiveRecord::Connection] The SQL connection to use for this boxcar.
@@ -15,7 +15,6 @@ module Boxcars
     # @param input_key [Symbol] The key to use for the input. Defaults to :question.
     # @param output_key [Symbol] The key to use for the output. Defaults to :answer.
     def initialize(connection:, llm: nil, input_key: :question, output_key: :answer, **kwargs)
-      # def initialize(llm:, prompt: my_prompt, input_key: :question, output_key: :answer, **kwargs)
       @connection = connection
       @input_key = input_key
       the_prompt = kwargs[prompt] || my_prompt
@@ -35,7 +34,7 @@ module Boxcars
     end
 
     def call(inputs:)
-      t = predict(question: inputs[input_key], stop: ["```output"]).strip
+      t = predict(question: inputs[input_key], dialect: dialect, top_k: 5, table_info: schema, stop: ["SQLQuery:"]).strip
       answer = get_answer(t)
       puts answer.colorize(:magenta)
       { output_key => answer }
@@ -64,17 +63,17 @@ module Boxcars
     end
 
     def get_embedded_sql_answer(text)
-      code = text[8..-4].split("```").first.strip
-      ruby_executor = Boxcars::RubyREPL.new
-      output = ruby_executor.call(code: code).strip
+      code = text[/^SQLQuery: (.*)/, 1]
+      puts code.colorize(:yellow)
+      output = connection.exec_query(code).to_a
       puts "Answer: #{output}"
       "Answer: #{output}"
     end
 
     def get_answer(text)
       case text
-      when /^```ruby/
-        get_embedded_ruby_answer(text)
+      when /^SQLQuery:/
+        get_embedded_sql_answer(text)
       when /^Answer:/
         text
       else
@@ -86,7 +85,7 @@ module Boxcars
       Given an input question, first create a syntactically correct %<dialect>s query to run,
       then look at the results of the query and return the answer. Unless the user specifies
       in his question a specific number of examples he wishes to obtain, always limit your query
-      to at most %<top_k> results using a LIMIT clause. You can order the results by a relevant column
+      to at most %<top_k>s results using a LIMIT clause. You can order the results by a relevant column
       to return the most interesting examples in the database.
 
       Never query for all the columns from a specific table, only ask for a the few relevant columns given the question.
@@ -103,12 +102,12 @@ module Boxcars
       Only use the following tables:
       %<table_info>s
 
-      Question: %<input>s
+      Question: %<question>s
     IPT
 
     # The prompt to use for the LLM.
     def my_prompt
-      @my_prompt ||= LLMPrompt.new(input_variables: [:question], template: TEMPLATE)
+      @my_prompt ||= LLMPrompt.new(input_variables: [:question, :dialect, :top_k], template: TEMPLATE)
     end
 
     # DECIDER_TEMPLATE = <<~DPT

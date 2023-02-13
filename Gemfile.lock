@@ -8,9 +8,20 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
+    activemodel (7.0.4.2)
+      activesupport (= 7.0.4.2)
+    activerecord (7.0.4.2)
+      activemodel (= 7.0.4.2)
+      activesupport (= 7.0.4.2)
+    activesupport (7.0.4.2)
+      concurrent-ruby (~> 1.0, >= 1.0.2)
+      i18n (>= 1.6, < 2)
+      minitest (>= 5.1)
+      tzinfo (~> 2.0)
     addressable (2.8.1)
       public_suffix (>= 2.0.2, < 6.0)
     ast (2.4.2)
+    concurrent-ruby (1.2.0)
     crack (0.4.5)
       rexml
     debug (1.7.0)
@@ -23,6 +34,8 @@ GEM
     httparty (0.20.0)
       mime-types (~> 3.0)
       multi_xml (>= 0.5.2)
+    i18n (1.12.0)
+      concurrent-ruby (~> 1.0)
     io-console (0.5.11)
     irb (1.5.1)
       reline (>= 0.3.0)
@@ -30,6 +43,7 @@ GEM
     mime-types (3.4.1)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2022.0105)
+    minitest (5.17.0)
     multi_xml (0.6.0)
     parallel (1.22.1)
     parser (3.2.0.0)
@@ -74,6 +88,9 @@ GEM
       dotenv (>= 2.7.6, < 2.9.0)
       httparty (>= 0.18.1, < 0.21.0)
     ruby-progressbar (1.11.0)
+    sqlite3 (1.6.0-x86_64-darwin)
+    tzinfo (2.0.6)
+      concurrent-ruby (~> 1.0)
     unicode-display_width (2.3.0)
     vcr (6.1.0)
     webmock (3.18.1)
@@ -85,6 +102,7 @@ PLATFORMS
   x86_64-darwin-21
 
 DEPENDENCIES
+  activerecord (~> 7.0)
   boxcars!
   debug (~> 1.1)
   dotenv (~> 2.8)
@@ -93,6 +111,7 @@ DEPENDENCIES
   rubocop (~> 1.21)
   rubocop-rake (~> 0.6.0)
   rubocop-rspec (~> 2.17)
+  sqlite3 (~> 1.6)
   vcr (~> 6.1.0)
   webmock (~> 3.18.1)
 

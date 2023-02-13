@@ -6,7 +6,7 @@ module Boxcars
     # A LLM is a container for a single tool to run.
     # @param name [String] The name of the LLM. Defaults to classname.
     # @param description [String] A description of the LLM.
-    def initialize(description:, name: nil)
+    def initialize(description: 'LLM', name: nil)
       @name = name || self.class.name
       @description = description
     end

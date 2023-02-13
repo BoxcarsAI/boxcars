@@ -18,3 +18,7 @@ gem "webmock", "~> 3.18.1"
 gem "rubocop-rake", "~> 0.6.0"
 
 gem "rubocop-rspec", "~> 2.17"
+
+gem "sqlite3", "~> 1.6"
+
+gem "activerecord", "~> 7.0"
