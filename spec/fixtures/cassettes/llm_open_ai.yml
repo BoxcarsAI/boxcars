@@ -1,0 +1,58 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://api.openai.com/v1/completions
+    body:
+      encoding: UTF-8
+      string: '{"prompt":"write a haiku about love","model":"text-davinci-003","temperature":0.7,"max_tokens":256}'
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer <openai_access_token>
+      Openai-Organization:
+      - org-omSBgRreqZHXs8SSgtrWd3Bx
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Mon, 13 Feb 2023 18:46:32 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '328'
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - no-cache, must-revalidate
+      Openai-Model:
+      - text-davinci-003
+      Openai-Organization:
+      - user-ri9zw9ahumb1bo9vs73mudbi
+      Openai-Processing-Ms:
+      - '1239'
+      Openai-Version:
+      - '2020-10-01'
+      Strict-Transport-Security:
+      - max-age=15724800; includeSubDomains
+      X-Request-Id:
+      - 7866e4885c6745eff9d6bfaf4e898e80
+    body:
+      encoding: UTF-8
+      string: '{"id":"cmpl-6jY8Nw9tErk1TyrTqlNPb85oDOqc5","object":"text_completion","created":1676313991,"model":"text-davinci-003","choices":[{"text":"\n\nLove
+        is a flower\nBlooming eternal beauty\nPure and divine love","index":0,"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":6,"completion_tokens":16,"total_tokens":22}}
+
+        '
+  recorded_at: Mon, 13 Feb 2023 18:46:32 GMT
+recorded_with: VCR 6.1.0
