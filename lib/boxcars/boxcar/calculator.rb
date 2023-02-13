@@ -2,12 +2,12 @@
 
 # Boxcars is a framework for running a series of tools to get an answer to a question.
 module Boxcars
-  # A BoxcarWithLLM that interprets a prompt and executes ruby code to do math
+  # A Boxcar that interprets a prompt and executes ruby code to do math
   class Calculator < BoxcarWithLLM
     CALCDESC = "useful for when you need to answer questions about math"
     attr_accessor :input_key
 
-    # @param prompt [Boxcars::PromptTemplate] The prompt to use for this boxcar.
+    # @param prompt [Boxcars::LLMPrompt] The prompt to use for this boxcar.
     # @param name [String] The name of the boxcar. Defaults to classname.
     # @param description [String] A description of the boxcar.
     # @param llm [Boxcars::LLM] The LLM to user for this boxcar. Can be inherited from a conductor if nil.
@@ -33,16 +33,10 @@ module Boxcars
     end
 
     def call(inputs:)
-      # callback_manager.on_text(text: inputs[input_key], verbose: verbose)
       t = predict(question: inputs[input_key], stop: ["```output"]).strip
-      # callback_manager.on_text(text: t, color: "green", verbose: verbose)
       answer = get_answer(t)
       puts answer.colorize(:magenta)
       { output_key => answer }
-    end
-
-    def chain_type
-      "llm_math_chain"
     end
 
     private
@@ -51,8 +45,6 @@ module Boxcars
       code = text[8..-4].split("```").first.strip
       ruby_executor = Boxcars::RubyREPL.new
       output = ruby_executor.call(code: code).strip
-      # callback_manager.on_text(inputs: "\nAnswer: ", verbose: verbose)
-      # callback_manager.on_text(inputs: output, color: "yellow", verbose: verbose)
       "Answer: #{output}"
     end
 
@@ -99,7 +91,7 @@ module Boxcars
 
     # The prompt to use for the LLM.
     def my_prompt
-      @my_prompt ||= PromptTemplate.new(input_variables: [:question], template: TEMPLATE)
+      @my_prompt ||= LLMPrompt.new(input_variables: [:question], template: TEMPLATE)
     end
   end
 end
