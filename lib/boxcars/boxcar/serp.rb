@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
 # require 'google-search'
+require 'google_search_results'
 module Boxcars
   # A Boxcar that uses the Google SerpAPI to get answers to questions.
   class Serp < Boxcar
     SERPDESC = "useful for when you need to answer questions about current events." \
-    "You should ask targeted questions"
+               "You should ask targeted questions"
 
     # implements a boxcar that uses the Google SerpAPI to get answers to questions.
     # @param name [String] The name of the boxcar. Defaults to classname.
@@ -15,7 +16,7 @@ module Boxcars
     def initialize(name: "search", description: SERPDESC, serpapi_api_key: "not set")
       super(name: name, description: description)
       api_key = Boxcars.configuration.serpapi_api_key(serpapi_api_key: serpapi_api_key)
-      GoogleSearch.api_key = ENV.fetch(api_key)
+      GoogleSearch.api_key = api_key
     end
 
     # Get an answer from Google using the SerpAPI.

@@ -4,8 +4,7 @@
 module Boxcars
   # A LLM that uses OpenAI's API.
   class LLMOpenAI < LLM
-    attr_reader :prompt_templates, :callback_manager, :verbose, :open_ai_params, :model_kwargs, :batch_size,
-                :open_ai_key
+    attr_reader :llm_prompts, :open_ai_params, :model_kwargs, :batch_size
 
     DEFAULT_PARAMS = {
       model: "text-davinci-003",
@@ -13,25 +12,42 @@ module Boxcars
       max_tokens: 256
     }.freeze
 
-    def initialize(callback_manager: nil, prompt_templates: [], verbose: false, **kwargs)
+    DEFAULT_NAME = "OpenAI LLM"
+    DEFAULT_DESCRIPTION = "useful for when you need to use AI to answer questions. " \
+                          "You should ask targeted questions"
+
+    # A LLM is a container for a single tool to run.
+    # @param name [String] The name of the LLM. Defaults to "OpenAI LLM".
+    # @param description [String] A description of the LLM. Defaults to:
+    #        useful for when you need to use AI to answer questions. You should ask targeted questions".
+    # @param llm_prompts [Array<String>] The prompts to use when asking the LLM. Defaults to [].
+    # @param batch_size [Integer] The number of prompts to send to the LLM at once. Defaults to 20.
+    def initialize(name: DEFAULT_NAME, description: DEFAULT_DESCRIPTION, llm_prompts: [], batch_size: 20, **kwargs)
       @open_ai_params = DEFAULT_PARAMS.merge(kwargs)
-      @prompt_templates = prompt_templates
-      @callback_manager = callback_manager
-      @verbose = verbose
-      @batch_size = kwargs[:batch_size] || 20
-      super(description: "useful for when you need to use AI to answer questions." \
-                         "You should ask targeted questions")
+      @llm_prompts = llm_prompts
+      @batch_size = batch_size
+      super(description: description, name: name)
     end
 
+    # Get an answer from the LLM.
+    # @param question [String] The question to ask the LLM.
+    # @param kwargs [Hash] Additional parameters to pass to the LLM if wanted.
     def client(prompt:, **kwargs)
       access_token = Boxcars.configuration.openai_access_token(**kwargs)
       organization_id = Boxcars.configuration.organization_id
       clnt = ::OpenAI::Client.new(access_token: access_token, organization_id: organization_id)
       the_params = { prompt: prompt }.merge(open_ai_params)
-      response = clnt.completions(parameters: the_params)
-      ans = response["choices"].map { |c| c["text"] }.join("\n")
-      puts ans if verbose
-      response
+      clnt.completions(parameters: the_params)
+    end
+
+    # get an answer from the LLM for a question.
+    # @param question [String] The question to ask the LLM.
+    # @param kwargs [Hash] Additional parameters to pass to the LLM if wanted.
+    def run(question, **kwargs)
+      response = client(prompt: question, **kwargs)
+      answer = response["choices"].map { |c| c["text"] }.join("\n").strip
+      puts answer
+      answer
     end
 
     # Build extra kwargs from additional params that were passed in.
@@ -69,8 +85,6 @@ module Boxcars
     #     .. code-block:: ruby
 
     #       response = openai.generate(["Tell me a joke."])
-    # rubocop:disable Metrics/MethodLength
-    # rubocop:disable Metrics/AbcSize
     def generate(prompts:, stop: nil)
       params = default_params
       params = params.merge(stop: stop) if stop
@@ -96,7 +110,6 @@ module Boxcars
       LLMResult.new(generations: generations, llm_output: { token_usage: token_usage })
     end
     # rubocop:enable Metrics/AbcSize
-    # rubocop:enable Metrics/MethodLength
   end
 
   def identifying_params
@@ -139,21 +152,5 @@ module Boxcars
     # get max context size for model by name
     max_size = modelname_to_contextsize(model_name)
     max_size - num_tokens
-  end
-
-  private
-
-  def foo
-    # Build the prompt
-    prompt = build_prompt(prompts: prompts, stop: stop)
-
-    # Build the kwargs
-    kwargs = build_extra(values: kwargs)
-
-    # Make the request
-    response = make_request(prompt: prompt, **kwargs)
-
-    # Parse the response
-    parse_response(response: response, **kwargs)
   end
 end

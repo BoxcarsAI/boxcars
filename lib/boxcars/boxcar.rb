@@ -25,3 +25,4 @@ end
 require "boxcars/boxcar/boxcar_with_llm"
 require "boxcars/boxcar/calculator"
 require "boxcars/boxcar/serp"
+require "boxcars/boxcar/sql"

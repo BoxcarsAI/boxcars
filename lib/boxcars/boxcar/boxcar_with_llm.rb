@@ -8,7 +8,7 @@ module Boxcars
     attr_accessor :prompt, :llm, :output_key
 
     # A Boxcar is a container for a single tool to run.
-    # @param prompt [Boxcars::PromptTemplate] The prompt to use for this boxcar.
+    # @param prompt [Boxcars::LLMPrompt] The prompt to use for this boxcar with sane defaults.
     # @param name [String] The name of the boxcar. Defaults to classname.
     # @param description [String] A description of the boxcar.
     # @param llm [Boxcars::LLM] The LLM to user for this boxcar. Can be inherited from a conductor if nil.
@@ -45,16 +45,8 @@ module Boxcars
       stop = input_list[0][:stop]
       prompts = []
       input_list.each do |inputs|
-        # TODO: This is not the way their code works.
-        # selected_inputs = inputs.select { |k, _| prompt.input_variables.include?(k) }
-        # new_prompt = prompt.format(**selected_inputs)
         new_prompt = prompt.format(**inputs)
         puts "Prompt after formatting:\n#{new_prompt.colorize(:cyan)}"
-        # callback_manager.on_text(text: text, end: "\n", verbose: verbose)
-        # if inputs.key?(:stop) && inputs[:stop] != stop
-        #   raise "If `stop` is present in any inputs, should be present in all."
-        # end
-
         prompts.push(new_prompt)
       end
       llm.generate(prompts: prompts, stop: stop)
@@ -62,20 +54,10 @@ module Boxcars
 
     def apply(input_list:)
       response = generate(input_list: input_list)
-      # outputs = []
       response.generations.to_h do |generation|
         [output_key, generation[0].text]
       end
-      # response.generations.each do |generation|
-      #   response_str = generation[0].text
-      #   outputs << { output_key => response_str }
-      # end
-      # outputs
     end
-
-    # def call(inputs:)
-    #   apply(input_list: [inputs]).first
-    # end
 
     def predict(**kwargs)
       apply(input_list: [kwargs])[output_key]
@@ -101,15 +83,12 @@ module Boxcars
 
     def do_call(inputs:, return_only_outputs: false)
       inputs = our_inputs(inputs)
-      # callback_manager.on_chain_start(serialized: { name: self.class.name }, inputs: inputs, verbose: verbose)
       output = nil
       begin
         output = call(inputs: inputs)
       rescue StandardError => e
-        # callback_manager.on_chain_error(error: e, verbose: verbose)
         raise e
       end
-      # callback_manager.on_chain_end(outputs: output, verbose: verbose)
       validate_outputs(outputs: output.keys)
       # memory&.save_convext(inputs: inputs, outputs: outputs)
       return output if return_only_outputs
@@ -149,8 +128,8 @@ module Boxcars
         # end
         if input_keys.length != 1
           raise Boxcars::ArgumentError, "A single string input was passed in, but this boxcar expects " \
-                "multiple inputs (#{input_keys}). When a boxcar expects " \
-                "multiple inputs, please call it by passing in a hash, eg: `boxcar({'foo': 1, 'bar': 2})`"
+                                        "multiple inputs (#{input_keys}). When a boxcar expects " \
+                                        "multiple inputs, please call it by passing in a hash, eg: `boxcar({'foo': 1, 'bar': 2})`"
         end
         inputs = { input_keys.first => inputs }
       end
