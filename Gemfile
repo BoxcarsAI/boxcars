@@ -14,3 +14,7 @@ gem "rubocop", "~> 1.21"
 gem "vcr", "~> 6.1.0"
 
 gem "webmock", "~> 3.18.1"
+
+gem "rubocop-rake", "~> 0.6.0"
+
+gem "rubocop-rspec", "~> 2.17"
