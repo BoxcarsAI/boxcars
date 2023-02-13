@@ -4,9 +4,7 @@ class VCRMultipartMatcher
 
   def call(request1, request2)
     return false unless same_content_type?(request1, request2)
-    unless headers_excluding_content_type(request1) == headers_excluding_content_type(request2)
-      return false
-    end
+    return false unless headers_excluding_content_type(request1) == headers_excluding_content_type(request2)
 
     normalized_multipart_body(request1) == normalized_multipart_body(request2)
   end
