@@ -103,7 +103,7 @@ module Boxcars
         when FewShotPromptTemplate
           prompt.suffix += "\n%<agent_scratchpad>s"
         else
-          raise ValueError("Got unexpected prompt type #{type(prompt)}")
+          raise ValueError, "Got unexpected prompt type #{type(prompt)}"
         end
       end
       values
