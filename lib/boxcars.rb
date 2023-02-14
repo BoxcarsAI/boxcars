@@ -6,6 +6,7 @@ module Boxcars
   class Error < StandardError; end
   class ConfigurationError < Error; end
   class ArgumentError < Error; end
+  class ValueError < Error; end
 
   # Configuration contains gem settings
   class Configuration
