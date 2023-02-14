@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# require 'google-search'
 require 'google_search_results'
 module Boxcars
   # A Boxcar that uses the Google SerpAPI to get answers to questions.
@@ -13,7 +12,7 @@ module Boxcars
     # @param description [String] A description of the boxcar. Defaults to SERPDESC.
     # @param llm [Boxcars::LLM] The LLM to user for this boxcar. Can be inherited from a Conductor if nil.
     #
-    def initialize(name: "search", description: SERPDESC, serpapi_api_key: "not set")
+    def initialize(name: "Search", description: SERPDESC, serpapi_api_key: "not set")
       super(name: name, description: description)
       api_key = Boxcars.configuration.serpapi_api_key(serpapi_api_key: serpapi_api_key)
       GoogleSearch.api_key = api_key
