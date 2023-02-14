@@ -52,7 +52,7 @@ module Boxcars
        ");"].join("\n")
     end
 
-    def schema(except_tables: [])
+    def schema(except_tables: ['ar_internal_metadata'])
       wanted_tables = tables.to_a - except_tables
       wanted_tables.map(&method(:table_schema)).join("\n")
     end
