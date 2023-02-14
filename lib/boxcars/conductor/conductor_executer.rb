@@ -64,6 +64,7 @@ module Boxcars
 
     # handler before returning
     def pre_return(output, intermediate_steps)
+      puts output.log.colorize(:yellow)
       final_output = output.return_values
       final_output["intermediate_steps"] = intermediate_steps if return_intermediate_steps
       final_output
