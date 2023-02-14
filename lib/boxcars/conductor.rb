@@ -3,7 +3,7 @@
 module Boxcars
   # @abstract
   class Conductor
-    attr_reader :llm, :boxcars, :name, :description, :prompt, :boxcar_with_llm, :return_values
+    attr_reader :llm, :boxcars, :name, :description, :prompt, :llm_boxcar, :return_values
 
     # A Conductor will use a LLM to run a series of boxcars.
     # @param llm [Boxcars::LLM] The LLM to use for this conductor.
@@ -16,7 +16,7 @@ module Boxcars
       @name = name || self.class.name
       @description = description
       @return_values = [:output]
-      @boxcar_with_llm = BoxcarWithLLM.new(prompt: prompt, llm: llm)
+      @llm_boxcar = LLMBoxcar.new(prompt: prompt, llm: llm)
     end
 
     # Get an answer from the conductor.
@@ -44,12 +44,12 @@ module Boxcars
     end
 
     def get_next_action(full_inputs)
-      full_output = boxcar_with_llm.predict(**full_inputs)
+      full_output = llm_boxcar.predict(**full_inputs)
       parsed_output = extract_boxcar_and_input(full_output)
       while parsed_output.nil?
         full_output = _fix_text(full_output)
         full_inputs[:agent_scratchpad] += full_output
-        output = boxcar_with_llm.predict(**full_inputs)
+        output = llm_boxcar.predict(**full_inputs)
         full_output += output
         parsed_output = extract_boxcar_and_input(full_output)
       end
@@ -122,7 +122,7 @@ module Boxcars
         thoughts += "\n\nI now need to return a final answer based on the previous steps:"
         new_inputs = { agent_scratchpad: thoughts, stop: _stop }
         full_inputs = kwargs.merge(new_inputs)
-        full_output = boxcar_with_llm.predict(**full_inputs)
+        full_output = llm_boxcar.predict(**full_inputs)
         parsed_output = extract_boxcar_and_input(full_output)
         if parsed_output.nil?
           ConductorFinish({ output: full_output }, full_output)

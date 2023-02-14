@@ -3,7 +3,7 @@
 # Boxcars is a framework for running a series of tools to get an answer to a question.
 module Boxcars
   # A Boxcar that interprets a prompt and executes SQL code to get answers
-  class SQL < BoxcarWithLLM
+  class SQL < LLMBoxcar
     SQLDESC = "useful for when you need to query a SQL database"
     attr_accessor :connection, :input_key
 

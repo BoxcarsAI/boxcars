@@ -2,7 +2,7 @@
 
 module Boxcars
   # Consists of an conductor using boxcars.
-  class ConductorExecuter < BoxcarWithLLM
+  class ConductorExecuter < LLMBoxcar
     attr_accessor :conductor, :boxcars, :return_intermediate_steps, :max_iterations, :early_stopping_method
 
     # @param conductor [Boxcars::Conductor] The conductor to use.

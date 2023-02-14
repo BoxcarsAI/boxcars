@@ -94,7 +94,7 @@ module Boxcars
   end
 end
 
-require "boxcars/boxcar/boxcar_with_llm"
+require "boxcars/boxcar/llm_boxcar"
 require "boxcars/boxcar/calculator"
 require "boxcars/boxcar/serp"
 require "boxcars/boxcar/sql"

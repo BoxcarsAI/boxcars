@@ -4,7 +4,7 @@
 module Boxcars
   # For Boxcars that use an LLM to do their work.
   # @abstract
-  class BoxcarWithLLM < Boxcars::Boxcar
+  class LLMBoxcar < Boxcars::Boxcar
     attr_accessor :prompt, :llm, :output_key
 
     # A Boxcar is a container for a single tool to run.

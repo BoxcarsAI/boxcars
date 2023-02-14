@@ -3,7 +3,7 @@
 # Boxcars is a framework for running a series of tools to get an answer to a question.
 module Boxcars
   # A Boxcar that interprets a prompt and executes ruby code to do math
-  class Calculator < BoxcarWithLLM
+  class Calculator < LLMBoxcar
     CALCDESC = "useful for when you need to answer questions about math"
     attr_accessor :input_key
 
