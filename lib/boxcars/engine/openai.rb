@@ -2,8 +2,8 @@
 
 # Boxcars is a framework for running a series of tools to get an answer to a question.
 module Boxcars
-  # A LLM that uses OpenAI's API.
-  class LLMOpenAI < LLM
+  # A engine that uses OpenAI's API.
+  class Openai < Engine
     attr_reader :prompts, :open_ai_params, :model_kwargs, :batch_size
 
     DEFAULT_PARAMS = {
@@ -12,16 +12,16 @@ module Boxcars
       max_tokens: 256
     }.freeze
 
-    DEFAULT_NAME = "OpenAI LLM"
+    DEFAULT_NAME = "OpenAI engine"
     DEFAULT_DESCRIPTION = "useful for when you need to use AI to answer questions. " \
                           "You should ask targeted questions"
 
-    # A LLM is a container for a single tool to run.
-    # @param name [String] The name of the LLM. Defaults to "OpenAI LLM".
-    # @param description [String] A description of the LLM. Defaults to:
+    # A engine is a container for a single tool to run.
+    # @param name [String] The name of the engine. Defaults to "OpenAI engine".
+    # @param description [String] A description of the engine. Defaults to:
     #        useful for when you need to use AI to answer questions. You should ask targeted questions".
-    # @param prompts [Array<String>] The prompts to use when asking the LLM. Defaults to [].
-    # @param batch_size [Integer] The number of prompts to send to the LLM at once. Defaults to 20.
+    # @param prompts [Array<String>] The prompts to use when asking the engine. Defaults to [].
+    # @param batch_size [Integer] The number of prompts to send to the engine at once. Defaults to 20.
     def initialize(name: DEFAULT_NAME, description: DEFAULT_DESCRIPTION, prompts: [], batch_size: 20, **kwargs)
       @open_ai_params = DEFAULT_PARAMS.merge(kwargs)
       @prompts = prompts
@@ -29,9 +29,9 @@ module Boxcars
       super(description: description, name: name)
     end
 
-    # Get an answer from the LLM.
-    # @param question [String] The question to ask the LLM.
-    # @param kwargs [Hash] Additional parameters to pass to the LLM if wanted.
+    # Get an answer from the engine.
+    # @param question [String] The question to ask the engine.
+    # @param kwargs [Hash] Additional parameters to pass to the engine if wanted.
     def client(prompt:, openai_access_token: 'not set', **kwargs)
       access_token = Boxcars.configuration.openai_access_token(openai_access_token: openai_access_token)
       organization_id = Boxcars.configuration.organization_id
@@ -40,9 +40,9 @@ module Boxcars
       clnt.completions(parameters: the_params)
     end
 
-    # get an answer from the LLM for a question.
-    # @param question [String] The question to ask the LLM.
-    # @param kwargs [Hash] Additional parameters to pass to the LLM if wanted.
+    # get an answer from the engine for a question.
+    # @param question [String] The question to ask the engine.
+    # @param kwargs [Hash] Additional parameters to pass to the engine if wanted.
     def run(question, **kwargs)
       response = client(prompt: question, **kwargs)
       answer = response["choices"].map { |c| c["text"] }.join("\n").strip
@@ -79,7 +79,7 @@ module Boxcars
     #     stop: Optional list of stop words to use when generating.
 
     #   Returns:
-    #     The full LLM output.
+    #     The full engine output.
 
     #   Example:
     #     .. code-block:: ruby
@@ -107,7 +107,7 @@ module Boxcars
         sub_choices = choices[i * n, (i + 1) * n]
         generations.push(generation_info(sub_choices))
       end
-      LLMResult.new(generations: generations, llm_output: { token_usage: token_usage })
+      EngineResult.new(generations: generations, engine_output: { token_usage: token_usage })
     end
     # rubocop:enable Metrics/AbcSize
   end
@@ -118,7 +118,7 @@ module Boxcars
     params
   end
 
-  def llm_type
+  def engine_type
     "openai"
   end
 

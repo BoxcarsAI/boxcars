@@ -3,7 +3,7 @@
 # Boxcars is a framework for running a series of tools to get an answer to a question.
 module Boxcars
   # A Boxcar that interprets a prompt and executes SQL code to get answers
-  class SQL < LLMBoxcar
+  class SQL < EngineBoxcar
     SQLDESC = "useful for when you need to query a SQL database"
     attr_accessor :connection, :input_key
 
@@ -11,16 +11,16 @@ module Boxcars
     # @param prompt [Boxcars::Prompt] The prompt to use for this boxcar.
     # @param name [String] The name of the boxcar. Defaults to classname.
     # @param description [String] A description of the boxcar.
-    # @param llm [Boxcars::LLM] The LLM to user for this boxcar. Can be inherited from a conductor if nil.
+    # @param engine [Boxcars::Engine] The engine to user for this boxcar. Can be inherited from a conductor if nil.
     # @param input_key [Symbol] The key to use for the input. Defaults to :question.
     # @param output_key [Symbol] The key to use for the output. Defaults to :answer.
-    def initialize(connection:, llm: nil, input_key: :question, output_key: :answer, **kwargs)
+    def initialize(connection:, engine: nil, input_key: :question, output_key: :answer, **kwargs)
       @connection = connection
       @input_key = input_key
       the_prompt = kwargs[prompt] || my_prompt
       super(name: kwargs[:name] || "SQLdatabase",
             description: kwargs[:description] || SQLDESC,
-            llm: llm,
+            engine: engine,
             prompt: the_prompt,
             output_key: output_key)
     end
@@ -77,7 +77,7 @@ module Boxcars
       when /^Answer:/
         text
       else
-        raise Boxcars::Error "Unknown format from LLM: #{text}"
+        raise Boxcars::Error "Unknown format from engine: #{text}"
       end
     end
 
@@ -105,7 +105,7 @@ module Boxcars
       Question: %<question>s
     IPT
 
-    # The prompt to use for the LLM.
+    # The prompt to use for the engine.
     def my_prompt
       @my_prompt ||= Prompt.new(input_variables: [:question, :dialect, :top_k], template: TEMPLATE)
     end

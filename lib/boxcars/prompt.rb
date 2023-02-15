@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Boxcars
-  # used by Boxcars that have LLM's to create a prompt.
+  # used by Boxcars that have engine's to create a prompt.
   class Prompt
     attr_reader :template, :input_variables, :output_variables
 

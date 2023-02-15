@@ -56,8 +56,8 @@ RSpec.describe Boxcars::SQL do
     Post.last.comments.create(name: "John", content: "This is yet another comment")
 
     conn = ActiveRecord::Base.connection
-    llm = Boxcars::LLMOpenAI.new
-    boxcar = described_class.new(connection: conn, llm: llm)
+    engine = Boxcars::Openai.new
+    boxcar = described_class.new(connection: conn, engine: engine)
 
     it "can count comments from john" do
       VCR.use_cassette("sql") do

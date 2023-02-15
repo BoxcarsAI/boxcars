@@ -2,7 +2,7 @@
 
 module Boxcars
   # Consists of an conductor using boxcars.
-  class ConductorExecuter < LLMBoxcar
+  class ConductorExecuter < EngineBoxcar
     attr_accessor :conductor, :boxcars, :return_intermediate_steps, :max_iterations, :early_stopping_method
 
     # @param conductor [Boxcars::Conductor] The conductor to use.
@@ -17,8 +17,8 @@ module Boxcars
       @return_intermediate_steps = return_intermediate_steps
       @max_iterations = max_iterations
       @early_stopping_method = early_stopping_method
-      # def initialize(prompt:, llm:, output_key: "text", name: nil, description: nil)
-      super(prompt: conductor.prompt, llm: conductor.llm, name: conductor.name, description: conductor.description)
+      # def initialize(prompt:, engine:, output_key: "text", name: nil, description: nil)
+      super(prompt: conductor.prompt, engine: conductor.engine, name: conductor.name, description: conductor.description)
     end
 
     def same_boxcars?(boxcar_names)
@@ -56,8 +56,8 @@ module Boxcars
       final_output
     end
 
-    def llm_prefix(return_direct)
-      return_direct ? "" : conductor.llm_prefix
+    def engine_prefix(return_direct)
+      return_direct ? "" : conductor.engine_prefix
     end
 
     def call(inputs:)

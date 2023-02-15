@@ -2,7 +2,7 @@
 module Boxcars
   # A Conductor using the zero-shot react method.
   class ZeroShot < Conductor
-    attr_reader :boxcars, :observation_prefix, :llm_prefix
+    attr_reader :boxcars, :observation_prefix, :engine_prefix
 
     PREFIX = "Answer the following questions as best you can. You have access to the following actions:".freeze
     FORMAT_INSTRUCTIONS = <<~FINPUT.freeze
@@ -25,11 +25,11 @@ module Boxcars
       Thought:%<agent_scratchpad>s
     SINPUT
 
-    def initialize(boxcars:, llm:, name: 'Zero Shot', description: 'Zero Shot Conductor')
+    def initialize(boxcars:, engine:, name: 'Zero Shot', description: 'Zero Shot Conductor')
       @observation_prefix = 'Observation: '
-      @llm_prefix = 'Thought:'
+      @engine_prefix = 'Thought:'
       prompt = self.class.create_prompt(boxcars: boxcars)
-      super(llm: llm, boxcars: boxcars, prompt: prompt, name: name, description: description)
+      super(engine: engine, boxcars: boxcars, prompt: prompt, name: name, description: description)
     end
 
     # Create prompt in the style of the zero shot agent.
@@ -53,19 +53,19 @@ module Boxcars
 
     FINAL_ANSWER_ACTION = "Final Answer:".freeze
 
-    # Parse out the action and input from the LLM output.
-    def get_action_and_input(llm_output:)
+    # Parse out the action and input from the engine output.
+    def get_action_and_input(engine_output:)
       # NOTE: if you're specifying a custom prompt for the ZeroShotAgent,
       #   you will need to ensure that it meets the following Regex requirements.
       #   The string starting with "Action:" and the following string starting
       #   with "Action Input:" should be separated by a newline.
-      if llm_output.include?(FINAL_ANSWER_ACTION)
-        answer = llm_output.split(FINAL_ANSWER_ACTION).last.strip
+      if engine_output.include?(FINAL_ANSWER_ACTION)
+        answer = engine_output.split(FINAL_ANSWER_ACTION).last.strip
         ['Final Answer', answer]
       else
         regex = /Action: (?<action>.*)\nAction Input: (?<action_input>.*)/
-        match = regex.match(llm_output)
-        raise ValueError, "Could not parse LLM output: #{llm_output}" unless match
+        match = regex.match(engine_output)
+        raise ValueError, "Could not parse engine output: #{engine_output}" unless match
 
         action = match[:action].strip
         action_input = match[:action_input].strip
@@ -75,7 +75,7 @@ module Boxcars
     end
 
     def extract_boxcar_and_input(text)
-      get_action_and_input(llm_output: text)
+      get_action_and_input(engine_output: text)
     end
   end
 end

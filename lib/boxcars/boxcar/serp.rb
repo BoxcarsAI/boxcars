@@ -10,7 +10,7 @@ module Boxcars
     # implements a boxcar that uses the Google SerpAPI to get answers to questions.
     # @param name [String] The name of the boxcar. Defaults to classname.
     # @param description [String] A description of the boxcar. Defaults to SERPDESC.
-    # @param llm [Boxcars::LLM] The LLM to user for this boxcar. Can be inherited from a Conductor if nil.
+    # @param engine [Boxcars::Engine] The engine to user for this boxcar. Can be inherited from a Conductor if nil.
     #
     def initialize(name: "Search", description: SERPDESC, serpapi_api_key: "not set")
       super(name: name, description: description)

@@ -2,19 +2,19 @@
 
 # Boxcars is a framework for running a series of tools to get an answer to a question.
 module Boxcars
-  # For Boxcars that use an LLM to do their work.
+  # For Boxcars that use an engine to do their work.
   # @abstract
-  class LLMBoxcar < Boxcars::Boxcar
-    attr_accessor :prompt, :llm, :output_key
+  class EngineBoxcar < Boxcars::Boxcar
+    attr_accessor :prompt, :engine, :output_key
 
     # A Boxcar is a container for a single tool to run.
     # @param prompt [Boxcars::Prompt] The prompt to use for this boxcar with sane defaults.
     # @param name [String] The name of the boxcar. Defaults to classname.
     # @param description [String] A description of the boxcar.
-    # @param llm [Boxcars::LLM] The LLM to user for this boxcar. Can be inherited from a conductor if nil.
-    def initialize(prompt:, llm:, output_key: "text", name: nil, description: nil)
+    # @param engine [Boxcars::Engine] The engine to user for this boxcar. Can be inherited from a conductor if nil.
+    def initialize(prompt:, engine:, output_key: "text", name: nil, description: nil)
       @prompt = prompt
-      @llm = llm
+      @engine = engine
       @output_key = output_key
       super(name: name, description: description)
     end
@@ -49,7 +49,7 @@ module Boxcars
         # puts "Prompt after formatting:\n#{new_prompt.colorize(:cyan)}"
         prompts.push(new_prompt)
       end
-      llm.generate(prompts: prompts, stop: stop)
+      engine.generate(prompts: prompts, stop: stop)
     end
 
     def apply(input_list:)

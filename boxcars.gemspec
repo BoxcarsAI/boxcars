@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.authors = ["Francis Sullivan", "Tabrez Syed"]
   spec.email = ["hi@boxcars.ai"]
 
-  spec.summary = "Boxcars provide an API to connect together LLM's and then conduct them. Inspired by python langchain."
+  spec.summary = "Boxcars provide an API to connect together Boxcars and then conduct them. Inspired by python langchain."
   spec.description = "You simply give a number of boxcars to a conductor, and it does the magic."
   spec.homepage = "https://github.com/BoxcarsAI/boxcars"
   spec.license = "MIT"

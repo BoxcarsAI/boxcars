@@ -3,20 +3,20 @@
 module Boxcars
   # @abstract
   class Conductor
-    attr_reader :llm, :boxcars, :name, :description, :prompt, :llm_boxcar, :return_values
+    attr_reader :engine, :boxcars, :name, :description, :prompt, :engine_boxcar, :return_values
 
-    # A Conductor will use a LLM to run a series of boxcars.
-    # @param llm [Boxcars::LLM] The LLM to use for this conductor.
+    # A Conductor will use a engine to run a series of boxcars.
+    # @param engine [Boxcars::Engine] The engine to use for this conductor.
     # @param boxcars [Array<Boxcars::Boxcar>] The boxcars to run.
     # @abstract
-    def initialize(llm:, boxcars:, prompt:, name: nil, description: nil)
-      @llm = llm
+    def initialize(engine:, boxcars:, prompt:, name: nil, description: nil)
+      @engine = engine
       @boxcars = boxcars
       @prompt = prompt
       @name = name || self.class.name
       @description = description
       @return_values = [:output]
-      @llm_boxcar = LLMBoxcar.new(prompt: prompt, llm: llm)
+      @engine_boxcar = EngineBoxcar.new(prompt: prompt, engine: engine)
     end
 
     # Get an answer from the conductor.
@@ -38,18 +38,18 @@ module Boxcars
       thoughts = ""
       intermediate_steps.each do |action, observation|
         thoughts += action.is_a?(String) ? action : action.log
-        thoughts += "\n#{observation_prefix}#{observation}\n#{llm_prefix}"
+        thoughts += "\n#{observation_prefix}#{observation}\n#{engine_prefix}"
       end
       thoughts
     end
 
     def get_next_action(full_inputs)
-      full_output = llm_boxcar.predict(**full_inputs)
+      full_output = engine_boxcar.predict(**full_inputs)
       parsed_output = extract_boxcar_and_input(full_output)
       while parsed_output.nil?
         full_output = _fix_text(full_output)
         full_inputs[:agent_scratchpad] += full_output
-        output = llm_boxcar.predict(**full_inputs)
+        output = engine_boxcar.predict(**full_inputs)
         full_output += output
         parsed_output = extract_boxcar_and_input(full_output)
       end
@@ -93,7 +93,7 @@ module Boxcars
     end
 
     def validate_prompt(values: Dict)
-      prompt = values["llm_chain"].prompt
+      prompt = values["engine_chain"].prompt
       unless prompt.input_variables.include?(:agent_scratchpad)
         logger.warning("`agent_scratchpad` should be a variable in prompt.input_variables. Not found, adding it at the end.")
         prompt.input_variables.append(:agent_scratchpad)
@@ -117,12 +117,12 @@ module Boxcars
         thoughts = ""
         intermediate_steps.each do |action, observation|
           thoughts += action.log
-          thoughts += "\n#{observation_prefix}#{observation}\n#{llm_prefix}"
+          thoughts += "\n#{observation_prefix}#{observation}\n#{engine_prefix}"
         end
         thoughts += "\n\nI now need to return a final answer based on the previous steps:"
         new_inputs = { agent_scratchpad: thoughts, stop: _stop }
         full_inputs = kwargs.merge(new_inputs)
-        full_output = llm_boxcar.predict(**full_inputs)
+        full_output = engine_boxcar.predict(**full_inputs)
         parsed_output = extract_boxcar_and_input(full_output)
         if parsed_output.nil?
           ConductorFinish({ output: full_output }, full_output)

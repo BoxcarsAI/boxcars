@@ -12,10 +12,10 @@ RSpec.describe Boxcars::ConductorExecuter do
   # conductor = Boxcars::Conductor.new(boxcars: [Boxcars::Serp.new, Boxcars::Calculator.new])
   # conductor.run("what is the square root of 100?")
 
-  let(:llm) { Boxcars::LLMOpenAI.new(model: "text-davinci-003") }
+  let(:engine) { Boxcars::Openai.new(model: "text-davinci-003") }
   let(:search) { Boxcars::Serp.new }
-  let(:calculator) { Boxcars::Calculator.new(llm: llm) }
-  let(:conductor) { Boxcars::ZeroShot.new(llm: llm, boxcars: [search, calculator]) }
+  let(:calculator) { Boxcars::Calculator.new(engine: engine) }
+  let(:conductor) { Boxcars::ZeroShot.new(engine: engine, boxcars: [search, calculator]) }
 
   let(:conductor_executer) { described_class.new(conductor: conductor, boxcars: [search, calculator]) }
 
@@ -29,7 +29,7 @@ RSpec.describe Boxcars::ConductorExecuter do
   # it "can execuote openai" do
   #   VCR.use_cassette("openai2") do
   #     question = "What is the square root of the average temperature in Austin TX in January?"
-  #     expect(llm.run(question)).to eq("The square root of the average temperature in Austin TX in January is 7.2801098892.")
+  #     expect(engine.run(question)).to eq("The square root of the average temperature in Austin TX in January is 7.2801098892.")
   #   end
   # end
 end

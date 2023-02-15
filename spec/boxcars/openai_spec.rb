@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Boxcars::LLMOpenAI do
+RSpec.describe Boxcars::Openai do
   context "without an open ai api key" do
     it "raises an error" do
       expect do
@@ -9,7 +9,7 @@ RSpec.describe Boxcars::LLMOpenAI do
     end
 
     it "can write a short poem" do
-      VCR.use_cassette("llm_open_ai") do
+      VCR.use_cassette("openai") do
         expect(described_class.new.run("write a haiku about love")).to eq("Love's sweet embrace\nEmotional and tender\nForever entwined hearts")
       end
     end
