@@ -68,21 +68,24 @@ module Boxcars
     # @return [String] The answer to the question.
     def run(*args, **kwargs)
       puts "> Enterning #{name} boxcar#run".colorize(:gray, style: :bold)
-      rv = if kwargs.empty?
-             raise Boxcars::ArgumentError, "run supports only one positional argument." if args.length != 1
-
-             do_call(inputs: args[0])[output_keys.first]
-           elsif args.empty?
-             do_call(**kwargs)[output_keys].first
-           end
+      rv = do_run(*args, **kwargs)
       puts "< Exiting #{name} boxcar#run".colorize(:gray, style: :bold)
-      return rv
+      rv
+    end
+
+    private
+
+    def do_run(*args, **kwargs)
+      if kwargs.empty?
+        raise Boxcars::ArgumentError, "run supports only one positional argument." if args.length != 1
+
+        return do_call(inputs: args[0])[output_keys.first]
+      end
+      return do_call(**kwargs)[output_keys].first if args.empty?
 
       raise Boxcars::ArgumentError, "run supported with either positional or keyword arguments but not both. Got args" \
                                     ": #{args} and kwargs: #{kwargs}."
     end
-
-    private
 
     def our_inputs(inputs)
       if inputs.is_a?(String)

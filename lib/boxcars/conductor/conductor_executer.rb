@@ -21,16 +21,6 @@ module Boxcars
       super(prompt: conductor.prompt, llm: conductor.llm, name: conductor.name, description: conductor.description)
     end
 
-    # get a conductor executor from a conductor and boxcars
-    # @param conductor [Boxcars::Conductor] The conductor to use.
-    # @param boxcars [Array<Boxcars::Boxcar>] The boxcars to use.
-    # @param return_intermediate_steps [Boolean] Whether to return the intermediate steps. Defaults to false.
-    # @param max_iterations [Integer] The maximum number of iterations to run. Defaults to nil.
-    # @param early_stopping_method [String] The early stopping method to use. Defaults to "force".
-    def self.from_conductor_and_boxcars(conductor:, boxcars:, **kwargs)
-      ConductorExecutor.new(conductor: conductor, boxcars: boxcars, **kwargs)
-    end
-
     def same_boxcars?(boxcar_names)
       conductor.allowed_boxcars.sort == boxcar_names
     end
@@ -40,10 +30,6 @@ module Boxcars
       return if same_boxcars?(boxcar_names)
 
       raise "Allowed boxcars (#{conductor.allowed_boxcars}) different than provided boxcars (#{boxcar_names})"
-    end
-
-    def save_conductor(file_path)
-      conductor.save(file_path)
     end
 
     def input_keys
@@ -94,7 +80,7 @@ module Boxcars
           observation = "#{output.boxcar} is not a valid boxcar, try another one."
           return_direct = false
         end
-        puts "#Observation: #{observation.colorize(:green)}"
+        puts "#Observation: #{observation}".colorize(:green)
         intermediate_steps.append([output, observation])
         if return_direct
           output = ConductorFinish.new({ conductor.return_values[0] => observation }, "")

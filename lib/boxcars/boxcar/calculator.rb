@@ -44,8 +44,7 @@ module Boxcars
     def get_embedded_ruby_answer(text)
       code = text[8..-4].split("```").first.strip
       ruby_executor = Boxcars::RubyREPL.new
-      output = ruby_executor.call(code: code).strip
-      output
+      ruby_executor.call(code: code).strip
     end
 
     def get_answer(text)
