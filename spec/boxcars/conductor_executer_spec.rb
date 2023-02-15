@@ -1,17 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe Boxcars::ConductorExecuter do
-  # engine = Boxcars::OpenAIEngine.new
-  # search = Boxcars::Serp.new
-  # calculator = Boxcars::Calculator.new(engine: engine)
-  # conductor = Boxcars::Conductor(engine: engine, boxcars: [search, calculator])
-
-  # conductor.run("what is the square root of 100?")
-
-  # # if we had a default engine, we could do this:
-  # conductor = Boxcars::Conductor.new(boxcars: [Boxcars::Serp.new, Boxcars::Calculator.new])
-  # conductor.run("what is the square root of 100?")
-
   let(:engine) { Boxcars::Openai.new(model: "text-davinci-003") }
   let(:search) { Boxcars::Serp.new }
   let(:calculator) { Boxcars::Calculator.new(engine: engine) }
