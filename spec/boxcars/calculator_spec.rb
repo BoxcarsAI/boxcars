@@ -6,7 +6,7 @@ RSpec.describe Boxcars::Calculator do
       llm = Boxcars::LLMOpenAI.new
       VCR.use_cassette("calculator") do
         expect(described_class.new(llm: llm)
-          .run("what is the square root of 2 to the power of 22 diveded by 27?")).to eq("Answer: 394.13703200790457")
+          .run("what is the square root of 2.173 to the power of 22.1 diveded by 27.2?")).to eq("194.9580048796463")
       end
     end
   end

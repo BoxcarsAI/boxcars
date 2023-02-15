@@ -25,11 +25,11 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Mon, 13 Feb 2023 18:46:32 GMT
+      - Wed, 15 Feb 2023 22:29:29 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '328'
+      - '332'
       Connection:
       - keep-alive
       Access-Control-Allow-Origin:
@@ -41,18 +41,18 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '1239'
+      - '1217'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
       - max-age=15724800; includeSubDomains
       X-Request-Id:
-      - 7866e4885c6745eff9d6bfaf4e898e80
+      - d030cf4a54e0776767fb2f0ff6162004
     body:
       encoding: UTF-8
-      string: '{"id":"cmpl-6jY8Nw9tErk1TyrTqlNPb85oDOqc5","object":"text_completion","created":1676313991,"model":"text-davinci-003","choices":[{"text":"\n\nLove
-        is a flower\nBlooming eternal beauty\nPure and divine love","index":0,"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":6,"completion_tokens":16,"total_tokens":22}}
+      string: '{"id":"cmpl-6kKZEBLpNKiw8WPJb9AVNuGVi6YrC","object":"text_completion","created":1676500168,"model":"text-davinci-003","choices":[{"text":"\n\nLove''s
+        sweet embrace\nEmotional and tender\nForever entwined hearts","index":0,"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":6,"completion_tokens":18,"total_tokens":24}}
 
         '
-  recorded_at: Mon, 13 Feb 2023 18:46:32 GMT
+  recorded_at: Wed, 15 Feb 2023 22:29:29 GMT
 recorded_with: VCR 6.1.0

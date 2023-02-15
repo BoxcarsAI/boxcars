@@ -53,19 +53,19 @@ module Boxcars
         full_output += output
         parsed_output = extract_boxcar_and_input(full_output)
       end
-      ConductorAction.new(tool: parsed_output[0], tool_input: parsed_output[1], log: full_output)
+      ConductorAction.new(boxcar: parsed_output[0], boxcar_input: parsed_output[1], log: full_output)
     end
 
     # Given input, decided what to do.
     # @param intermediate_steps [Array<Hash>] The intermediate steps taken so far along with observations.
     # @param kwargs [Hash] User inputs.
-    # @return [Boxcars::Action] Action specifying what tool to use.
+    # @return [Boxcars::Action] Action specifying what boxcar to use.
     def plan(intermediate_steps, **kwargs)
       thoughts = construct_scratchpad(intermediate_steps)
       new_inputs = { agent_scratchpad: thoughts, stop: stop }
       full_inputs = kwargs.merge(new_inputs)
       action = get_next_action(full_inputs)
-      return ConductorFinish.new({ output: action.tool_input }, log: action.log) if action.tool == finish_tool_name
+      return ConductorFinish.new({ output: action.boxcar_input }, log: action.log) if action.boxcar == finish_boxcar_name
 
       action
     end
@@ -74,8 +74,8 @@ module Boxcars
     def prepare_for_new_call
     end
 
-    # Name of the tool to use to finish the chain
-    def finish_tool_name
+    # Name of the boxcar to use to finish the chain
+    def finish_boxcar_name
       "Final Answer"
     end
 
@@ -127,9 +127,9 @@ module Boxcars
         if parsed_output.nil?
           ConductorFinish({ output: full_output }, full_output)
         else
-          tool, tool_input = parsed_output
-          if tool == finish_tool_name
-            ConductorFinish({ output: tool_input }, full_output)
+          boxcar, boxcar_input = parsed_output
+          if boxcar == finish_boxcar_name
+            ConductorFinish({ output: boxcar_input }, full_output)
           else
             ConductorFinish({ output: full_output }, full_output)
           end

@@ -85,7 +85,7 @@ module Boxcars
 
         if (boxcar = name_to_boxcar_map[output.boxcar])
           begin
-            observation = boxcar.func(output.boxcar_input)
+            observation = boxcar.run(output.boxcar_input)
             return_direct = boxcar.return_direct
           rescue StandardError => e
             raise e
@@ -94,8 +94,8 @@ module Boxcars
           observation = "#{output.boxcar} is not a valid boxcar, try another one."
           return_direct = false
         end
-        puts "#{llm_prefix(return_direct)}#{observation.colorize(:green)}"
-        intermediate_steps.append(output, observation)
+        puts "#Observation: #{observation.colorize(:green)}"
+        intermediate_steps.append([output, observation])
         if return_direct
           output = ConductorFinish.new({ conductor.return_values[0] => observation }, "")
           return pre_return(output, intermediate_steps)

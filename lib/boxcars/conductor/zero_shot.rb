@@ -69,7 +69,8 @@ module Boxcars
 
         action = match[:action].strip
         action_input = match[:action_input].strip
-        [action, action_input.strip(" ").strip('"')]
+        # [action, action_input.strip(" ").strip('"')]
+        [action, action_input]
       end
     end
 

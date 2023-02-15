@@ -45,7 +45,7 @@ module Boxcars
       code = text[8..-4].split("```").first.strip
       ruby_executor = Boxcars::RubyREPL.new
       output = ruby_executor.call(code: code).strip
-      "Answer: #{output}"
+      output
     end
 
     def get_answer(text)
@@ -61,15 +61,17 @@ module Boxcars
 
     TEMPLATE = <<~IPT
       You are GPT-3, and you can't do math.
-
       You can do basic math, and your memorization abilities are impressive, but you can't do any complex calculations that a human could not do in their head. You also have an annoying tendency to just make up highly specific, but wrong, answers.
-
       So we hooked you up to a Ruby 3 kernel, and now you can execute ruby code. If anyone gives you a hard math problem, just use this format and we’ll take care of the rest:
 
       Question: ${{Question with hard calculation.}}
       ```ruby
       ${{Code that prints what you need to know}}
       ```
+      ```output
+      ${{Output of your code}}
+      ```
+      Answer: ${{Answer}}
 
       Otherwise, use this simpler format:
 
@@ -82,6 +84,10 @@ module Boxcars
       ```ruby
       puts(37593 * 67)
       ```
+      ```output
+      2518731
+      ```
+      Answer: 2518731
 
       Question: what is 2518731 + 0?
       Answer: 2518731

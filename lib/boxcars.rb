@@ -8,13 +8,29 @@ module Boxcars
   class ArgumentError < Error; end
   class ValueError < Error; end
 
+  # simple string colorization
+  class ::String
+    def colorize(color, options = {})
+      background = options[:background] || options[:bg] || false
+      style = options[:style]
+      offsets = %i[gray red green yellow blue magenta cyan white]
+      styles = %i[normal bold dark italic underline xx xx underline xx strikethrough]
+      start = background ? 40 : 30
+      color_code = start + (offsets.index(color) || 8)
+      style_code = styles.index(style) || 0
+      "\e[#{style_code};#{color_code}m#{self}\e[0m"
+    end
+  end
+
   # Configuration contains gem settings
   class Configuration
     attr_writer :openai_access_token, :serpapi_api_key
-    attr_accessor :organization_id
+    attr_accessor :organization_id, :logger
 
     def initialize
       @organization_id = nil
+      @logger = Rails.logger if defined?(Rails)
+      @logger ||= Logger.new($stdout)
     end
 
     # @return [String] The OpenAI Access Token either from arg or env.
@@ -25,20 +41,6 @@ module Boxcars
     # @return [String] The SerpAPI API key either from arg or env.
     def serpapi_api_key(**kwargs)
       key_lookup(:serpapi_api_key, kwargs)
-    end
-
-    # simple string colorization
-    class ::String
-      def colorize(color, options = {})
-        background = options[:background] || options[:bg] || false
-        style = options[:style]
-        offsets = %i[gray red green yellow blue magenta cyan white]
-        styles = %i[normal bold dark italic underline xx xx underline xx strikethrough]
-        start = background ? 40 : 30
-        color_code = start + (offsets.index(color) || 8)
-        style_code = styles.index(style) || 0
-        "\e[#{style_code};#{color_code}m#{self}\e[0m"
-      end
     end
 
     private

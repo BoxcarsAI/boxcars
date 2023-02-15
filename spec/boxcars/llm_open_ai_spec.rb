@@ -10,7 +10,7 @@ RSpec.describe Boxcars::LLMOpenAI do
 
     it "can write a short poem" do
       VCR.use_cassette("llm_open_ai") do
-        expect(described_class.new.run("write a haiku about love")).to eq("Love is a flower\nBlooming eternal beauty\nPure and divine love")
+        expect(described_class.new.run("write a haiku about love")).to eq("Love's sweet embrace\nEmotional and tender\nForever entwined hearts")
       end
     end
   end

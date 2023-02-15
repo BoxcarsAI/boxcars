@@ -3,11 +3,11 @@
 module Boxcars
   # Conductor's action to take.
   class ConductorAction
-    attr_accessor :tool, :tool_input, :log
+    attr_accessor :boxcar, :boxcar_input, :log
 
-    def initialize(tool: nil, tool_input: nil, log: nil)
-      @tool = tool
-      @tool_input = tool_input
+    def initialize(boxcar: nil, boxcar_input: nil, log: nil)
+      @boxcar = boxcar
+      @boxcar_input = boxcar_input
       @log = log
     end
   end

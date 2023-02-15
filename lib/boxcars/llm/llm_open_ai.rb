@@ -32,11 +32,11 @@ module Boxcars
     # Get an answer from the LLM.
     # @param question [String] The question to ask the LLM.
     # @param kwargs [Hash] Additional parameters to pass to the LLM if wanted.
-    def client(prompt:, **kwargs)
-      access_token = Boxcars.configuration.openai_access_token(**kwargs)
+    def client(prompt:, openai_access_token: 'not set', **kwargs)
+      access_token = Boxcars.configuration.openai_access_token(openai_access_token: openai_access_token)
       organization_id = Boxcars.configuration.organization_id
       clnt = ::OpenAI::Client.new(access_token: access_token, organization_id: organization_id)
-      the_params = { prompt: prompt }.merge(open_ai_params)
+      the_params = { prompt: prompt }.merge(open_ai_params).merge(kwargs)
       clnt.completions(parameters: the_params)
     end
 
@@ -86,8 +86,8 @@ module Boxcars
 
     #       response = openai.generate(["Tell me a joke."])
     def generate(prompts:, stop: nil)
-      params = default_params
-      params = params.merge(stop: stop) if stop
+      params = {}
+      params[:stop] = stop if stop
       choices = []
       token_usage = {}
       # Get the token usage from the response.

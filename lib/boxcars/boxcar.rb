@@ -3,14 +3,16 @@
 module Boxcars
   # @abstract
   class Boxcar
-    attr_reader :name, :description
+    attr_reader :name, :description, :return_direct
 
     # A Boxcar is a container for a single tool to run.
     # @param name [String] The name of the boxcar. Defaults to classname.
     # @param description [String] A description of the boxcar.
-    def initialize(description:, name: nil)
+    # @param return_direct [Boolean] If true, return the output of this boxcar directly, without merging it with the inputs.
+    def initialize(description:, name: nil, return_direct: false)
       @name = name || self.class.name
       @description = description
+      @return_direct = return_direct
     end
 
     # Input keys this chain expects.
@@ -65,13 +67,16 @@ module Boxcars
     # @param question [String] The question to ask the boxcar.
     # @return [String] The answer to the question.
     def run(*args, **kwargs)
-      if kwargs.empty?
-        raise Boxcars::ArgumentError, "run supports only one positional argument." if args.length != 1
+      puts "> Enterning #{name} boxcar#run".colorize(:gray, style: :bold)
+      rv = if kwargs.empty?
+             raise Boxcars::ArgumentError, "run supports only one positional argument." if args.length != 1
 
-        return do_call(inputs: args[0])[output_keys.first]
-      end
-
-      return do_call(**kwargs)[output_keys].first if args.empty?
+             do_call(inputs: args[0])[output_keys.first]
+           elsif args.empty?
+             do_call(**kwargs)[output_keys].first
+           end
+      puts "< Exiting #{name} boxcar#run".colorize(:gray, style: :bold)
+      return rv
 
       raise Boxcars::ArgumentError, "run supported with either positional or keyword arguments but not both. Got args" \
                                     ": #{args} and kwargs: #{kwargs}."
@@ -81,7 +86,7 @@ module Boxcars
 
     def our_inputs(inputs)
       if inputs.is_a?(String)
-        puts inputs.colorize(:blue)
+        puts inputs.colorize(:blue) # the question
         if input_keys.length != 1
           raise Boxcars::ArgumentError, "A single string input was passed in, but this boxcar expects " \
                                         "multiple inputs (#{input_keys}). When a boxcar expects " \
