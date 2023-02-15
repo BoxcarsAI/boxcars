@@ -4,7 +4,7 @@ module Boxcars
   class ZeroShot < Conductor
     attr_reader :boxcars, :observation_prefix, :llm_prefix
 
-    PREFIX = "Answer the following questions as best you can. You have access to the following tools:".freeze
+    PREFIX = "Answer the following questions as best you can. You have access to the following actions:".freeze
     FORMAT_INSTRUCTIONS = <<~FINPUT.freeze
       Use the following format:
 
@@ -13,7 +13,7 @@ module Boxcars
       Action: the action to take, should be one of [%<boxcar_names>s]
       Action Input: the input to the action
       Observation: the result of the action
-      ... (this Thought/Action/Action Input/Observation can repeat N times)
+      ... (this Thought/Action/Action Input/Observation sequence can repeat N times)
       Thought: I now know the final answer
       Final Answer: the final answer to the original input question
     FINPUT
@@ -63,12 +63,12 @@ module Boxcars
         answer = llm_output.split(FINAL_ANSWER_ACTION).last.strip
         ['Final Answer', answer]
       else
-        regex = /Action: (.*?)\nAction Input: (.*)/
+        regex = /Action: (?<action>.*)\nAction Input: (?<action_input>.*)/
         match = regex.match(llm_output)
-        raise ValueError("Could not parse LLM output: `#{llm_output}`") unless match
+        raise ValueError, "Could not parse LLM output: #{llm_output}" unless match
 
-        action = match.group(1).strip
-        action_input = match.group(2)
+        action = match[:action].strip
+        action_input = match[:action_input].strip
         [action, action_input.strip(" ").strip('"')]
       end
     end

@@ -95,7 +95,7 @@ module Boxcars
       inkeys = %w[completion_tokens prompt_tokens total_tokens].freeze
       sub_prompts = prompts.each_slice(batch_size).to_a
       sub_prompts.each do |sprompts|
-        response = client(prompt: sprompts)
+        response = client(prompt: sprompts, **params)
         choices.concat(response["choices"])
         keys_to_use = inkeys & response["usage"].keys
         keys_to_use.each { |key| token_usage[key] = token_usage[key].to_i + response["usage"][key] }
