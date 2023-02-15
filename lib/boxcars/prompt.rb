@@ -2,7 +2,7 @@
 
 module Boxcars
   # used by Boxcars that have LLM's to create a prompt.
-  class LLMPrompt
+  class Prompt
     attr_reader :template, :input_variables, :output_variables
 
     # @param template [String] The template to use for the prompt.
@@ -31,7 +31,7 @@ module Boxcars
     # @param prefix [String] The prefix to use for the template. Defaults to ""
     def self.from_examples(examples:, suffix:, input_variables:, example_separator: "\n\n", prefix: "")
       template = [prefix, examples, suffix].join(example_separator)
-      LLMPrompt.new(template: template, input_variables: input_variables)
+      Prompt.new(template: template, input_variables: input_variables)
     end
 
     # create a prompt template from a file
@@ -39,7 +39,7 @@ module Boxcars
     # @param input_variables [Array<Symbol>] The input variables to use for the prompt.
     def self.from_file(path:, input_variables:)
       template = File.read(path)
-      LLMPrompt.new(template: template, input_variables: input_variables)
+      Prompt.new(template: template, input_variables: input_variables)
     end
   end
 end

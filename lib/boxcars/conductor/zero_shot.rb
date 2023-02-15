@@ -41,14 +41,14 @@ module Boxcars
     #     input_variables: List of input variables the final prompt will expect.
 
     #   Returns:
-    #     A LLMPrompt with the template assembled from the pieces here.
+    #     A Prompt with the template assembled from the pieces here.
 
     def self.create_prompt(boxcars:, prefix: PREFIX, suffix: SUFFIX, input_variables: [:input, :agent_scratchpad])
       boxcar_strings = boxcars.map { |boxcar| "#{boxcar.name}: #{boxcar.description}" }.join("\n")
       boxcar_names = boxcars.map(&:name)
       format_instructions = format(FORMAT_INSTRUCTIONS, boxcar_names: boxcar_names.join(", "))
       template = [prefix, boxcar_strings, format_instructions, suffix].join("\n\n")
-      LLMPrompt.new(template: template, input_variables: input_variables)
+      Prompt.new(template: template, input_variables: input_variables)
     end
 
     FINAL_ANSWER_ACTION = "Final Answer:".freeze

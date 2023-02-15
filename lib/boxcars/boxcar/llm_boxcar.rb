@@ -8,7 +8,7 @@ module Boxcars
     attr_accessor :prompt, :llm, :output_key
 
     # A Boxcar is a container for a single tool to run.
-    # @param prompt [Boxcars::LLMPrompt] The prompt to use for this boxcar with sane defaults.
+    # @param prompt [Boxcars::Prompt] The prompt to use for this boxcar with sane defaults.
     # @param name [String] The name of the boxcar. Defaults to classname.
     # @param description [String] A description of the boxcar.
     # @param llm [Boxcars::LLM] The LLM to user for this boxcar. Can be inherited from a conductor if nil.

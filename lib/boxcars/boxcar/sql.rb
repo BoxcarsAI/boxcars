@@ -8,7 +8,7 @@ module Boxcars
     attr_accessor :connection, :input_key
 
     # @param connection [ActiveRecord::Connection] The SQL connection to use for this boxcar.
-    # @param prompt [Boxcars::LLMPrompt] The prompt to use for this boxcar.
+    # @param prompt [Boxcars::Prompt] The prompt to use for this boxcar.
     # @param name [String] The name of the boxcar. Defaults to classname.
     # @param description [String] A description of the boxcar.
     # @param llm [Boxcars::LLM] The LLM to user for this boxcar. Can be inherited from a conductor if nil.
@@ -107,7 +107,7 @@ module Boxcars
 
     # The prompt to use for the LLM.
     def my_prompt
-      @my_prompt ||= LLMPrompt.new(input_variables: [:question, :dialect, :top_k], template: TEMPLATE)
+      @my_prompt ||= Prompt.new(input_variables: [:question, :dialect, :top_k], template: TEMPLATE)
     end
 
     # DECIDER_TEMPLATE = <<~DPT
@@ -117,7 +117,7 @@ module Boxcars
     #   Table Names: %<table_names>s
     #   Relevant Table Names:
     # DPT
-    # DECIDER_PROMPT = LLMPrompt.new(
+    # DECIDER_PROMPT = Prompt.new(
     #   input_variables: %i[query table_names],
     #   template: DECIDER_TEMPLATE,
     #   output_parser: CommaSeparatedListOutputParser

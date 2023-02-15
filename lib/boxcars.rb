@@ -85,7 +85,7 @@ module Boxcars
 end
 
 require "boxcars/version"
-require "boxcars/llm_prompt"
+require "boxcars/prompt"
 require "boxcars/generation"
 require "boxcars/ruby_repl"
 require "boxcars/llm"

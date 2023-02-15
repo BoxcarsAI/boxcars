@@ -4,7 +4,7 @@
 module Boxcars
   # A LLM that uses OpenAI's API.
   class LLMOpenAI < LLM
-    attr_reader :llm_prompts, :open_ai_params, :model_kwargs, :batch_size
+    attr_reader :prompts, :open_ai_params, :model_kwargs, :batch_size
 
     DEFAULT_PARAMS = {
       model: "text-davinci-003",
@@ -20,11 +20,11 @@ module Boxcars
     # @param name [String] The name of the LLM. Defaults to "OpenAI LLM".
     # @param description [String] A description of the LLM. Defaults to:
     #        useful for when you need to use AI to answer questions. You should ask targeted questions".
-    # @param llm_prompts [Array<String>] The prompts to use when asking the LLM. Defaults to [].
+    # @param prompts [Array<String>] The prompts to use when asking the LLM. Defaults to [].
     # @param batch_size [Integer] The number of prompts to send to the LLM at once. Defaults to 20.
-    def initialize(name: DEFAULT_NAME, description: DEFAULT_DESCRIPTION, llm_prompts: [], batch_size: 20, **kwargs)
+    def initialize(name: DEFAULT_NAME, description: DEFAULT_DESCRIPTION, prompts: [], batch_size: 20, **kwargs)
       @open_ai_params = DEFAULT_PARAMS.merge(kwargs)
-      @llm_prompts = llm_prompts
+      @prompts = prompts
       @batch_size = batch_size
       super(description: description, name: name)
     end

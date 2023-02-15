@@ -7,7 +7,7 @@ module Boxcars
     CALCDESC = "useful for when you need to answer questions about math"
     attr_accessor :input_key
 
-    # @param prompt [Boxcars::LLMPrompt] The prompt to use for this boxcar.
+    # @param prompt [Boxcars::Prompt] The prompt to use for this boxcar.
     # @param name [String] The name of the boxcar. Defaults to classname.
     # @param description [String] A description of the boxcar.
     # @param llm [Boxcars::LLM] The LLM to user for this boxcar. Can be inherited from a conductor if nil.
@@ -96,7 +96,7 @@ module Boxcars
 
     # The prompt to use for the LLM.
     def my_prompt
-      @my_prompt ||= LLMPrompt.new(input_variables: [:question], template: TEMPLATE)
+      @my_prompt ||= Prompt.new(input_variables: [:question], template: TEMPLATE)
     end
   end
 end
