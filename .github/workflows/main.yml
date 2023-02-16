@@ -39,5 +39,20 @@ jobs:
       with:
         ruby-version: '3.0'
         bundler-cache: true
-    - name: Run RuboCop
+    - name: name: Run RuboCop
       run: bundle exec rake rubocop
+
+    - name: publish gem
+      run: |
+        mkdir -p $HOME/.gem
+        touch $HOME/.gem/credentials
+        chmod 0600 $HOME/.gem/credentials
+        printf -- "---\n:rubygems_api_key: ${GEM_HOST_API_KEY}\n" > $HOME/.gem/credentials
+        gem build *.gemspec
+        gem push *.gem
+      env:
+        # Make sure to update the secret name
+        # if yours isn't named RUBYGEMS_AUTH_TOKEN
+        GEM_HOST_API_KEY: "${{secrets.RUBYGEMS_AUTH_TOKEN}}"
+      if: ${{ steps.release.outputs.release_created }}
+
