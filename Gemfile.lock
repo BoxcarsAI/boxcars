@@ -89,6 +89,7 @@ GEM
       httparty (>= 0.18.1)
     ruby-progressbar (1.11.0)
     sqlite3 (1.6.0-x86_64-darwin)
+    sqlite3 (1.6.0-x86_64-linux)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.4.2)
@@ -100,6 +101,8 @@ GEM
 
 PLATFORMS
   x86_64-darwin-21
+  x86_64-darwin-22
+  x86_64-linux
 
 DEPENDENCIES
   activerecord (~> 7.0)
@@ -116,4 +119,4 @@ DEPENDENCIES
   webmock (~> 3.18.1)
 
 BUNDLED WITH
-   2.2.32
+   2.4.7
