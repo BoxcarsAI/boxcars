@@ -34,7 +34,7 @@ module Boxcars
     end
 
     def call(inputs:)
-      t = predict(question: inputs[input_key], dialect: dialect, top_k: 5, table_info: schema, stop: ["SQLQuery:"]).strip
+      t = predict(question: inputs[input_key], dialect: dialect, top_k: 5, table_info: schema, stop: ["Answer:"]).strip
       answer = get_answer(t)
       puts answer.colorize(:magenta)
       { output_key => answer }

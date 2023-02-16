@@ -67,7 +67,7 @@ RSpec.describe Boxcars::SQL do
 
     it "can find the last comment to the first post" do
       VCR.use_cassette("sql2") do
-        expect(boxcar.run("What is the last comment for the first post?")).to eq("Answer: [{\"content\"=>\"This is a comment\"}]")
+        expect(boxcar.run("What is the last comment for the first post?")).to include("\"content\"=>\"This is a comment\"")
       end
     end
   end

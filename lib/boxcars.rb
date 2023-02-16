@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'logger'
+
 # Boxcars is a framework for running a series of tools to get an answer to a question.
 module Boxcars
   # Error class for all Boxcars errors.

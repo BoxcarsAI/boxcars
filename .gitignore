@@ -2,3 +2,5 @@
 .DS_Store
 .git
 .rspec_status
+pkg
+example.rb

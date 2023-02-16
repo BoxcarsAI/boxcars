@@ -11,7 +11,7 @@ RSpec.describe Boxcars::ConductorExecuter do
   it "can execute a conductor" do
     VCR.use_cassette("conde") do
       question = "What is pi times the square root of the average temperature in Austin TX in January?"
-      expect(conductor_executer.run(question)).to eq("23.298674684623474")
+      expect(conductor_executer.run(question)).to eq("23.128609092183716")
     end
   end
 

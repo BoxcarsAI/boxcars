@@ -55,4 +55,57 @@ http_interactions:
 
         '
   recorded_at: Wed, 15 Feb 2023 22:29:29 GMT
+- request:
+    method: post
+    uri: https://api.openai.com/v1/completions
+    body:
+      encoding: UTF-8
+      string: '{"prompt":"write a haiku about love","model":"text-davinci-003","temperature":0.7,"max_tokens":256}'
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer <openai_access_token>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Thu, 16 Feb 2023 14:33:06 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '344'
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - no-cache, must-revalidate
+      Openai-Model:
+      - text-davinci-003
+      Openai-Organization:
+      - user-ri9zw9ahumb1bo9vs73mudbi
+      Openai-Processing-Ms:
+      - '3359'
+      Openai-Version:
+      - '2020-10-01'
+      Strict-Transport-Security:
+      - max-age=15724800; includeSubDomains
+      X-Request-Id:
+      - 95ba5c5c1ad74c837cd3c915c3887dfa
+    body:
+      encoding: UTF-8
+      string: '{"id":"cmpl-6kZbjAuSppfhRQNFZYPvFbudxPf2a","object":"text_completion","created":1676557983,"model":"text-davinci-003","choices":[{"text":"\n\nA
+        love so pure and true \nMy heart beats just for you \nYour love is all I need","index":0,"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":6,"completion_tokens":24,"total_tokens":30}}
+
+        '
+  recorded_at: Thu, 16 Feb 2023 14:33:06 GMT
 recorded_with: VCR 6.1.0

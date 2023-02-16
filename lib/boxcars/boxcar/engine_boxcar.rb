@@ -46,7 +46,7 @@ module Boxcars
       prompts = []
       input_list.each do |inputs|
         new_prompt = prompt.format(**inputs)
-        # puts "Prompt after formatting:\n#{new_prompt.colorize(:cyan)}"
+        puts "Prompt after formatting:\n#{new_prompt.colorize(:cyan)}"
         prompts.push(new_prompt)
       end
       engine.generate(prompts: prompts, stop: stop)
