@@ -39,11 +39,23 @@ jobs:
       with:
         ruby-version: '3.0'
         bundler-cache: true
-    - name: name: Run RuboCop
+    - name: Run RuboCop
       run: bundle exec rake rubocop
 
+  publish-rubygem:
+    runs-on: ubuntu-latest
+    name: Publish Ruby Gem
+    needs: [specs, rubocop]
+
+    steps:
     - name: publish gem
-      run: |
+      uses: actions/checkout@v3
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.0'
+        bundler-cache: true
+    - run: |
         mkdir -p $HOME/.gem
         touch $HOME/.gem/credentials
         chmod 0600 $HOME/.gem/credentials
