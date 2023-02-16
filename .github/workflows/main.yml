@@ -8,23 +8,39 @@ on:
   pull_request:
 
 jobs:
-  build:
+  specs:
     runs-on: ubuntu-latest
 
     strategy:
+      fail-fast: false
       matrix:
-        ruby:
-          - 3.0.3
+        ruby-version:
+          - head
+          - '3.2'
+          - '3.1'
+          - '3.0'
+          - jruby
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Ruby ${{ matrix.ruby-version }}
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ${{ matrix.ruby-version }}
+        bundler-cache: true
+    - name: Run tests
+      run: bundle exec rake spec
+  rubocop:
+    runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
       with:
-        ruby-version: ${{ matrix.ruby }}
+        ruby-version: '3.0'
         bundler-cache: true
-    - name: Run the default task
-      run: bundle exec rake
+    - name: name: Run RuboCop
+      run: bundle exec rake rubocop
 
     - name: publish gem
       run: |
@@ -39,3 +55,4 @@ jobs:
         # if yours isn't named RUBYGEMS_AUTH_TOKEN
         GEM_HOST_API_KEY: "${{secrets.RUBYGEMS_AUTH_TOKEN}}"
       if: ${{ steps.release.outputs.release_created }}
+
