@@ -74,6 +74,7 @@ module Boxcars
             observation = boxcar.run(output.boxcar_input)
             return_direct = boxcar.return_direct
           rescue StandardError => e
+            puts "Error in #{boxcar.name} boxcar#call: #{e}".colorize(:red)
             raise e
           end
         else

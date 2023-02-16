@@ -50,6 +50,7 @@ module Boxcars
       begin
         output = call(inputs: inputs)
       rescue StandardError => e
+        puts "Error in #{name} boxcar#call: #{e}".colorize(:red)
         raise e
       end
       validate_outputs(outputs: output.keys)
