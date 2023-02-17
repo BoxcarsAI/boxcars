@@ -1,15 +1,15 @@
 # Boxcars
 
-This gem lets you compose new systems with composability using systems like OpenAI, Search, and SQL (and many more).
+Boxcars is a gem that enables you to create new systems with composability, using various systems such as OpenAI, Search, SQL, and more.
 
-The popular python library langchain is a precursor to this work, but we wanted to put a ruby spin on things and make it easier to get started.
+This work was inspired by the popular Python library Langchain. However, we wanted to give it a Ruby spin and make it more user-friendly for beginners to get started.
 
 ## Concepts
 All of these concepts are in a module named Boxcars:
-- Prompt: a prompt is used by an Engine to generate text results.
-- Engine: an entity that generates text from a Prompt. OpenAI's LLM can be one and is the default one if not specified.
-- Boxcar: an encapsulation that does one thing (search, math, SQL, etc) and a many use an Engine to get their work accomplished.
-- Train: given a list of Boxcars and an Engine, will find an answer by breaking the promlem into peices for contained indvidual Boxcar to solve. Individual results are used until a final answer is found. There is currently only one implementation - ZeroShot. You can construct it directly, or just use `Boxcars::default_train`
+- Prompt: A prompt is used by an Engine to generate text results.
+- Engine: An Engine is an entity that generates text from a Prompt. OpenAI's LLM is the default Engine if no other is specified.
+- Boxcar: A Boxcar is an encapsulation that performs a single task (such as search, math, or SQL) and can use an Engine to complete that task.
+- Train: Given a list of Boxcars and an Engine, Train breaks down a problem into pieces for individual Boxcars to solve. The individual results are then combined until a final answer is found. ZeroShot is the only current implementation of Train, and you can either construct it directly or use `Boxcars::default_train` when you want to build a Train.
 
 ## Installation
 
@@ -29,7 +29,7 @@ Or install it yourself as:
 
 ## Usage
 
-We will document many more examples soon, but here are a couple. The first step is to setup your environment variables for OpenAI and Serp (OPENAI_ACCESS_TOKEN, SERPAPI_API_KEY). If you don't want to set them in your environment, they can be passed in as well to the API.
+We will be adding more examples soon, but here are a couple to get you started. First, you'll need to set up your environment variables for OpenAI and Serp (OPENAI_ACCESS_TOKEN, SERPAPI_API_KEY). If you prefer not to set these variables in your environment, you can pass them directly into the API.
 
 In the examples below, we added one rubygem to load the environment at the first line, but depending on what you want, you might not need this.
 ```ruby
