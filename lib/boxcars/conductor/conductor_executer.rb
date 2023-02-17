@@ -10,10 +10,10 @@ module Boxcars
     # @param return_intermediate_steps [Boolean] Whether to return the intermediate steps. Defaults to false.
     # @param max_iterations [Integer] The maximum number of iterations to run. Defaults to nil.
     # @param early_stopping_method [String] The early stopping method to use. Defaults to "force".
-    def initialize(conductor:, boxcars:, return_intermediate_steps: false, max_iterations: nil,
+    def initialize(conductor:, boxcars: nil, return_intermediate_steps: false, max_iterations: nil,
                    early_stopping_method: "force")
       @conductor = conductor
-      @boxcars = boxcars
+      @boxcars = boxcars || conductor.boxcars
       @return_intermediate_steps = return_intermediate_steps
       @max_iterations = max_iterations
       @early_stopping_method = early_stopping_method
