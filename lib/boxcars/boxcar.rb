@@ -11,7 +11,7 @@ module Boxcars
     # @param return_direct [Boolean] If true, return the output of this boxcar directly, without merging it with the inputs.
     def initialize(description:, name: nil, return_direct: false)
       @name = name || self.class.name
-      @description = description
+      @description = description || @name
       @return_direct = return_direct
     end
 
@@ -53,7 +53,7 @@ module Boxcars
     # @param input_list [Array<Hash>] The list of inputs.
     # @return [Array<Boxcars::Boxcar>] The list of outputs.
     def apply(input_list:)
-      input_list.map { |inputs| new(**inputs) }
+      raise NotImplementedError
     end
 
     # Get an answer from the boxcar.

@@ -113,10 +113,10 @@ module Boxcars
         logger.warning("`agent_scratchpad` should be a variable in prompt.input_variables. Not found, adding it at the end.")
         prompt.input_variables.append(:agent_scratchpad)
         case prompt
-        when PromptTemplate
+        when Prompt
           prompt.template += "\n%<agent_scratchpad>s"
-        when FewShotPromptTemplate
-          prompt.suffix += "\n%<agent_scratchpad>s"
+        # when FewShotPromptTemplate
+        #   prompt.suffix += "\n%<agent_scratchpad>s"
         else
           raise ValueError, "Got unexpected prompt type #{type(prompt)}"
         end
