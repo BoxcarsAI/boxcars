@@ -7,9 +7,9 @@ The popular python library langchain is a precursor to this work, but we wanted 
 ## Concepts
 All of these concepts are in a module named Boxcars:
 - Prompt: a prompt is used by an Engine to generate text results.
-- Engine: an entity that generates text from a Prompt.
-- Boxcar: an encapsulation that does one thing (search, math, SQL, etc) and a many use an Engine to get their work accomplished.cc
-- Train: given a list of Boxcars and an Engine, an answer if found by breaking the promlem into peices for an indvidual Boxcar to solve. This is all joined back together to yield a final result. There is currently only one implementation - ZeroShot. You can construct it directly, or just use `Boxcars::default_train`
+- Engine: an entity that generates text from a Prompt. OpenAI's LLM can be one and is the default one if not specified.
+- Boxcar: an encapsulation that does one thing (search, math, SQL, etc) and a many use an Engine to get their work accomplished.
+- Train: given a list of Boxcars and an Engine, will find an answer by breaking the promlem into peices for contained indvidual Boxcar to solve. Individual results are used until a final answer is found. There is currently only one implementation - ZeroShot. You can construct it directly, or just use `Boxcars::default_train`
 
 ## Installation
 
@@ -37,6 +37,11 @@ require "dotenv/load"
 require "boxcars"
 ```
 
+Note: if you want to try out the examples below, run this command and then paste in the code segments of interest:
+```bash
+irb -r dotenv/load -r boxcars
+```
+
 ### Direct Boxcar Use
 
 ```ruby
@@ -45,7 +50,7 @@ engine = Boxcars::Openai.new(max_tokens: 256)
 calc = Boxcars::Calculator.new(engine: engine)
 puts calc.run "what is pi to the forth power divided by 22.1?"
 ```
-This segment above (try it by pasting into an `irb` session)
+Produces:
 ```text
 > Entering Calculator#run
 what is pi to the forth power divided by 22.1?
@@ -77,7 +82,7 @@ boxcars = [Boxcars::Calculator.new, Boxcars::Serp.new]
 train = Boxcars.default_train.new(boxcars: boxcars)
 puts train.run "What is pi times the square root of the average temperature in Austin TX in January?"
 ```
-This outputs:
+Produces:
 ```text
 > Entering Zero Shot#run
 What is pi times the square root of the average temperature in Austin TX in January?
