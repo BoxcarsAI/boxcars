@@ -11,7 +11,7 @@ module Boxcars
     # @param boxcars [Array<Boxcars::Boxcar>] The boxcars to run.
     # @param prompt [String] The prompt to use.
     # @abstract
-    def initialize(engine: nil, boxcars:, prompt:, **kwargs)
+    def initialize(boxcars:, prompt:, engine: nil, **kwargs)
       @boxcars = boxcars
       @name = name || self.class.name
       @return_values = [:output]
