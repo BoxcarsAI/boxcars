@@ -9,8 +9,7 @@ All of these concepts are in a module named Boxcars:
 - Prompt: a prompt is used by an Engine to generate text results.
 - Engine: an entity that generates text from a Prompt.
 - Boxcar: an encapsulation that does one thing (search, math, SQL, etc) and a many use an Engine to get their work accomplished.
-- Conductor: given a list of Boxcars and an Engine, an answer if found by breaking the promlem into peices for an indvidual Boxcar to solve. This is all joined back together to yield a final result. There is currently only one implementation - ZeroShot.
-- ConductorExecutor: manages the running of a Conductor.
+- Conductor: given a list of Boxcars and an Engine, an answer if found by breaking the promlem into peices for an indvidual Boxcar to solve. This is all joined back together to yield a final result. There is currently only one implementation - ZeroShot. You can construct it directly, or just use `Boxcars::default_conductor`
 
 ## Installation
 
@@ -35,20 +34,35 @@ We will document many more examples soon, but here are a couple. The first step 
 In the examples below, we added one rubygem to load the environment at the first line, but depending on what you want, you might not need this.
 ```ruby
 require "dotenv/load"
+require "boxcars"
 ```
 
 ### Direct Boxcar Use
 
 ```ruby
 # run the calculator
-require "dotenv/load"
-require "boxcars"
-
-engine = Boxcars::Openai.new
+engine = Boxcars::Openai.new(max_tokens: 256)
 calc = Boxcars::Calculator.new(engine: engine)
 puts calc.run "what is pi to the forth power divided by 22.1?"
 ```
+This segment above (try it by pasting into an `irb` session)
+```text
+> Enterning Calculator boxcar#run
+what is pi to the forth power divided by 22.1?
+RubyREPL: puts(Math::PI**4 / 22.1)
+Answer: 4.407651178009159
 
+4.407651178009159
+< Exiting Calculator boxcar#run
+4.407651178009159
+```
+
+Note that since Openai is currently the most used Engine, if you do not pass in an engine, it will default as expected. So, this is the equialent shorter version of the above script:
+```ruby
+# run the calculator
+calc = Boxcars::Calculator.new # just use the default Engine
+puts calc.run "what is pi to the forth power divided by 22.1?"
+```
 ### Boxcars currently implemmented
 
 Here is what we have so far, but please put up a PR with your new ideas.
@@ -58,16 +72,30 @@ Here is what we have so far, but please put up a PR with your new ideas.
 
 ### Run a list of Boxcars
 ```ruby
-# run a Conductor for a calculator, and search 
-require "dotenv/load"
-require "boxcars"
+# run a Conductor for a calculator, and search using default Engine
+boxcars = [Boxcars::Calculator.new, Boxcars::Serp.new]
+cond = Boxcars.default_conductor.new(boxcars: boxcars)
+puts cond.run "What is pi times the square root of the average temperature in Austin TX in January?"
+```
+This outputs:
+```text
+> Enterning Zero Shot boxcar#run
+What is pi times the square root of the average temperature in Austin TX in January?
+Question: Average temperature in Austin TX in January
+Answer: increase from 62°F to 64°F
+#Observation: increase from 62°F to 64°F
+> Enterning Calculator boxcar#run
+64°F x pi
+RubyREPL: puts (64 * Math::PI).round(2)
+Answer: 201.06
 
-engine = Boxcars::Openai.new
-calc = Boxcars::Calculator.new(engine: engine)
-search = Boxcars::Serp.new
-cond = Boxcars::ZeroShot.new(engine: engine, boxcars: [calc, search])
-cexe = Boxcars::ConductorExecuter.new(conductor: cond)
-puts cexe.run "What is pi times the square root of the average temperature in Austin TX in January?"
+201.06
+< Exiting Calculator boxcar#run
+#Observation: 201.06
+I now know the final answer
+Final Answer: 201.06
+< Exiting Zero Shot boxcar#run
+201.06
 ```
 
 ## Development
