@@ -9,6 +9,9 @@ on:
 
 jobs:
   specs:
+    env:
+      OPENAI_ACCESS_TOKEN: ${{ 'DUMMY_OPENAI_TOKEN' }}
+      SERPAPI_API_KEY: ${{ 'DUMMY_SERP_API_KEY' }}
     runs-on: ubuntu-latest
 
     strategy:
@@ -39,9 +42,8 @@ jobs:
       with:
         ruby-version: '3.0'
         bundler-cache: true
-    - name: name: Run RuboCop
+    - name: Run RuboCop
       run: bundle exec rake rubocop
-
     - name: publish gem
       run: |
         mkdir -p $HOME/.gem
