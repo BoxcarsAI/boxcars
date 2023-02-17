@@ -21,22 +21,6 @@ module Boxcars
       super(prompt: conductor.prompt, engine: conductor.engine, name: conductor.name, description: conductor.description)
     end
 
-    # is this the same list of boxcars?
-    # @param boxcar_names [Array<String>] The boxcar names to compare.
-    # @return [Boolean] Whether the boxcars are the same.
-    def same_boxcars?(boxcar_names)
-      conductor.allowed_boxcars.sort == boxcar_names
-    end
-
-    # validate the boxcars
-    # @raise [RuntimeError] If the boxcars are not the same.
-    def validate_boxcars
-      boxcar_names = boxcars.map(&:name).sort
-      return if same_boxcars?(boxcar_names)
-
-      raise "Allowed boxcars (#{conductor.allowed_boxcars}) different than provided boxcars (#{boxcar_names})"
-    end
-
     # the input keys
     def input_keys
       conductor.input_keys

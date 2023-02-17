@@ -63,7 +63,9 @@ module Boxcars
       end
     end
 
-    TEMPLATE = <<~IPT
+    # our template
+    # rubocop:disable Style/RedundantHeredocDelimiterQuotes
+    TEMPLATE = <<~'IPT'
       You are GPT-3, and you can't do math.
       You can do basic math, and your memorization abilities are impressive, but you can't do any complex calculations that a human could not do in their head. You also have an annoying tendency to just make up highly specific, but wrong, answers.
       So we hooked you up to a Ruby 3 kernel, and now you can execute ruby code. If anyone gives you a hard math problem, just use this format and we’ll take care of the rest:
@@ -98,6 +100,7 @@ module Boxcars
 
       Question: %<question>s
     IPT
+    # rubocop:enable Style/RedundantHeredocDelimiterQuotes
 
     # The prompt to use for the engine.
     def my_prompt
