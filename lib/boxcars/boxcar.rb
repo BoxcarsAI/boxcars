@@ -26,6 +26,8 @@ module Boxcars
     end
 
     # Check that all inputs are present.
+    # @param inputs [Hash] The inputs.
+    # @raise [RuntimeError] If the inputs are not the same.
     def validate_inputs(inputs:)
       missing_keys = input_keys - inputs.keys
       raise "Missing some input keys: #{missing_keys}" if missing_keys.any?
@@ -33,6 +35,9 @@ module Boxcars
       inputs
     end
 
+    # check that all outputs are present
+    # @param outputs [Array<String>] The output keys.
+    # @raise [RuntimeError] If the outputs are not the same.
     def validate_outputs(outputs:)
       return if outputs.sort == output_keys.sort
 
@@ -44,6 +49,28 @@ module Boxcars
       raise NotImplementedError
     end
 
+    # Apply the boxcar to a list of inputs.
+    # @param input_list [Array<Hash>] The list of inputs.
+    # @return [Array<Boxcars::Boxcar>] The list of outputs.
+    def apply(input_list:)
+      input_list.map { |inputs| new(**inputs) }
+    end
+
+    # Get an answer from the boxcar.
+    # @param args [Array] The positional arguments to pass to the boxcar.
+    # @param kwargs [Hash] The keyword arguments to pass to the boxcar.
+    # you can pass one or the other, but not both.
+    # @return [String] The answer to the question.
+    def run(*args, **kwargs)
+      puts "> Enterning #{name} boxcar#run".colorize(:gray, style: :bold)
+      rv = do_run(*args, **kwargs)
+      puts "< Exiting #{name} boxcar#run".colorize(:gray, style: :bold)
+      rv
+    end
+
+    private
+
+    # Get an answer from the boxcar.
     def do_call(inputs:, return_only_outputs: false)
       inputs = our_inputs(inputs)
       output = nil
@@ -59,22 +86,6 @@ module Boxcars
 
       inputs.merge(output)
     end
-
-    def apply(input_list:)
-      input_list.map { |inputs| new(**inputs) }
-    end
-
-    # Get an answer from the boxcar.
-    # @param question [String] The question to ask the boxcar.
-    # @return [String] The answer to the question.
-    def run(*args, **kwargs)
-      puts "> Enterning #{name} boxcar#run".colorize(:gray, style: :bold)
-      rv = do_run(*args, **kwargs)
-      puts "< Exiting #{name} boxcar#run".colorize(:gray, style: :bold)
-      rv
-    end
-
-    private
 
     def do_run(*args, **kwargs)
       if kwargs.empty?

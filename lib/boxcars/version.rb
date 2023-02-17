@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
 module Boxcars
-  VERSION = "0.1.1"
+  # The current version of the gem.
+  VERSION = "0.1.2"
 end

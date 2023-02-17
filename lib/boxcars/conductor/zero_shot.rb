@@ -4,7 +4,10 @@ module Boxcars
   class ZeroShot < Conductor
     attr_reader :boxcars, :observation_prefix, :engine_prefix
 
+    # default prompt prefix
     PREFIX = "Answer the following questions as best you can. You have access to the following actions:".freeze
+
+    # default prompt instructions
     FORMAT_INSTRUCTIONS = <<~FINPUT.freeze
       Use the following format:
 
@@ -18,6 +21,7 @@ module Boxcars
       Final Answer: the final answer to the original input question
     FINPUT
 
+    # default prompt suffix
     SUFFIX = <<~SINPUT.freeze
       Begin!
 
@@ -25,6 +29,10 @@ module Boxcars
       Thought:%<agent_scratchpad>s
     SINPUT
 
+    # @param boxcars [Array<Boxcars::Boxcar>] The boxcars to run.
+    # @param engine [Boxcars::Engine] The engine to use for this conductor.
+    # @param name [String] The name of the conductor. Defaults to 'Zero Shot'.
+    # @param description [String] The description of the conductor. Defaults to 'Zero Shot Conductor'.
     def initialize(boxcars:, engine:, name: 'Zero Shot', description: 'Zero Shot Conductor')
       @observation_prefix = 'Observation: '
       @engine_prefix = 'Thought:'
@@ -33,16 +41,11 @@ module Boxcars
     end
 
     # Create prompt in the style of the zero shot agent.
-
-    #   Args:
-    #     boxcars: List of boxcars the agent will have access to, used to format the prompt.
-    #     prefix: String to put before the list of boxcars.
-    #     suffix: String to put after the list of boxcars.
-    #     input_variables: List of input variables the final prompt will expect.
-
-    #   Returns:
-    #     A Prompt with the template assembled from the pieces here.
-
+    # @param boxcars [Array<Boxcars::Boxcar>] List of boxcars the agent will have access to, used to format the prompt.
+    # @param prefix [String] String to put before the main prompt.
+    # @param suffix [String] String to put after the main prompt.
+    # @param input_variables [Array<Symbol>] List of input variables the final prompt will expect.
+    # @return [Boxcars::Prompt] A Prompt with the template assembled from the pieces here.
     def self.create_prompt(boxcars:, prefix: PREFIX, suffix: SUFFIX, input_variables: [:input, :agent_scratchpad])
       boxcar_strings = boxcars.map { |boxcar| "#{boxcar.name}: #{boxcar.description}" }.join("\n")
       boxcar_names = boxcars.map(&:name)
@@ -51,9 +54,12 @@ module Boxcars
       Prompt.new(template: template, input_variables: input_variables)
     end
 
+    # the final answer action string
     FINAL_ANSWER_ACTION = "Final Answer:".freeze
 
     # Parse out the action and input from the engine output.
+    # @param engine_output [String] The output from the engine.
+    # @return [Array<String>] The action and input.
     def get_action_and_input(engine_output:)
       # NOTE: if you're specifying a custom prompt for the ZeroShotAgent,
       #   you will need to ensure that it meets the following Regex requirements.
@@ -74,6 +80,9 @@ module Boxcars
       end
     end
 
+    # Extract the boxcar and input from the engine output.
+    # @param text [String] The output from the engine.
+    # @return [Array<Boxcars::Boxcar, String>] The boxcar and input.
     def extract_boxcar_and_input(text)
       get_action_and_input(engine_output: text)
     end

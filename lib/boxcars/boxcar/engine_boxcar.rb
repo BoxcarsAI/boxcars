@@ -3,7 +3,6 @@
 # Boxcars is a framework for running a series of tools to get an answer to a question.
 module Boxcars
   # For Boxcars that use an engine to do their work.
-  # @abstract
   class EngineBoxcar < Boxcars::Boxcar
     attr_accessor :prompt, :engine, :output_key
 
@@ -19,28 +18,19 @@ module Boxcars
       super(name: name, description: description)
     end
 
+    # input keys for the prompt
     def input_keys
       prompt.input_variables
     end
 
+    # output keys
     def output_keys
       [output_key]
     end
 
-    # # Check that all inputs are present.
-    # def validate_inputs(inputs:)
-    #   missing_keys = input_keys - inputs.keys
-    #   raise Boxcars::ArgumentError, "Missing some input keys: #{missing_keys}" if missing_keys.any?
-
-    #   inputs
-    # end
-
-    # def validate_outputs(outputs:)
-    #   return if outputs.sort == output_keys.sort
-
-    #   raise Boxcars::ArgumentError, "Did not get out keys that were expected, got: #{outputs}. Expected: #{output_keys}"
-    # end
-
+    # generate a response from the engine
+    # @param input_list [Array<Hash>] A list of hashes of input values to use for the prompt.
+    # @return [Boxcars::EngineResult] The result from the engine.
     def generate(input_list:)
       stop = input_list[0][:stop]
       prompts = []
@@ -52,6 +42,9 @@ module Boxcars
       engine.generate(prompts: prompts, stop: stop)
     end
 
+    # apply a response from the engine
+    # @param input_list [Array<Hash>] A list of hashes of input values to use for the prompt.
+    # @return [Hash] A hash of the output key and the output value.
     def apply(input_list:)
       response = generate(input_list: input_list)
       response.generations.to_h do |generation|
@@ -59,10 +52,16 @@ module Boxcars
       end
     end
 
+    # predict a response from the engine
+    # @param kwargs [Hash] A hash of input values to use for the prompt.
+    # @return [String] The output value.
     def predict(**kwargs)
       apply(input_list: [kwargs])[output_key]
     end
 
+    # predict a response from the engine and parse it
+    # @param kwargs [Hash] A hash of input values to use for the prompt.
+    # @return [String] The output value.
     def predict_and_parse(**kwargs)
       result = predict(**kwargs)
       if prompt.output_parser
@@ -72,6 +71,9 @@ module Boxcars
       end
     end
 
+    # apply a response from the engine and parse it
+    # @param input_list [Array<Hash>] A list of hashes of input values to use for the prompt.
+    # @return [Array<String>] The output values.
     def apply_and_parse(input_list:)
       result = apply(input_list: input_list)
       if prompt.output_parser
@@ -81,6 +83,8 @@ module Boxcars
       end
     end
 
+    # check that there is exactly one output key
+    # @raise [Boxcars::ArgumentError] if there is not exactly one output key.
     def check_output_keys
       return unless output_keys.length != 1
 
