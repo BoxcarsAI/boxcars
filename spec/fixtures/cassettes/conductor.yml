@@ -1,0 +1,196 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://api.openai.com/v1/completions
+    body:
+      encoding: UTF-8
+      string: '{"prompt":["Answer the following questions as best you can. You have
+        access to the following actions:\n\nSearch: useful for when you need to answer
+        questions about current events.You should ask targeted questions\nCalculator:
+        useful for when you need to answer questions about math\n\nUse the following
+        format:\n\nQuestion: the input question you must answer\nThought: you should
+        always think about what to do\nAction: the action to take, should be one of
+        [Search, Calculator]\nAction Input: the input to the action\nObservation:
+        the result of the action\n... (this Thought/Action/Action Input/Observation
+        sequence can repeat N times)\nThought: I now know the final answer\nFinal
+        Answer: the final answer to the original input question\n\n\nBegin!\n\nQuestion:
+        how many days in a year?\nThought:\n"],"model":"text-davinci-003","temperature":0.7,"max_tokens":256,"stop":["\nObservation:
+        "]}'
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer <openai_access_token>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 17 Feb 2023 19:19:15 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '300'
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - no-cache, must-revalidate
+      Openai-Model:
+      - text-davinci-003
+      Openai-Organization:
+      - user-ri9zw9ahumb1bo9vs73mudbi
+      Openai-Processing-Ms:
+      - '954'
+      Openai-Version:
+      - '2020-10-01'
+      Strict-Transport-Security:
+      - max-age=15724800; includeSubDomains
+      X-Request-Id:
+      - 38efd9e12c5a719bfa859d9315ffb8df
+    body:
+      encoding: UTF-8
+      string: '{"id":"cmpl-6l0YE933THbTruCBO2qqT05HJCO54","object":"text_completion","created":1676661554,"model":"text-davinci-003","choices":[{"text":"Action:
+        Calculator\nAction Input: 365","index":0,"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":178,"completion_tokens":8,"total_tokens":186}}
+
+        '
+  recorded_at: Fri, 17 Feb 2023 19:19:15 GMT
+- request:
+    method: post
+    uri: https://api.openai.com/v1/completions
+    body:
+      encoding: UTF-8
+      string: '{"prompt":["You are GPT-3, and you can''t do math.\nYou can do basic
+        math, and your memorization abilities are impressive, but you can''t do any
+        complex calculations that a human could not do in their head. You also have
+        an annoying tendency to just make up highly specific, but wrong, answers.\nSo
+        we hooked you up to a Ruby 3 kernel, and now you can execute ruby code. If
+        anyone gives you a hard math problem, just use this format and we’ll take
+        care of the rest:\n\nQuestion: ${{Question with hard calculation.}}\n```ruby\n${{Code
+        that prints what you need to know}}\n```\n```output\n${{Output of your code}}\n```\nAnswer:
+        ${{Answer}}\n\nOtherwise, use this simpler format:\n\nQuestion: ${{Question
+        without hard calculation}}\nAnswer: ${{Answer}}\n\nBegin.\n\nQuestion: What
+        is 37593 * 67?\n```ruby\nputs(37593 * 67)\n```\n```output\n2518731\n```\nAnswer:
+        2518731\n\nQuestion: what is 2518731 + 0?\nAnswer: 2518731\n\nQuestion: 365\n"],"model":"text-davinci-003","temperature":0.7,"max_tokens":256,"stop":["```output"]}'
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer <openai_access_token>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 17 Feb 2023 19:19:16 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '274'
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - no-cache, must-revalidate
+      Openai-Model:
+      - text-davinci-003
+      Openai-Organization:
+      - user-ri9zw9ahumb1bo9vs73mudbi
+      Openai-Processing-Ms:
+      - '463'
+      Openai-Version:
+      - '2020-10-01'
+      Strict-Transport-Security:
+      - max-age=15724800; includeSubDomains
+      X-Request-Id:
+      - 6f6b7463a49250a547875a7bb37059b6
+    body:
+      encoding: UTF-8
+      string: '{"id":"cmpl-6l0YFc61hRxUX78HAD0KXcoldcnxg","object":"text_completion","created":1676661555,"model":"text-davinci-003","choices":[{"text":"Answer:
+        365","index":0,"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":261,"completion_tokens":3,"total_tokens":264}}
+
+        '
+  recorded_at: Fri, 17 Feb 2023 19:19:16 GMT
+- request:
+    method: post
+    uri: https://api.openai.com/v1/completions
+    body:
+      encoding: UTF-8
+      string: '{"prompt":["Answer the following questions as best you can. You have
+        access to the following actions:\n\nSearch: useful for when you need to answer
+        questions about current events.You should ask targeted questions\nCalculator:
+        useful for when you need to answer questions about math\n\nUse the following
+        format:\n\nQuestion: the input question you must answer\nThought: you should
+        always think about what to do\nAction: the action to take, should be one of
+        [Search, Calculator]\nAction Input: the input to the action\nObservation:
+        the result of the action\n... (this Thought/Action/Action Input/Observation
+        sequence can repeat N times)\nThought: I now know the final answer\nFinal
+        Answer: the final answer to the original input question\n\n\nBegin!\n\nQuestion:
+        how many days in a year?\nThought:Action: Calculator\nAction Input: 365\nObservation:
+        Answer: 365\nThought:\n"],"model":"text-davinci-003","temperature":0.7,"max_tokens":256,"stop":["\nObservation:
+        "]}'
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer <openai_access_token>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 17 Feb 2023 19:19:17 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '336'
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - no-cache, must-revalidate
+      Openai-Model:
+      - text-davinci-003
+      Openai-Organization:
+      - user-ri9zw9ahumb1bo9vs73mudbi
+      Openai-Processing-Ms:
+      - '1334'
+      Openai-Version:
+      - '2020-10-01'
+      Strict-Transport-Security:
+      - max-age=15724800; includeSubDomains
+      X-Request-Id:
+      - a2ad71e885d46af556ca1eb0f52b812f
+    body:
+      encoding: UTF-8
+      string: '{"id":"cmpl-6l0YGzqRFWUfKNNJLSehyyOF8dJTE","object":"text_completion","created":1676661556,"model":"text-davinci-003","choices":[{"text":"I
+        now know the final answer\nFinal Answer: There are 365 days in a year.","index":0,"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":197,"completion_tokens":18,"total_tokens":215}}
+
+        '
+  recorded_at: Fri, 17 Feb 2023 19:19:17 GMT
+recorded_with: VCR 6.1.0

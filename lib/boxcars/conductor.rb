@@ -2,28 +2,24 @@
 
 module Boxcars
   # @abstract
-  class Conductor
-    attr_reader :engine, :boxcars, :name, :description, :prompt, :engine_boxcar, :return_values
+  class Conductor < EngineBoxcar
+    attr_reader :engine, :boxcars, :name, :description, :prompt, :return_values, :return_intermediate_steps,
+                :max_iterations, :early_stopping_method
 
     # A Conductor will use a engine to run a series of boxcars.
     # @param engine [Boxcars::Engine] The engine to use for this conductor.
     # @param boxcars [Array<Boxcars::Boxcar>] The boxcars to run.
+    # @param prompt [String] The prompt to use.
     # @abstract
-    def initialize(engine:, boxcars:, prompt:, name: nil, description: nil)
-      @engine = engine
+    def initialize(engine: nil, boxcars:, prompt:, **kwargs)
       @boxcars = boxcars
-      @prompt = prompt
       @name = name || self.class.name
-      @description = description
       @return_values = [:output]
-      @engine_boxcar = EngineBoxcar.new(prompt: prompt, engine: engine)
-    end
+      @return_intermediate_steps = kwargs[:return_intermediate_steps] || false
+      @max_iterations = kwargs[:max_iterations]
+      @early_stopping_method = kwargs[:early_stopping_method] || "force"
 
-    # Get an answer from the conductor.
-    # @param question [String] The question to ask the conductor.
-    # @return [String] The answer to the question.
-    def run(question)
-      raise NotImplementedError
+      super(prompt: prompt, engine: engine, name: kwargs[:name], description: kwargs[:description])
     end
 
     # Extract the boxcar name and input from the text.
@@ -52,12 +48,12 @@ module Boxcars
     # @param full_inputs [Hash] The inputs to the engine.
     # @return [Boxcars::Action] The next action.
     def get_next_action(full_inputs)
-      full_output = engine_boxcar.predict(**full_inputs)
+      full_output = predict(**full_inputs)
       parsed_output = extract_boxcar_and_input(full_output)
       while parsed_output.nil?
         full_output = _fix_text(full_output)
         full_inputs[:agent_scratchpad] += full_output
-        output = engine_boxcar.predict(**full_inputs)
+        output = predict(**full_inputs)
         full_output += output
         parsed_output = extract_boxcar_and_input(full_output)
       end
@@ -95,12 +91,38 @@ module Boxcars
       list
     end
 
-    # Check that all inputs are present.
-    # @param inputs [Hash] The inputs to check.
-    # @raise [RuntimeError] If any inputs are missing.
-    def validate_inputs(inputs:)
-      missing_keys = input_keys - inputs.keys
-      raise "Missing some input keys: #{missing_keys}" if missing_keys.any?
+    # the output keys
+    def output_keys
+      return return_values + ["intermediate_steps"] if return_intermediate_steps
+
+      return_values
+    end
+
+    # should we continue to run?
+    # @param iterations [Integer] The number of iterations.
+    # @return [Boolean] Whether to continue.
+    def should_continue?(iterations)
+      return true if max_iterations.nil?
+
+      iterations < max_iterations
+    end
+
+    # handler before returning
+    # @param output [Boxcars::ConductorFinish] The output.
+    # @param intermediate_steps [Array<Hash>] The intermediate steps.
+    # @return [Hash] The final output.
+    def pre_return(output, intermediate_steps)
+      puts output.log.colorize(:yellow)
+      final_output = output.return_values
+      final_output["intermediate_steps"] = intermediate_steps if return_intermediate_steps
+      final_output
+    end
+
+    # the prefix for the engine
+    # @param return_direct [Boolean] Whether to return directly.
+    # @return [String] The prefix.
+    def engine_prefix(return_direct)
+      return_direct ? "" : engine_prefix
     end
 
     # validate the prompt
@@ -142,7 +164,7 @@ module Boxcars
         thoughts += "\n\nI now need to return a final answer based on the previous steps:"
         new_inputs = { agent_scratchpad: thoughts, stop: _stop }
         full_inputs = kwargs.merge(new_inputs)
-        full_output = engine_boxcar.predict(**full_inputs)
+        full_output = predict(**full_inputs)
         parsed_output = extract_boxcar_and_input(full_output)
         if parsed_output.nil?
           ConductorFinish({ output: full_output }, full_output)
@@ -158,10 +180,45 @@ module Boxcars
         raise "early_stopping_method should be one of `force` or `generate`, got #{early_stopping_method}"
       end
     end
+
+    # execute the conductor train
+    # @param inputs [Hash] The inputs.
+    # @return [Hash] The output.
+    def call(inputs:)
+      prepare_for_new_call
+      name_to_boxcar_map = boxcars.to_h { |boxcar| [boxcar.name, boxcar] }
+      intermediate_steps = []
+      iterations = 0
+      while should_continue?(iterations)
+        output = plan(intermediate_steps, **inputs)
+        return pre_return(output, intermediate_steps) if output.is_a?(ConductorFinish)
+
+        if (boxcar = name_to_boxcar_map[output.boxcar])
+          begin
+            observation = boxcar.run(output.boxcar_input)
+            return_direct = boxcar.return_direct
+          rescue StandardError => e
+            puts "Error in #{boxcar.name} boxcar#call: #{e}".colorize(:red)
+            raise e
+          end
+        else
+          observation = "#{output.boxcar} is not a valid boxcar, try another one."
+          return_direct = false
+        end
+        puts "#Observation: #{observation}".colorize(:green)
+        intermediate_steps.append([output, observation])
+        if return_direct
+          output = ConductorFinish.new({ return_values[0] => observation }, "")
+          return pre_return(output, intermediate_steps)
+        end
+        iterations += 1
+      end
+      output = return_stopped_response(early_stopping_method, intermediate_steps, **inputs)
+      pre_return(output, intermediate_steps)
+    end
   end
 end
 
 require "boxcars/conductor/conductor_action"
 require "boxcars/conductor/conductor_finish"
-require "boxcars/conductor/conductor_executer"
 require "boxcars/conductor/zero_shot"

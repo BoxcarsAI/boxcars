@@ -36,12 +36,13 @@ module Boxcars
   # Configuration contains gem settings
   class Configuration
     attr_writer :openai_access_token, :serpapi_api_key
-    attr_accessor :organization_id, :logger
+    attr_accessor :organization_id, :logger, :log_prompts
 
     def initialize
       @organization_id = nil
       @logger = Rails.logger if defined?(Rails)
       @logger ||= Logger.new($stdout)
+      @log_prompts = false
     end
 
     # @return [String] The OpenAI Access Token either from arg or env.
@@ -92,6 +93,16 @@ module Boxcars
   # Configure the gem.
   def self.configure
     yield(configuration)
+  end
+
+  # Return the default Conductor class.
+  def self.default_conductor
+    Boxcars::ZeroShot
+  end
+
+  # Return the default Engine class.
+  def self.default_engine
+    Boxcars::Openai
   end
 end
 

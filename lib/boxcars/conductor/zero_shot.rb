@@ -33,7 +33,7 @@ module Boxcars
     # @param engine [Boxcars::Engine] The engine to use for this conductor.
     # @param name [String] The name of the conductor. Defaults to 'Zero Shot'.
     # @param description [String] The description of the conductor. Defaults to 'Zero Shot Conductor'.
-    def initialize(boxcars:, engine:, name: 'Zero Shot', description: 'Zero Shot Conductor')
+    def initialize(boxcars:, engine: nil, name: 'Zero Shot', description: 'Zero Shot Conductor')
       @observation_prefix = 'Observation: '
       @engine_prefix = 'Thought:'
       prompt = self.class.create_prompt(boxcars: boxcars)
