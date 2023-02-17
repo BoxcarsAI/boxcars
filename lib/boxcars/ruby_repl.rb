@@ -3,6 +3,8 @@
 module Boxcars
   # used by Boxcars to run ruby code
   class RubyREPL
+    # Execute ruby code
+    # @param code [String] The code to run
     def call(code:)
       puts "RubyREPL: #{code}".colorize(:red)
       output = ""
@@ -15,6 +17,8 @@ module Boxcars
       output
     end
 
+    # Execute ruby code
+    # @param command [String] The code to run
     def run(command)
       call(code: command)
     end

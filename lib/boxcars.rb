@@ -6,12 +6,21 @@ require 'logger'
 module Boxcars
   # Error class for all Boxcars errors.
   class Error < StandardError; end
+
+  # Error class for all Boxcars configuration errors.
   class ConfigurationError < Error; end
+
+  # Error class for all Boxcars argument errors.
   class ArgumentError < Error; end
+
+  # Error class for all Boxcars value errors.
   class ValueError < Error; end
 
   # simple string colorization
   class ::String
+    # colorize a string
+    # @param color [Symbol] The color to use.
+    # @param options [Hash] The options to use.
     def colorize(color, options = {})
       background = options[:background] || options[:bg] || false
       style = options[:style]

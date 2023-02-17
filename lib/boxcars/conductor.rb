@@ -27,13 +27,18 @@ module Boxcars
     end
 
     # Extract the boxcar name and input from the text.
+    # @param text [String] The text to extract from.
     def extract_boxcar_and_input(text)
     end
 
+    # the stop strings list
     def stop
       ["\n#{observation_prefix}"]
     end
 
+    # build the scratchpad for the engine
+    # @param intermediate_steps [Array] The intermediate steps to build the scratchpad from.
+    # @return [String] The scratchpad.
     def construct_scratchpad(intermediate_steps)
       thoughts = ""
       intermediate_steps.each do |action, observation|
@@ -43,6 +48,9 @@ module Boxcars
       thoughts
     end
 
+    # determine the next action
+    # @param full_inputs [Hash] The inputs to the engine.
+    # @return [Boxcars::Action] The next action.
     def get_next_action(full_inputs)
       full_output = engine_boxcar.predict(**full_inputs)
       parsed_output = extract_boxcar_and_input(full_output)
@@ -79,20 +87,27 @@ module Boxcars
       "Final Answer"
     end
 
+    # the input keys
+    # @return [Array<Symbol>] The input keys.
     def input_keys
-      # Return the input keys
       list = prompt.input_variables
       list.delete(:agent_scratchpad)
       list
     end
 
     # Check that all inputs are present.
+    # @param inputs [Hash] The inputs to check.
+    # @raise [RuntimeError] If any inputs are missing.
     def validate_inputs(inputs:)
       missing_keys = input_keys - inputs.keys
       raise "Missing some input keys: #{missing_keys}" if missing_keys.any?
     end
 
-    def validate_prompt(values: Dict)
+    # validate the prompt
+    # @param values [Hash] The values to validate.
+    # @return [Hash] The validated values.
+    # @raise [RuntimeError] If the prompt is invalid.
+    def validate_prompt(values:)
       prompt = values["engine_chain"].prompt
       unless prompt.input_variables.include?(:agent_scratchpad)
         logger.warning("`agent_scratchpad` should be a variable in prompt.input_variables. Not found, adding it at the end.")
@@ -109,6 +124,11 @@ module Boxcars
       values
     end
 
+    # get the stopped response
+    # @param early_stopping_method [String] The early stopping method.
+    # @param intermediate_steps [Array] The intermediate steps.
+    # @param kwargs [Hash] extra keword arguments.
+    # @return [Boxcars::Action] The action to take.
     def return_stopped_response(early_stopping_method, intermediate_steps, **kwargs)
       case early_stopping_method
       when "force"

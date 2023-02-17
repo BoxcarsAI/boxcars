@@ -4,16 +4,16 @@
 module Boxcars
   # A Boxcar that interprets a prompt and executes SQL code to get answers
   class SQL < EngineBoxcar
+    # the description of this engine boxcar
     SQLDESC = "useful for when you need to query a SQL database"
     attr_accessor :connection, :input_key
 
     # @param connection [ActiveRecord::Connection] The SQL connection to use for this boxcar.
-    # @param prompt [Boxcars::Prompt] The prompt to use for this boxcar.
-    # @param name [String] The name of the boxcar. Defaults to classname.
-    # @param description [String] A description of the boxcar.
     # @param engine [Boxcars::Engine] The engine to user for this boxcar. Can be inherited from a conductor if nil.
     # @param input_key [Symbol] The key to use for the input. Defaults to :question.
     # @param output_key [Symbol] The key to use for the output. Defaults to :answer.
+    # @param kwargs [Hash] Any other keyword arguments to pass to the parent class. This can include
+    #   :name, :description and :prompt
     def initialize(connection:, engine: nil, input_key: :question, output_key: :answer, **kwargs)
       @connection = connection
       @input_key = input_key
@@ -25,14 +25,21 @@ module Boxcars
             output_key: output_key)
     end
 
+    # the input keys for the prompt
+    # @return [Array<Symbol>] The input keys for the prompt.
     def input_keys
       [input_key]
     end
 
+    # the output keys for the prompt
+    # @return [Array<Symbol>] The output keys for the prompt.
     def output_keys
       [output_key]
     end
 
+    # call the boxcar
+    # @param inputs [Hash] The inputs to the boxcar.
+    # @return [Hash] The outputs from the boxcar.
     def call(inputs:)
       t = predict(question: inputs[input_key], dialect: dialect, top_k: 5, table_info: schema, stop: ["Answer:"]).strip
       answer = get_answer(t)

@@ -21,10 +21,15 @@ module Boxcars
       super(prompt: conductor.prompt, engine: conductor.engine, name: conductor.name, description: conductor.description)
     end
 
+    # is this the same list of boxcars?
+    # @param boxcar_names [Array<String>] The boxcar names to compare.
+    # @return [Boolean] Whether the boxcars are the same.
     def same_boxcars?(boxcar_names)
       conductor.allowed_boxcars.sort == boxcar_names
     end
 
+    # validate the boxcars
+    # @raise [RuntimeError] If the boxcars are not the same.
     def validate_boxcars
       boxcar_names = boxcars.map(&:name).sort
       return if same_boxcars?(boxcar_names)
@@ -32,16 +37,21 @@ module Boxcars
       raise "Allowed boxcars (#{conductor.allowed_boxcars}) different than provided boxcars (#{boxcar_names})"
     end
 
+    # the input keys
     def input_keys
       conductor.input_keys
     end
 
+    # the output keys
     def output_keys
       return conductor.return_values + ["intermediate_steps"] if return_intermediate_steps
 
       conductor.return_values
     end
 
+    # should we continue to run?
+    # @param iterations [Integer] The number of iterations.
+    # @return [Boolean] Whether to continue.
     def should_continue?(iterations)
       return true if max_iterations.nil?
 
@@ -49,6 +59,9 @@ module Boxcars
     end
 
     # handler before returning
+    # @param output [Boxcars::ConductorFinish] The output.
+    # @param intermediate_steps [Array<Hash>] The intermediate steps.
+    # @return [Hash] The final output.
     def pre_return(output, intermediate_steps)
       puts output.log.colorize(:yellow)
       final_output = output.return_values
@@ -56,10 +69,16 @@ module Boxcars
       final_output
     end
 
+    # the prefix for the engine
+    # @param return_direct [Boolean] Whether to return directly.
+    # @return [String] The prefix.
     def engine_prefix(return_direct)
       return_direct ? "" : conductor.engine_prefix
     end
 
+    # call the conductor
+    # @param inputs [Hash] The inputs.
+    # @return [Hash] The output.
     def call(inputs:)
       conductor.prepare_for_new_call
       name_to_boxcar_map = boxcars.to_h { |boxcar| [boxcar.name, boxcar] }
