@@ -1,7 +1,7 @@
 # Agent for the MRKL chain
 module Boxcars
-  # A Conductor using the zero-shot react method.
-  class ZeroShot < Conductor
+  # A Train using the zero-shot react method.
+  class ZeroShot < Train
     attr_reader :boxcars, :observation_prefix, :engine_prefix
 
     # default prompt prefix
@@ -30,10 +30,10 @@ module Boxcars
     SINPUT
 
     # @param boxcars [Array<Boxcars::Boxcar>] The boxcars to run.
-    # @param engine [Boxcars::Engine] The engine to use for this conductor.
-    # @param name [String] The name of the conductor. Defaults to 'Zero Shot'.
-    # @param description [String] The description of the conductor. Defaults to 'Zero Shot Conductor'.
-    def initialize(boxcars:, engine: nil, name: 'Zero Shot', description: 'Zero Shot Conductor')
+    # @param engine [Boxcars::Engine] The engine to use for this train.
+    # @param name [String] The name of the train. Defaults to 'Zero Shot'.
+    # @param description [String] The description of the train. Defaults to 'Zero Shot Train'.
+    def initialize(boxcars:, engine: nil, name: 'Zero Shot', description: 'Zero Shot Train')
       @observation_prefix = 'Observation: '
       @engine_prefix = 'Thought:'
       prompt = self.class.create_prompt(boxcars: boxcars)

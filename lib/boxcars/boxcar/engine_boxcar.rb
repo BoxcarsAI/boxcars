@@ -10,7 +10,7 @@ module Boxcars
     # @param prompt [Boxcars::Prompt] The prompt to use for this boxcar with sane defaults.
     # @param name [String] The name of the boxcar. Defaults to classname.
     # @param description [String] A description of the boxcar.
-    # @param engine [Boxcars::Engine] The engine to user for this boxcar. Can be inherited from a conductor if nil.
+    # @param engine [Boxcars::Engine] The engine to user for this boxcar. Can be inherited from a train if nil.
     def initialize(prompt:, engine: nil, output_key: "text", name: nil, description: nil)
       @prompt = prompt
       @engine = engine || Boxcars.default_engine.new

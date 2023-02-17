@@ -2,12 +2,12 @@
 
 module Boxcars
   # @abstract
-  class Conductor < EngineBoxcar
+  class Train < EngineBoxcar
     attr_reader :engine, :boxcars, :name, :description, :prompt, :return_values, :return_intermediate_steps,
                 :max_iterations, :early_stopping_method
 
-    # A Conductor will use a engine to run a series of boxcars.
-    # @param engine [Boxcars::Engine] The engine to use for this conductor.
+    # A Train will use a engine to run a series of boxcars.
+    # @param engine [Boxcars::Engine] The engine to use for this train.
     # @param boxcars [Array<Boxcars::Boxcar>] The boxcars to run.
     # @param prompt [String] The prompt to use.
     # @abstract
@@ -57,7 +57,7 @@ module Boxcars
         full_output += output
         parsed_output = extract_boxcar_and_input(full_output)
       end
-      ConductorAction.new(boxcar: parsed_output[0], boxcar_input: parsed_output[1], log: full_output)
+      TrainAction.new(boxcar: parsed_output[0], boxcar_input: parsed_output[1], log: full_output)
     end
 
     # Given input, decided what to do.
@@ -69,7 +69,7 @@ module Boxcars
       new_inputs = { agent_scratchpad: thoughts, stop: stop }
       full_inputs = kwargs.merge(new_inputs)
       action = get_next_action(full_inputs)
-      return ConductorFinish.new({ output: action.boxcar_input }, log: action.log) if action.boxcar == finish_boxcar_name
+      return TrainFinish.new({ output: action.boxcar_input }, log: action.log) if action.boxcar == finish_boxcar_name
 
       action
     end
@@ -108,7 +108,7 @@ module Boxcars
     end
 
     # handler before returning
-    # @param output [Boxcars::ConductorFinish] The output.
+    # @param output [Boxcars::TrainFinish] The output.
     # @param intermediate_steps [Array<Hash>] The intermediate steps.
     # @return [Hash] The final output.
     def pre_return(output, intermediate_steps)
@@ -154,7 +154,7 @@ module Boxcars
     def return_stopped_response(early_stopping_method, intermediate_steps, **kwargs)
       case early_stopping_method
       when "force"
-        ConductorFinish({ output: "Agent stopped due to max iterations." }, "")
+        TrainFinish({ output: "Agent stopped due to max iterations." }, "")
       when "generate"
         thoughts = ""
         intermediate_steps.each do |action, observation|
@@ -167,13 +167,13 @@ module Boxcars
         full_output = predict(**full_inputs)
         parsed_output = extract_boxcar_and_input(full_output)
         if parsed_output.nil?
-          ConductorFinish({ output: full_output }, full_output)
+          TrainFinish({ output: full_output }, full_output)
         else
           boxcar, boxcar_input = parsed_output
           if boxcar == finish_boxcar_name
-            ConductorFinish({ output: boxcar_input }, full_output)
+            TrainFinish({ output: boxcar_input }, full_output)
           else
-            ConductorFinish({ output: full_output }, full_output)
+            TrainFinish({ output: full_output }, full_output)
           end
         end
       else
@@ -181,7 +181,7 @@ module Boxcars
       end
     end
 
-    # execute the conductor train
+    # execute the train train
     # @param inputs [Hash] The inputs.
     # @return [Hash] The output.
     def call(inputs:)
@@ -191,7 +191,7 @@ module Boxcars
       iterations = 0
       while should_continue?(iterations)
         output = plan(intermediate_steps, **inputs)
-        return pre_return(output, intermediate_steps) if output.is_a?(ConductorFinish)
+        return pre_return(output, intermediate_steps) if output.is_a?(TrainFinish)
 
         if (boxcar = name_to_boxcar_map[output.boxcar])
           begin
@@ -208,7 +208,7 @@ module Boxcars
         puts "#Observation: #{observation}".colorize(:green)
         intermediate_steps.append([output, observation])
         if return_direct
-          output = ConductorFinish.new({ return_values[0] => observation }, "")
+          output = TrainFinish.new({ return_values[0] => observation }, "")
           return pre_return(output, intermediate_steps)
         end
         iterations += 1
@@ -219,6 +219,6 @@ module Boxcars
   end
 end
 
-require "boxcars/conductor/conductor_action"
-require "boxcars/conductor/conductor_finish"
-require "boxcars/conductor/zero_shot"
+require "boxcars/train/train_action"
+require "boxcars/train/train_finish"
+require "boxcars/train/zero_shot"

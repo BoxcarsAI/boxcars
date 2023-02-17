@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module Boxcars
-  # Conductor's action to take.
-  class ConductorAction
+  # Train's action to take.
+  class TrainAction
     attr_accessor :boxcar, :boxcar_input, :log
 
     def initialize(boxcar: nil, boxcar_input: nil, log: nil)

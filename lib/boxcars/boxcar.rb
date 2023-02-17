@@ -62,9 +62,9 @@ module Boxcars
     # you can pass one or the other, but not both.
     # @return [String] The answer to the question.
     def run(*args, **kwargs)
-      puts "> Enterning #{name} boxcar#run".colorize(:gray, style: :bold)
+      puts "> Entering #{name}#run".colorize(:gray, style: :bold)
       rv = do_run(*args, **kwargs)
-      puts "< Exiting #{name} boxcar#run".colorize(:gray, style: :bold)
+      puts "< Exiting #{name}#run".colorize(:gray, style: :bold)
       rv
     end
 

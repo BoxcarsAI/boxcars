@@ -95,8 +95,8 @@ module Boxcars
     yield(configuration)
   end
 
-  # Return the default Conductor class.
-  def self.default_conductor
+  # Return the default Train class.
+  def self.default_train
     Boxcars::ZeroShot
   end
 
@@ -112,4 +112,4 @@ require "boxcars/generation"
 require "boxcars/ruby_repl"
 require "boxcars/engine"
 require "boxcars/boxcar"
-require "boxcars/conductor"
+require "boxcars/train"

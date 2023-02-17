@@ -8,7 +8,7 @@ module Boxcars
     CALCDESC = "useful for when you need to answer questions about math"
     attr_accessor :input_key
 
-    # @param engine [Boxcars::Engine] The engine to user for this boxcar. Can be inherited from a conductor if nil.
+    # @param engine [Boxcars::Engine] The engine to user for this boxcar. Can be inherited from a train if nil.
     # @param prompt [Boxcars::Prompt] The prompt to use for this boxcar. Defaults to built-in prompt.
     # @param input_key [Symbol] The key to use for the input. Defaults to :question.
     # @param output_key [Symbol] The key to use for the output. Defaults to :answer.

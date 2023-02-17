@@ -8,8 +8,8 @@ The popular python library langchain is a precursor to this work, but we wanted 
 All of these concepts are in a module named Boxcars:
 - Prompt: a prompt is used by an Engine to generate text results.
 - Engine: an entity that generates text from a Prompt.
-- Boxcar: an encapsulation that does one thing (search, math, SQL, etc) and a many use an Engine to get their work accomplished.
-- Conductor: given a list of Boxcars and an Engine, an answer if found by breaking the promlem into peices for an indvidual Boxcar to solve. This is all joined back together to yield a final result. There is currently only one implementation - ZeroShot. You can construct it directly, or just use `Boxcars::default_conductor`
+- Boxcar: an encapsulation that does one thing (search, math, SQL, etc) and a many use an Engine to get their work accomplished.cc
+- Train: given a list of Boxcars and an Engine, an answer if found by breaking the promlem into peices for an indvidual Boxcar to solve. This is all joined back together to yield a final result. There is currently only one implementation - ZeroShot. You can construct it directly, or just use `Boxcars::default_train`
 
 ## Installation
 
@@ -47,13 +47,13 @@ puts calc.run "what is pi to the forth power divided by 22.1?"
 ```
 This segment above (try it by pasting into an `irb` session)
 ```text
-> Enterning Calculator boxcar#run
+> Entering Calculator#run
 what is pi to the forth power divided by 22.1?
 RubyREPL: puts(Math::PI**4 / 22.1)
 Answer: 4.407651178009159
 
 4.407651178009159
-< Exiting Calculator boxcar#run
+< Exiting Calculator#run
 4.407651178009159
 ```
 
@@ -72,29 +72,29 @@ Here is what we have so far, but please put up a PR with your new ideas.
 
 ### Run a list of Boxcars
 ```ruby
-# run a Conductor for a calculator, and search using default Engine
+# run a Train for a calculator, and search using default Engine
 boxcars = [Boxcars::Calculator.new, Boxcars::Serp.new]
-cond = Boxcars.default_conductor.new(boxcars: boxcars)
-puts cond.run "What is pi times the square root of the average temperature in Austin TX in January?"
+train = Boxcars.default_train.new(boxcars: boxcars)
+puts train.run "What is pi times the square root of the average temperature in Austin TX in January?"
 ```
 This outputs:
 ```text
-> Enterning Zero Shot boxcar#run
+> Entering Zero Shot#run
 What is pi times the square root of the average temperature in Austin TX in January?
 Question: Average temperature in Austin TX in January
 Answer: increase from 62°F to 64°F
 #Observation: increase from 62°F to 64°F
-> Enterning Calculator boxcar#run
+> Entering Calculator#run
 64°F x pi
 RubyREPL: puts (64 * Math::PI).round(2)
 Answer: 201.06
 
 201.06
-< Exiting Calculator boxcar#run
+< Exiting Calculator#run
 #Observation: 201.06
 I now know the final answer
 Final Answer: 201.06
-< Exiting Zero Shot boxcar#run
+< Exiting Zero Shot#run
 201.06
 ```
 

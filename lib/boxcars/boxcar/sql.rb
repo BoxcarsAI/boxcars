@@ -9,7 +9,7 @@ module Boxcars
     attr_accessor :connection, :input_key
 
     # @param connection [ActiveRecord::Connection] The SQL connection to use for this boxcar.
-    # @param engine [Boxcars::Engine] The engine to user for this boxcar. Can be inherited from a conductor if nil.
+    # @param engine [Boxcars::Engine] The engine to user for this boxcar. Can be inherited from a train if nil.
     # @param input_key [Symbol] The key to use for the input. Defaults to :question.
     # @param output_key [Symbol] The key to use for the output. Defaults to :answer.
     # @param kwargs [Hash] Any other keyword arguments to pass to the parent class. This can include

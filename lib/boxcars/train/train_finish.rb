@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module Boxcars
-  # Conductor's return value
-  class ConductorFinish
+  # Train's return value
+  class TrainFinish
     attr_accessor :return_values, :log
 
     def initialize(return_values, log:)

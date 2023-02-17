@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.email = ["hi@boxcars.ai"]
 
   spec.summary = "Boxcars provide an API to connect together Boxcars and then conduct them. Inspired by python langchain."
-  spec.description = "You simply give a number of boxcars to a conductor, and it does the magic."
+  spec.description = "You simply give a number of boxcars to a train, and it does the magic."
   spec.homepage = "https://github.com/BoxcarsAI/boxcars"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 2.6.0"
