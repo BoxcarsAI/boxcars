@@ -1,12 +1,14 @@
 # Changelog
 
-## [Unreleased](https://github.com/BoxcarsAI/boxcars/tree/HEAD)
+## [v0.1.3](https://github.com/BoxcarsAI/boxcars/tree/v0.1.3) (2023-02-17)
 
-[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.1.2...HEAD)
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.1.2...v0.1.3)
 
 **Closed issues:**
 
+- generate changelog automatically [\#12](https://github.com/BoxcarsAI/boxcars/issues/12)
 - Make sure the yard docs are up to date and have coverage [\#7](https://github.com/BoxcarsAI/boxcars/issues/7)
+- Name changes and code movement. [\#6](https://github.com/BoxcarsAI/boxcars/issues/6)
 - Specs need environment variables to be set to run green [\#4](https://github.com/BoxcarsAI/boxcars/issues/4)
 
 **Merged pull requests:**
