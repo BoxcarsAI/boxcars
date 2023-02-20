@@ -116,5 +116,5 @@ end
 
 require "boxcars/boxcar/engine_boxcar"
 require "boxcars/boxcar/calculator"
-require "boxcars/boxcar/serp"
+require "boxcars/boxcar/google_search"
 require "boxcars/boxcar/sql"

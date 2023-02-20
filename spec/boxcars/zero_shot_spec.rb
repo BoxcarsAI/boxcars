@@ -2,7 +2,7 @@
 
 RSpec.describe Boxcars::ZeroShot do
   let(:engine) { Boxcars::Openai.new }
-  let(:search) { Boxcars::Serp.new }
+  let(:search) { Boxcars::GoogleSearch.new }
   let(:calculator) { Boxcars::Calculator.new(engine: engine) }
   let(:train) { described_class.new(engine: engine, boxcars: [search, calculator]) }
 
