@@ -36,7 +36,7 @@ module Boxcars
   # Configuration contains gem settings
   class Configuration
     attr_writer :openai_access_token, :serpapi_api_key
-    attr_accessor :organization_id, :logger, :log_prompts
+    attr_accessor :organization_id, :logger, :log_prompts, :default_train, :default_engine
 
     def initialize
       @organization_id = nil
@@ -96,13 +96,13 @@ module Boxcars
   end
 
   # Return the default Train class.
-  def self.default_train
-    Boxcars::ZeroShot
+  def self.train
+    configuration.default_train || Boxcars::ZeroShot
   end
 
   # Return the default Engine class.
-  def self.default_engine
-    Boxcars::Openai
+  def self.engine
+    configuration.default_engine || Boxcars::Openai
   end
 end
 

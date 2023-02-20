@@ -11,16 +11,16 @@
   <a href="https://github.com/BoxcarsAI/boxcars/blob/main/LICENSE.txt"><img src="https://img.shields.io/badge/license-MIT-informational" alt="License"></a>
 </p>
 
-Boxcars is a gem that enables you to create new systems with composability, using various systems such as OpenAI, Search, SQL, and more.
+Boxcars is a gem that enables you to create new systems with AI composability, using various concepts such as OpenAI, Search, SQL, Rails Active Record and more (including your concepts).
 
 This work was inspired by the popular Python library Langchain. However, we wanted to give it a Ruby spin and make it more user-friendly for beginners to get started.
 
 ## Concepts
 All of these concepts are in a module named Boxcars:
-- Prompt: A prompt is used by an Engine to generate text results.
-- Engine: An Engine is an entity that generates text from a Prompt. OpenAI's LLM is the default Engine if no other is specified.
-- Boxcar: A Boxcar is an encapsulation that performs a single task (such as search, math, or SQL) and can use an Engine to complete that task.
-- Train: Given a list of Boxcars and an Engine, Train breaks down a problem into pieces for individual Boxcars to solve. The individual results are then combined until a final answer is found. ZeroShot is the only current implementation of Train, and you can either construct it directly or use `Boxcars::default_train` when you want to build a Train.
+- Prompt: used by an Engine to generate text results.
+- Engine: an entity that generates text from a Prompt. OpenAI's LLM text generatory is the default Engine if no other is specified.
+- Boxcar: an encapsulation of a concept that performs something of interest (such as search, math, or SQL). A can use an Engine to do its work.
+- Train: Given a list of Boxcars and an optionally an Engine, a Train breaks down a problem into pieces for individual Boxcars to solve. The individual results are then combined until a final answer is found. ZeroShot is the only current implementation of Train, and you can either construct it directly or use `Boxcars::train` when you want to build a Train.
 
 ## Installation
 
@@ -90,7 +90,7 @@ Here is what we have so far, but please put up a PR with your new ideas.
 ```ruby
 # run a Train for a calculator, and search using default Engine
 boxcars = [Boxcars::Calculator.new, Boxcars::Serp.new]
-train = Boxcars.default_train.new(boxcars: boxcars)
+train = Boxcars.train.new(boxcars: boxcars)
 puts train.run "What is pi times the square root of the average temperature in Austin TX in January?"
 ```
 Produces:
