@@ -14,8 +14,8 @@ module Boxcars
     # @param output_key [Symbol] The key to use for the output. Defaults to :answer.
     # @param kwargs [Hash] Any other keyword arguments to pass to the parent class. This can include
     #   :name, :description and :prompt
-    def initialize(connection:, engine: nil, input_key: :question, output_key: :answer, **kwargs)
-      @connection = connection
+    def initialize(connection: nil, engine: nil, input_key: :question, output_key: :answer, **kwargs)
+      @connection = connection || ::ActiveRecord::Base.connection
       @input_key = input_key
       the_prompt = kwargs[prompt] || my_prompt
       super(name: kwargs[:name] || "SQLdatabase",
