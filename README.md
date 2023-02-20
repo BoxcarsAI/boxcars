@@ -1,4 +1,15 @@
-# Boxcars
+<h2 align="center">Boxcars</h2>
+
+<h4 align="center">
+  <a href="https://www.boxcars.ai">Website</a> |
+  <a href="https://www.boxcars.ai/roadmap">Roadmap</a> |
+  <a href="https://www.boxcars.ai/blog">Blog</a> |
+  <a href="https://www.boxcars.ai/en/introduction/">Documentation</a> 
+</h4>
+
+<p align="center">
+  <a href="https://github.com/BoxcarsAI/boxcars/blob/main/LICENSE.txt"><img src="https://img.shields.io/badge/license-MIT-informational" alt="License"></a>
+</p>
 
 Boxcars is a gem that enables you to create new systems with composability, using various systems such as OpenAI, Search, SQL, and more.
 
