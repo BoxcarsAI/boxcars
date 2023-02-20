@@ -13,7 +13,7 @@ module Boxcars
     # @param engine [Boxcars::Engine] The engine to user for this boxcar. Can be inherited from a train if nil.
     def initialize(prompt:, engine: nil, output_key: "text", name: nil, description: nil)
       @prompt = prompt
-      @engine = engine || Boxcars.default_engine.new
+      @engine = engine || Boxcars.engine.new
       @output_key = output_key
       super(name: name, description: description)
     end
