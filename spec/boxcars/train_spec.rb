@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe Boxcars::Train do
-  let(:search) { Boxcars::Serp.new }
+  let(:search) { Boxcars::GoogleSearch.new }
   let(:calculator) { Boxcars::Calculator.new }
   let(:train) { Boxcars.default_train.new(boxcars: [search, calculator]) }
 

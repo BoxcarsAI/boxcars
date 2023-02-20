@@ -40,7 +40,7 @@ Or install it yourself as:
 
 ## Usage
 
-We will be adding more examples soon, but here are a couple to get you started. First, you'll need to set up your environment variables for OpenAI and Serp (OPENAI_ACCESS_TOKEN, SERPAPI_API_KEY). If you prefer not to set these variables in your environment, you can pass them directly into the API.
+We will be adding more examples soon, but here are a couple to get you started. First, you'll need to set up your environment variables for OpenAI and Google SERP (OPENAI_ACCESS_TOKEN, SERPAPI_API_KEY). If you prefer not to set these variables in your environment, you can pass them directly into the API.
 
 In the examples below, we added one rubygem to load the environment at the first line, but depending on what you want, you might not need this.
 ```ruby

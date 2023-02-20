@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Boxcars::Serp do
+RSpec.describe Boxcars::GoogleSearch do
   context "without a serpapi api key" do
     it "raises an error" do
       expect do

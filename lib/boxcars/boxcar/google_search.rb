@@ -2,8 +2,9 @@
 
 require 'google_search_results'
 module Boxcars
-  # A Boxcar that uses the Google SerpAPI to get answers to questions.
-  class Serp < Boxcar
+  # A Boxcar that uses the Google SERP API to get answers to questions.
+  # It looks through SERP (search engine results page) results to find the answer.
+  class GoogleSearch < Boxcar
     # the description of this boxcar
     SERPDESC = "useful for when you need to answer questions about current events." \
                "You should ask targeted questions"
@@ -15,14 +16,14 @@ module Boxcars
     def initialize(name: "Search", description: SERPDESC, serpapi_api_key: "not set")
       super(name: name, description: description)
       api_key = Boxcars.configuration.serpapi_api_key(serpapi_api_key: serpapi_api_key)
-      GoogleSearch.api_key = api_key
+      ::GoogleSearch.api_key = api_key
     end
 
     # Get an answer from Google using the SerpAPI.
     # @param question [String] The question to ask Google.
     # @return [String] The answer to the question.
     def run(question)
-      search = GoogleSearch.new(q: question)
+      search = ::GoogleSearch.new(q: question)
       rv = find_answer(search.get_hash)
       puts "Question: #{question}"
       puts "Answer: #{rv}"
@@ -33,7 +34,7 @@ module Boxcars
     # @param question [String] The question to ask Google.
     # @return [String] The location found.
     def get_location(question)
-      search = GoogleSearch.new(q: question, limit: 3)
+      search = ::GoogleSearch.new(q: question, limit: 3)
       rv = search.get_location
       puts "Question: #{question}"
       puts "Answer: #{rv}"
