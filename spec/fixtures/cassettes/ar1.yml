@@ -8,21 +8,21 @@ http_interactions:
       string: '{"prompt":["Given an input question, first create a syntactically correct
         Rails Active Record code to run,\nthen look at the results of the code and
         return the answer. Unless the user specifies\nin her question a specific number
-        of examples she wishes to obtain, always limit your code\nto at most 5 results
-        using a LIMIT clause. You can order the results by a relevant attribute\nto
-        return the most interesting data examples.\n\nNever query for all the columns
-        from a specific model, only ask for a the few relevant attributes given the
-        question.\n\nPay attention to use only the attribute names that you can see
-        in the model description. Be careful to not query for attributes that do not
-        exist.\nAlso, pay attention to which attribute is in which model.\n\nUse the
-        following format:\nQuestion: \"Question here\"\nARCode: \"Active Record code
-        to run\"\nResult: \"Result of the Active Record code\"\nAnswer: \"Final answer
-        here\"\n\nOnly use the following Active Record models:\n[User(id: integer,
-        name: string, created_at: datetime, updated_at: datetime),\n Comment(id: integer,
-        content: text, user_id: integer, ticket_id: integer, created_at: datetime,
-        updated_at: datetime),\n Ticket(id: integer, title: string, user_id: integer,
-        status: integer, body: text, created_at: datetime, updated_at: datetime)]\n\n\nQuestion:
-        how many comments are there from John?\n"],"model":"text-davinci-003","temperature":0.7,"max_tokens":256,"stop":["Answer:"]}'
+        of examples she wishes to obtain, always limit your code\nto at most 5 results.
+        You can order the results by a relevant attribute\nto return the most interesting
+        data examples.\n\nNever query for all the columns from a specific model, only
+        ask for a the few relevant attributes given the question.\n\nPay attention
+        to use only the attribute names that you can see in the model description.
+        Be careful to not query for attributes that do not exist.\nAlso, pay attention
+        to which attribute is in which model.\n\nUse the following format:\nQuestion:
+        \"Question here\"\nARCode: \"Active Record code to run\"\nResult: \"Result
+        of the Active Record code\"\nAnswer: \"Final answer here\"\n\nOnly use the
+        following Active Record models:\n[User(id: integer, name: string, created_at:
+        datetime, updated_at: datetime),\n Comment(id: integer, content: text, user_id:
+        integer, ticket_id: integer, created_at: datetime, updated_at: datetime),\n
+        Ticket(id: integer, title: string, user_id: integer, status: integer, body:
+        text, created_at: datetime, updated_at: datetime)]\n\n\nQuestion: how many
+        responses are there from John?\n"],"model":"text-davinci-003","temperature":0.7,"max_tokens":256,"stop":["Answer:"]}'
     headers:
       Content-Type:
       - application/json
@@ -40,11 +40,11 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Mon, 20 Feb 2023 21:31:34 GMT
+      - Tue, 21 Feb 2023 18:12:52 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '346'
+      - '333'
       Connection:
       - keep-alive
       Access-Control-Allow-Origin:
@@ -56,18 +56,18 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '1564'
+      - '1288'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
       - max-age=15724800; includeSubDomains
       X-Request-Id:
-      - 39831b2cec2e9a108e2e12701e2cabe1
+      - 50cfc76d7fefc2a9e330466c5345b7a2
     body:
       encoding: UTF-8
-      string: '{"id":"cmpl-6m82vQsTok5WKuEWUTiBEZquKNAir","object":"text_completion","created":1676928693,"model":"text-davinci-003","choices":[{"text":"ARCode:
-        Comment.where(user_id: User.find_by(name: \"John\").id).count\nResult: 5\n","index":0,"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":323,"completion_tokens":30,"total_tokens":353}}
+      string: '{"id":"cmpl-6mRQAGdIgf9XjVQNJfdi8BMy2iLEA","object":"text_completion","created":1677003170,"model":"text-davinci-003","choices":[{"text":"ARCode:
+        User.where(name: ''John'').joins(:comments).count\nResult: 10\n","index":0,"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":318,"completion_tokens":24,"total_tokens":342}}
 
         '
-  recorded_at: Mon, 20 Feb 2023 21:31:34 GMT
+  recorded_at: Tue, 21 Feb 2023 18:12:52 GMT
 recorded_with: VCR 6.1.0
