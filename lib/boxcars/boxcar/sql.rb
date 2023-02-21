@@ -74,7 +74,6 @@ module Boxcars
       code = text[/^SQLQuery: (.*)/, 1]
       puts code.colorize(:yellow)
       output = connection.exec_query(code).to_a
-      puts "Answer: #{output}"
       "Answer: #{output}"
     end
 
