@@ -42,11 +42,11 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Tue, 21 Feb 2023 18:08:15 GMT
+      - Tue, 21 Feb 2023 20:08:27 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '437'
+      - '440'
       Connection:
       - keep-alive
       Access-Control-Allow-Origin:
@@ -58,19 +58,20 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '2515'
+      - '1948'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
       - max-age=15724800; includeSubDomains
       X-Request-Id:
-      - 17970d102b9711b1e2afbeb0364d7693
+      - 8d03fcc57c8b75eb4857ca0e11159c90
     body:
       encoding: UTF-8
-      string: '{"id":"cmpl-6mRLgxt3dHgwKT6kK6M2mxwos9h3p","object":"text_completion","created":1677002892,"model":"text-davinci-003","choices":[{"text":"SQLQuery:
-        SELECT comments.content FROM comments INNER JOIN tickets ON tickets.id = comments.ticket_id
-        ORDER BY comments.created_at DESC LIMIT 1;\nSQLResult: \"Great job!\"\n","index":0,"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":397,"completion_tokens":46,"total_tokens":443}}
+      string: '{"id":"cmpl-6mTE1vq3MEwgRQeuSTPgvColRVdxV","object":"text_completion","created":1677010105,"model":"text-davinci-003","choices":[{"text":"SQLQuery:
+        SELECT content FROM comments WHERE ticket_id = (SELECT id FROM tickets ORDER
+        BY id ASC LIMIT 1) ORDER BY created_at DESC LIMIT 1;\nSQLResult: \"This is
+        a comment.\"\n","index":0,"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":397,"completion_tokens":47,"total_tokens":444}}
 
         '
-  recorded_at: Tue, 21 Feb 2023 18:08:15 GMT
+  recorded_at: Tue, 21 Feb 2023 20:08:27 GMT
 recorded_with: VCR 6.1.0

@@ -8,21 +8,19 @@ http_interactions:
       string: '{"prompt":["Given an input question, first create a syntactically correct
         Rails Active Record code to run,\nthen look at the results of the code and
         return the answer. Unless the user specifies\nin her question a specific number
-        of examples she wishes to obtain, always limit your code\nto at most 5 results.
-        You can order the results by a relevant attribute\nto return the most interesting
-        data examples.\n\nNever query for all the columns from a specific model, only
-        ask for a the few relevant attributes given the question.\n\nPay attention
-        to use only the attribute names that you can see in the model description.
-        Be careful to not query for attributes that do not exist.\nAlso, pay attention
-        to which attribute is in which model.\n\nUse the following format:\nQuestion:
-        \"Question here\"\nARCode: \"Active Record code to run\"\nResult: \"Result
-        of the Active Record code\"\nAnswer: \"Final answer here\"\n\nOnly use the
+        of examples she wishes to obtain, limit your code\nto at most 5 results.\n\nNever
+        query for all the columns from a specific model, only ask for a the few relevant
+        attributes given the question.\n\nPay attention to use only the attribute
+        names that you can see in the model description. Be careful to not query for
+        attributes that do not exist.\nAlso, pay attention to which attribute is in
+        which model.\n\nUse the following format:\nQuestion: \"Question here\"\nARCode:
+        \"Active Record code to run\"\nAnswer: \"Final answer here\"\n\nOnly use the
         following Active Record models:\n[User(id: integer, name: string, created_at:
         datetime, updated_at: datetime),\n Comment(id: integer, content: text, user_id:
         integer, ticket_id: integer, created_at: datetime, updated_at: datetime),\n
         Ticket(id: integer, title: string, user_id: integer, status: integer, body:
         text, created_at: datetime, updated_at: datetime)]\n\n\nQuestion: What is
-        the last response for the first ticket?\n"],"model":"text-davinci-003","temperature":0.7,"max_tokens":256,"stop":["Answer:"]}'
+        the content of the last comment for the first ticket?\n"],"model":"text-davinci-003","temperature":0.7,"max_tokens":256,"stop":["Answer:"]}'
     headers:
       Content-Type:
       - application/json
@@ -40,11 +38,11 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Tue, 21 Feb 2023 18:12:54 GMT
+      - Tue, 21 Feb 2023 20:07:21 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '378'
+      - '328'
       Connection:
       - keep-alive
       Access-Control-Allow-Origin:
@@ -56,19 +54,18 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '2274'
+      - '1441'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
       - max-age=15724800; includeSubDomains
       X-Request-Id:
-      - 79243d496d26de70401399038f793cbe
+      - cf39c4afb92e1ebf567f5d37fcd3ed54
     body:
       encoding: UTF-8
-      string: '{"id":"cmpl-6mRQCtADoj424zJrVx5jMcKOwPNiH","object":"text_completion","created":1677003172,"model":"text-davinci-003","choices":[{"text":"ARCode:
-        Ticket.first.comments.order(created_at: :desc).limit(1).pluck(:content)\nResult:
-        [\"Last comment here\"]\n","index":0,"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":320,"completion_tokens":37,"total_tokens":357}}
+      string: '{"id":"cmpl-6mTCxikgejWUcGQRyVzmw4UN9CT3v","object":"text_completion","created":1677010039,"model":"text-davinci-003","choices":[{"text":"ARCode:
+        Comment.where(ticket_id: Ticket.first.id).last.content\n","index":0,"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":293,"completion_tokens":21,"total_tokens":314}}
 
         '
-  recorded_at: Tue, 21 Feb 2023 18:12:54 GMT
+  recorded_at: Tue, 21 Feb 2023 20:07:21 GMT
 recorded_with: VCR 6.1.0

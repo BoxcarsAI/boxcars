@@ -42,11 +42,11 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Tue, 21 Feb 2023 18:08:12 GMT
+      - Tue, 21 Feb 2023 20:08:25 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '396'
+      - '425'
       Connection:
       - keep-alive
       Access-Control-Allow-Origin:
@@ -58,19 +58,19 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '2450'
+      - '2075'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
       - max-age=15724800; includeSubDomains
       X-Request-Id:
-      - fb4496b9cc299ff49ce926340ca1069e
+      - c4a5bccdd99cd5272d07298ecde56e54
     body:
       encoding: UTF-8
-      string: '{"id":"cmpl-6mRLe60VmfQHFYFJdk6kSr1cdihVD","object":"text_completion","created":1677002890,"model":"text-davinci-003","choices":[{"text":"SQLQuery:
-        SELECT COUNT(*) FROM comments LEFT JOIN users ON comments.user_id = users.id
-        WHERE users.name = \"John\";\nSQLResult: 10\n","index":0,"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":395,"completion_tokens":39,"total_tokens":434}}
+      string: '{"id":"cmpl-6mTDzAwUv8Dmp1PYc49qnJEYdl81e","object":"text_completion","created":1677010103,"model":"text-davinci-003","choices":[{"text":"SQLQuery:
+        SELECT COUNT(*) AS total_comments FROM comments INNER JOIN users on users.id
+        = comments.user_id WHERE users.name = ''John'';\nSQLResult: total_comments\n","index":0,"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":395,"completion_tokens":45,"total_tokens":440}}
 
         '
-  recorded_at: Tue, 21 Feb 2023 18:08:12 GMT
+  recorded_at: Tue, 21 Feb 2023 20:08:25 GMT
 recorded_with: VCR 6.1.0

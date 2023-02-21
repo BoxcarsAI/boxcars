@@ -5,20 +5,32 @@ module Boxcars
   # A Boxcar that interprets a prompt and executes SQL code to get answers
   class ActiveRecord < EngineBoxcar
     # the description of this engine boxcar
-    SQLDESC = "useful for when you need to query a Rails Active Record database."
-    attr_accessor :connection, :input_key
+    ARDESC = "useful for when you need to query a database for an application named %<name>s."
+    LOCKED_OUT_MODELS = %w[ActiveRecord::SchemaMigration ActiveRecord::InternalMetadata ApplicationRecord].freeze
+    attr_accessor :connection, :input_key, :requested_models
+    attr_reader :except_models
 
     # @param engine [Boxcars::Engine] The engine to user for this boxcar. Can be inherited from a train if nil.
+    # @param models [Array<ActiveRecord::Model>] The models to use for this boxcar. Will use all if nil.
     # @param input_key [Symbol] The key to use for the input. Defaults to :question.
     # @param output_key [Symbol] The key to use for the output. Defaults to :answer.
     # @param kwargs [Hash] Any other keyword arguments to pass to the parent class. This can include
     #   :name, :description and :prompt
-    def initialize(engine: nil, input_key: :question, output_key: :answer, **kwargs)
-      @connection = connection
+    def initialize(engine: nil, models: nil, input_key: :question, output_key: :answer, **kwargs)
+      if models.is_a?(Array) && models.length.positive?
+        @requested_models = models
+        models.each do |m|
+          raise ArgumentError, "model #{m} needs to be an Active Record model" unless m.ancestors.include?(::ActiveRecord::Base)
+        end
+      elsif models
+        raise ArgumentError, "models needs to be an array of Active Record models"
+      end
+      @except_models = LOCKED_OUT_MODELS + kwargs[:except_models].to_a
       @input_key = input_key
       the_prompt = kwargs[prompt] || my_prompt
-      super(name: kwargs[:name] || "ActiveRecord",
-            description: kwargs[:description] || SQLDESC,
+      name = kwargs[:name] || "Data"
+      super(name: name,
+            description: kwargs[:description] || format(ARDESC, name: name),
             engine: engine,
             prompt: the_prompt,
             output_key: output_key)
@@ -48,18 +60,18 @@ module Boxcars
 
     private
 
-    def wanted_models(except_models: nil)
-      except_models ||= ['ActiveRecord::InternalMetadata', 'ActiveRecord::SchemaMigration', 'ApplicationRecord']
-      ::ActiveRecord::Base.descendants.reject { |m| except_models.include?(m.name) }
+    def wanted_models
+      the_models = requested_models || ::ActiveRecord::Base.descendants
+      the_models.reject { |m| except_models.include?(m.name) }
     end
 
-    def models(except_models: nil)
-      models = wanted_models(except_models: except_models).map(&:name)
+    def models
+      models = wanted_models.map(&:name)
       models.join(", ")
     end
 
-    def model_info(except_models: nil)
-      models = wanted_models(except_models: except_models)
+    def model_info
+      models = wanted_models
       models.pretty_inspect
     end
 
@@ -91,9 +103,8 @@ module Boxcars
     TEMPLATE = <<~IPT
       Given an input question, first create a syntactically correct Rails Active Record code to run,
       then look at the results of the code and return the answer. Unless the user specifies
-      in her question a specific number of examples she wishes to obtain, always limit your code
-      to at most %<top_k>s results. You can order the results by a relevant attribute
-      to return the most interesting data examples.
+      in her question a specific number of examples she wishes to obtain, limit your code
+      to at most %<top_k>s results.
 
       Never query for all the columns from a specific model, only ask for a the few relevant attributes given the question.
 
@@ -103,7 +114,6 @@ module Boxcars
       Use the following format:
       Question: "Question here"
       ARCode: "Active Record code to run"
-      Result: "Result of the Active Record code"
       Answer: "Final answer here"
 
       Only use the following Active Record models:
