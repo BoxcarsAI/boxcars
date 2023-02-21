@@ -38,11 +38,11 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Tue, 21 Feb 2023 20:07:19 GMT
+      - Tue, 21 Feb 2023 21:24:20 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '342'
+      - '341'
       Connection:
       - keep-alive
       Access-Control-Allow-Origin:
@@ -54,18 +54,18 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '1427'
+      - '1499'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
       - max-age=15724800; includeSubDomains
       X-Request-Id:
-      - 9c943f76e115f51311e68e773317d2b4
+      - 74038f876a67e3cc455996fc6b547070
     body:
       encoding: UTF-8
-      string: '{"id":"cmpl-6mTCw8srDJsVvqAzSNfOA3Qgo9UMU","object":"text_completion","created":1677010038,"model":"text-davinci-003","choices":[{"text":"ARCode:
-        Comment.where(user_id: User.where(name: \"John\").select(:id)).count\n","index":0,"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":289,"completion_tokens":27,"total_tokens":316}}
+      string: '{"id":"cmpl-6mUPSaKLCwd4D1WWFpw5NnmpAhhO5","object":"text_completion","created":1677014658,"model":"text-davinci-003","choices":[{"text":"ARCode:
+        Comment.where(user_id: User.where(name: \"John\").pluck(:id)).count\n","index":0,"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":289,"completion_tokens":28,"total_tokens":317}}
 
         '
-  recorded_at: Tue, 21 Feb 2023 20:07:19 GMT
+  recorded_at: Tue, 21 Feb 2023 21:24:20 GMT
 recorded_with: VCR 6.1.0

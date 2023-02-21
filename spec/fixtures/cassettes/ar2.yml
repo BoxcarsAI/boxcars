@@ -38,7 +38,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Tue, 21 Feb 2023 20:07:21 GMT
+      - Tue, 21 Feb 2023 21:24:21 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -54,18 +54,18 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '1441'
+      - '1008'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
       - max-age=15724800; includeSubDomains
       X-Request-Id:
-      - cf39c4afb92e1ebf567f5d37fcd3ed54
+      - 3ec6c36cd63586518d77fe521f77a68f
     body:
       encoding: UTF-8
-      string: '{"id":"cmpl-6mTCxikgejWUcGQRyVzmw4UN9CT3v","object":"text_completion","created":1677010039,"model":"text-davinci-003","choices":[{"text":"ARCode:
+      string: '{"id":"cmpl-6mUPU9rTOaoE78SkzA93XV0uHzeAY","object":"text_completion","created":1677014660,"model":"text-davinci-003","choices":[{"text":"ARCode:
         Comment.where(ticket_id: Ticket.first.id).last.content\n","index":0,"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":293,"completion_tokens":21,"total_tokens":314}}
 
         '
-  recorded_at: Tue, 21 Feb 2023 20:07:21 GMT
+  recorded_at: Tue, 21 Feb 2023 21:24:21 GMT
 recorded_with: VCR 6.1.0

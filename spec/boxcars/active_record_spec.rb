@@ -16,7 +16,6 @@ RSpec.describe Boxcars::ActiveRecord do
   end
 
   context "with sample helpdesk app all models" do
-    Boxcars.configuration.log_prompts = true
     boxcar = described_class.new
 
     it "can count comments from john" do
@@ -33,7 +32,6 @@ RSpec.describe Boxcars::ActiveRecord do
   end
 
   context "with sample helpdesk app some models" do
-    Boxcars.configuration.log_prompts = true
     boxcar = described_class.new(models: [Comment, Ticket, User])
 
     it "can count comments from john" do
@@ -48,5 +46,4 @@ RSpec.describe Boxcars::ActiveRecord do
       end
     end
   end
-
 end

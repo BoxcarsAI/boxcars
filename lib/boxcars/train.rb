@@ -205,7 +205,7 @@ module Boxcars
           observation = "#{output.boxcar} is not a valid boxcar, try another one."
           return_direct = false
         end
-        puts "#Observation: #{observation}".colorize(:green)
+        puts "Observation: #{observation}".colorize(:green)
         intermediate_steps.append([output, observation])
         if return_direct
           output = TrainFinish.new({ return_values[0] => observation }, "")

@@ -1,0 +1,344 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://api.openai.com/v1/completions
+    body:
+      encoding: UTF-8
+      string: '{"prompt":["Answer the following questions as best you can. You have
+        access to the following actions:\n\nhelpdesk: useful for when you need to
+        query a database for an application named helpdesk.\nCalculator: useful for
+        when you need to answer questions about math\nSearch: useful for when you
+        need to answer questions about current events.You should ask targeted questions\n\nUse
+        the following format:\n\nQuestion: the input question you must answer\nThought:
+        you should always think about what to do\nAction: the action to take, should
+        be one of [helpdesk, Calculator, Search]\nAction Input: the input to the action\nObservation:
+        the result of the action\n... (this Thought/Action/Action Input/Observation
+        sequence can repeat N times)\nThought: I now know the final answer\nFinal
+        Answer: the final answer to the original input question\n\n\nBegin!\n\nQuestion:
+        Count the comments from John for open tickets and multiply by pi to 5 decimal
+        places.\nThought:\n"],"model":"text-davinci-003","temperature":0.7,"max_tokens":256,"stop":["\nObservation:
+        "]}'
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer <openai_access_token>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 21 Feb 2023 21:20:24 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '442'
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - no-cache, must-revalidate
+      Openai-Model:
+      - text-davinci-003
+      Openai-Organization:
+      - user-ri9zw9ahumb1bo9vs73mudbi
+      Openai-Processing-Ms:
+      - '2310'
+      Openai-Version:
+      - '2020-10-01'
+      Strict-Transport-Security:
+      - max-age=15724800; includeSubDomains
+      X-Request-Id:
+      - cc38424fa09defdb73529d4ca0fb805a
+    body:
+      encoding: UTF-8
+      string: '{"id":"cmpl-6mULeOvBrFz0Uwu6aYLEejtPu6R32","object":"text_completion","created":1677014422,"model":"text-davinci-003","choices":[{"text":"I
+        need to query the helpdesk database for John''s comments, then use a calculator
+        to multiply by pi.\nAction: helpdesk\nAction Input: Count the comments from
+        John for open tickets","index":0,"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":214,"completion_tokens":41,"total_tokens":255}}
+
+        '
+  recorded_at: Tue, 21 Feb 2023 21:20:24 GMT
+- request:
+    method: post
+    uri: https://api.openai.com/v1/completions
+    body:
+      encoding: UTF-8
+      string: '{"prompt":["Given an input question, first create a syntactically correct
+        Rails Active Record code to run,\nthen look at the results of the code and
+        return the answer. Unless the user specifies\nin her question a specific number
+        of examples she wishes to obtain, limit your code\nto at most 5 results.\n\nNever
+        query for all the columns from a specific model, only ask for a the few relevant
+        attributes given the question.\n\nPay attention to use only the attribute
+        names that you can see in the model description. Be careful to not query for
+        attributes that do not exist.\nAlso, pay attention to which attribute is in
+        which model.\n\nUse the following format:\nQuestion: \"Question here\"\nARCode:
+        \"Active Record code to run\"\nAnswer: \"Final answer here\"\n\nOnly use the
+        following Active Record models:\n[Comment(id: integer, content: text, user_id:
+        integer, ticket_id: integer, created_at: datetime, updated_at: datetime),\n
+        Ticket(id: integer, title: string, user_id: integer, status: integer, body:
+        text, created_at: datetime, updated_at: datetime),\n User(id: integer, name:
+        string, created_at: datetime, updated_at: datetime)]\n\n\nQuestion: Count
+        the comments from John for open tickets\n"],"model":"text-davinci-003","temperature":0.7,"max_tokens":256,"stop":["Answer:"]}'
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer <openai_access_token>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 21 Feb 2023 21:20:26 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '369'
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - no-cache, must-revalidate
+      Openai-Model:
+      - text-davinci-003
+      Openai-Organization:
+      - user-ri9zw9ahumb1bo9vs73mudbi
+      Openai-Processing-Ms:
+      - '1823'
+      Openai-Version:
+      - '2020-10-01'
+      Strict-Transport-Security:
+      - max-age=15724800; includeSubDomains
+      X-Request-Id:
+      - ee3b671cd2c214c0583d5c7828e69e66
+    body:
+      encoding: UTF-8
+      string: '{"id":"cmpl-6mULhcorWj9mcbF1mBQP1ergZ67Qm","object":"text_completion","created":1677014425,"model":"text-davinci-003","choices":[{"text":"ARCode:
+        Comment.where(user_id: User.find_by(name: ''John'').id, ticket_id: Ticket.where(status:
+        0)).count\n","index":0,"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":288,"completion_tokens":38,"total_tokens":326}}
+
+        '
+  recorded_at: Tue, 21 Feb 2023 21:20:26 GMT
+- request:
+    method: post
+    uri: https://api.openai.com/v1/completions
+    body:
+      encoding: UTF-8
+      string: '{"prompt":["Answer the following questions as best you can. You have
+        access to the following actions:\n\nhelpdesk: useful for when you need to
+        query a database for an application named helpdesk.\nCalculator: useful for
+        when you need to answer questions about math\nSearch: useful for when you
+        need to answer questions about current events.You should ask targeted questions\n\nUse
+        the following format:\n\nQuestion: the input question you must answer\nThought:
+        you should always think about what to do\nAction: the action to take, should
+        be one of [helpdesk, Calculator, Search]\nAction Input: the input to the action\nObservation:
+        the result of the action\n... (this Thought/Action/Action Input/Observation
+        sequence can repeat N times)\nThought: I now know the final answer\nFinal
+        Answer: the final answer to the original input question\n\n\nBegin!\n\nQuestion:
+        Count the comments from John for open tickets and multiply by pi to 5 decimal
+        places.\nThought:I need to query the helpdesk database for John''s comments,
+        then use a calculator to multiply by pi.\nAction: helpdesk\nAction Input:
+        Count the comments from John for open tickets\nObservation: Answer: 2\nThought:\n"],"model":"text-davinci-003","temperature":0.7,"max_tokens":256,"stop":["\nObservation:
+        "]}'
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer <openai_access_token>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 21 Feb 2023 21:20:28 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '346'
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - no-cache, must-revalidate
+      Openai-Model:
+      - text-davinci-003
+      Openai-Organization:
+      - user-ri9zw9ahumb1bo9vs73mudbi
+      Openai-Processing-Ms:
+      - '1257'
+      Openai-Version:
+      - '2020-10-01'
+      Strict-Transport-Security:
+      - max-age=15724800; includeSubDomains
+      X-Request-Id:
+      - 7e7615556fbc8bc74cd9a161cbd5c207
+    body:
+      encoding: UTF-8
+      string: '{"id":"cmpl-6mULjAZpucLKCPeBn5nCwXJ1bYSwI","object":"text_completion","created":1677014427,"model":"text-davinci-003","choices":[{"text":"I
+        now need to multiply this number by pi\nAction: Calculator\nAction Input:
+        2 * pi","index":0,"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":266,"completion_tokens":20,"total_tokens":286}}
+
+        '
+  recorded_at: Tue, 21 Feb 2023 21:20:28 GMT
+- request:
+    method: post
+    uri: https://api.openai.com/v1/completions
+    body:
+      encoding: UTF-8
+      string: '{"prompt":["You are GPT-3, and you can''t do math.\nYou can do basic
+        math, and your memorization abilities are impressive, but you can''t do any
+        complex calculations that a human could not do in their head. You also have
+        an annoying tendency to just make up highly specific, but wrong, answers.\nSo
+        we hooked you up to a Ruby 3 kernel, and now you can execute ruby code. If
+        anyone gives you a hard math problem, just use this format and we’ll take
+        care of the rest:\n\nQuestion: ${{Question with hard calculation.}}\n```ruby\n${{Code
+        that prints what you need to know}}\n```\n```output\n${{Output of your code}}\n```\nAnswer:
+        ${{Answer}}\n\nOtherwise, use this simpler format:\n\nQuestion: ${{Question
+        without hard calculation}}\nAnswer: ${{Answer}}\n\nBegin.\n\nQuestion: What
+        is 37593 * 67?\n```ruby\nputs(37593 * 67)\n```\n```output\n2518731\n```\nAnswer:
+        2518731\n\nQuestion: what is 2518731 + 0?\nAnswer: 2518731\n\nQuestion: 2
+        * pi\n"],"model":"text-davinci-003","temperature":0.7,"max_tokens":256,"stop":["```output"]}'
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer <openai_access_token>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 21 Feb 2023 21:20:29 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '298'
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - no-cache, must-revalidate
+      Openai-Model:
+      - text-davinci-003
+      Openai-Organization:
+      - user-ri9zw9ahumb1bo9vs73mudbi
+      Openai-Processing-Ms:
+      - '1207'
+      Openai-Version:
+      - '2020-10-01'
+      Strict-Transport-Security:
+      - max-age=15724800; includeSubDomains
+      X-Request-Id:
+      - 577e514a00e90e6b576b5cae94bab7a3
+    body:
+      encoding: UTF-8
+      string: '{"id":"cmpl-6mULkK4jFUp3ezewxOwOTvJyI6Zng","object":"text_completion","created":1677014428,"model":"text-davinci-003","choices":[{"text":"```ruby\nputs(2
+        * Math::PI)\n```\n","index":0,"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":263,"completion_tokens":17,"total_tokens":280}}
+
+        '
+  recorded_at: Tue, 21 Feb 2023 21:20:29 GMT
+- request:
+    method: post
+    uri: https://api.openai.com/v1/completions
+    body:
+      encoding: UTF-8
+      string: '{"prompt":["Answer the following questions as best you can. You have
+        access to the following actions:\n\nhelpdesk: useful for when you need to
+        query a database for an application named helpdesk.\nCalculator: useful for
+        when you need to answer questions about math\nSearch: useful for when you
+        need to answer questions about current events.You should ask targeted questions\n\nUse
+        the following format:\n\nQuestion: the input question you must answer\nThought:
+        you should always think about what to do\nAction: the action to take, should
+        be one of [helpdesk, Calculator, Search]\nAction Input: the input to the action\nObservation:
+        the result of the action\n... (this Thought/Action/Action Input/Observation
+        sequence can repeat N times)\nThought: I now know the final answer\nFinal
+        Answer: the final answer to the original input question\n\n\nBegin!\n\nQuestion:
+        Count the comments from John for open tickets and multiply by pi to 5 decimal
+        places.\nThought:I need to query the helpdesk database for John''s comments,
+        then use a calculator to multiply by pi.\nAction: helpdesk\nAction Input:
+        Count the comments from John for open tickets\nObservation: Answer: 2\nThought:I
+        now need to multiply this number by pi\nAction: Calculator\nAction Input:
+        2 * pi\nObservation: 6.283185307179586\nThought:\n"],"model":"text-davinci-003","temperature":0.7,"max_tokens":256,"stop":["\nObservation:
+        "]}'
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer <openai_access_token>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 21 Feb 2023 21:20:31 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '314'
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - no-cache, must-revalidate
+      Openai-Model:
+      - text-davinci-003
+      Openai-Organization:
+      - user-ri9zw9ahumb1bo9vs73mudbi
+      Openai-Processing-Ms:
+      - '868'
+      Openai-Version:
+      - '2020-10-01'
+      Strict-Transport-Security:
+      - max-age=15724800; includeSubDomains
+      X-Request-Id:
+      - 489bff44cd7c83427e53f91143736d60
+    body:
+      encoding: UTF-8
+      string: '{"id":"cmpl-6mULmnErmVR40urtVehncpfVcTRtq","object":"text_completion","created":1677014430,"model":"text-davinci-003","choices":[{"text":"I
+        now know the final answer\nFinal Answer: 6.28319","index":0,"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":301,"completion_tokens":14,"total_tokens":315}}
+
+        '
+  recorded_at: Tue, 21 Feb 2023 21:20:31 GMT
+recorded_with: VCR 6.1.0

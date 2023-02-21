@@ -83,7 +83,7 @@ module Boxcars
         output = eval code
         # rubocop:enable Security/Eval
         output = output.first if output.is_a?(Array) && output.length == 1
-        "Answer: #{output}"
+        "Answer: #{output.inspect}"
       rescue StandardError => e
         "Error: #{e.message}"
       end
