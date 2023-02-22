@@ -1,5 +1,17 @@
 # Changelog
 
+## [v0.1.5](https://github.com/BoxcarsAI/boxcars/tree/v0.1.5) (2023-02-22)
+
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.1.4...v0.1.5)
+
+**Implemented enhancements:**
+
+- Make Boxcars::ActiveRecord read\_only by default [\#20](https://github.com/BoxcarsAI/boxcars/issues/20)
+
+**Merged pull requests:**
+
+- Active Record readonly [\#21](https://github.com/BoxcarsAI/boxcars/pull/21) ([francis](https://github.com/francis))
+
 ## [v0.1.4](https://github.com/BoxcarsAI/boxcars/tree/v0.1.4) (2023-02-22)
 
 [Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.1.3...v0.1.4)
