@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.authors = ["Francis Sullivan", "Tabrez Syed"]
   spec.email = ["hi@boxcars.ai"]
 
-  spec.summary = "Boxcars provide an API to connect together Boxcars and then conduct them. Inspired by python langchain."
-  spec.description = "You simply give a number of boxcars to a train, and it does the magic."
+  spec.summary = "Boxcars is a gem that enables you to create new systems with AI composability. Inspired by python langchain."
+  spec.description = "You simply set an OpenAI key, give a number of Boxcars to a Train, and magic ensues when you run it."
   spec.homepage = "https://github.com/BoxcarsAI/boxcars"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 2.6.0"
