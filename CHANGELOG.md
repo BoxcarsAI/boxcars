@@ -1,5 +1,20 @@
 # Changelog
 
+## [v0.1.4](https://github.com/BoxcarsAI/boxcars/tree/v0.1.4) (2023-02-22)
+
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.1.3...v0.1.4)
+
+**Implemented enhancements:**
+
+- Extend Sql concept to produce and run ActiveRecord code instead of SQL [\#9](https://github.com/BoxcarsAI/boxcars/issues/9)
+
+**Merged pull requests:**
+
+- first pass at an ActiveRecord boxcar [\#18](https://github.com/BoxcarsAI/boxcars/pull/18) ([francis](https://github.com/francis))
+- change Boxcars::default\_train to Boxcars::train to improve code reada… [\#17](https://github.com/BoxcarsAI/boxcars/pull/17) ([francis](https://github.com/francis))
+- rename class Serp to GoogleSearch [\#16](https://github.com/BoxcarsAI/boxcars/pull/16) ([francis](https://github.com/francis))
+- Update README.md [\#15](https://github.com/BoxcarsAI/boxcars/pull/15) ([tabrez-syed](https://github.com/tabrez-syed))
+
 ## [v0.1.3](https://github.com/BoxcarsAI/boxcars/tree/v0.1.3) (2023-02-17)
 
 [Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.1.2...v0.1.3)
