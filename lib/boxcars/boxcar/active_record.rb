@@ -99,8 +99,8 @@ module Boxcars
     def safe_to_run?(code)
       return true unless read_only?
 
-      bad_words = %w[delete delete_all destroy destroy_all update update_all upsert upsert_all create save insert drop alter truncate
-                     revoke commit rollback reset execute].freeze
+      bad_words = %w[delete delete_all destroy destroy_all update update_all upsert upsert_all create save insert drop alter
+                     truncate revoke commit rollback reset execute].freeze
       without_strings = code.gsub(/('([^'\\]*(\\.[^'\\]*)*)'|"([^"\\]*(\\.[^"\\]*)*"))/, 'XX')
       word_list = without_strings.split(/[.,()]/)
 
