@@ -1,0 +1,71 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://api.openai.com/v1/completions
+    body:
+      encoding: UTF-8
+      string: '{"prompt":["Given an input question, first create a syntactically correct
+        Rails Active Record code to run,\nthen look at the results of the code and
+        return the answer. Unless the user specifies\nin her question a specific number
+        of examples she wishes to obtain, limit your code\nto at most 5 results.\n\nNever
+        query for all the columns from a specific model, only ask for a the few relevant
+        attributes given the question.\n\nPay attention to use only the attribute
+        names that you can see in the model description. Be careful to not query for
+        attributes that do not exist.\nAlso, pay attention to which attribute is in
+        which model.\n\nUse the following format:\nQuestion: \"Question here\"\nARCode:
+        \"Active Record code to run\"\nAnswer: \"Final answer here\"\n\nOnly use the
+        following Active Record models:\n[Comment(id: integer, content: text, user_id:
+        integer, ticket_id: integer, created_at: datetime, updated_at: datetime),\n
+        Ticket(id: integer, title: string, user_id: integer, status: integer, body:
+        text, created_at: datetime, updated_at: datetime),\n User(id: integer, name:
+        string, created_at: datetime, updated_at: datetime)]\n\n\nQuestion: What is
+        the content of the last comment for the first ticket?\n"],"model":"text-davinci-003","temperature":0.7,"max_tokens":256,"stop":["Answer:"]}'
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer <openai_access_token>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 21 Feb 2023 21:24:24 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '314'
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - no-cache, must-revalidate
+      Openai-Model:
+      - text-davinci-003
+      Openai-Organization:
+      - user-ri9zw9ahumb1bo9vs73mudbi
+      Openai-Processing-Ms:
+      - '1224'
+      Openai-Version:
+      - '2020-10-01'
+      Strict-Transport-Security:
+      - max-age=15724800; includeSubDomains
+      X-Request-Id:
+      - ecf3f99823fbede35af174f01677a0dd
+    body:
+      encoding: UTF-8
+      string: '{"id":"cmpl-6mUPXq79FP8Xhso89HRJEJjIXeoW5","object":"text_completion","created":1677014663,"model":"text-davinci-003","choices":[{"text":"ARCode:
+        Comment.where(ticket_id: 1).last.content\n","index":0,"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":293,"completion_tokens":17,"total_tokens":310}}
+
+        '
+  recorded_at: Tue, 21 Feb 2023 21:24:24 GMT
+recorded_with: VCR 6.1.0

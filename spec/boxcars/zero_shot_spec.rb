@@ -12,4 +12,15 @@ RSpec.describe Boxcars::ZeroShot do
       expect(train.run(question)).to eq("25.132741228718345")
     end
   end
+
+  context "with sample helpdesk app" do
+    helpdesk = Boxcars::ActiveRecord.new(models: [Comment, Ticket, User], name: "helpdesk")
+    new_train = described_class.new(boxcars: [helpdesk, Boxcars::Calculator.new, Boxcars::GoogleSearch.new])
+    it "can use a train to answer a question" do
+      VCR.use_cassette("zeroshot2") do
+        question = "Count the comments from John for open tickets and multiply by pi to 5 decimal places."
+        expect(new_train.run(question)).to eq("6.28319")
+      end
+    end
+  end
 end

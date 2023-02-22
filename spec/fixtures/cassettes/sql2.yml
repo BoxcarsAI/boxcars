@@ -17,12 +17,14 @@ http_interactions:
         to which column is in which table.\n\nUse the following format:\nQuestion:
         \"Question here\"\nSQLQuery: \"SQL Query to run\"\nSQLResult: \"Result of
         the SQLQuery\"\nAnswer: \"Final answer here\"\n\nOnly use the following tables:\nCREATE
-        TABLE comments (\n id INTEGER NOT NULL,\n content TEXT NULL,\n name varchar
-        NULL,\n post_id INTEGER NULL,\n created_at datetime(6) NOT NULL,\n updated_at
-        datetime(6) NOT NULL\n);\nCREATE TABLE posts (\n id INTEGER NOT NULL,\n title
-        varchar NULL,\n created_at datetime(6) NOT NULL,\n updated_at datetime(6)
-        NOT NULL,\n body TEXT NULL\n);\n\nQuestion: What is the last comment for the
-        first post?\n"],"model":"text-davinci-003","temperature":0.7,"max_tokens":256,"stop":["Answer:"]}'
+        TABLE users (\n id INTEGER NOT NULL,\n name varchar NULL,\n created_at datetime(6)
+        NOT NULL,\n updated_at datetime(6) NOT NULL\n);\nCREATE TABLE comments (\n
+        id INTEGER NOT NULL,\n content TEXT NULL,\n user_id INTEGER NULL,\n ticket_id
+        INTEGER NULL,\n created_at datetime(6) NOT NULL,\n updated_at datetime(6)
+        NOT NULL\n);\nCREATE TABLE tickets (\n id INTEGER NOT NULL,\n title varchar
+        NULL,\n user_id INTEGER NULL,\n status INTEGER NULL,\n body TEXT NULL,\n created_at
+        datetime(6) NOT NULL,\n updated_at datetime(6) NOT NULL\n);\n\nQuestion: What
+        is the last comment for the first post?\n"],"model":"text-davinci-003","temperature":0.7,"max_tokens":256,"stop":["Answer:"]}'
     headers:
       Content-Type:
       - application/json
@@ -40,11 +42,11 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Thu, 16 Feb 2023 14:53:31 GMT
+      - Tue, 21 Feb 2023 20:08:27 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '455'
+      - '440'
       Connection:
       - keep-alive
       Access-Control-Allow-Origin:
@@ -56,20 +58,20 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '4176'
+      - '1948'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
       - max-age=15724800; includeSubDomains
       X-Request-Id:
-      - 76d41f6e4f7479260c39178ea13b9e63
+      - 8d03fcc57c8b75eb4857ca0e11159c90
     body:
       encoding: UTF-8
-      string: '{"id":"cmpl-6kZvSrWJM6iMcTEnKFXkmU5igB3l9","object":"text_completion","created":1676559206,"model":"text-davinci-003","choices":[{"text":"SQLQuery:
-        SELECT content, created_at FROM comments WHERE post_id = (SELECT id FROM posts
-        LIMIT 1) ORDER BY created_at DESC LIMIT 1;\nSQLResult: \"This is amazing!\",
-        \"2020-05-03 12:00:00\"\n","index":0,"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":333,"completion_tokens":58,"total_tokens":391}}
+      string: '{"id":"cmpl-6mTE1vq3MEwgRQeuSTPgvColRVdxV","object":"text_completion","created":1677010105,"model":"text-davinci-003","choices":[{"text":"SQLQuery:
+        SELECT content FROM comments WHERE ticket_id = (SELECT id FROM tickets ORDER
+        BY id ASC LIMIT 1) ORDER BY created_at DESC LIMIT 1;\nSQLResult: \"This is
+        a comment.\"\n","index":0,"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":397,"completion_tokens":47,"total_tokens":444}}
 
         '
-  recorded_at: Thu, 16 Feb 2023 14:53:30 GMT
+  recorded_at: Tue, 21 Feb 2023 20:08:27 GMT
 recorded_with: VCR 6.1.0

@@ -17,12 +17,14 @@ http_interactions:
         to which column is in which table.\n\nUse the following format:\nQuestion:
         \"Question here\"\nSQLQuery: \"SQL Query to run\"\nSQLResult: \"Result of
         the SQLQuery\"\nAnswer: \"Final answer here\"\n\nOnly use the following tables:\nCREATE
-        TABLE comments (\n id INTEGER NOT NULL,\n content TEXT NULL,\n name varchar
-        NULL,\n post_id INTEGER NULL,\n created_at datetime(6) NOT NULL,\n updated_at
-        datetime(6) NOT NULL\n);\nCREATE TABLE posts (\n id INTEGER NOT NULL,\n title
-        varchar NULL,\n created_at datetime(6) NOT NULL,\n updated_at datetime(6)
-        NOT NULL,\n body TEXT NULL\n);\n\nQuestion: how many comments are there from
-        John?\n"],"model":"text-davinci-003","temperature":0.7,"max_tokens":256,"stop":["Answer:"]}'
+        TABLE users (\n id INTEGER NOT NULL,\n name varchar NULL,\n created_at datetime(6)
+        NOT NULL,\n updated_at datetime(6) NOT NULL\n);\nCREATE TABLE comments (\n
+        id INTEGER NOT NULL,\n content TEXT NULL,\n user_id INTEGER NULL,\n ticket_id
+        INTEGER NULL,\n created_at datetime(6) NOT NULL,\n updated_at datetime(6)
+        NOT NULL\n);\nCREATE TABLE tickets (\n id INTEGER NOT NULL,\n title varchar
+        NULL,\n user_id INTEGER NULL,\n status INTEGER NULL,\n body TEXT NULL,\n created_at
+        datetime(6) NOT NULL,\n updated_at datetime(6) NOT NULL\n);\n\nQuestion: how
+        many comments are there from John?\n"],"model":"text-davinci-003","temperature":0.7,"max_tokens":256,"stop":["Answer:"]}'
     headers:
       Content-Type:
       - application/json
@@ -40,11 +42,11 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Thu, 16 Feb 2023 14:52:59 GMT
+      - Tue, 21 Feb 2023 20:08:25 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '348'
+      - '425'
       Connection:
       - keep-alive
       Access-Control-Allow-Origin:
@@ -56,18 +58,19 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '2567'
+      - '2075'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
       - max-age=15724800; includeSubDomains
       X-Request-Id:
-      - ec9c6103bebb6bedfc91180e8385861d
+      - c4a5bccdd99cd5272d07298ecde56e54
     body:
       encoding: UTF-8
-      string: '{"id":"cmpl-6kZuz81I1uPRAS5yO5lHIfNsSrbwM","object":"text_completion","created":1676559177,"model":"text-davinci-003","choices":[{"text":"SQLQuery:
-        SELECT COUNT(*) FROM comments WHERE name = ''John'' LIMIT 5;\nSQLResult: 5\n","index":0,"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":331,"completion_tokens":26,"total_tokens":357}}
+      string: '{"id":"cmpl-6mTDzAwUv8Dmp1PYc49qnJEYdl81e","object":"text_completion","created":1677010103,"model":"text-davinci-003","choices":[{"text":"SQLQuery:
+        SELECT COUNT(*) AS total_comments FROM comments INNER JOIN users on users.id
+        = comments.user_id WHERE users.name = ''John'';\nSQLResult: total_comments\n","index":0,"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":395,"completion_tokens":45,"total_tokens":440}}
 
         '
-  recorded_at: Thu, 16 Feb 2023 14:52:59 GMT
+  recorded_at: Tue, 21 Feb 2023 20:08:25 GMT
 recorded_with: VCR 6.1.0

@@ -7,6 +7,7 @@ require "dotenv/load"
 require "ruby/openai"
 require "vcr"
 require "debug"
+require "support/helpdesk_sample_app"
 
 Dir[File.expand_path("spec/support/**/*.rb")].sort.each { |f| require f }
 

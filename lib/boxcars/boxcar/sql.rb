@@ -5,7 +5,7 @@ module Boxcars
   # A Boxcar that interprets a prompt and executes SQL code to get answers
   class SQL < EngineBoxcar
     # the description of this engine boxcar
-    SQLDESC = "useful for when you need to query a SQL database"
+    SQLDESC = "useful for when you need to query a database for %<name>s."
     attr_accessor :connection, :input_key
 
     # @param connection [ActiveRecord::Connection] The SQL connection to use for this boxcar.
@@ -14,12 +14,13 @@ module Boxcars
     # @param output_key [Symbol] The key to use for the output. Defaults to :answer.
     # @param kwargs [Hash] Any other keyword arguments to pass to the parent class. This can include
     #   :name, :description and :prompt
-    def initialize(connection:, engine: nil, input_key: :question, output_key: :answer, **kwargs)
-      @connection = connection
+    def initialize(connection: nil, engine: nil, input_key: :question, output_key: :answer, **kwargs)
+      @connection = connection || ::ActiveRecord::Base.connection
       @input_key = input_key
       the_prompt = kwargs[prompt] || my_prompt
-      super(name: kwargs[:name] || "SQLdatabase",
-            description: kwargs[:description] || SQLDESC,
+      name = kwargs[:name] || "data"
+      super(name: name,
+            description: kwargs[:description] || format(SQLDESC, name: name),
             engine: engine,
             prompt: the_prompt,
             output_key: output_key)
@@ -73,7 +74,6 @@ module Boxcars
       code = text[/^SQLQuery: (.*)/, 1]
       puts code.colorize(:yellow)
       output = connection.exec_query(code).to_a
-      puts "Answer: #{output}"
       "Answer: #{output}"
     end
 
@@ -116,18 +116,5 @@ module Boxcars
     def my_prompt
       @my_prompt ||= Prompt.new(input_variables: [:question, :dialect, :top_k], template: TEMPLATE)
     end
-
-    # DECIDER_TEMPLATE = <<~DPT
-    #   Given the below input question and list of potential tables, output a comma separated list of the table names that may
-    #   be necessary to answer this question.
-    #   Question: %<query>s
-    #   Table Names: %<table_names>s
-    #   Relevant Table Names:
-    # DPT
-    # DECIDER_PROMPT = Prompt.new(
-    #   input_variables: %i[query table_names],
-    #   template: DECIDER_TEMPLATE,
-    #   output_parser: CommaSeparatedListOutputParser
-    # )
   end
 end
