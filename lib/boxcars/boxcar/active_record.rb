@@ -7,26 +7,20 @@ module Boxcars
     # the description of this engine boxcar
     ARDESC = "useful for when you need to query a database for an application named %<name>s."
     LOCKED_OUT_MODELS = %w[ActiveRecord::SchemaMigration ActiveRecord::InternalMetadata ApplicationRecord].freeze
-    attr_accessor :connection, :input_key, :requested_models
+    attr_accessor :connection, :input_key, :requested_models, :read_only
     attr_reader :except_models
 
     # @param engine [Boxcars::Engine] The engine to user for this boxcar. Can be inherited from a train if nil.
     # @param models [Array<ActiveRecord::Model>] The models to use for this boxcar. Will use all if nil.
-    # @param input_key [Symbol] The key to use for the input. Defaults to :question.
-    # @param output_key [Symbol] The key to use for the output. Defaults to :answer.
-    # @param kwargs [Hash] Any other keyword arguments to pass to the parent class. This can include
-    #   :name, :description and :prompt
-    def initialize(engine: nil, models: nil, input_key: :question, output_key: :answer, **kwargs)
-      if models.is_a?(Array) && models.length.positive?
-        @requested_models = models
-        models.each do |m|
-          raise ArgumentError, "model #{m} needs to be an Active Record model" unless m.ancestors.include?(::ActiveRecord::Base)
-        end
-      elsif models
-        raise ArgumentError, "models needs to be an array of Active Record models"
-      end
+    # @param read_only [Boolean] Whether to use read only models. Defaults to true.
+    # @param kwargs [Hash] Any other keyword arguments. These can include:
+    #   :name, :description, :prompt, :input_key, :output_key and :except_models
+    def initialize(engine: nil, models: nil, read_only: true, **kwargs)
+      check_models(models)
       @except_models = LOCKED_OUT_MODELS + kwargs[:except_models].to_a
-      @input_key = input_key
+      @read_only = read_only
+      @input_key = kwargs[:input_key] || :question
+      @output_key = kwargs[:output_key] || :answer
       the_prompt = kwargs[prompt] || my_prompt
       name = kwargs[:name] || "Data"
       super(name: name,
@@ -60,6 +54,21 @@ module Boxcars
 
     private
 
+    def read_only?
+      read_only
+    end
+
+    def check_models(models)
+      if models.is_a?(Array) && models.length.positive?
+        @requested_models = models
+        models.each do |m|
+          raise ArgumentError, "model #{m} needs to be an Active Record model" unless m.ancestors.include?(::ActiveRecord::Base)
+        end
+      elsif models
+        raise ArgumentError, "models needs to be an array of Active Record models"
+      end
+    end
+
     def wanted_models
       the_models = requested_models || ::ActiveRecord::Base.descendants
       the_models.reject { |m| except_models.include?(m.name) }
@@ -75,18 +84,49 @@ module Boxcars
       models.pretty_inspect
     end
 
+    # to be safe, we wrap the code in a transaction and rollback
+    # rubocop:disable Lint/SuppressedException
+    def wrap_in_transaction
+      ::ActiveRecord::Base.transaction do
+        yield
+      ensure
+        raise ::ActiveRecord::Rollback
+      end
+    rescue ::ActiveRecord::Rollback
+    end
+    # rubocop:enable Lint/SuppressedException
+
+    def safe_to_run?(code)
+      return true unless read_only?
+
+      bad_words = %w[delete delete_all destroy destroy_all update update_all upsert upsert_all create save insert drop alter
+                     truncate revoke commit rollback reset execute].freeze
+      without_strings = code.gsub(/('([^'\\]*(\\.[^'\\]*)*)'|"([^"\\]*(\\.[^"\\]*)*"))/, 'XX')
+      word_list = without_strings.split(/[.,()]/)
+
+      bad_words.each do |w|
+        if word_list.include?(w)
+          puts "code included destructive instruction: #{w} #{code}"
+          return false
+        end
+      end
+
+      true
+    end
+
     def get_active_record_answer(text)
       code = text[/^ARCode: (.*)/, 1]
       puts code.colorize(:yellow)
-      begin
-        # rubocop:disable Security/Eval
-        output = eval code
-        # rubocop:enable Security/Eval
-        output = output.first if output.is_a?(Array) && output.length == 1
-        "Answer: #{output.inspect}"
-      rescue StandardError => e
-        "Error: #{e.message}"
-      end
+      raise SecurityError, "Can not run code that makes changes in read-only mode" unless safe_to_run?(code)
+
+      # rubocop:disable Security/Eval
+      output = eval code
+      # rubocop:enable Security/Eval
+      output = 0 if output.is_a?(Array) && output.empty?
+      output = output.first if output.is_a?(Array) && output.length == 1
+      "Answer: #{output.inspect}"
+    rescue StandardError => e
+      "Error: #{e.message}"
     end
 
     def get_answer(text)

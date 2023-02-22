@@ -33,14 +33,15 @@ module Boxcars
     # @param engine [Boxcars::Engine] The engine to use for this train.
     # @param name [String] The name of the train. Defaults to 'Zero Shot'.
     # @param description [String] The description of the train. Defaults to 'Zero Shot Train'.
-    def initialize(boxcars:, engine: nil, name: 'Zero Shot', description: 'Zero Shot Train')
+    # @param prompt [Boxcars::Prompt] The prompt to use. Defaults to the built-in prompt.
+    def initialize(boxcars:, engine: nil, name: 'Zero Shot', description: 'Zero Shot Train', prompt: nil)
       @observation_prefix = 'Observation: '
       @engine_prefix = 'Thought:'
-      prompt = self.class.create_prompt(boxcars: boxcars)
+      prompt ||= self.class.create_prompt(boxcars: boxcars)
       super(engine: engine, boxcars: boxcars, prompt: prompt, name: name, description: description)
     end
 
-    # Create prompt in the style of the zero shot agent.
+    # Create prompt in the style of the zero shot agent. Without arguments, returns the default prompt.
     # @param boxcars [Array<Boxcars::Boxcar>] List of boxcars the agent will have access to, used to format the prompt.
     # @param prefix [String] String to put before the main prompt.
     # @param suffix [String] String to put after the main prompt.

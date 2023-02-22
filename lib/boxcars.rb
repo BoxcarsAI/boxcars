@@ -16,6 +16,9 @@ module Boxcars
   # Error class for all Boxcars value errors.
   class ValueError < Error; end
 
+  # Error class for all Boxcars security errors.
+  class SecurityError < Error; end
+
   # simple string colorization
   class ::String
     # colorize a string

@@ -11,9 +11,9 @@
   <a href="https://github.com/BoxcarsAI/boxcars/blob/main/LICENSE.txt"><img src="https://img.shields.io/badge/license-MIT-informational" alt="License"></a>
 </p>
 
-Boxcars is a gem that enables you to create new systems with AI composability, using various concepts such as OpenAI, Search, SQL, Rails Active Record and more (including your concepts).
+Boxcars is a gem that enables you to create new systems with AI composability, using various concepts such as OpenAI, Search, SQL, Rails Active Record and more. This can even be extended with your concepts as well.(including your concepts).
 
-This work was inspired by the popular Python library Langchain. However, we wanted to give it a Ruby spin and make it more user-friendly for beginners to get started.
+This gem was inspired by the popular Python library Langchain. However, we wanted to give it a Ruby spin and make it more user-friendly for beginners to get started.
 
 ## Concepts
 All of these concepts are in a module named Boxcars:
@@ -79,10 +79,11 @@ Note that since Openai is currently the most used Engine, if you do not pass in 
 calc = Boxcars::Calculator.new # just use the default Engine
 puts calc.run "what is pi to the forth power divided by 22.1?"
 ```
+You can change the default_engine with `Boxcars::configuration.default_engine = NewDefaultEngine`
 ### Boxcars currently implemmented
 
 Here is what we have so far, but please put up a PR with your new ideas.
-- Search: uses the SERP API to do seaches
+- GoogleSearch: uses the SERP API to do seaches
 - Calculator: uses an Engine to generate ruby code to do math
 - SQL: given an ActiveRecord connection, it will generate and run sql statments from a prompt.
 
