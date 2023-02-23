@@ -9,9 +9,6 @@ on:
 
 jobs:
   specs:
-    env:
-      OPENAI_ACCESS_TOKEN: ${{ 'DUMMY_OPENAI_TOKEN' }}
-      SERPAPI_API_KEY: ${{ 'DUMMY_SERP_API_KEY' }}
     runs-on: ubuntu-latest
 
     strategy:

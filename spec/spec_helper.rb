@@ -10,8 +10,6 @@ require "debug"
 require "support/helpdesk_sample_app"
 
 Dir[File.expand_path("spec/support/**/*.rb")].sort.each { |f| require f }
-ENV["OPENAI_ACCESS_TOKEN"] = 'dummy_openai_token' unless ENV.key?("OPENAI_ACCESS_TOKEN")
-ENV["SERPAPI_API_KEY"] = 'dummy_openai_token' unless ENV.key?("SERPAPI_API_KEY")
 VCR.configure do |c|
   c.hook_into :webmock
   c.cassette_library_dir = "spec/fixtures/cassettes"
