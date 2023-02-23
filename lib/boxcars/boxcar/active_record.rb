@@ -7,18 +7,20 @@ module Boxcars
     # the description of this engine boxcar
     ARDESC = "useful for when you need to query a database for an application named %<name>s."
     LOCKED_OUT_MODELS = %w[ActiveRecord::SchemaMigration ActiveRecord::InternalMetadata ApplicationRecord].freeze
-    attr_accessor :connection, :input_key, :requested_models, :read_only
+    attr_accessor :connection, :input_key, :requested_models, :read_only, :approval_function
     attr_reader :except_models
 
     # @param engine [Boxcars::Engine] The engine to user for this boxcar. Can be inherited from a train if nil.
     # @param models [Array<ActiveRecord::Model>] The models to use for this boxcar. Will use all if nil.
-    # @param read_only [Boolean] Whether to use read only models. Defaults to true.
+    # @param read_only [Boolean] Whether to use read only models. Defaults to true unless you pass an approval function.
+    # @param approval_function [Proc] A function to call to approve changes. Defaults to nil.
     # @param kwargs [Hash] Any other keyword arguments. These can include:
     #   :name, :description, :prompt, :input_key, :output_key and :except_models
-    def initialize(engine: nil, models: nil, read_only: true, **kwargs)
+    def initialize(engine: nil, models: nil, read_only: nil, approval_function: nil, **kwargs)
       check_models(models)
       @except_models = LOCKED_OUT_MODELS + kwargs[:except_models].to_a
-      @read_only = read_only
+      @approval_function = approval_function
+      @read_only = read_only.nil? ? !approval_function : read_only
       @input_key = kwargs[:input_key] || :question
       @output_key = kwargs[:output_key] || :answer
       the_prompt = kwargs[prompt] || my_prompt
@@ -85,16 +87,15 @@ module Boxcars
     end
 
     # to be safe, we wrap the code in a transaction and rollback
-    # rubocop:disable Lint/SuppressedException
     def wrap_in_transaction
+      rv = nil
       ::ActiveRecord::Base.transaction do
-        yield
+        rv = yield
       ensure
         raise ::ActiveRecord::Rollback
       end
-    rescue ::ActiveRecord::Rollback
+      rv
     end
-    # rubocop:enable Lint/SuppressedException
 
     def safe_to_run?(code)
       return true unless read_only?
@@ -114,14 +115,52 @@ module Boxcars
       true
     end
 
+    def change_count(changes_code)
+      return 0 unless changes_code
+
+      wrap_in_transaction do
+        # rubocop:disable Security/Eval
+        puts "computing change count with: #{changes_code}".colorize(:yellow)
+        eval changes_code
+        # rubocop:enable Security/Eval
+      end
+    end
+
+    def approved?(changes_code, code)
+      # find out how many changes there are
+      changes = change_count(changes_code)
+      puts "pending changes: #{changes} records".colorize(:yellow)
+      return true unless changes&.positive?
+
+      change_str = "#{changes} change#{'s' if changes.to_i > 1}"
+      raise SecurityError, "Can not run code that makes #{change_str} in read-only mode" if read_only?
+
+      return approval_function.call(changes, code) if approval_function.is_a?(Proc)
+
+      puts "This request will make #{change_str} changes. Are you sure you want to run it? (y/[n])"
+      answer = gets.chomp
+      answer.downcase == 'y'
+    end
+
+    # rubocop:disable Security/Eval
+    def run_active_record_code(code)
+      puts code.colorize(:yellow)
+      if read_only?
+        wrap_in_transaction do
+          eval code
+        end
+      else
+        eval code
+      end
+    end
+    # rubocop:enable Security/Eval
+
     def get_active_record_answer(text)
       code = text[/^ARCode: (.*)/, 1]
-      puts code.colorize(:yellow)
-      raise SecurityError, "Can not run code that makes changes in read-only mode" unless safe_to_run?(code)
+      changes_code = text[/^ARChanges: (.*)/, 1]
+      raise SecurityError, "Permission to run code that makes changes denied" unless approved?(changes_code, code)
 
-      # rubocop:disable Security/Eval
-      output = eval code
-      # rubocop:enable Security/Eval
+      output = run_active_record_code(code)
       output = 0 if output.is_a?(Array) && output.empty?
       output = output.first if output.is_a?(Array) && output.length == 1
       "Answer: #{output.inspect}"
@@ -130,6 +169,7 @@ module Boxcars
     end
 
     def get_answer(text)
+      # debugger
       case text
       when /^ARCode:/
         get_active_record_answer(text)
@@ -154,6 +194,7 @@ module Boxcars
       Use the following format:
       Question: "Question here"
       ARCode: "Active Record code to run"
+      ARChanges: "Active Record code to compute the number of records going to change" - Only add this line if the ARCode on the line before will make data changes
       Answer: "Final answer here"
 
       Only use the following Active Record models:

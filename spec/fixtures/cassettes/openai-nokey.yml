@@ -1,0 +1,63 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://api.openai.com/v1/completions
+    body:
+      encoding: UTF-8
+      string: '{"prompt":"write a poem","model":"text-davinci-003","temperature":0.7,"max_tokens":256}'
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer <openai_access_token>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Thu, 23 Feb 2023 21:58:22 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '866'
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - no-cache, must-revalidate
+      Openai-Model:
+      - text-davinci-003
+      Openai-Organization:
+      - user-ri9zw9ahumb1bo9vs73mudbi
+      Openai-Processing-Ms:
+      - '5798'
+      Openai-Version:
+      - '2020-10-01'
+      Strict-Transport-Security:
+      - max-age=15724800; includeSubDomains
+      X-Request-Id:
+      - e89d3e0207a81348184dd93b3be42c1f
+    body:
+      encoding: UTF-8
+      string: '{"id":"cmpl-6nDtRiVms0lT7zyExx92OngHoO4R8","object":"text_completion","created":1677189497,"model":"text-davinci-003","choices":[{"text":"\n\nThe
+        world is a tapestry of colors and light\nThe beauty of life is a wondrous
+        sight\nLife is full of joy and strife\nEach day brings a different kind of
+        life\n\nThe sun sets and the stars come out\nThe beauty of nature is all about\nThe
+        night sky is a sight to behold\nThe stars twinkle and the moon glows gold\n\nThe
+        beauty of life is here to stay\nIt follows us through night and day\nEach
+        moment is a precious gift\nTo be cherished and not to be missed\n\nLife can
+        be full of surprises\nAnd often times it can be full of lies\nBut if we take
+        the time to enjoy\nWe''ll find that life is full of joy","index":0,"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":3,"completion_tokens":149,"total_tokens":152}}
+
+        '
+  recorded_at: Thu, 23 Feb 2023 21:58:22 GMT
+recorded_with: VCR 6.1.0

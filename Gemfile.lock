@@ -56,6 +56,8 @@ GEM
     faraday-http-cache (2.4.1)
       faraday (>= 0.8)
     faraday-net_http (3.0.2)
+    faraday-retry (2.0.0)
+      faraday (~> 2.0)
     fiber-local (1.0.0)
     github_changelog_generator (1.16.4)
       activesupport
@@ -171,6 +173,7 @@ DEPENDENCIES
   boxcars!
   debug (~> 1.1)
   dotenv (~> 2.8)
+  faraday-retry (~> 2.0)
   github_changelog_generator (~> 1.16)
   rake (~> 13.0)
   rspec (~> 3.2)

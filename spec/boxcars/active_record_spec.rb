@@ -33,7 +33,7 @@ RSpec.describe Boxcars::ActiveRecord do
 
   context "with sample helpdesk app some models" do
     boxcar = described_class.new(models: [Comment, Ticket, User])
-    boxcar2 = described_class.new(models: [Comment, Ticket, User], read_only: false)
+    boxcar2 = described_class.new(models: [Comment, Ticket, User], approval_function: ->(_count, _code) { true })
 
     it "can count comments from john" do
       VCR.use_cassette("ar3") do
