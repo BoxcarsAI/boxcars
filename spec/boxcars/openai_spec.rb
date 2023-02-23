@@ -8,9 +8,7 @@ RSpec.describe Boxcars::Openai do
 
     it "raises an error" do
       expect do
-        VCR.use_cassette("openai-nokey") do
-          described_class.new.client(prompt: "write a poem")
-        end
+        described_class.new.client(prompt: "write a poem")
       end.to raise_error(Boxcars::ConfigurationError)
     end
   end
