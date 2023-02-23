@@ -7,20 +7,20 @@ module Boxcars
     # the description of this engine boxcar
     ARDESC = "useful for when you need to query a database for an application named %<name>s."
     LOCKED_OUT_MODELS = %w[ActiveRecord::SchemaMigration ActiveRecord::InternalMetadata ApplicationRecord].freeze
-    attr_accessor :connection, :input_key, :requested_models, :read_only, :approval_function
+    attr_accessor :connection, :input_key, :requested_models, :read_only, :approval_callback
     attr_reader :except_models
 
     # @param engine [Boxcars::Engine] The engine to user for this boxcar. Can be inherited from a train if nil.
     # @param models [Array<ActiveRecord::Model>] The models to use for this boxcar. Will use all if nil.
     # @param read_only [Boolean] Whether to use read only models. Defaults to true unless you pass an approval function.
-    # @param approval_function [Proc] A function to call to approve changes. Defaults to nil.
+    # @param approval_callback [Proc] A function to call to approve changes. Defaults to nil.
     # @param kwargs [Hash] Any other keyword arguments. These can include:
     #   :name, :description, :prompt, :input_key, :output_key and :except_models
-    def initialize(engine: nil, models: nil, read_only: nil, approval_function: nil, **kwargs)
+    def initialize(engine: nil, models: nil, read_only: nil, approval_callback: nil, **kwargs)
       check_models(models)
       @except_models = LOCKED_OUT_MODELS + kwargs[:except_models].to_a
-      @approval_function = approval_function
-      @read_only = read_only.nil? ? !approval_function : read_only
+      @approval_callback = approval_callback
+      @read_only = read_only.nil? ? !approval_callback : read_only
       @input_key = kwargs[:input_key] || :question
       @output_key = kwargs[:output_key] || :answer
       the_prompt = kwargs[prompt] || my_prompt
@@ -129,17 +129,15 @@ module Boxcars
     def approved?(changes_code, code)
       # find out how many changes there are
       changes = change_count(changes_code)
-      puts "pending changes: #{changes} records".colorize(:yellow)
       return true unless changes&.positive?
 
+      puts "Pending Changes: #{changes}".colorize(:yellow, style: :bold)
       change_str = "#{changes} change#{'s' if changes.to_i > 1}"
       raise SecurityError, "Can not run code that makes #{change_str} in read-only mode" if read_only?
 
-      return approval_function.call(changes, code) if approval_function.is_a?(Proc)
+      return approval_callback.call(changes, code) if approval_callback.is_a?(Proc)
 
-      puts "This request will make #{change_str} changes. Are you sure you want to run it? (y/[n])"
-      answer = gets.chomp
-      answer.downcase == 'y'
+      true
     end
 
     # rubocop:disable Security/Eval
@@ -163,6 +161,7 @@ module Boxcars
       output = run_active_record_code(code)
       output = 0 if output.is_a?(Array) && output.empty?
       output = output.first if output.is_a?(Array) && output.length == 1
+      output = output[output.keys.first] if output.is_a?(Hash) && output.length == 1
       "Answer: #{output.inspect}"
     rescue StandardError => e
       "Error: #{e.message}"

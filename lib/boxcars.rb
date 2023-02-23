@@ -106,6 +106,15 @@ module Boxcars
   def self.engine
     configuration.default_engine || Boxcars::Openai
   end
+
+  # return a proc that will ask the user for input
+  def self.ask_user
+    proc do |changes, _code|
+      puts "This request will make #{changes} changes. Are you sure you want to run it? (y/[n])"
+      answer = gets.chomp
+      answer.downcase == 'y'
+    end
+  end
 end
 
 require "boxcars/version"
