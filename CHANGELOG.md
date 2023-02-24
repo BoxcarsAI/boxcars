@@ -1,5 +1,18 @@
 # Changelog
 
+## [Unreleased](https://github.com/BoxcarsAI/boxcars/tree/HEAD)
+
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.1.5...HEAD)
+
+**Implemented enhancements:**
+
+- Add a callback function for Boxcars::ActiveRecord to approve changes  [\#24](https://github.com/BoxcarsAI/boxcars/issues/24)
+
+**Merged pull requests:**
+
+- Add approval callback function for Boxcars::ActiveRecord for changes to the data [\#25](https://github.com/BoxcarsAI/boxcars/pull/25) ([francis](https://github.com/francis))
+- \[fix\] Fixed specs which required a key [\#23](https://github.com/BoxcarsAI/boxcars/pull/23) ([AKovtunov](https://github.com/AKovtunov))
+
 ## [v0.1.5](https://github.com/BoxcarsAI/boxcars/tree/v0.1.5) (2023-02-22)
 
 [Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.1.4...v0.1.5)
