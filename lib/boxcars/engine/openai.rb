@@ -38,7 +38,7 @@ module Boxcars
     # @param openai_access_token [String] The access token to use when asking the engine.
     #   Defaults to Boxcars.configuration.openai_access_token.
     # @param kwargs [Hash] Additional parameters to pass to the engine if wanted.
-    def client(prompt:, openai_access_token: 'not set', **kwargs)
+    def client(prompt:, openai_access_token: nil, **kwargs)
       access_token = Boxcars.configuration.openai_access_token(openai_access_token: openai_access_token)
       organization_id = Boxcars.configuration.organization_id
       clnt = ::OpenAI::Client.new(access_token: access_token, organization_id: organization_id)

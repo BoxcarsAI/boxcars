@@ -68,7 +68,7 @@ module Boxcars
     end
 
     def key_lookup(key, kwargs)
-      rv = if kwargs.key?(key) && kwargs[key] != "not set"
+      rv = if kwargs.key?(key) && !kwargs[key].nil?
              # override with kwargs if present
              kwargs[key]
            elsif (set_val = instance_variable_get("@#{key}"))
@@ -77,7 +77,6 @@ module Boxcars
            else
              # otherwise, dig out of the environment
              new_key = ENV.fetch(key.to_s.upcase, nil)
-             send("#{key}=", new_key) if new_key
              new_key
            end
       check_key(key, rv)
@@ -106,6 +105,15 @@ module Boxcars
   # Return the default Engine class.
   def self.engine
     configuration.default_engine || Boxcars::Openai
+  end
+
+  # return a proc that will ask the user for input
+  def self.ask_user
+    proc do |changes, _code|
+      puts "This request will make #{changes} changes. Are you sure you want to run it? (y/[n])"
+      answer = gets.chomp
+      answer.downcase == 'y'
+    end
   end
 end
 

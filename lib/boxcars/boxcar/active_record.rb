@@ -7,18 +7,20 @@ module Boxcars
     # the description of this engine boxcar
     ARDESC = "useful for when you need to query a database for an application named %<name>s."
     LOCKED_OUT_MODELS = %w[ActiveRecord::SchemaMigration ActiveRecord::InternalMetadata ApplicationRecord].freeze
-    attr_accessor :connection, :input_key, :requested_models, :read_only
+    attr_accessor :connection, :input_key, :requested_models, :read_only, :approval_callback
     attr_reader :except_models
 
     # @param engine [Boxcars::Engine] The engine to user for this boxcar. Can be inherited from a train if nil.
     # @param models [Array<ActiveRecord::Model>] The models to use for this boxcar. Will use all if nil.
-    # @param read_only [Boolean] Whether to use read only models. Defaults to true.
+    # @param read_only [Boolean] Whether to use read only models. Defaults to true unless you pass an approval function.
+    # @param approval_callback [Proc] A function to call to approve changes. Defaults to nil.
     # @param kwargs [Hash] Any other keyword arguments. These can include:
     #   :name, :description, :prompt, :input_key, :output_key and :except_models
-    def initialize(engine: nil, models: nil, read_only: true, **kwargs)
+    def initialize(engine: nil, models: nil, read_only: nil, approval_callback: nil, **kwargs)
       check_models(models)
       @except_models = LOCKED_OUT_MODELS + kwargs[:except_models].to_a
-      @read_only = read_only
+      @approval_callback = approval_callback
+      @read_only = read_only.nil? ? !approval_callback : read_only
       @input_key = kwargs[:input_key] || :question
       @output_key = kwargs[:output_key] || :answer
       the_prompt = kwargs[prompt] || my_prompt
@@ -85,28 +87,28 @@ module Boxcars
     end
 
     # to be safe, we wrap the code in a transaction and rollback
-    # rubocop:disable Lint/SuppressedException
-    def wrap_in_transaction
+    def rollback_after_running
+      rv = nil
       ::ActiveRecord::Base.transaction do
-        yield
+        rv = yield
       ensure
         raise ::ActiveRecord::Rollback
       end
-    rescue ::ActiveRecord::Rollback
+      rv
     end
-    # rubocop:enable Lint/SuppressedException
 
+    # check for dangerous code that is outside of ActiveRecord
     def safe_to_run?(code)
-      return true unless read_only?
-
-      bad_words = %w[delete delete_all destroy destroy_all update update_all upsert upsert_all create save insert drop alter
-                     truncate revoke commit rollback reset execute].freeze
+      bad_words = %w[commit drop_constraint drop_constraint! drop_extension drop_extension! drop_foreign_key drop_foreign_key! \
+                     drop_index drop_index! drop_join_table drop_join_table! drop_materialized_view drop_materialized_view! \
+                     drop_partition drop_partition! drop_schema drop_schema! drop_table drop_table! drop_trigger drop_trigger! \
+                     drop_view drop_view! eval execute reset revoke rollback truncate].freeze
       without_strings = code.gsub(/('([^'\\]*(\\.[^'\\]*)*)'|"([^"\\]*(\\.[^"\\]*)*"))/, 'XX')
       word_list = without_strings.split(/[.,()]/)
 
       bad_words.each do |w|
         if word_list.include?(w)
-          puts "code included destructive instruction: #{w} #{code}"
+          puts "code included destructive instruction: #{w} #{code}".colorize(:red)
           return false
         end
       end
@@ -114,22 +116,64 @@ module Boxcars
       true
     end
 
-    def get_active_record_answer(text)
-      code = text[/^ARCode: (.*)/, 1]
-      puts code.colorize(:yellow)
-      raise SecurityError, "Can not run code that makes changes in read-only mode" unless safe_to_run?(code)
+    def evaluate_input(code)
+      raise SecurityError, "Found unsafe code while evaluating: #{code}" unless safe_to_run?(code)
 
       # rubocop:disable Security/Eval
-      output = eval code
+      eval code
       # rubocop:enable Security/Eval
+    end
+
+    def change_count(changes_code)
+      return 0 unless changes_code
+
+      rollback_after_running do
+        puts "computing change count with: #{changes_code}".colorize(:yellow)
+        evaluate_input changes_code
+      end
+    end
+
+    def approved?(changes_code, code)
+      # find out how many changes there are
+      changes = change_count(changes_code)
+      return true unless changes&.positive?
+
+      puts "Pending Changes: #{changes}".colorize(:yellow, style: :bold)
+      change_str = "#{changes} change#{'s' if changes.to_i > 1}"
+      raise SecurityError, "Can not run code that makes #{change_str} in read-only mode" if read_only?
+
+      return approval_callback.call(changes, code) if approval_callback.is_a?(Proc)
+
+      true
+    end
+
+    def run_active_record_code(code)
+      puts code.colorize(:yellow)
+      if read_only?
+        rollback_after_running do
+          evaluate_input code
+        end
+      else
+        evaluate_input code
+      end
+    end
+
+    def get_active_record_answer(text)
+      code = text[/^ARCode: (.*)/, 1]
+      changes_code = text[/^ARChanges: (.*)/, 1]
+      raise SecurityError, "Permission to run code that makes changes denied" unless approved?(changes_code, code)
+
+      output = run_active_record_code(code)
       output = 0 if output.is_a?(Array) && output.empty?
       output = output.first if output.is_a?(Array) && output.length == 1
+      output = output[output.keys.first] if output.is_a?(Hash) && output.length == 1
       "Answer: #{output.inspect}"
     rescue StandardError => e
       "Error: #{e.message}"
     end
 
     def get_answer(text)
+      # debugger
       case text
       when /^ARCode:/
         get_active_record_answer(text)
@@ -154,6 +198,7 @@ module Boxcars
       Use the following format:
       Question: "Question here"
       ARCode: "Active Record code to run"
+      ARChanges: "Active Record code to compute the number of records going to change" - Only add this line if the ARCode on the line before will make data changes
       Answer: "Final answer here"
 
       Only use the following Active Record models:

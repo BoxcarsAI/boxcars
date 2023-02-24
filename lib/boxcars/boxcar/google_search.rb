@@ -13,7 +13,7 @@ module Boxcars
     # @param name [String] The name of the boxcar. Defaults to classname.
     # @param description [String] A description of the boxcar. Defaults to SERPDESC.
     # @param serpapi_api_key [String] The API key to use for the SerpAPI. Defaults to Boxcars.configuration.serpapi_api_key.
-    def initialize(name: "Search", description: SERPDESC, serpapi_api_key: "not set")
+    def initialize(name: "Search", description: SERPDESC, serpapi_api_key: nil)
       super(name: name, description: description)
       api_key = Boxcars.configuration.serpapi_api_key(serpapi_api_key: serpapi_api_key)
       ::GoogleSearch.api_key = api_key
