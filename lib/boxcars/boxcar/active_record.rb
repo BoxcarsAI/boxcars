@@ -87,7 +87,7 @@ module Boxcars
     end
 
     # to be safe, we wrap the code in a transaction and rollback
-    def wrap_in_transaction
+    def rollback_after_running
       rv = nil
       ::ActiveRecord::Base.transaction do
         rv = yield
@@ -97,17 +97,18 @@ module Boxcars
       rv
     end
 
+    # check for dangerous code that is outside of ActiveRecord
     def safe_to_run?(code)
-      return true unless read_only?
-
-      bad_words = %w[delete delete_all destroy destroy_all update update_all upsert upsert_all create save insert drop alter
-                     truncate revoke commit rollback reset execute].freeze
+      bad_words = %w[commit drop_constraint drop_constraint! drop_extension drop_extension! drop_foreign_key drop_foreign_key! \
+                     drop_index drop_index! drop_join_table drop_join_table! drop_materialized_view drop_materialized_view! \
+                     drop_partition drop_partition! drop_schema drop_schema! drop_table drop_table! drop_trigger drop_trigger! \
+                     drop_view drop_view! eval execute reset revoke rollback truncate].freeze
       without_strings = code.gsub(/('([^'\\]*(\\.[^'\\]*)*)'|"([^"\\]*(\\.[^"\\]*)*"))/, 'XX')
       word_list = without_strings.split(/[.,()]/)
 
       bad_words.each do |w|
         if word_list.include?(w)
-          puts "code included destructive instruction: #{w} #{code}"
+          puts "code included destructive instruction: #{w} #{code}".colorize(:red)
           return false
         end
       end
@@ -115,14 +116,20 @@ module Boxcars
       true
     end
 
+    def evaluate_input(code)
+      raise SecurityError, "Found unsafe code while evaluating: #{code}" unless safe_to_run?(code)
+
+      # rubocop:disable Security/Eval
+      eval code
+      # rubocop:enable Security/Eval
+    end
+
     def change_count(changes_code)
       return 0 unless changes_code
 
-      wrap_in_transaction do
-        # rubocop:disable Security/Eval
+      rollback_after_running do
         puts "computing change count with: #{changes_code}".colorize(:yellow)
-        eval changes_code
-        # rubocop:enable Security/Eval
+        evaluate_input changes_code
       end
     end
 
@@ -140,18 +147,16 @@ module Boxcars
       true
     end
 
-    # rubocop:disable Security/Eval
     def run_active_record_code(code)
       puts code.colorize(:yellow)
       if read_only?
-        wrap_in_transaction do
-          eval code
+        rollback_after_running do
+          evaluate_input code
         end
       else
-        eval code
+        evaluate_input code
       end
     end
-    # rubocop:enable Security/Eval
 
     def get_active_record_answer(text)
       code = text[/^ARCode: (.*)/, 1]
