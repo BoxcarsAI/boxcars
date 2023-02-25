@@ -19,7 +19,7 @@ This gem was inspired by the popular Python library Langchain. However, we wante
 All of these concepts are in a module named Boxcars:
 - Prompt: used by an Engine to generate text results.
 - Engine: an entity that generates text from a Prompt. OpenAI's LLM text generatory is the default Engine if no other is specified.
-- Boxcar: an encapsulation of a concept that performs something of interest (such as search, math, or SQL). A boxcar can use an Engine to do its work.
+- Boxcar: an encapsulation of a concept that performs something of interest (such as search, math, or SQL). A Boxcar can use an Engine to do its work.
 - Train: Given a list of Boxcars and optionally an Engine, a Train breaks down a problem into pieces for individual Boxcars to solve. The individual results are then combined until a final answer is found. ZeroShot is the only current implementation of Train, and you can either construct it directly or use `Boxcars::train` when you want to build a Train.
 
 ## Installation
