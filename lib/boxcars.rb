@@ -62,7 +62,7 @@ module Boxcars
 
     def check_key(key, val)
       unless val.nil? || val.empty?
-        instance_variable_set("@#{key}", val)
+        instance_variable_set("@#{key}", val) unless instance_variable_get("@#{key}")
         return val
       end
 
