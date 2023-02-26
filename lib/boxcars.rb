@@ -61,25 +61,28 @@ module Boxcars
     private
 
     def check_key(key, val)
-      return val unless val.nil? || val.empty?
+      unless val.nil? || val.empty?
+        instance_variable_set("@#{key}", val)
+        return val
+      end
 
       error_text = ":#{key} missing! Please pass key, or set #{key.to_s.upcase} environment variable."
       raise ConfigurationError, error_text
     end
 
     def key_lookup(key, kwargs)
-      rv = if kwargs.key?(key) && !kwargs[key].nil?
-             # override with kwargs if present
-             kwargs[key]
-           elsif (set_val = instance_variable_get("@#{key}"))
-             # use saved value if present
-             set_val
-           else
-             # otherwise, dig out of the environment
-             new_key = ENV.fetch(key.to_s.upcase, nil)
-             new_key
-           end
-      check_key(key, rv)
+      val = if kwargs.key?(key) && !kwargs[key].nil?
+              # override with kwargs if present
+              kwargs[key]
+            elsif (saved_val = instance_variable_get("@#{key}"))
+              # use saved value if present
+              saved_val
+            else
+              # otherwise, dig out of the environment
+              env_val = ENV.fetch(key.to_s.upcase, nil)
+              env_val
+            end
+      check_key(key, val)
     end
   end
 
