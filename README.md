@@ -120,6 +120,14 @@ Final Answer: 201.06
 See [this](https://github.com/BoxcarsAI/boxcars/blob/main/notebooks/boxcars_examples.ipynb) Jupyter Notebook for more examples.
 
 Note, some folks that we talked to didn't know that you could run Ruby Jupyter notebooks. [You can](https://github.com/SciRuby/iruby).
+
+### Logging
+If you use this in a Rails application, or configure `Boxcars.configuration.logger = your_logger`, logging will go to your log file.
+
+Also, if you set this flag: `Boxcars.configuration.lop_prompts = true`
+The actual prompts handed to the connected Engine will be logged. This is off by default because it is very wordy, but handy if you are debugging prompts.
+
+Otherwise, we print to standard out.
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
