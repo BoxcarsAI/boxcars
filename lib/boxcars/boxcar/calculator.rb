@@ -40,7 +40,7 @@ module Boxcars
     def call(inputs:)
       t = predict(question: inputs[input_key], stop: ["```output"]).strip
       answer = get_answer(t)
-      puts answer.colorize(:magenta)
+      Boxcars.info answer, :magenta
       { output_key => answer }
     end
 

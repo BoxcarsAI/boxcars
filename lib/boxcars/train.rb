@@ -112,7 +112,7 @@ module Boxcars
     # @param intermediate_steps [Array<Hash>] The intermediate steps.
     # @return [Hash] The final output.
     def pre_return(output, intermediate_steps)
-      puts output.log.colorize(:yellow, style: :bold)
+      Boxcars.debug output.log, :yellow, style: :bold
       final_output = output.return_values
       final_output["intermediate_steps"] = intermediate_steps if return_intermediate_steps
       final_output
@@ -198,14 +198,14 @@ module Boxcars
             observation = boxcar.run(output.boxcar_input)
             return_direct = boxcar.return_direct
           rescue StandardError => e
-            puts "Error in #{boxcar.name} boxcar#call: #{e}".colorize(:red)
+            error "Error in #{boxcar.name} boxcar#call: #{e}", :red
             raise e
           end
         else
           observation = "#{output.boxcar} is not a valid boxcar, try another one."
           return_direct = false
         end
-        puts "Observation: #{observation}".colorize(:green)
+        Boxcars.debug "Observation: #{observation}", :green
         intermediate_steps.append([output, observation])
         if return_direct
           output = TrainFinish.new({ return_values[0] => observation }, "")

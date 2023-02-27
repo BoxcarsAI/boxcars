@@ -17,10 +17,11 @@ This gem was inspired by the popular Python library Langchain. However, we wante
 
 ## Concepts
 All of these concepts are in a module named Boxcars:
-- Prompt: used by an Engine to generate text results.
-- Engine: an entity that generates text from a Prompt. OpenAI's LLM text generatory is the default Engine if no other is specified.
-- Boxcar: an encapsulation of a concept that performs something of interest (such as search, math, or SQL). A Boxcar can use an Engine to do its work.
-- Train: Given a list of Boxcars and optionally an Engine, a Train breaks down a problem into pieces for individual Boxcars to solve. The individual results are then combined until a final answer is found. ZeroShot is the only current implementation of Train, and you can either construct it directly or use `Boxcars::train` when you want to build a Train.
+
+- Boxcar - an encapsulation that performs something of interest (such as search, math, SQL or an Active Record Query). A Boxcar can use an Engine (described below) to do its work.
+- Train - Given a list of Boxcars and optionally an Engine, a Train breaks down a problem into pieces for individual Boxcars to solve. The individual results are then combined until a final answer is found. ZeroShot is the only current implementation of Train (but we are adding more soon), and you can either construct it directly or use `Boxcars::train` when you want to build a Train.
+- Prompt - used by an Engine to generate text results. Most of the Boxcars have built-in prompts, so you only need to worry about these if you are extending the system.
+- Engine - an entity that generates text from a Prompt. OpenAI's LLM text generator is the default Engine if no other is specified.
 
 ## Installation
 
@@ -86,6 +87,7 @@ Here is what we have so far, but please put up a PR with your new ideas.
 - GoogleSearch: uses the SERP API to do seaches
 - Calculator: uses an Engine to generate ruby code to do math
 - SQL: given an ActiveRecord connection, it will generate and run sql statments from a prompt.
+- ActiveRecord: given an ActiveRecord connection, it will generate and run ActiveRecord statements from a prompt.
 
 ### Run a list of Boxcars
 ```ruby
@@ -114,7 +116,10 @@ Final Answer: 201.06
 < Exiting Zero Shot#run
 201.06
 ```
+### More Examples
+See [this](https://github.com/BoxcarsAI/boxcars/blob/main/notebooks/boxcars_examples.ipynb) Jupyter Notebook for more examples.
 
+Note, some folks that we talked to didn't know that you could run Ruby Jupyter notebooks. [You can](https://github.com/SciRuby/iruby).
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
@@ -123,7 +128,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/boxcars. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/[USERNAME]/boxcars/blob/main/CODE_OF_CONDUCT.md).
+Bug reports and pull requests are welcome on GitHub at https://github.com/BoxcarsAI/boxcars. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/BoxcarsAI/boxcars/blob/main/CODE_OF_CONDUCT.md).
 
 ## License
 
@@ -131,4 +136,4 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Code of Conduct
 
-Everyone interacting in the Boxcars project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/boxcars/blob/main/CODE_OF_CONDUCT.md).
+Everyone interacting in the Boxcars project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/BoxcarsAI/boxcars/blob/main/CODE_OF_CONDUCT.md).

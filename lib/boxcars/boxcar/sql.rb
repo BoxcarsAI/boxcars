@@ -44,7 +44,7 @@ module Boxcars
     def call(inputs:)
       t = predict(question: inputs[input_key], dialect: dialect, top_k: 5, table_info: schema, stop: ["Answer:"]).strip
       answer = get_answer(t)
-      puts answer.colorize(:magenta)
+      Boxcars.debug answer, :magenta
       { output_key => answer }
     end
 
@@ -72,7 +72,7 @@ module Boxcars
 
     def get_embedded_sql_answer(text)
       code = text[/^SQLQuery: (.*)/, 1]
-      puts code.colorize(:yellow)
+      Boxcars.debug code, :yellow
       output = connection.exec_query(code).to_a
       "Answer: #{output}"
     end

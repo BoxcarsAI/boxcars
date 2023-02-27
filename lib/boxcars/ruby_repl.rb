@@ -6,14 +6,14 @@ module Boxcars
     # Execute ruby code
     # @param code [String] The code to run
     def call(code:)
-      puts "RubyREPL: #{code}".colorize(:yellow)
+      Boxcars.debug "RubyREPL: #{code}", :yellow
       output = ""
       IO.popen("ruby", "r+") do |io|
         io.puts code
         io.close_write
         output = io.read
       end
-      puts "Answer: #{output}".colorize(:yellow, style: :bold)
+      Boxcars.debug "Answer: #{output}", :yellow, style: :bold
       output
     end
 

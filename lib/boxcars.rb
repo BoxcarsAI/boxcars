@@ -19,23 +19,6 @@ module Boxcars
   # Error class for all Boxcars security errors.
   class SecurityError < Error; end
 
-  # simple string colorization
-  class ::String
-    # colorize a string
-    # @param color [Symbol] The color to use.
-    # @param options [Hash] The options to use.
-    def colorize(color, options = {})
-      background = options[:background] || options[:bg] || false
-      style = options[:style]
-      offsets = %i[gray red green yellow blue magenta cyan white]
-      styles = %i[normal bold dark italic underline xx xx underline xx strikethrough]
-      start = background ? 40 : 30
-      color_code = start + (offsets.index(color) || 8)
-      style_code = styles.index(style) || 0
-      "\e[#{style_code};#{color_code}m#{self}\e[0m"
-    end
-  end
-
   # Configuration contains gem settings
   class Configuration
     attr_writer :openai_access_token, :serpapi_api_key
@@ -44,7 +27,6 @@ module Boxcars
     def initialize
       @organization_id = nil
       @logger = Rails.logger if defined?(Rails)
-      @logger ||= Logger.new($stdout)
       @log_prompts = false
     end
 
@@ -114,6 +96,59 @@ module Boxcars
       answer = gets.chomp
       answer.downcase == 'y'
     end
+  end
+
+  # Return a logger, possibly if set.
+  def self.logger
+    Boxcars.configuration.logger
+  end
+
+  # Logging system
+  def self.debug(msg, color = nil, **options)
+    msg = colorize(msg.to_s, color, **options) if color
+    if logger
+      logger.debug(msg)
+    else
+      puts msg
+    end
+  end
+
+  def self.info(msg, color = nil, **options)
+    msg = colorize(msg.to_s, color, **options) if color
+    if logger
+      logger.info(msg)
+    else
+      puts msg
+    end
+  end
+
+  def self.warn(msg, color = nil, **options)
+    msg = colorize(msg.to_s, color, **options) if color
+    if logger
+      logger.warn(msg)
+    else
+      puts msg
+    end
+  end
+
+  def self.error(msg, color = nil, **options)
+    msg = colorize(msg.to_s, color, **options) if color
+    if logger
+      logger.error(msg)
+    else
+      puts msg
+    end
+  end
+
+  def self.colorize(str, color, **options)
+    background = options[:background] || options[:bg] || false
+    style = options[:style]
+    offsets = %i[gray red green yellow blue magenta cyan white]
+    styles = %i[normal bold dark italic underline xx xx underline xx strikethrough]
+    start = background ? 40 : 30
+    color_code = start + (offsets.index(color) || 8)
+    style_code = styles.index(style) || 0
+    "\e[#{style_code};#{color_code}m#{str}\e[0m"
   end
 end
 

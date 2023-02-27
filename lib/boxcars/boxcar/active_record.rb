@@ -50,7 +50,7 @@ module Boxcars
     def call(inputs:)
       t = predict(question: inputs[input_key], top_k: 5, model_info: model_info, stop: ["Answer:"]).strip
       answer = get_answer(t)
-      puts answer.colorize(:magenta)
+      Boxcars.info answer, :magenta
       { output_key => answer }
     end
 
@@ -108,7 +108,7 @@ module Boxcars
 
       bad_words.each do |w|
         if word_list.include?(w)
-          puts "code included destructive instruction: #{w} #{code}".colorize(:red)
+          Boxcars.info "code included destructive instruction: #{w} #{code}", :red
           return false
         end
       end
@@ -128,7 +128,7 @@ module Boxcars
       return 0 unless changes_code
 
       rollback_after_running do
-        puts "computing change count with: #{changes_code}".colorize(:yellow)
+        Boxcars.debug "computing change count with: #{changes_code}", :yellow
         evaluate_input changes_code
       end
     end
@@ -138,7 +138,7 @@ module Boxcars
       changes = change_count(changes_code)
       return true unless changes&.positive?
 
-      puts "Pending Changes: #{changes}".colorize(:yellow, style: :bold)
+      Boxcars.debug "Pending Changes: #{changes}", :yellow, style: :bold
       change_str = "#{changes} change#{'s' if changes.to_i > 1}"
       raise SecurityError, "Can not run code that makes #{change_str} in read-only mode" if read_only?
 
@@ -148,7 +148,7 @@ module Boxcars
     end
 
     def run_active_record_code(code)
-      puts code.colorize(:yellow)
+      Boxcars.debug code, :yellow
       if read_only?
         rollback_after_running do
           evaluate_input code

@@ -62,9 +62,9 @@ module Boxcars
     # you can pass one or the other, but not both.
     # @return [String] The answer to the question.
     def run(*args, **kwargs)
-      puts "> Entering #{name}#run".colorize(:gray, style: :bold)
+      Boxcars.info "> Entering #{name}#run", :gray, style: :bold
       rv = do_run(*args, **kwargs)
-      puts "< Exiting #{name}#run".colorize(:gray, style: :bold)
+      Boxcars.info "< Exiting #{name}#run", :gray, style: :bold
       rv
     end
 
@@ -77,7 +77,7 @@ module Boxcars
       begin
         output = call(inputs: inputs)
       rescue StandardError => e
-        puts "Error in #{name} boxcar#call: #{e}".colorize(:red)
+        error "Error in #{name} boxcar#call: #{e}", :red
         raise e
       end
       validate_outputs(outputs: output.keys)
@@ -101,7 +101,7 @@ module Boxcars
 
     def our_inputs(inputs)
       if inputs.is_a?(String)
-        puts inputs.colorize(:blue) # the question
+        Boxcars.info inputs, :blue # the question
         if input_keys.length != 1
           raise Boxcars::ArgumentError, "A single string input was passed in, but this boxcar expects " \
                                         "multiple inputs (#{input_keys}). When a boxcar expects " \
