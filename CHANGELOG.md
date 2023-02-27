@@ -1,8 +1,20 @@
 # Changelog
 
-## [Unreleased](https://github.com/BoxcarsAI/boxcars/tree/HEAD)
+## [v0.1.7](https://github.com/BoxcarsAI/boxcars/tree/v0.1.7) (2023-02-27)
 
-[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.1.5...HEAD)
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.1.6...v0.1.7)
+
+**Implemented enhancements:**
+
+- figure out logging [\#10](https://github.com/BoxcarsAI/boxcars/issues/10)
+
+**Merged pull requests:**
+
+- Fix typos in README concepts [\#26](https://github.com/BoxcarsAI/boxcars/pull/26) ([MasterOdin](https://github.com/MasterOdin))
+
+## [v0.1.6](https://github.com/BoxcarsAI/boxcars/tree/v0.1.6) (2023-02-24)
+
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.1.5...v0.1.6)
 
 **Implemented enhancements:**
 
