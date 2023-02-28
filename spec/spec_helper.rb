@@ -35,7 +35,6 @@ RSpec.configure do |c|
     token = example.metadata[:skip_tokens] ? nil : "abcdef"
     allow(ENV).to receive(:fetch).with("OPENAI_ACCESS_TOKEN", nil).and_return(token)
     allow(ENV).to receive(:fetch).with("SERPAPI_API_KEY", nil).and_return(token)
-    Boxcars.configuration = Boxcars::Configuration.new
   end
 end
 

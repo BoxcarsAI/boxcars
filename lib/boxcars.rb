@@ -61,10 +61,7 @@ module Boxcars
     private
 
     def check_key(key, val)
-      unless val.nil? || val.empty?
-        instance_variable_set("@#{key}", val) unless instance_variable_get("@#{key}")
-        return val
-      end
+      return val unless val.nil? || val.empty?
 
       error_text = ":#{key} missing! Please pass key, or set #{key.to_s.upcase} environment variable."
       raise ConfigurationError, error_text
@@ -74,9 +71,9 @@ module Boxcars
       val = if kwargs.key?(key) && !kwargs[key].nil?
               # override with kwargs if present
               kwargs[key]
-            elsif (saved_val = instance_variable_get("@#{key}"))
-              # use saved value if present
-              saved_val
+            elsif (provided_val = instance_variable_get("@#{key}"))
+              # use saved value if present. Set using Boxcars::configuration.the_key = "abcde"
+              provided_val
             else
               # otherwise, dig out of the environment
               env_val = ENV.fetch(key.to_s.upcase, nil)
