@@ -102,11 +102,11 @@ module Boxcars
     def our_inputs(inputs)
       if inputs.is_a?(String)
         Boxcars.info inputs, :blue # the question
-        # if input_keys.length != 1
-        #   raise Boxcars::ArgumentError, "A single string input was passed in, but this boxcar expects " \
-        #                                 "multiple inputs (#{input_keys}). When a boxcar expects " \
-        #                                 "multiple inputs, please call it by passing in a hash, eg: `boxcar({'foo': 1, 'bar': 2})`"
-        # end
+        if input_keys.length != 1
+          raise Boxcars::ArgumentError, "A single string input was passed in, but this boxcar expects " \
+                                        "multiple inputs (#{input_keys}). When a boxcar expects " \
+                                        "multiple inputs, please call it by passing in a hash, eg: `boxcar({'foo': 1, 'bar': 2})`"
+        end
         inputs = { input_keys.first => inputs }
       end
       validate_inputs(inputs: inputs)
