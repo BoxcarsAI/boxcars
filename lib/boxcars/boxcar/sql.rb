@@ -10,11 +10,9 @@ module Boxcars
 
     # @param connection [ActiveRecord::Connection] The SQL connection to use for this boxcar.
     # @param engine [Boxcars::Engine] The engine to user for this boxcar. Can be inherited from a train if nil.
-    # @param input_key [Symbol] The key to use for the input. Defaults to :question.
-    # @param output_key [Symbol] The key to use for the output. Defaults to :answer.
     # @param kwargs [Hash] Any other keyword arguments to pass to the parent class. This can include
     #   :name, :description and :prompt
-    def initialize(connection: nil, engine: nil, input_key: :question, output_key: :answer, **kwargs)
+    def initialize(connection: nil, engine: nil, **kwargs)
       @connection = connection || ::ActiveRecord::Base.connection
       @input_key = input_key
       the_prompt = kwargs[prompt] || my_prompt
@@ -22,20 +20,7 @@ module Boxcars
       super(name: name,
             description: kwargs[:description] || format(SQLDESC, name: name),
             engine: engine,
-            prompt: the_prompt,
-            output_key: output_key)
-    end
-
-    # the input keys for the prompt
-    # @return [Array<Symbol>] The input keys for the prompt.
-    def input_keys
-      [input_key]
-    end
-
-    # the output keys for the prompt
-    # @return [Array<Symbol>] The output keys for the prompt.
-    def output_keys
-      [output_key]
+            prompt: the_prompt)
     end
 
     # call the boxcar
@@ -45,7 +30,7 @@ module Boxcars
       t = predict(question: inputs[input_key], dialect: dialect, top_k: 5, table_info: schema, stop: ["Answer:"]).strip
       answer = get_answer(t)
       Boxcars.debug answer, :magenta
-      { output_key => answer }
+      { output_keys.first => answer }
     end
 
     private
@@ -66,7 +51,6 @@ module Boxcars
     end
 
     def dialect
-      # connection.instance_variable_get "@config"[:adapter]
       connection.class.name.split("::").last.sub("Adapter", "")
     end
 
@@ -114,7 +98,7 @@ module Boxcars
 
     # The prompt to use for the engine.
     def my_prompt
-      @my_prompt ||= Prompt.new(input_variables: [:question, :dialect, :top_k], template: TEMPLATE)
+      @my_prompt ||= Prompt.new(input_variables: [:question], other_inputs: [:top_k, :dialect], output_variables: [:answer], template: TEMPLATE)
     end
   end
 end

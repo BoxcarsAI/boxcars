@@ -15,33 +15,18 @@ module Boxcars
     # @param read_only [Boolean] Whether to use read only models. Defaults to true unless you pass an approval function.
     # @param approval_callback [Proc] A function to call to approve changes. Defaults to nil.
     # @param kwargs [Hash] Any other keyword arguments. These can include:
-    #   :name, :description, :prompt, :input_key, :output_key and :except_models
+    #   :name, :description, :prompt, and :except_models
     def initialize(engine: nil, models: nil, read_only: nil, approval_callback: nil, **kwargs)
       check_models(models)
       @except_models = LOCKED_OUT_MODELS + kwargs[:except_models].to_a
       @approval_callback = approval_callback
       @read_only = read_only.nil? ? !approval_callback : read_only
-      @input_key = kwargs[:input_key] || :question
-      @output_key = kwargs[:output_key] || :answer
       the_prompt = kwargs[prompt] || my_prompt
       name = kwargs[:name] || "Data"
       super(name: name,
             description: kwargs[:description] || format(ARDESC, name: name),
             engine: engine,
-            prompt: the_prompt,
-            output_key: output_key)
-    end
-
-    # the input keys for the prompt
-    # @return [Array<Symbol>] The input keys for the prompt.
-    def input_keys
-      [input_key]
-    end
-
-    # the output keys for the prompt
-    # @return [Array<Symbol>] The output keys for the prompt.
-    def output_keys
-      [output_key]
+            prompt: the_prompt)
     end
 
     # call the boxcar
@@ -51,7 +36,7 @@ module Boxcars
       t = predict(question: inputs[input_key], top_k: 5, model_info: model_info, stop: ["Answer:"]).strip
       answer = get_answer(t)
       Boxcars.info answer, :magenta
-      { output_key => answer }
+      { output_keys.first => answer }
     end
 
     private
@@ -209,7 +194,7 @@ module Boxcars
 
     # The prompt to use for the engine.
     def my_prompt
-      @my_prompt ||= Prompt.new(input_variables: [:question, :top_k, :model_info], template: TEMPLATE)
+      @my_prompt ||= Prompt.new(input_variables: [:question], other_inputs: [:top_k], output_variables: [:answer], template: TEMPLATE)
     end
   end
 end
