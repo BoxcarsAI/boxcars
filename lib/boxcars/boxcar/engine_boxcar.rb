@@ -4,22 +4,29 @@
 module Boxcars
   # For Boxcars that use an engine to do their work.
   class EngineBoxcar < Boxcar
-    attr_accessor :prompt, :engine
+    attr_accessor :prompt, :engine, :top_k, :stop
 
     # A Boxcar is a container for a single tool to run.
     # @param prompt [Boxcars::Prompt] The prompt to use for this boxcar with sane defaults.
     # @param name [String] The name of the boxcar. Defaults to classname.
     # @param description [String] A description of the boxcar.
     # @param engine [Boxcars::Engine] The engine to user for this boxcar. Can be inherited from a train if nil.
-    def initialize(prompt:, engine: nil, name: nil, description: nil)
+    def initialize(prompt:, engine: nil, name: nil, description: nil, **kwargs)
       @prompt = prompt
       @engine = engine || Boxcars.engine.new
+      @top_k = kwargs[:top_k] || 5
+      @stop = kwargs[:stop] || ["Answer:"]
       super(name: name, description: description)
     end
 
     # input keys for the prompt
     def input_keys
       prompt.input_variables
+    end
+
+    # the first input key for the prompt
+    def input_key
+      input_keys.first
     end
 
     # output keys
@@ -89,6 +96,33 @@ module Boxcars
       return unless output_keys.length != 1
 
       raise Boxcars::ArgumentError, "run not supported when there is not exactly one output key. Got #{output_keys}."
+    end
+
+    # call the boxcar
+    # @param inputs [Hash] The inputs to the boxcar.
+    # @return [Hash] The outputs from the boxcar.
+    def call(inputs:)
+      t = predict(**prediction_variables(inputs)).strip
+      answer = get_answer(t)
+      Boxcars.debug answer, :magenta
+      { output_keys.first => answer }
+    end
+
+    # @param inputs [Hash] The inputs to the boxcar.
+    # @return Hash The input variable for this boxcar.
+    def prediction_input(inputs)
+      { input_key => inputs[input_key] }
+    end
+
+    # @return Hash The additional variables for this boxcar.
+    def prediction_additional
+      { stop: stop, top_k: top_k }
+    end
+
+    # @param inputs [Hash] The inputs to the boxcar.
+    # @return Hash The variables for this boxcar.
+    def prediction_variables(inputs)
+      prediction_input(inputs).merge(prediction_additional)
     end
   end
 end

@@ -7,7 +7,7 @@ module Boxcars
     # the description of this engine boxcar
     ARDESC = "useful for when you need to query a database for an application named %<name>s."
     LOCKED_OUT_MODELS = %w[ActiveRecord::SchemaMigration ActiveRecord::InternalMetadata ApplicationRecord].freeze
-    attr_accessor :connection, :input_key, :requested_models, :read_only, :approval_callback
+    attr_accessor :connection, :requested_models, :read_only, :approval_callback
     attr_reader :except_models
 
     # @param engine [Boxcars::Engine] The engine to user for this boxcar. Can be inherited from a train if nil.
@@ -15,7 +15,7 @@ module Boxcars
     # @param read_only [Boolean] Whether to use read only models. Defaults to true unless you pass an approval function.
     # @param approval_callback [Proc] A function to call to approve changes. Defaults to nil.
     # @param kwargs [Hash] Any other keyword arguments. These can include:
-    #   :name, :description, :prompt, and :except_models
+    #   :name, :description, :prompt, :except_models, :top_k, and :stop
     def initialize(engine: nil, models: nil, read_only: nil, approval_callback: nil, **kwargs)
       check_models(models)
       @except_models = LOCKED_OUT_MODELS + kwargs[:except_models].to_a
@@ -23,20 +23,17 @@ module Boxcars
       @read_only = read_only.nil? ? !approval_callback : read_only
       the_prompt = kwargs[prompt] || my_prompt
       name = kwargs[:name] || "Data"
+      kwargs[:stop] ||= ["Answer:"]
       super(name: name,
             description: kwargs[:description] || format(ARDESC, name: name),
             engine: engine,
-            prompt: the_prompt)
+            prompt: the_prompt,
+            **kwargs)
     end
 
-    # call the boxcar
-    # @param inputs [Hash] The inputs to the boxcar.
-    # @return [Hash] The outputs from the boxcar.
-    def call(inputs:)
-      t = predict(question: inputs[input_key], top_k: 5, model_info: model_info, stop: ["Answer:"]).strip
-      answer = get_answer(t)
-      Boxcars.info answer, :magenta
-      { output_keys.first => answer }
+    # @return Hash The additional variables for this boxcar.
+    def prediction_additional
+      { model_info: model_info }.merge super
     end
 
     private

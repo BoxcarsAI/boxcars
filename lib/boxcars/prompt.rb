@@ -17,8 +17,15 @@ module Boxcars
     end
 
     # format the prompt with the input variables
+    # @param inputs [Hash] The inputs to use for the prompt.
+    # @return [String] The formatted prompt.
+    # @raise [Boxcars::KeyError] if the template has extra keys.
     def format(inputs)
       @template % inputs
+    rescue ::KeyError => e
+      first_line = e.message.to_s.split("\n").first
+      Boxcars.error "Missing prompt input key: #{first_line}"
+      raise KeyError, "Prompt format error: #{first_line}"
     end
 
     # check if the template is valid
