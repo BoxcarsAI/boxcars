@@ -98,7 +98,8 @@ module Boxcars
 
     # The prompt to use for the engine.
     def my_prompt
-      @my_prompt ||= Prompt.new(input_variables: [:question], other_inputs: [:top_k, :dialect], output_variables: [:answer], template: TEMPLATE)
+      @my_prompt ||= Prompt.new(input_variables: [:question], other_inputs: [:top_k, :dialect], output_variables: [:answer],
+                                template: TEMPLATE)
     end
   end
 end

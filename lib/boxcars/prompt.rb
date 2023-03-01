@@ -45,7 +45,8 @@ module Boxcars
       template = [prefix, examples, suffix].join(example_separator)
       other_inputs = kwargs[:other_inputs] || []
       output_variables = kwargs[:output_variables] || [:output]
-      Prompt.new(template: template, input_variables: input_variables, other_inputs: other_inputs, output_variables: output_variables)
+      Prompt.new(template: template, input_variables: input_variables, other_inputs: other_inputs,
+                 output_variables: output_variables)
     end
 
     # create a prompt template from a file
@@ -54,7 +55,8 @@ module Boxcars
     # @param output_variables [Array<Symbol>] The output variables to use for the prompt. Defaults to [:output]
     def self.from_file(path:, input_variables: nil, other_inputs: nil, output_variables: nil)
       template = File.read(path)
-      Prompt.new(template: template, input_variables: input_variables, other_inputs: other_inputs, output_variables: output_variables)
+      Prompt.new(template: template, input_variables: input_variables, other_inputs: other_inputs,
+                 output_variables: output_variables)
     end
   end
 end
