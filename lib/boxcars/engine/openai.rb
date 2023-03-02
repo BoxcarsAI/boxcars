@@ -83,6 +83,25 @@ module Boxcars
       end
     end
 
+    # make sure we got a valid response
+    # @param response [Hash] The response to check.
+    # @param must_haves [Array<String>] The keys that must be in the response. Defaults to %w[choices].
+    # @raise [KeyError] if there is an issue with the access token.
+    # @raise [ValueError] if the response is not valid.
+    def check_response(response, must_haves: %w[choices])
+      if response['error']
+        code = response.dig('error', 'code')
+        msg = response.dig('error', 'message') || 'unknown error'
+        raise KeyError, "OPENAI_ACCESS_TOKEN not valid" if code == 'invalid_api_key'
+
+        raise ValueError, "OpenAI error: #{msg}"
+      end
+
+      must_haves.each do |key|
+        raise ValueError, "Expecting key #{key} in response" unless response.key?(key)
+      end
+    end
+
     # Call out to OpenAI's endpoint with k unique prompts.
     # @param prompts [Array<String>] The prompts to pass into the model.
     # @param stop [Array<String>] Optional list of stop words to use when generating.
@@ -98,6 +117,7 @@ module Boxcars
       sub_prompts = prompts.each_slice(batch_size).to_a
       sub_prompts.each do |sprompts|
         response = client(prompt: sprompts, **params)
+        check_response(response)
         choices.concat(response["choices"])
         keys_to_use = inkeys & response["usage"].keys
         keys_to_use.each { |key| token_usage[key] = token_usage[key].to_i + response["usage"][key] }
