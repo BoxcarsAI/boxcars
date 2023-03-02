@@ -50,18 +50,18 @@ module Boxcars
     end
 
     def key_lookup(key, kwargs)
-      rv = if kwargs.key?(key) && !kwargs[key].nil?
-             # override with kwargs if present
-             kwargs[key]
-           elsif (set_val = instance_variable_get("@#{key}"))
-             # use saved value if present
-             set_val
-           else
-             # otherwise, dig out of the environment
-             new_key = ENV.fetch(key.to_s.upcase, nil)
-             new_key
-           end
-      check_key(key, rv)
+      val = if kwargs.key?(key) && !kwargs[key].nil?
+              # override with kwargs if present
+              kwargs[key]
+            elsif (provided_val = instance_variable_get("@#{key}"))
+              # use saved value if present. Set using Boxcars::configuration.the_key = "abcde"
+              provided_val
+            else
+              # otherwise, dig out of the environment
+              env_val = ENV.fetch(key.to_s.upcase, nil)
+              env_val
+            end
+      check_key(key, val)
     end
   end
 
