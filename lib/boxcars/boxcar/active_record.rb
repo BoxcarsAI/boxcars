@@ -65,7 +65,7 @@ module Boxcars
 
     def model_info
       models = wanted_models
-      models.pretty_inspect
+      models.inspect
     end
 
     # to be safe, we wrap the code in a transaction and rollback
@@ -149,13 +149,12 @@ module Boxcars
       output = 0 if output.is_a?(Array) && output.empty?
       output = output.first if output.is_a?(Array) && output.length == 1
       output = output[output.keys.first] if output.is_a?(Hash) && output.length == 1
-      "Answer: #{output.inspect}"
+      "Answer: #{output.to_json}"
     rescue StandardError => e
       "Error: #{e.message}"
     end
 
     def get_answer(text)
-      # debugger
       case text
       when /^ARCode:/
         get_active_record_answer(text)
