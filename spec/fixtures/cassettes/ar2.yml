@@ -14,13 +14,15 @@ http_interactions:
         names that you can see in the model description. Be careful to not query for
         attributes that do not exist.\nAlso, pay attention to which attribute is in
         which model.\n\nUse the following format:\nQuestion: \"Question here\"\nARCode:
-        \"Active Record code to run\"\nAnswer: \"Final answer here\"\n\nOnly use the
-        following Active Record models:\n[User(id: integer, name: string, created_at:
-        datetime, updated_at: datetime),\n Comment(id: integer, content: text, user_id:
-        integer, ticket_id: integer, created_at: datetime, updated_at: datetime),\n
-        Ticket(id: integer, title: string, user_id: integer, status: integer, body:
-        text, created_at: datetime, updated_at: datetime)]\n\n\nQuestion: What is
-        the content of the last comment for the first ticket?\n"],"model":"text-davinci-003","temperature":0.7,"max_tokens":256,"stop":["Answer:"]}'
+        \"Active Record code to run\"\nARChanges: \"Active Record code to compute
+        the number of records going to change\" - Only add this line if the ARCode
+        on the line before will make data changes\nAnswer: \"Final answer here\"\n\nOnly
+        use the following Active Record models:\n[User(id: integer, name: string,
+        created_at: datetime, updated_at: datetime),\n Comment(id: integer, content:
+        text, user_id: integer, ticket_id: integer, created_at: datetime, updated_at:
+        datetime),\n Ticket(id: integer, title: string, user_id: integer, status:
+        integer, body: text, created_at: datetime, updated_at: datetime)]\n\n\nQuestion:
+        What is the content of the last comment for the first ticket?\n"],"model":"text-davinci-003","temperature":0.7,"max_tokens":256,"stop":["Answer:"]}'
     headers:
       Content-Type:
       - application/json
@@ -38,11 +40,11 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Tue, 21 Feb 2023 21:24:21 GMT
+      - Wed, 01 Mar 2023 23:28:02 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '328'
+      - '365'
       Connection:
       - keep-alive
       Access-Control-Allow-Origin:
@@ -54,18 +56,18 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '1008'
+      - '1685'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
       - max-age=15724800; includeSubDomains
       X-Request-Id:
-      - 3ec6c36cd63586518d77fe521f77a68f
+      - 40531f58aab3065a14a4beb5ec3c7510
     body:
       encoding: UTF-8
-      string: '{"id":"cmpl-6mUPU9rTOaoE78SkzA93XV0uHzeAY","object":"text_completion","created":1677014660,"model":"text-davinci-003","choices":[{"text":"ARCode:
-        Comment.where(ticket_id: Ticket.first.id).last.content\n","index":0,"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":293,"completion_tokens":21,"total_tokens":314}}
+      string: '{"id":"cmpl-6pQ9Zz0rOUmzznVdhBAEYoQInCs7r","object":"text_completion","created":1677713281,"model":"text-davinci-003","choices":[{"text":"ARCode:
+        Comment.where(ticket_id: Ticket.first.id).order(created_at: :desc).limit(1).pluck(:content)\n","index":0,"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":328,"completion_tokens":37,"total_tokens":365}}
 
         '
-  recorded_at: Tue, 21 Feb 2023 21:24:21 GMT
+  recorded_at: Wed, 01 Mar 2023 23:28:02 GMT
 recorded_with: VCR 6.1.0

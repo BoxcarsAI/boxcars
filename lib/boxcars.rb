@@ -19,6 +19,9 @@ module Boxcars
   # Error class for all Boxcars security errors.
   class SecurityError < Error; end
 
+  # Error class for all Boxcars key errors.
+  class KeyError < Error; end
+
   # Configuration contains gem settings
   class Configuration
     attr_writer :openai_access_token, :serpapi_api_key

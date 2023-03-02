@@ -77,7 +77,7 @@ module Boxcars
       begin
         output = call(inputs: inputs)
       rescue StandardError => e
-        error "Error in #{name} boxcar#call: #{e}", :red
+        Boxcars.error "Error in #{name} boxcar#call: #{e}", :red
         raise e
       end
       validate_outputs(outputs: output.keys)

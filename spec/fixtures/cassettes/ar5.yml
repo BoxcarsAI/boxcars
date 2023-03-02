@@ -40,11 +40,11 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Thu, 23 Feb 2023 19:22:45 GMT
+      - Wed, 01 Mar 2023 23:31:33 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '462'
+      - '468'
       Connection:
       - keep-alive
       Access-Control-Allow-Origin:
@@ -56,20 +56,20 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '3265'
+      - '2874'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
       - max-age=15724800; includeSubDomains
       X-Request-Id:
-      - 280c2763400af434a2adb3bf852a39ce
+      - 29c1599199120506a6af8cf33554af3e
     body:
       encoding: UTF-8
-      string: '{"id":"cmpl-6nBSstznERSDRUPciqCB5EbIH3Nvj","object":"text_completion","created":1677180162,"model":"text-davinci-003","choices":[{"text":"ARCode:
-        Ticket.where(user_id: User.find_by(name: ''John''), status: 0).update_all(user_id:
-        User.find_by(name: ''Sally''))\nARChanges: Ticket.where(user_id: User.find_by(name:
-        ''John''), status: 0).count\n","index":0,"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":322,"completion_tokens":76,"total_tokens":398}}
+      string: '{"id":"cmpl-6pQCwGCLaZWkZIpRFgRSBI3oGq5mj","object":"text_completion","created":1677713490,"model":"text-davinci-003","choices":[{"text":"ARCode:
+        Ticket.where(user_id: User.find_by(name: \"John\"), status: 0).update_all(user_id:
+        User.find_by(name: \"Sally\"))\nARChanges: Ticket.where(user_id: User.find_by(name:
+        \"John\"), status: 0).count\n","index":0,"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":322,"completion_tokens":75,"total_tokens":397}}
 
         '
-  recorded_at: Thu, 23 Feb 2023 19:22:45 GMT
+  recorded_at: Wed, 01 Mar 2023 23:31:33 GMT
 recorded_with: VCR 6.1.0

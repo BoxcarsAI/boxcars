@@ -16,7 +16,7 @@ module Boxcars
       @name = name || self.class.name
       @return_values = [:output]
       @return_intermediate_steps = kwargs[:return_intermediate_steps] || false
-      @max_iterations = kwargs[:max_iterations]
+      @max_iterations = kwargs[:max_iterations] || 25
       @early_stopping_method = kwargs[:early_stopping_method] || "force"
 
       super(prompt: prompt, engine: engine, name: kwargs[:name], description: kwargs[:description])
@@ -137,8 +137,6 @@ module Boxcars
         case prompt
         when Prompt
           prompt.template += "\n%<agent_scratchpad>s"
-        # when FewShotPromptTemplate
-        #   prompt.suffix += "\n%<agent_scratchpad>s"
         else
           raise ValueError, "Got unexpected prompt type #{type(prompt)}"
         end
@@ -199,7 +197,7 @@ module Boxcars
             return_direct = boxcar.return_direct
           rescue StandardError => e
             error "Error in #{boxcar.name} boxcar#call: #{e}", :red
-            raise e
+            observation = "Error - #{e}, correct and try again."
           end
         else
           observation = "#{output.boxcar} is not a valid boxcar, try another one."

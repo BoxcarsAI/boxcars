@@ -14,9 +14,11 @@ http_interactions:
         names that you can see in the model description. Be careful to not query for
         attributes that do not exist.\nAlso, pay attention to which attribute is in
         which model.\n\nUse the following format:\nQuestion: \"Question here\"\nARCode:
-        \"Active Record code to run\"\nAnswer: \"Final answer here\"\n\nOnly use the
-        following Active Record models:\n[Comment(id: integer, content: text, user_id:
-        integer, ticket_id: integer, created_at: datetime, updated_at: datetime),\n
+        \"Active Record code to run\"\nARChanges: \"Active Record code to compute
+        the number of records going to change\" - Only add this line if the ARCode
+        on the line before will make data changes\nAnswer: \"Final answer here\"\n\nOnly
+        use the following Active Record models:\n[Comment(id: integer, content: text,
+        user_id: integer, ticket_id: integer, created_at: datetime, updated_at: datetime),\n
         Ticket(id: integer, title: string, user_id: integer, status: integer, body:
         text, created_at: datetime, updated_at: datetime),\n User(id: integer, name:
         string, created_at: datetime, updated_at: datetime)]\n\n\nQuestion: count
@@ -38,11 +40,11 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Tue, 21 Feb 2023 21:24:22 GMT
+      - Wed, 01 Mar 2023 23:28:04 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '330'
+      - '339'
       Connection:
       - keep-alive
       Access-Control-Allow-Origin:
@@ -54,18 +56,18 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '1129'
+      - '1363'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
       - max-age=15724800; includeSubDomains
       X-Request-Id:
-      - 96ce1b12b4a4a720ceaeb5ab5ec6f272
+      - 88cba21b458ac2dbd3a4a850f3bb6849
     body:
       encoding: UTF-8
-      string: '{"id":"cmpl-6mUPVZXaDlTTymVMN14he9W0C0aX6","object":"text_completion","created":1677014661,"model":"text-davinci-003","choices":[{"text":"ARCode:
-        Comment.where(user_id: User.find_by(name: ''John'')).count\n","index":0,"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":286,"completion_tokens":25,"total_tokens":311}}
+      string: '{"id":"cmpl-6pQ9bdRk79QM1T26oDJP1h2vY35RR","object":"text_completion","created":1677713283,"model":"text-davinci-003","choices":[{"text":"ARCode:
+        Comment.where(user_id: User.where(name: ''John'').pluck(:id)).count\n","index":0,"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":321,"completion_tokens":28,"total_tokens":349}}
 
         '
-  recorded_at: Tue, 21 Feb 2023 21:24:22 GMT
+  recorded_at: Wed, 01 Mar 2023 23:28:04 GMT
 recorded_with: VCR 6.1.0

@@ -6,42 +6,19 @@ module Boxcars
   class Calculator < EngineBoxcar
     # the description of this engine boxcar
     CALCDESC = "useful for when you need to answer questions about math"
-    attr_accessor :input_key
 
     # @param engine [Boxcars::Engine] The engine to user for this boxcar. Can be inherited from a train if nil.
     # @param prompt [Boxcars::Prompt] The prompt to use for this boxcar. Defaults to built-in prompt.
-    # @param input_key [Symbol] The key to use for the input. Defaults to :question.
-    # @param output_key [Symbol] The key to use for the output. Defaults to :answer.
     # @param kwargs [Hash] Any other keyword arguments to pass to the parent class.
-    def initialize(engine: nil, prompt: nil, input_key: :question, output_key: :answer, **kwargs)
-      # def initialize(engine:, prompt: my_prompt, input_key: :question, output_key: :answer, **kwargs)
-      @input_key = input_key
+    def initialize(engine: nil, prompt: nil, **kwargs)
+      # def initialize(engine:, prompt: my_prompt, output_key: :answer, **kwargs)
       the_prompt = prompt || my_prompt
+      kwargs[:stop] ||= ["```output"]
       super(name: kwargs[:name] || "Calculator",
             description: kwargs[:description] || CALCDESC,
             engine: engine,
             prompt: the_prompt,
-            output_key: output_key)
-    end
-
-    # the prompt input keys
-    def input_keys
-      [input_key]
-    end
-
-    # the output keys
-    def output_keys
-      [output_key]
-    end
-
-    # call the calculator
-    # @param inputs [Hash] The inputs to the boxcar.
-    # @return [Hash] The outputs from the boxcar.
-    def call(inputs:)
-      t = predict(question: inputs[input_key], stop: ["```output"]).strip
-      answer = get_answer(t)
-      Boxcars.info answer, :magenta
-      { output_key => answer }
+            **kwargs)
     end
 
     private
@@ -104,7 +81,7 @@ module Boxcars
 
     # The prompt to use for the engine.
     def my_prompt
-      @my_prompt ||= Prompt.new(input_variables: [:question], template: TEMPLATE)
+      @my_prompt ||= Prompt.new(input_variables: [:question], output_variables: [:answer], template: TEMPLATE)
     end
   end
 end
