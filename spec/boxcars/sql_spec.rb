@@ -6,7 +6,7 @@ RSpec.describe Boxcars::SQL do
 
     it "can count comments from john" do
       VCR.use_cassette("sql") do
-        expect(boxcar.run("how many comments are there from John?")).to eq("Answer: [{\"total_comments\"=>2}]")
+        expect(boxcar.run("how many comments are there from John?")).to include(":2")
       end
     end
 

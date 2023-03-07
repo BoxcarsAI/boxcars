@@ -52,8 +52,11 @@ module Boxcars
     def get_embedded_sql_answer(text)
       code = text[/^SQLQuery: (.*)/, 1]
       Boxcars.debug code, :yellow
-      output = connection.exec_query(code).to_a
-      "Answer: #{output}"
+      output = connection.exec_query(code)
+      output = 0 if output.is_a?(Array) && output.empty?
+      output = output.first if output.is_a?(Array) && output.length == 1
+      output = output[output.keys.first] if output.is_a?(Hash) && output.length == 1
+      "Answer: #{output.to_json}"
     end
 
     def get_answer(text)

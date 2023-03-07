@@ -30,7 +30,7 @@ module Boxcars
     def initialize
       @organization_id = nil
       @logger = Rails.logger if defined?(Rails)
-      @log_prompts = false
+      @log_prompts = ENV.fetch("LOG_PROMPTS", false)
     end
 
     # @return [String] The OpenAI Access Token either from arg or env.

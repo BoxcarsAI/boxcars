@@ -6,7 +6,7 @@ RSpec.describe Boxcars::Calculator do
       engine = Boxcars::Openai.new
       VCR.use_cassette("calculator") do
         expect(described_class.new(engine: engine)
-          .run("what is the square root of 2.173 to the power of 22.1 diveded by 27.2?")).to eq("194.9580048796463")
+          .run("what is 2.173 to the power of 22.1 then diveded by 27.2? Round to 5 digits.")).to eq("1033834.56373")
       end
     end
   end

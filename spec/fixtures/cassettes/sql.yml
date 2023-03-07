@@ -24,7 +24,80 @@ http_interactions:
         NOT NULL\n);\nCREATE TABLE tickets (\n id INTEGER NOT NULL,\n title varchar
         NULL,\n user_id INTEGER NULL,\n status INTEGER NULL,\n body TEXT NULL,\n created_at
         datetime(6) NOT NULL,\n updated_at datetime(6) NOT NULL\n);\n\nQuestion: how
-        many comments are there from John?\n"],"model":"text-davinci-003","temperature":0.7,"max_tokens":256,"stop":["Answer:"]}'
+        many comments are there from John?\n"],"model":"gpt-3.5-turbo","temperature":0.7,"max_tokens":512,"stop":["Answer:"]}'
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer <openai_access_token>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      Date:
+      - Thu, 02 Mar 2023 22:17:34 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '227'
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+      Openai-Organization:
+      - user-ri9zw9ahumb1bo9vs73mudbi
+      Openai-Processing-Ms:
+      - '3'
+      Openai-Version:
+      - '2020-10-01'
+      Strict-Transport-Security:
+      - max-age=15724800; includeSubDomains
+      X-Request-Id:
+      - ad236f8304f0f61086087d79f853f32e
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "error": {
+            "message": "This is a chat model and not supported in the v1/completions endpoint. Did you mean to use v1/chat/completions?",
+            "type": "invalid_request_error",
+            "param": "model",
+            "code": null
+          }
+        }
+  recorded_at: Thu, 02 Mar 2023 22:17:34 GMT
+- request:
+    method: post
+    uri: https://api.openai.com/v1/chat/completions
+    body:
+      encoding: UTF-8
+      string: '{"messages":[{"role":"user","content":"Given an input question, first
+        create a syntactically correct SQLite3 query to run,\nthen look at the results
+        of the query and return the answer. Unless the user specifies\nin his question
+        a specific number of examples he wishes to obtain, always limit your query\nto
+        at most 5 results using a LIMIT clause. You can order the results by a relevant
+        column\nto return the most interesting examples in the database.\n\nNever
+        query for all the columns from a specific table, only ask for a the few relevant
+        columns given the question.\n\nPay attention to use only the column names
+        that you can see in the schema description. Be careful to not query for columns
+        that do not exist.\nAlso, pay attention to which column is in which table.\n\nUse
+        the following format:\nQuestion: \"Question here\"\nSQLQuery: \"SQL Query
+        to run\"\nSQLResult: \"Result of the SQLQuery\"\nAnswer: \"Final answer here\"\n\nOnly
+        use the following tables:\nCREATE TABLE users (\n id INTEGER NOT NULL,\n name
+        varchar NULL,\n created_at datetime(6) NOT NULL,\n updated_at datetime(6)
+        NOT NULL\n);\nCREATE TABLE comments (\n id INTEGER NOT NULL,\n content TEXT
+        NULL,\n user_id INTEGER NULL,\n ticket_id INTEGER NULL,\n created_at datetime(6)
+        NOT NULL,\n updated_at datetime(6) NOT NULL\n);\nCREATE TABLE tickets (\n
+        id INTEGER NOT NULL,\n title varchar NULL,\n user_id INTEGER NULL,\n status
+        INTEGER NULL,\n body TEXT NULL,\n created_at datetime(6) NOT NULL,\n updated_at
+        datetime(6) NOT NULL\n);\n\nQuestion: how many comments are there from John?\n"}],"model":"gpt-3.5-turbo","temperature":0.6,"max_tokens":512,"stop":["Answer:"]}'
     headers:
       Content-Type:
       - application/json
@@ -42,11 +115,11 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Tue, 21 Feb 2023 20:08:25 GMT
+      - Tue, 07 Mar 2023 17:46:07 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '425'
+      - '404'
       Connection:
       - keep-alive
       Access-Control-Allow-Origin:
@@ -54,23 +127,23 @@ http_interactions:
       Cache-Control:
       - no-cache, must-revalidate
       Openai-Model:
-      - text-davinci-003
+      - gpt-3.5-turbo-0301
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '2075'
+      - '1559'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
       - max-age=15724800; includeSubDomains
       X-Request-Id:
-      - c4a5bccdd99cd5272d07298ecde56e54
+      - d1aaf4ec505b1762c3955ea2d4807779
     body:
       encoding: UTF-8
-      string: '{"id":"cmpl-6mTDzAwUv8Dmp1PYc49qnJEYdl81e","object":"text_completion","created":1677010103,"model":"text-davinci-003","choices":[{"text":"SQLQuery:
-        SELECT COUNT(*) AS total_comments FROM comments INNER JOIN users on users.id
-        = comments.user_id WHERE users.name = ''John'';\nSQLResult: total_comments\n","index":0,"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":395,"completion_tokens":45,"total_tokens":440}}
+      string: '{"id":"chatcmpl-6rVfx9Zilr3C60KU1Iwhosc0ALdze","object":"chat.completion","created":1678211165,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":328,"completion_tokens":33,"total_tokens":361},"choices":[{"message":{"role":"assistant","content":"\n\nSQLQuery:
+        SELECT COUNT(*) FROM comments c JOIN users u ON c.user_id = u.id WHERE u.name
+        = ''John''\nSQLResult: 3\n"},"finish_reason":"stop","index":0}]}
 
         '
-  recorded_at: Tue, 21 Feb 2023 20:08:25 GMT
+  recorded_at: Tue, 07 Mar 2023 17:46:07 GMT
 recorded_with: VCR 6.1.0

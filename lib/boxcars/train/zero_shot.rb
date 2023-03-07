@@ -19,7 +19,7 @@ module Boxcars
       ... (this Thought/Action/Action Input/Observation sequence can repeat N times)
       Thought: I now know the final answer
       Final Answer: the final answer to the original input question
-      Next Actions: up to three suggested actions for the user to take next
+      Next Actions: If you have them, up to three suggested actions for the user to take after getting this answer.
     FINPUT
 
     # default prompt suffix
@@ -71,13 +71,15 @@ module Boxcars
         answer = engine_output.split(FINAL_ANSWER_ACTION).last.strip
         ['Final Answer', answer]
       else
+        # the thought should be the frist line here if it doesn't start with "Action:"
+        thought = engine_output.split(/\n+/).reject(&:empty?).first
+        Boxcars.debug("Though: #{thought}", :cyan)
         regex = /Action: (?<action>.*)\nAction Input: (?<action_input>.*)/
         match = regex.match(engine_output)
         raise ValueError, "Could not parse engine output: #{engine_output}" unless match
 
         action = match[:action].strip
-        action_input = match[:action_input].strip
-        # [action, action_input.strip(" ").strip('"')]
+        action_input = match[:action_input].strip.delete_prefix('"').delete_suffix('"')
         [action, action_input]
       end
     end
