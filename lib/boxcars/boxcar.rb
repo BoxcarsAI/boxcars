@@ -111,6 +111,11 @@ module Boxcars
       end
       validate_inputs(inputs: inputs)
     end
+
+    # the default answer is the text passed in
+    def get_answer(text)
+      text
+    end
   end
 end
 

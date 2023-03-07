@@ -12,7 +12,7 @@ RSpec.describe Boxcars::GoogleSearch do
   context "with a serpapi api key" do
     it "gets the temperature in Austin" do
       VCR.use_cassette("serp") do
-        expect(described_class.new.run("what temperature is it in Austin TX right now?")).to eq("50 °F")
+        expect(described_class.new.run("what temperature is it in Austin TX right now?")).to eq("65°")
       end
     end
   end

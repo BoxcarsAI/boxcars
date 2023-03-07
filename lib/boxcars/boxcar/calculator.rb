@@ -11,7 +11,6 @@ module Boxcars
     # @param prompt [Boxcars::Prompt] The prompt to use for this boxcar. Defaults to built-in prompt.
     # @param kwargs [Hash] Any other keyword arguments to pass to the parent class.
     def initialize(engine: nil, prompt: nil, **kwargs)
-      # def initialize(engine:, prompt: my_prompt, output_key: :answer, **kwargs)
       the_prompt = prompt || my_prompt
       kwargs[:stop] ||= ["```output"]
       super(name: kwargs[:name] || "Calculator",
@@ -45,7 +44,7 @@ module Boxcars
     TEMPLATE = <<~'IPT'
       You are GPT-3, and you can't do math.
       You can do basic math, and your memorization abilities are impressive, but you can't do any complex calculations that a human could not do in their head. You also have an annoying tendency to just make up highly specific, but wrong, answers.
-      So we hooked you up to a Ruby 3 kernel, and now you can execute ruby code. If anyone gives you a hard math problem, just use this format and we’ll take care of the rest:
+      So we hooked you up to a Ruby 3 kernel, and now you can execute code written in the Ruby programming language. If anyone gives you a hard math problem, just use this format and we’ll take care of the rest:
 
       Question: ${{Question with hard calculation.}}
       ```ruby

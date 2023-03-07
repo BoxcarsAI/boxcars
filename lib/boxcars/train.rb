@@ -38,7 +38,7 @@ module Boxcars
     def construct_scratchpad(intermediate_steps)
       thoughts = ""
       intermediate_steps.each do |action, observation|
-        thoughts += action.is_a?(String) ? action : action.log
+        thoughts += action.is_a?(String) ? action : " #{action.log}"
         thoughts += "\n#{observation_prefix}#{observation}\n#{engine_prefix}"
       end
       thoughts
@@ -196,7 +196,7 @@ module Boxcars
             observation = boxcar.run(output.boxcar_input)
             return_direct = boxcar.return_direct
           rescue StandardError => e
-            error "Error in #{boxcar.name} boxcar#call: #{e}", :red
+            Boxcars.error "Error in #{boxcar.name} boxcar#call: #{e}", :red
             observation = "Error - #{e}, correct and try again."
           end
         else

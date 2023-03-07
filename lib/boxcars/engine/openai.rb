@@ -9,9 +9,9 @@ module Boxcars
 
     # The default parameters to use when asking the engine.
     DEFAULT_PARAMS = {
-      model: "text-davinci-003",
+      model: "gpt-3.5-turbo",
       temperature: 0.7,
-      max_tokens: 256
+      max_tokens: 512
     }.freeze
 
     # the default name of the engine
@@ -43,7 +43,13 @@ module Boxcars
       organization_id = Boxcars.configuration.organization_id
       clnt = ::OpenAI::Client.new(access_token: access_token, organization_id: organization_id)
       the_params = { prompt: prompt }.merge(open_ai_params).merge(kwargs)
-      clnt.completions(parameters: the_params)
+      if the_params[:model] == "gpt-3.5-turbo"
+        prompt = prompt.first if prompt.is_a?(Array)
+        the_params = { messages: [{ role: "user", content: prompt }] }.merge(open_ai_params).merge(kwargs)
+        clnt.chat(parameters: the_params)
+      else
+        clnt.completions(parameters: the_params)
+      end
     end
 
     # get an answer from the engine for a question.
@@ -51,7 +57,7 @@ module Boxcars
     # @param kwargs [Hash] Additional parameters to pass to the engine if wanted.
     def run(question, **kwargs)
       response = client(prompt: question, **kwargs)
-      answer = response["choices"].map { |c| c["text"] }.join("\n").strip
+      answer = response["choices"].map { |c| c.dig("message", "content") || c["text"] }.join("\n").strip
       puts answer
       answer
     end
@@ -74,7 +80,7 @@ module Boxcars
     def generation_info(sub_choices)
       sub_choices.map do |choice|
         Generation.new(
-          text: choice["text"],
+          text: choice.dig("message", "content") || choice["text"],
           generation_info: {
             finish_reason: choice.fetch("finish_reason", nil),
             logprobs: choice.fetch("logprobs", nil)
@@ -160,7 +166,8 @@ module Boxcars
       'text-babbage-001': 2048,
       'text-ada-001': 2048,
       'code-davinci-002': 8000,
-      'code-cushman-001': 2048
+      'code-cushman-001': 2048,
+      'gpt-3.5-turbo-1': 4096
     }.freeze
     model_lookup[modelname] || 4097
   end
