@@ -1,5 +1,24 @@
 # Changelog
 
+## [v0.2.0](https://github.com/BoxcarsAI/boxcars/tree/v0.2.0) (2023-03-07)
+
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.1.8...v0.2.0)
+
+**Merged pull requests:**
+
+- Default to chatgpt [\#35](https://github.com/BoxcarsAI/boxcars/pull/35) ([francis](https://github.com/francis))
+
+## [v0.1.8](https://github.com/BoxcarsAI/boxcars/tree/v0.1.8) (2023-03-02)
+
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.1.7...v0.1.8)
+
+**Merged pull requests:**
+
+- return JSON from the Active Record boxcar [\#34](https://github.com/BoxcarsAI/boxcars/pull/34) ([francis](https://github.com/francis))
+- validate return values from Open AI API [\#33](https://github.com/BoxcarsAI/boxcars/pull/33) ([francis](https://github.com/francis))
+- simplify prompting and parameters used. refs \#29 [\#30](https://github.com/BoxcarsAI/boxcars/pull/30) ([francis](https://github.com/francis))
+- \[infra\] Added sample .env file and updated the lookup to save the key [\#27](https://github.com/BoxcarsAI/boxcars/pull/27) ([AKovtunov](https://github.com/AKovtunov))
+
 ## [v0.1.7](https://github.com/BoxcarsAI/boxcars/tree/v0.1.7) (2023-02-27)
 
 [Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.1.6...v0.1.7)
