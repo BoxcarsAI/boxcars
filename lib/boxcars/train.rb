@@ -51,13 +51,16 @@ module Boxcars
       full_output = predict(**full_inputs)
       parsed_output = extract_boxcar_and_input(full_output)
       while parsed_output.nil?
-        full_output = _fix_text(full_output)
         full_inputs[:agent_scratchpad] += full_output
         output = predict(**full_inputs)
         full_output += output
         parsed_output = extract_boxcar_and_input(full_output)
       end
-      TrainAction.new(boxcar: parsed_output[0], boxcar_input: parsed_output[1], log: full_output)
+      if parsed_output.is_a?(Result)
+        TrainAction.from_result(boxcar: "Final Answer", result: parsed_output, log: full_output)
+      else
+        TrainAction.new(boxcar: parsed_output[0], boxcar_input: parsed_output[1], log: full_output)
+      end
     end
 
     # Given input, decided what to do.

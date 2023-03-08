@@ -7,28 +7,24 @@ module Boxcars
     # the description of this engine boxcar
     ARDESC = "useful for when you need to query a database for an application named %<name>s."
     LOCKED_OUT_MODELS = %w[ActiveRecord::SchemaMigration ActiveRecord::InternalMetadata ApplicationRecord].freeze
-    attr_accessor :connection, :requested_models, :read_only, :approval_callback
+    attr_accessor :connection, :requested_models, :read_only, :approval_callback, :code_only
     attr_reader :except_models
 
-    # @param engine [Boxcars::Engine] The engine to user for this boxcar. Can be inherited from a train if nil.
     # @param models [Array<ActiveRecord::Model>] The models to use for this boxcar. Will use all if nil.
+    # @param except_models [Array<ActiveRecord::Model>] The models to exclude from this boxcar. Will exclude none if nil.
     # @param read_only [Boolean] Whether to use read only models. Defaults to true unless you pass an approval function.
     # @param approval_callback [Proc] A function to call to approve changes. Defaults to nil.
     # @param kwargs [Hash] Any other keyword arguments. These can include:
-    #   :name, :description, :prompt, :except_models, :top_k, and :stop
-    def initialize(engine: nil, models: nil, read_only: nil, approval_callback: nil, **kwargs)
-      check_models(models)
-      @except_models = LOCKED_OUT_MODELS + kwargs[:except_models].to_a
+    #   :name, :description, :prompt, :except_models, :top_k, :stop, :code_only and :engine
+    def initialize(models: nil, except_models: nil, read_only: nil, approval_callback: nil, **kwargs)
+      check_models(models, except_models)
       @approval_callback = approval_callback
       @read_only = read_only.nil? ? !approval_callback : read_only
-      the_prompt = kwargs[prompt] || my_prompt
-      name = kwargs[:name] || "Data"
-      kwargs[:stop] ||= ["Answer:"]
-      super(name: name,
-            description: kwargs[:description] || format(ARDESC, name: name),
-            engine: engine,
-            prompt: the_prompt,
-            **kwargs)
+      @code_only = kwargs.delete(:code_only) || false
+      kwargs[:name] ||= "Data"
+      kwargs[:description] ||= format(ARDESC, name: name)
+      kwargs[:prompt] ||= my_prompt
+      super(**kwargs)
     end
 
     # @return Hash The additional variables for this boxcar.
@@ -42,7 +38,11 @@ module Boxcars
       read_only
     end
 
-    def check_models(models)
+    def code_only?
+      code_only
+    end
+
+    def check_models(models, exceptions)
       if models.is_a?(Array) && models.length.positive?
         @requested_models = models
         models.each do |m|
@@ -51,6 +51,7 @@ module Boxcars
       elsif models
         raise ArgumentError, "models needs to be an array of Active Record models"
       end
+      @except_models = LOCKED_OUT_MODELS + exceptions.to_a
     end
 
     def wanted_models
@@ -120,7 +121,7 @@ module Boxcars
       changes = change_count(changes_code)
       return true unless changes&.positive?
 
-      Boxcars.debug "Pending Changes: #{changes}", :yellow, style: :bold
+      Boxcars.debug "#{name}(Pending Changes): #{changes}", :yellow
       change_str = "#{changes} change#{'s' if changes.to_i > 1}"
       raise SecurityError, "Can not run code that makes #{change_str} in read-only mode" if read_only?
 
@@ -140,18 +141,26 @@ module Boxcars
       end
     end
 
-    def get_active_record_answer(text)
-      code = text[/^ARCode: (.*)/, 1]
-      changes_code = text[/^ARChanges: (.*)/, 1]
-      raise SecurityError, "Permission to run code that makes changes denied" unless approved?(changes_code, code)
-
-      output = run_active_record_code(code)
+    def clean_up_output(output)
+      output = output.as_json if output.is_a?(::ActiveRecord::Result)
       output = 0 if output.is_a?(Array) && output.empty?
       output = output.first if output.is_a?(Array) && output.length == 1
       output = output[output.keys.first] if output.is_a?(Hash) && output.length == 1
-      "Answer: #{output.to_json}"
+      output = output.as_json if output.is_a?(::ActiveRecord::Relation)
+      output
+    end
+
+    def get_active_record_answer(text)
+      code = text[/^ARCode: (.*)/, 1]
+      changes_code = text[/^ARChanges: (.*)/, 1]
+      return Result.new(status: :ok, explanation: "code to run", code: code, changes_code: changes_code) if code_only?
+
+      raise SecurityError, "Permission to run code that makes changes denied" unless approved?(changes_code, code)
+
+      output = clean_up_output(run_active_record_code(code))
+      Result.new(status: :ok, answer: output, explanation: "Answer: #{output.to_json}", code: code)
     rescue StandardError => e
-      "Error: #{e.message}"
+      Result.new(status: :error, answer: nil, explanation: "Error: #{e.message}", code: code)
     end
 
     def get_answer(text)
@@ -159,9 +168,9 @@ module Boxcars
       when /^ARCode:/
         get_active_record_answer(text)
       when /^Answer:/
-        text
+        Result.from_text(text)
       else
-        raise Boxcars::Error "Unknown format from engine: #{text}"
+        Result.from_error("Unknown format from engine: #{text}")
       end
     end
 

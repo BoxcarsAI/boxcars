@@ -6,21 +6,21 @@ module Boxcars
   class SQL < EngineBoxcar
     # the description of this engine boxcar
     SQLDESC = "useful for when you need to query a database for %<name>s."
+    LOCKED_OUT_TABLES = %w[schema_migrations ar_internal_metadata].freeze
     attr_accessor :connection
 
     # @param connection [ActiveRecord::Connection] The SQL connection to use for this boxcar.
-    # @param engine [Boxcars::Engine] The engine to user for this boxcar. Can be inherited from a train if nil.
+    # @param tables [Array<String>] The tables to use for this boxcar. Will use all if nil.
+    # @param except_tables [Array<String>] The tables to exclude from this boxcar. Will exclude none if nil.
     # @param kwargs [Hash] Any other keyword arguments to pass to the parent class. This can include
-    #   :name, :description, :prompt and :top_k
-    def initialize(connection: nil, engine: nil, **kwargs)
+    #   :name, :description, :prompt, :top_k, :stop, and :engine
+    def initialize(connection: nil, tables: nil, except_tables: nil, **kwargs)
       @connection = connection || ::ActiveRecord::Base.connection
-      the_prompt = kwargs[prompt] || my_prompt
-      kwargs[:stop] ||= ["Answer:"]
-      name = kwargs[:name] || "database"
-      super(name: name,
-            description: kwargs[:description] || format(SQLDESC, name: name),
-            engine: engine,
-            prompt: the_prompt)
+      check_tables(tables, except_tables)
+      kwargs[:name] ||= "Database"
+      kwargs[:description] ||= format(SQLDESC, name: name)
+      kwargs[:prompt] ||= my_prompt
+      super(**kwargs)
     end
 
     # @return Hash The additional variables for this boxcar.
@@ -29,6 +29,19 @@ module Boxcars
     end
 
     private
+
+    def check_tables(rtables, exceptions)
+      if rtables.is_a?(Array) && tables.length.positive?
+        @requested_tables = rtables
+        all_tables = tables
+        rtables.each do |t|
+          raise ArgumentError, "table #{t} needs to be an Active Record model" unless all_tables.include?(t)
+        end
+      elsif rtables
+        raise ArgumentError, "tables needs to be an array of Strings"
+      end
+      @except_models = LOCKED_OUT_TABLES + exceptions.to_a
+    end
 
     def tables
       connection&.tables
@@ -49,14 +62,22 @@ module Boxcars
       connection.class.name.split("::").last.sub("Adapter", "")
     end
 
-    def get_embedded_sql_answer(text)
-      code = text[/^SQLQuery: (.*)/, 1]
-      Boxcars.debug code, :yellow
-      output = connection.exec_query(code)
+    def clean_up_output(output)
+      output = output.as_json if output.is_a?(::ActiveRecord::Result)
       output = 0 if output.is_a?(Array) && output.empty?
       output = output.first if output.is_a?(Array) && output.length == 1
       output = output[output.keys.first] if output.is_a?(Hash) && output.length == 1
-      "Answer: #{output.to_json}"
+      output = output.as_json if output.is_a?(::ActiveRecord::Relation)
+      output
+    end
+
+    def get_embedded_sql_answer(text)
+      code = text[/^SQLQuery: (.*)/, 1]
+      Boxcars.debug code, :yellow
+      output = clean_up_output(connection.exec_query(code))
+      Result.new(status: :ok, answer: output, explanation: "Answer: #{output.to_json}", code: code)
+    rescue StandardError => e
+      Result.new(status: :error, answer: nil, explanation: "Error: #{e.message}", code: code)
     end
 
     def get_answer(text)
@@ -64,14 +85,14 @@ module Boxcars
       when /^SQLQuery:/
         get_embedded_sql_answer(text)
       when /^Answer:/
-        text
+        Result.from_text(text)
       else
-        raise Boxcars::Error "Unknown format from engine: #{text}"
+        Result.from_error("Unknown format from engine: #{text}")
       end
     end
 
     TEMPLATE = <<~IPT
-      Given an input question, first create a syntactically correct %<dialect>s query to run,
+      Given an input question, first create a syntactically correct %<dialect>s SQL query to run,
       then look at the results of the query and return the answer. Unless the user specifies
       in his question a specific number of examples he wishes to obtain, always limit your query
       to at most %<top_k>s results using a LIMIT clause. You can order the results by a relevant column

@@ -13,11 +13,9 @@ module Boxcars
     def initialize(engine: nil, prompt: nil, **kwargs)
       the_prompt = prompt || my_prompt
       kwargs[:stop] ||= ["```output"]
-      super(name: kwargs[:name] || "Calculator",
-            description: kwargs[:description] || CALCDESC,
-            engine: engine,
-            prompt: the_prompt,
-            **kwargs)
+      kwargs[:name] ||= "Calculator"
+      kwargs[:description] ||= CALCDESC
+      super(engine: engine, prompt: the_prompt, **kwargs)
     end
 
     private
@@ -25,7 +23,7 @@ module Boxcars
     def get_embedded_ruby_answer(text)
       code = text[8..-4].split("```").first.strip
       ruby_executor = Boxcars::RubyREPL.new
-      ruby_executor.call(code: code).strip
+      ruby_executor.call(code: code)
     end
 
     def get_answer(text)
@@ -33,9 +31,9 @@ module Boxcars
       when /^```ruby/
         get_embedded_ruby_answer(text)
       when /^Answer:/
-        text
+        Result.from_text(text)
       else
-        raise Boxcars::Error "Unknown format from engine: #{text}"
+        Result.new(status: :error, explanation: "Unknown format from engine: #{text}")
       end
     end
 

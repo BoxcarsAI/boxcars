@@ -111,11 +111,11 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Mon, 06 Mar 2023 20:42:15 GMT
+      - Wed, 08 Mar 2023 14:51:14 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '342'
+      - '356'
       Connection:
       - keep-alive
       Access-Control-Allow-Origin:
@@ -127,18 +127,18 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '2309'
+      - '779'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
       - max-age=15724800; includeSubDomains
       X-Request-Id:
-      - 93114a62df1a18fbb1ef49c49fa88673
+      - cc8c15bfd64e125a0fff19b73f1ff028
     body:
       encoding: UTF-8
-      string: '{"id":"chatcmpl-6rBwrPDdwWOAWqCpi8z5oPbwNAo6W","object":"chat.completion","created":1678135333,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":299,"completion_tokens":15,"total_tokens":314},"choices":[{"message":{"role":"assistant","content":"\n\nARCode:
-        Comment.where(ticket_id: 1).last.content\n"},"finish_reason":"stop","index":0}]}
+      string: '{"id":"chatcmpl-6rpQHG0BZVO4uV9OOus1yIZxNCcie","object":"chat.completion","created":1678287073,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":299,"completion_tokens":16,"total_tokens":315},"choices":[{"message":{"role":"assistant","content":"\n\nARCode:
+        Comment.where(ticket_id: Ticket.first.id).last.content\n"},"finish_reason":"stop","index":0}]}
 
         '
-  recorded_at: Mon, 06 Mar 2023 20:42:15 GMT
+  recorded_at: Wed, 08 Mar 2023 14:51:14 GMT
 recorded_with: VCR 6.1.0
