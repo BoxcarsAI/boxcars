@@ -62,8 +62,18 @@ module Boxcars
     # you can pass one or the other, but not both.
     # @return [String] The answer to the question.
     def run(*args, **kwargs)
+      rv = conduct(*args, **kwargs)
+      rv.is_a?(Result) ? rv.to_answer : rv
+    end
+
+    # Get an extended answer from the boxcar.
+    # @param args [Array] The positional arguments to pass to the boxcar.
+    # @param kwargs [Hash] The keyword arguments to pass to the boxcar.
+    # you can pass one or the other, but not both.
+    # @return [Boxcars::Result] The answer to the question.
+    def conduct(*args, **kwargs)
       Boxcars.info "> Entering #{name}#run", :gray, style: :bold
-      rv = do_run(*args, **kwargs)
+      rv = depart(*args, **kwargs)
       Boxcars.info "< Exiting #{name}#run", :gray, style: :bold
       rv
     end
@@ -71,7 +81,7 @@ module Boxcars
     private
 
     # Get an answer from the boxcar.
-    def do_call(inputs:, return_only_outputs: false)
+    def run_boxcar(inputs:, return_only_outputs: false)
       inputs = our_inputs(inputs)
       output = nil
       begin
@@ -81,19 +91,19 @@ module Boxcars
         raise e
       end
       validate_outputs(outputs: output.keys)
-      # memory&.save_convext(inputs: inputs, outputs: outputs)
       return output if return_only_outputs
 
       inputs.merge(output)
     end
 
-    def do_run(*args, **kwargs)
+    # line up parameters and run boxcar
+    def depart(*args, **kwargs)
       if kwargs.empty?
         raise Boxcars::ArgumentError, "run supports only one positional argument." if args.length != 1
 
-        return do_call(inputs: args[0])[output_keys.first]
+        return run_boxcar(inputs: args[0])[output_keys.first]
       end
-      return do_call(**kwargs)[output_keys].first if args.empty?
+      return run_boxcar(**kwargs)[output_keys].first if args.empty?
 
       raise Boxcars::ArgumentError, "run supported with either positional or keyword arguments but not both. Got args" \
                                     ": #{args} and kwargs: #{kwargs}."
@@ -114,11 +124,12 @@ module Boxcars
 
     # the default answer is the text passed in
     def get_answer(text)
-      text
+      Result.from_text(text)
     end
   end
 end
 
+require "boxcars/result"
 require "boxcars/boxcar/engine_boxcar"
 require "boxcars/boxcar/calculator"
 require "boxcars/boxcar/google_search"

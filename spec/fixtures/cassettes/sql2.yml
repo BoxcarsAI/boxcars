@@ -98,7 +98,7 @@ http_interactions:
         id INTEGER NOT NULL,\n title varchar NULL,\n user_id INTEGER NULL,\n status
         INTEGER NULL,\n body TEXT NULL,\n created_at datetime(6) NOT NULL,\n updated_at
         datetime(6) NOT NULL\n);\n\nQuestion: What is the last comment for the first
-        post?\n"}],"model":"gpt-3.5-turbo","temperature":0.6,"max_tokens":512,"stop":["Answer:"]}'
+        post?\n"}],"model":"gpt-3.5-turbo","temperature":0.7,"max_tokens":512,"stop":["Answer:"]}'
     headers:
       Content-Type:
       - application/json
@@ -116,11 +116,11 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Tue, 07 Mar 2023 17:46:09 GMT
+      - Wed, 08 Mar 2023 18:47:15 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '509'
+      - '466'
       Connection:
       - keep-alive
       Access-Control-Allow-Origin:
@@ -132,20 +132,19 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '2077'
+      - '1979'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
       - max-age=15724800; includeSubDomains
       X-Request-Id:
-      - 0ecc1e341bdb244088bb5cfa0f5d167c
+      - 89d632d204c10ac93464a4c807f363b4
     body:
       encoding: UTF-8
-      string: '{"id":"chatcmpl-6rVfz9qkrrGsFnMBHeujy7qJOIEc3","object":"chat.completion","created":1678211167,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":330,"completion_tokens":54,"total_tokens":384},"choices":[{"message":{"role":"assistant","content":"\n\nSQLQuery:
+      string: '{"id":"chatcmpl-6rt6fIbNweBG1Up0YdKEIpJTf50iC","object":"chat.completion","created":1678301233,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":330,"completion_tokens":50,"total_tokens":380},"choices":[{"message":{"role":"assistant","content":"\n\nSQLQuery:
         SELECT content, created_at FROM comments WHERE ticket_id = 1 ORDER BY created_at
-        DESC LIMIT 1;\nSQLResult: | content | created_at |\n           |---------|------------|\n           |
-        Lorem   | 2021-10-01 |\n"},"finish_reason":"stop","index":0}]}
+        DESC LIMIT 1;\nSQLResult: \"Great post! Thanks for sharing.|2021-05-13 10:30:00\"\n"},"finish_reason":"stop","index":0}]}
 
         '
-  recorded_at: Tue, 07 Mar 2023 17:46:09 GMT
+  recorded_at: Wed, 08 Mar 2023 18:47:15 GMT
 recorded_with: VCR 6.1.0

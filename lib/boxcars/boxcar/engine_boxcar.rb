@@ -16,7 +16,7 @@ module Boxcars
       @engine = engine || Boxcars.engine.new
       @top_k = kwargs[:top_k] || 5
       @stop = kwargs[:stop] || ["Answer:"]
-      super(name: name, description: description)
+      super(name: name, description: description, return_direct: kwargs[:return_direct])
     end
 
     # input keys for the prompt
@@ -95,7 +95,7 @@ module Boxcars
     def check_output_keys
       return unless output_keys.length != 1
 
-      raise Boxcars::ArgumentError, "run not supported when there is not exactly one output key. Got #{output_keys}."
+      raise Boxcars::ArgumentError, "not supported when there is not exactly one output key. Got #{output_keys}."
     end
 
     # call the boxcar
@@ -104,7 +104,7 @@ module Boxcars
     def call(inputs:)
       t = predict(**prediction_variables(inputs)).strip
       answer = get_answer(t)
-      Boxcars.debug answer, :magenta
+      Boxcars.debug answer.to_json, :magenta
       { output_keys.first => answer }
     end
 

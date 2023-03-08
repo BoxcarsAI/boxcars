@@ -79,11 +79,11 @@ http_interactions:
     body:
       encoding: UTF-8
       string: '{"messages":[{"role":"user","content":"Given an input question, first
-        create a syntactically correct SQLite3 query to run,\nthen look at the results
-        of the query and return the answer. Unless the user specifies\nin his question
-        a specific number of examples he wishes to obtain, always limit your query\nto
-        at most 5 results using a LIMIT clause. You can order the results by a relevant
-        column\nto return the most interesting examples in the database.\n\nNever
+        create a syntactically correct SQLite3 SQL query to run,\nthen look at the
+        results of the query and return the answer. Unless the user specifies\nin
+        his question a specific number of examples he wishes to obtain, always limit
+        your query\nto at most 5 results using a LIMIT clause. You can order the results
+        by a relevant column\nto return the most interesting examples in the database.\n\nNever
         query for all the columns from a specific table, only ask for a the few relevant
         columns given the question.\n\nPay attention to use only the column names
         that you can see in the schema description. Be careful to not query for columns
@@ -97,7 +97,7 @@ http_interactions:
         NOT NULL,\n updated_at datetime(6) NOT NULL\n);\nCREATE TABLE tickets (\n
         id INTEGER NOT NULL,\n title varchar NULL,\n user_id INTEGER NULL,\n status
         INTEGER NULL,\n body TEXT NULL,\n created_at datetime(6) NOT NULL,\n updated_at
-        datetime(6) NOT NULL\n);\n\nQuestion: how many comments are there from John?\n"}],"model":"gpt-3.5-turbo","temperature":0.6,"max_tokens":512,"stop":["Answer:"]}'
+        datetime(6) NOT NULL\n);\n\nQuestion: how many comments are there from John?\n"}],"model":"gpt-3.5-turbo","temperature":0.7,"max_tokens":512,"stop":["Answer:"]}'
     headers:
       Content-Type:
       - application/json
@@ -115,7 +115,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Tue, 07 Mar 2023 17:46:07 GMT
+      - Wed, 08 Mar 2023 19:17:53 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -131,19 +131,19 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '1559'
+      - '1573'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
       - max-age=15724800; includeSubDomains
       X-Request-Id:
-      - d1aaf4ec505b1762c3955ea2d4807779
+      - fa637a3121a492163b66d8282326a4d4
     body:
       encoding: UTF-8
-      string: '{"id":"chatcmpl-6rVfx9Zilr3C60KU1Iwhosc0ALdze","object":"chat.completion","created":1678211165,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":328,"completion_tokens":33,"total_tokens":361},"choices":[{"message":{"role":"assistant","content":"\n\nSQLQuery:
+      string: '{"id":"chatcmpl-6rtaJkv1F5RHOfX48fxd7CoOw8sgV","object":"chat.completion","created":1678303071,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":329,"completion_tokens":33,"total_tokens":362},"choices":[{"message":{"role":"assistant","content":"\n\nSQLQuery:
         SELECT COUNT(*) FROM comments c JOIN users u ON c.user_id = u.id WHERE u.name
         = ''John''\nSQLResult: 3\n"},"finish_reason":"stop","index":0}]}
 
         '
-  recorded_at: Tue, 07 Mar 2023 17:46:07 GMT
+  recorded_at: Wed, 08 Mar 2023 19:17:53 GMT
 recorded_with: VCR 6.1.0

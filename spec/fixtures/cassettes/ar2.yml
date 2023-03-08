@@ -111,7 +111,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Mon, 06 Mar 2023 20:42:06 GMT
+      - Wed, 08 Mar 2023 14:51:11 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -127,18 +127,18 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '1089'
+      - '1054'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
       - max-age=15724800; includeSubDomains
       X-Request-Id:
-      - 714fefada56b8846a513c14c059812ac
+      - 118603cce8d3f7d4470cc0647fa218dc
     body:
       encoding: UTF-8
-      string: '{"id":"chatcmpl-6rBwjo5mZD24nCQhChRepVVWa7ugG","object":"chat.completion","created":1678135325,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":299,"completion_tokens":16,"total_tokens":315},"choices":[{"message":{"role":"assistant","content":"\n\nARCode:
+      string: '{"id":"chatcmpl-6rpQEuBuD4NsscrmCg2Yiqvv0W6fW","object":"chat.completion","created":1678287070,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":299,"completion_tokens":16,"total_tokens":315},"choices":[{"message":{"role":"assistant","content":"\n\nARCode:
         Comment.where(ticket_id: Ticket.first.id).last.content\n"},"finish_reason":null,"index":0}]}
 
         '
-  recorded_at: Mon, 06 Mar 2023 20:42:06 GMT
+  recorded_at: Wed, 08 Mar 2023 14:51:11 GMT
 recorded_with: VCR 6.1.0

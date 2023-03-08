@@ -9,19 +9,20 @@ module Boxcars
       Boxcars.debug "RubyREPL: #{code}", :yellow
 
       # wrap the code in an excption block so we can catch errors
-      code = "begin\n#{code}\nrescue Exception => e\n  puts 'Error: ' + e.message\nend"
+      wrapped = "begin\n#{code}\nrescue Exception => e\n  puts 'Error: ' + e.message\nend"
       output = ""
       IO.popen("ruby", "r+") do |io|
-        io.puts code
+        io.puts wrapped
         io.close_write
         output = io.read
       end
       if output =~ /^Error: /
-        Boxcars.error output
-        output
+        Boxcars.debug output, :red
+        Result.from_error(output, code: code)
+      else
+        Boxcars.debug "Answer: #{output}", :yellow, style: :bold
+        Result.from_text(output, code: code)
       end
-      Boxcars.debug "Answer: #{output}", :yellow, style: :bold
-      output
     end
 
     # Execute ruby code

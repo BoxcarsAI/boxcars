@@ -6,13 +6,13 @@ RSpec.describe Boxcars::SQL do
 
     it "can count comments from john" do
       VCR.use_cassette("sql") do
-        expect(boxcar.run("how many comments are there from John?")).to include(":2")
+        expect(boxcar.run("how many comments are there from John?")).to be(2)
       end
     end
 
     it "can find the last comment to the first post" do
       VCR.use_cassette("sql2") do
-        expect(boxcar.run("What is the last comment for the first post?")).to include(" johns second ")
+        expect(boxcar.run("What is the last comment for the first post?").to_s).to include(" johns second ")
       end
     end
   end

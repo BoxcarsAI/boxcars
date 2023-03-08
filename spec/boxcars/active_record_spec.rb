@@ -20,7 +20,7 @@ RSpec.describe Boxcars::ActiveRecord do
 
     it "can count comments from john" do
       VCR.use_cassette("ar1") do
-        expect(boxcar.run("count how many comments are there from John?")).to eq("Answer: 2")
+        expect(boxcar.run("count how many comments are there from John?")).to eq(2)
       end
     end
 
@@ -34,10 +34,11 @@ RSpec.describe Boxcars::ActiveRecord do
   context "with sample helpdesk app some models" do
     boxcar = described_class.new(models: [Comment, Ticket, User])
     boxcar2 = described_class.new(models: [Comment, Ticket, User], approval_callback: ->(_count, _code) { true })
+    boxcar3 = described_class.new(models: [Comment, Ticket, User], code_only: true)
 
     it "can count comments from john" do
       VCR.use_cassette("ar3") do
-        expect(boxcar.run("count of comments from John?")).to eq("Answer: 2")
+        expect(boxcar.run("count of comments from John?")).to eq(2)
       end
     end
 
@@ -49,7 +50,6 @@ RSpec.describe Boxcars::ActiveRecord do
 
     john = User.find_by(name: 'John')
     open_tickets = Ticket.where(user: john, status: :open)
-    open_tickets_answer = "Answer: #{open_tickets.count}"
     it "can not save reassign open tickets" do
       VCR.use_cassette("ar5") do
         expect(boxcar.run("Move John's open tickets to Sally")).to include("Error: Can not run code")
@@ -63,13 +63,28 @@ RSpec.describe Boxcars::ActiveRecord do
 
     it "can reassign open tickets" do
       VCR.use_cassette("ar5") do
-        expect(boxcar2.run("Move John's open tickets to Sally")).to include(open_tickets_answer)
+        johns_count = open_tickets.count
+        expect(boxcar2.run("Move John's open tickets to Sally")).to eq(johns_count)
       end
     end
 
     it "does reassign the open tickets" do
       after_tickets = Ticket.where(user: john, status: :open)
       expect(after_tickets.count).to eq(0)
+    end
+
+    it "can return just the code" do
+      VCR.use_cassette("ar6") do
+        code_results = boxcar3.conduct("count of comments from Sally?").to_h
+        expect(code_results[:code]).to eq("Comment.joins(:user).where(users: {name: \"Sally\"}).count")
+      end
+    end
+
+    it "can see the return data" do
+      VCR.use_cassette("ar7") do
+        answer = boxcar.conduct("tickets asigned to Sally?").to_answer
+        expect(answer.count).to eq(Ticket.open.where(user: User.find_by(name: "Sally")).count)
+      end
     end
   end
 end

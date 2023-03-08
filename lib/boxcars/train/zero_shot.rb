@@ -69,7 +69,8 @@ module Boxcars
       #   with "Action Input:" should be separated by a newline.
       if engine_output.include?(FINAL_ANSWER_ACTION)
         answer = engine_output.split(FINAL_ANSWER_ACTION).last.strip
-        ['Final Answer', answer]
+        Result.new(status: :ok, answer: answer, explanation: engine_output)
+        # ['Final Answer', answer]
       else
         # the thought should be the frist line here if it doesn't start with "Action:"
         thought = engine_output.split(/\n+/).reject(&:empty?).first
