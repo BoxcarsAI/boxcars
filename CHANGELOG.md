@@ -1,5 +1,27 @@
 # Changelog
 
+## [Unreleased](https://github.com/BoxcarsAI/boxcars/tree/HEAD)
+
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.2.1...HEAD)
+
+**Implemented enhancements:**
+
+- return a structure from boxcars instead of just a string [\#31](https://github.com/BoxcarsAI/boxcars/issues/31)
+- modify SQL boxcar to take a list of Tables. Handy if you have a large database with many tables. [\#19](https://github.com/BoxcarsAI/boxcars/issues/19)
+
+## [v0.2.1](https://github.com/BoxcarsAI/boxcars/tree/v0.2.1) (2023-03-08)
+
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.2.0...v0.2.1)
+
+**Implemented enhancements:**
+
+- add the ability to use the ChatGPT API - a ChatGPT Boxcar::Engine [\#32](https://github.com/BoxcarsAI/boxcars/issues/32)
+- Prompt simplification [\#29](https://github.com/BoxcarsAI/boxcars/issues/29)
+
+**Merged pull requests:**
+
+- use structured results internally and bring SQL up to parity with ActiveRecord boxcar. [\#36](https://github.com/BoxcarsAI/boxcars/pull/36) ([francis](https://github.com/francis))
+
 ## [v0.2.0](https://github.com/BoxcarsAI/boxcars/tree/v0.2.0) (2023-03-07)
 
 [Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.1.8...v0.2.0)
