@@ -157,6 +157,8 @@ end
 
 require "boxcars/version"
 require "boxcars/prompt"
+require "boxcars/conversation_prompt"
+require "boxcars/conversation"
 require "boxcars/generation"
 require "boxcars/ruby_repl"
 require "boxcars/engine"
