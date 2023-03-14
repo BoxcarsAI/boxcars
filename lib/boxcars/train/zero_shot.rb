@@ -1,34 +1,10 @@
+# frozen_string_literal: true
+
 # Agent for the MRKL chain
 module Boxcars
   # A Train using the zero-shot react method.
   class ZeroShot < Train
     attr_reader :boxcars, :observation_prefix, :engine_prefix
-
-    # default prompt prefix
-    PREFIX = "Answer the following questions as best you can. You have access to the following actions:".freeze
-
-    # default prompt instructions
-    FORMAT_INSTRUCTIONS = <<~FINPUT.freeze
-      Use the following format:
-
-      Question: the input question you must answer
-      Thought: you should always think about what to do
-      Action: the action to take, should be one of [%<boxcar_names>s]
-      Action Input: the input to the action
-      Observation: the result of the action
-      ... (this Thought/Action/Action Input/Observation sequence can repeat N times)
-      Thought: I now know the final answer
-      Final Answer: the final answer to the original input question
-      Next Actions: If you have them, up to three suggested actions for the user to take after getting this answer.
-    FINPUT
-
-    # default prompt suffix
-    SUFFIX = <<~SINPUT.freeze
-      Begin!
-
-      Question: %<input>s
-      Thought:%<agent_scratchpad>s
-    SINPUT
 
     # @param boxcars [Array<Boxcars::Boxcar>] The boxcars to run.
     # @param engine [Boxcars::Engine] The engine to use for this train.
@@ -38,26 +14,26 @@ module Boxcars
     def initialize(boxcars:, engine: nil, name: 'Zero Shot', description: 'Zero Shot Train', prompt: nil)
       @observation_prefix = 'Observation: '
       @engine_prefix = 'Thought:'
-      prompt ||= self.class.create_prompt(boxcars: boxcars)
+      prompt ||= my_prompt
       super(engine: engine, boxcars: boxcars, prompt: prompt, name: name, description: description)
     end
 
-    # Create prompt in the style of the zero shot agent. Without arguments, returns the default prompt.
-    # @param boxcars [Array<Boxcars::Boxcar>] List of boxcars the agent will have access to, used to format the prompt.
-    # @param prefix [String] String to put before the main prompt.
-    # @param suffix [String] String to put after the main prompt.
-    # @param input_variables [Array<Symbol>] List of input variables the final prompt will expect.
-    # @return [Boxcars::Prompt] A Prompt with the template assembled from the pieces here.
-    def self.create_prompt(boxcars:, prefix: PREFIX, suffix: SUFFIX, input_variables: [:input, :agent_scratchpad])
-      boxcar_strings = boxcars.map { |boxcar| "#{boxcar.name}: #{boxcar.description}" }.join("\n")
-      boxcar_names = boxcars.map(&:name)
-      format_instructions = format(FORMAT_INSTRUCTIONS, boxcar_names: boxcar_names.join(", "))
-      template = [prefix, boxcar_strings, format_instructions, suffix].join("\n\n")
-      Prompt.new(template: template, input_variables: input_variables)
+    # @return Hash The additional variables for this boxcar.
+    def prediction_additional
+      { boxcar_names: boxcar_names, boxcar_descriptions: boxcar_descriptions }.merge super
     end
 
+    # Extract the boxcar and input from the engine output.
+    # @param text [String] The output from the engine.
+    # @return [Array<Boxcars::Boxcar, String>] The boxcar and input.
+    def extract_boxcar_and_input(text)
+      get_action_and_input(engine_output: text)
+    end
+
+    private
+
     # the final answer action string
-    FINAL_ANSWER_ACTION = "Final Answer:".freeze
+    FINAL_ANSWER_ACTION = "Final Answer:"
 
     # Parse out the action and input from the engine output.
     # @param engine_output [String] The output from the engine.
@@ -70,13 +46,13 @@ module Boxcars
       if engine_output.include?(FINAL_ANSWER_ACTION)
         answer = engine_output.split(FINAL_ANSWER_ACTION).last.strip
         Result.new(status: :ok, answer: answer, explanation: engine_output)
-        # ['Final Answer', answer]
       else
         # the thought should be the frist line here if it doesn't start with "Action:"
         thought = engine_output.split(/\n+/).reject(&:empty?).first
         Boxcars.debug("Though: #{thought}", :cyan)
         regex = /Action: (?<action>.*)\nAction Input: (?<action_input>.*)/
         match = regex.match(engine_output)
+        # TODO: this should return an error to the results that can be used for corrections
         raise ValueError, "Could not parse engine output: #{engine_output}" unless match
 
         action = match[:action].strip
@@ -85,11 +61,40 @@ module Boxcars
       end
     end
 
-    # Extract the boxcar and input from the engine output.
-    # @param text [String] The output from the engine.
-    # @return [Array<Boxcars::Boxcar, String>] The boxcar and input.
-    def extract_boxcar_and_input(text)
-      get_action_and_input(engine_output: text)
+    CTEMPLATE = [
+      [:system, "Answer the following questions as best you can. You have access to the following actions:\n" \
+                "%<boxcar_descriptions>s"],
+      [:system, "Use the following format:\n" \
+                "Question: the input question you must answer\n" \
+                "Thought: you should always think about what to do\n" \
+                "Action: the action to take, should be one of [%<boxcar_names>s]\n" \
+                "Action Input: the input to the action\n" \
+                "Observation: the result of the action\n" \
+                "... (this Thought/Action/Action Input/Observation sequence can repeat N times)\n" \
+                "Thought: I now know the final answer\n" \
+                "Final Answer: the final answer to the original input question\n" \
+                "Next Actions: If you have them, up to 3 suggested actions for the user to take after getting this answer.\n" \
+                "Begin!"],
+      [:user, "Question: %<input>s"],
+      [:assistant, "Thought: %<agent_scratchpad>s"]
+    ].freeze
+
+    def boxcar_names
+      @boxcar_names ||= boxcars.map(&:name)
+    end
+
+    def boxcar_descriptions
+      @boxcar_descriptions ||= boxcars.map { |boxcar| "#{boxcar.name}: #{boxcar.description}" }.join("\n")
+    end
+
+    # The prompt to use for the train.
+    def my_prompt
+      @conversation ||= Conversation.new(lines: CTEMPLATE)
+      @my_prompt ||= ConversationPrompt.new(
+        conversation: @conversation,
+        input_variables: [:input],
+        other_inputs: [:boxcar_names, :boxcar_descriptions, :agent_scratchpad],
+        output_variables: [:answer])
     end
   end
 end

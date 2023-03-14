@@ -3,33 +3,30 @@
 module Boxcars
   # @abstract
   class Train < EngineBoxcar
-    attr_reader :engine, :boxcars, :name, :description, :prompt, :return_values, :return_intermediate_steps,
-                :max_iterations, :early_stopping_method
+    attr_reader :boxcars, :return_values, :return_intermediate_steps,
+                :max_iterations, :early_stopping_method, :name_to_boxcar_map
 
     # A Train will use a engine to run a series of boxcars.
-    # @param engine [Boxcars::Engine] The engine to use for this train.
     # @param boxcars [Array<Boxcars::Boxcar>] The boxcars to run.
-    # @param prompt [String] The prompt to use.
+    # @param prompt [Boxcars::Prompt] The prompt to use.
+    # @param engine [Boxcars::Engine] The engine to use for this train.
+    # @param kwargs [Hash] Additional arguments including: name, description, top_k, return_direct, and stop
     # @abstract
     def initialize(boxcars:, prompt:, engine: nil, **kwargs)
       @boxcars = boxcars
-      @name = name || self.class.name
+      @name_to_boxcar_map = boxcars.to_h { |boxcar| [boxcar.name, boxcar] }
       @return_values = [:output]
-      @return_intermediate_steps = kwargs[:return_intermediate_steps] || false
-      @max_iterations = kwargs[:max_iterations] || 25
-      @early_stopping_method = kwargs[:early_stopping_method] || "force"
+      @return_intermediate_steps = kwargs.delete(:return_intermediate_steps) || false
+      @max_iterations = kwargs.delete(:max_iterations) || 25
+      @early_stopping_method = kwargs.delete(:early_stopping_method) || "force"
+      kwargs[:stop] ||= ["\n#{observation_prefix}"]
 
-      super(prompt: prompt, engine: engine, name: kwargs[:name], description: kwargs[:description])
+      super(prompt: prompt, engine: engine, **kwargs)
     end
 
     # Extract the boxcar name and input from the text.
     # @param text [String] The text to extract from.
     def extract_boxcar_and_input(text)
-    end
-
-    # the stop strings list
-    def stop
-      ["\n#{observation_prefix}"]
     end
 
     # build the scratchpad for the engine
@@ -48,13 +45,14 @@ module Boxcars
     # @param full_inputs [Hash] The inputs to the engine.
     # @return [Boxcars::Action] The next action.
     def get_next_action(full_inputs)
-      full_output = predict(**full_inputs)
-      parsed_output = extract_boxcar_and_input(full_output)
-      while parsed_output.nil?
+      full_output = ""
+      parsed_output = nil
+      loop do
         full_inputs[:agent_scratchpad] += full_output
         output = predict(**full_inputs)
         full_output += output
         parsed_output = extract_boxcar_and_input(full_output)
+        break unless parsed_output.nil?
       end
       if parsed_output.is_a?(Result)
         TrainAction.from_result(boxcar: "Final Answer", result: parsed_output, log: full_output)
@@ -69,8 +67,7 @@ module Boxcars
     # @return [Boxcars::Action] Action specifying what boxcar to use.
     def plan(intermediate_steps, **kwargs)
       thoughts = construct_scratchpad(intermediate_steps)
-      new_inputs = { agent_scratchpad: thoughts, stop: stop }
-      full_inputs = kwargs.merge(new_inputs)
+      full_inputs = prediction_additional.merge(kwargs).merge(agent_scratchpad: thoughts)
       action = get_next_action(full_inputs)
       return TrainFinish.new({ output: action.boxcar_input }, log: action.log) if action.boxcar == finish_boxcar_name
 
@@ -187,7 +184,6 @@ module Boxcars
     # @return [Hash] The output.
     def call(inputs:)
       prepare_for_new_call
-      name_to_boxcar_map = boxcars.to_h { |boxcar| [boxcar.name, boxcar] }
       intermediate_steps = []
       iterations = 0
       while should_continue?(iterations)

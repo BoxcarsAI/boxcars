@@ -91,37 +91,32 @@ module Boxcars
       end
     end
 
-    TEMPLATE = <<~IPT
-      Given an input question, first create a syntactically correct %<dialect>s SQL query to run,
-      then look at the results of the query and return the answer. Unless the user specifies
-      in his question a specific number of examples he wishes to obtain, always limit your query
-      to at most %<top_k>s results using a LIMIT clause. You can order the results by a relevant column
-      to return the most interesting examples in the database.
-
-      Never query for all the columns from a specific table, only ask for a the few relevant columns given the question.
-
-      Pay attention to use only the column names that you can see in the schema description. Be careful to not query for columns that do not exist.
-      Also, pay attention to which column is in which table.
-
-      Use the following format:
-      Question: "Question here"
-      SQLQuery: "SQL Query to run"
-      SQLResult: "Result of the SQLQuery"
-      Answer: "Final answer here"
-
-      Only use the following tables:
-      %<schema>s
-
-      Question: %<question>s
-    IPT
+    CTEMPLATE = [
+      [:system, "Given an input question, first create a syntactically correct %<dialect>s SQL query to run, " \
+                "then look at the results of the query and return the answer. Unless the user specifies " \
+                "in her question a specific number of examples he wishes to obtain, always limit your query " \
+                "to at most %<top_k>s results using a LIMIT clause. You can order the results by a relevant column " \
+                "to return the most interesting examples in the database.\n" \
+                "Never query for all the columns from a specific table, only ask for the elevant columns given the question.\n" \
+                "Pay attention to use only the column names that you can see in the schema description. Be careful to " \
+                "not query for columns that do not exist. Also, pay attention to which column is in which table."],
+      [:system, "Use the following format:\n" \
+                "Question: 'Question here'\n" \
+                "SQLQuery: 'SQL Query to run'\n" \
+                "SQLResult: 'Result of the SQLQuery'\n" \
+                "Answer: 'Final answer here'"],
+      [:system, "Only use the following tables:\n%<schema>s"],
+      [:assistant, "Question: %<question>s"]
+    ].freeze
 
     # The prompt to use for the engine.
     def my_prompt
-      @my_prompt ||= Prompt.new(
+      @conversation ||= Conversation.new(lines: CTEMPLATE)
+      @my_prompt ||= ConversationPrompt.new(
+        conversation: @conversation,
         input_variables: [:question],
         other_inputs: [:top_k, :dialect, :table_info],
-        output_variables: [:answer],
-        template: TEMPLATE)
+        output_variables: [:answer])
     end
   end
 end

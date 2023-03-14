@@ -38,17 +38,22 @@ module Boxcars
     # @param openai_access_token [String] The access token to use when asking the engine.
     #   Defaults to Boxcars.configuration.openai_access_token.
     # @param kwargs [Hash] Additional parameters to pass to the engine if wanted.
-    def client(prompt:, openai_access_token: nil, **kwargs)
+    def client(prompt:, inputs: {}, openai_access_token: nil, **kwargs)
       access_token = Boxcars.configuration.openai_access_token(openai_access_token: openai_access_token)
       organization_id = Boxcars.configuration.organization_id
       clnt = ::OpenAI::Client.new(access_token: access_token, organization_id: organization_id)
-      the_params = { prompt: prompt }.merge(open_ai_params).merge(kwargs)
-      if the_params[:model] == "gpt-3.5-turbo"
+      params = open_ai_params.merge(kwargs)
+      if params[:model] == "gpt-3.5-turbo"
         prompt = prompt.first if prompt.is_a?(Array)
-        the_params = { messages: [{ role: "user", content: prompt }] }.merge(open_ai_params).merge(kwargs)
-        clnt.chat(parameters: the_params)
+        params = prompt.as_messages(inputs).merge(params)
+        if Boxcars.configuration.log_prompts
+          Boxcars.debug(params[:messages].map { |p| "#{p[:role]}: #{p[:content]}" }.join("\n"), :cyan)
+        end
+        clnt.chat(parameters: params)
       else
-        clnt.completions(parameters: the_params)
+        params = prompt.as_prompt(inputs).merge(params)
+        Boxcars.debug("Prompt after formatting:\n#{params[:prompt]}", :cyan) if Boxcars.configuration.log_prompts
+        clnt.completions(parameters: params)
       end
     end
 
@@ -56,7 +61,8 @@ module Boxcars
     # @param question [String] The question to ask the engine.
     # @param kwargs [Hash] Additional parameters to pass to the engine if wanted.
     def run(question, **kwargs)
-      response = client(prompt: question, **kwargs)
+      prompt = Prompt.new(template: question)
+      response = client(prompt: prompt, **kwargs)
       answer = response["choices"].map { |c| c.dig("message", "content") || c["text"] }.join("\n").strip
       puts answer
       answer
@@ -110,6 +116,7 @@ module Boxcars
 
     # Call out to OpenAI's endpoint with k unique prompts.
     # @param prompts [Array<String>] The prompts to pass into the model.
+    # @param inputs [Array<String>] The inputs to subsitite into the prompt.
     # @param stop [Array<String>] Optional list of stop words to use when generating.
     # @return [EngineResult] The full engine output.
     def generate(prompts:, stop: nil)
@@ -120,13 +127,14 @@ module Boxcars
       # Get the token usage from the response.
       # Includes prompt, completion, and total tokens used.
       inkeys = %w[completion_tokens prompt_tokens total_tokens].freeze
-      sub_prompts = prompts.each_slice(batch_size).to_a
-      sub_prompts.each do |sprompts|
-        response = client(prompt: sprompts, **params)
-        check_response(response)
-        choices.concat(response["choices"])
-        keys_to_use = inkeys & response["usage"].keys
-        keys_to_use.each { |key| token_usage[key] = token_usage[key].to_i + response["usage"][key] }
+      prompts.each_slice(batch_size) do |sub_prompts|
+        sub_prompts.each do |sprompts, inputs|
+          response = client(prompt: sprompts, inputs: inputs, **params)
+          check_response(response)
+          choices.concat(response["choices"])
+          keys_to_use = inkeys & response["usage"].keys
+          keys_to_use.each { |key| token_usage[key] = token_usage[key].to_i + response["usage"][key] }
+        end
       end
 
       n = params.fetch(:n, 1)

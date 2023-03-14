@@ -8,15 +8,14 @@ module Boxcars
 
     # A Boxcar is a container for a single tool to run.
     # @param prompt [Boxcars::Prompt] The prompt to use for this boxcar with sane defaults.
-    # @param name [String] The name of the boxcar. Defaults to classname.
-    # @param description [String] A description of the boxcar.
     # @param engine [Boxcars::Engine] The engine to user for this boxcar. Can be inherited from a train if nil.
-    def initialize(prompt:, engine: nil, name: nil, description: nil, **kwargs)
+    # @param kwargs [Hash] Additional arguments including: name, description, top_k, return_direct, and stop
+    def initialize(prompt:, engine: nil, **kwargs)
       @prompt = prompt
       @engine = engine || Boxcars.engine.new
-      @top_k = kwargs[:top_k] || 5
-      @stop = kwargs[:stop] || ["Answer:"]
-      super(name: name, description: description, return_direct: kwargs[:return_direct])
+      @top_k = kwargs.delete(:top_k) || 5
+      @stop = kwargs.delete(:stop) || ["Answer:"]
+      super(**kwargs)
     end
 
     # input keys for the prompt
@@ -39,13 +38,7 @@ module Boxcars
     # @return [Boxcars::EngineResult] The result from the engine.
     def generate(input_list:)
       stop = input_list[0][:stop]
-      prompts = []
-      input_list.each do |inputs|
-        # prompt.missing_variables?(inputs)
-        new_prompt = prompt.format(**inputs)
-        Boxcars.debug("Prompt after formatting:\n#{new_prompt}", :cyan) if Boxcars.configuration.log_prompts
-        prompts.push(new_prompt)
-      end
+      prompts = input_list.map { |inputs| [prompt, inputs] }
       engine.generate(prompts: prompts, stop: stop)
     end
 

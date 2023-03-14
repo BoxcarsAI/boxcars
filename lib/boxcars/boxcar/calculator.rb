@@ -38,47 +38,36 @@ module Boxcars
     end
 
     # our template
-    # rubocop:disable Style/RedundantHeredocDelimiterQuotes
-    TEMPLATE = <<~'IPT'
-      You are GPT-3, and you can't do math.
-      You can do basic math, and your memorization abilities are impressive, but you can't do any complex calculations that a human could not do in their head. You also have an annoying tendency to just make up highly specific, but wrong, answers.
-      So we hooked you up to a Ruby 3 kernel, and now you can execute code written in the Ruby programming language. If anyone gives you a hard math problem, just use this format and we’ll take care of the rest:
-
-      Question: ${{Question with hard calculation.}}
-      ```ruby
-      ${{Code that prints what you need to know}}
-      ```
-      ```output
-      ${{Output of your code}}
-      ```
-      Answer: ${{Answer}}
-
-      Otherwise, use this simpler format:
-
-      Question: ${{Question without hard calculation}}
-      Answer: ${{Answer}}
-
-      Begin.
-
-      Question: What is 37593 * 67?
-      ```ruby
-      puts(37593 * 67)
-      ```
-      ```output
-      2518731
-      ```
-      Answer: 2518731
-
-      Question: what is 2518731 + 0?
-      Answer: 2518731
-
-      Question: %<question>s
-    IPT
-    # rubocop:enable Style/RedundantHeredocDelimiterQuotes
+    CTEMPLATE = [
+      [:system, "You are GPT-3, and you can't do math. You can do basic math, and your memorization abilities are impressive, " \
+                "but you can't do any complex calculations that a human could not do in their head. You also have an annoying " \
+                "tendency to just make up highly specific, but wrong, answers. So we hooked you up to a Ruby 3 kernel, and now " \
+                "you can execute code written in the Ruby programming language. If anyone gives you a hard math problem, just " \
+                "use the following format and we’ll take care of the rest.\n" \
+                "${{Question with hard calculation.}}\n" \
+                "the assistant should reply with the following format:\n" \
+                "```ruby\n${{Code that prints what you need to know}}\n```\n" \
+                "```output\n${{Output of your code}}\n```" \
+                "Answer: ${{Answer}}\n" \
+                "Otherwise, use this simpler format:\n" \
+                "Question: ${{Question without hard calculation}}\n" \
+                "Answer: ${{Answer}}"],
+      [:system, "Examples:"],
+      [:user, "What is 37593 * 67?"],
+      [:assistant, "```ruby\nputs(37593 * 67)\n```\n```output\n2518731\n```\nAnswer: 2518731"],
+      [:user, "what is 2518731 + 0?"],
+      [:assistant, "Answer: 2518731"],
+      [:system, "Begin."],
+      [:user, "%<question>s"]
+    ].freeze
 
     # The prompt to use for the engine.
     def my_prompt
-      @my_prompt ||= Prompt.new(input_variables: [:question], output_variables: [:answer], template: TEMPLATE)
+      @conversation ||= Conversation.new(lines: CTEMPLATE)
+      @my_prompt ||= ConversationPrompt.new(
+        conversation: @conversation,
+        input_variables: [:question],
+        output_variables: [:answer])
     end
   end
 end
