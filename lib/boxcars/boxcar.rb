@@ -78,6 +78,22 @@ module Boxcars
       rv
     end
 
+    # helpers for conversation prompt building
+    # assistant message
+    def self.assi(*strs)
+      [:assistant, strs.join]
+    end
+
+    # system message
+    def self.syst(*strs)
+      [:system, strs.join]
+    end
+
+    # user message
+    def self.user(*strs)
+      [:user, strs.join]
+    end
+
     private
 
     # Get an answer from the boxcar.

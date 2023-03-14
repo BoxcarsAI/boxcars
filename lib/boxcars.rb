@@ -107,6 +107,7 @@ module Boxcars
   end
 
   # Logging system
+  # debug log
   def self.debug(msg, color = nil, **options)
     msg = colorize(msg.to_s, color, **options) if color
     if logger
@@ -116,6 +117,7 @@ module Boxcars
     end
   end
 
+  # info log
   def self.info(msg, color = nil, **options)
     msg = colorize(msg.to_s, color, **options) if color
     if logger
@@ -125,6 +127,7 @@ module Boxcars
     end
   end
 
+  # warn log
   def self.warn(msg, color = nil, **options)
     msg = colorize(msg.to_s, color, **options) if color
     if logger
@@ -134,6 +137,7 @@ module Boxcars
     end
   end
 
+  # error log
   def self.error(msg, color = nil, **options)
     msg = colorize(msg.to_s, color, **options) if color
     if logger
@@ -143,6 +147,7 @@ module Boxcars
     end
   end
 
+  # simple colorization
   def self.colorize(str, color, **options)
     background = options[:background] || options[:bg] || false
     style = options[:style]

@@ -175,23 +175,23 @@ module Boxcars
     end
 
     CTEMPLATE = [
-      [:system, "Given an input question, first create a syntactically correct Rails Active Record code to run, " \
-                "then look at the results of the code and return the answer. Unless the user specifies " \
-                "in her question a specific number of examples she wishes to obtain, limit your code " \
-                "to at most %<top_k>s results.\n" \
-                "Never query for all the columns from a specific model, " \
-                "only ask for the relevant attributes given the question.\n" \
-                "Pay attention to use only the attribute names that you can see in the model description. " \
-                "Be careful to not query for attributes that do not exist.\n" \
-                "Also, pay attention to which attribute is in which model."],
-      [:system, "Use the following format:\n" \
-                "Question: 'Question here'\n" \
-                "ARCode: 'Active Record code to run'\n" \
-                "ARChanges: 'Active Record code to compute the number of records going to change' - " \
-                "Only add this line if the ARCode on the line before will make data changes.\n" \
-                "Answer: 'Final answer here'"],
-      [:system, "Only use the following Active Record models: %<model_info>s"],
-      [:assistant, "Question: %<question>s"]
+      syst("Given an input question, first create a syntactically correct Rails Active Record code to run, ",
+           "then look at the results of the code and return the answer. Unless the user specifies ",
+           "in her question a specific number of examples she wishes to obtain, limit your code ",
+           "to at most %<top_k>s results.\n",
+           "Never query for all the columns from a specific model, ",
+           "only ask for the relevant attributes given the question.\n",
+           "Pay attention to use only the attribute names that you can see in the model description. ",
+           "Be careful to not query for attributes that do not exist.\n",
+           "Also, pay attention to which attribute is in which model."),
+      syst("Use the following format:\n",
+           "Question: 'Question here'\n",
+           "ARCode: 'Active Record code to run'\n",
+           "ARChanges: 'Active Record code to compute the number of records going to change' - ",
+           "Only add this line if the ARCode on the line before will make data changes.\n",
+           "Answer: 'Final answer here'"),
+      syst("Only use the following Active Record models: %<model_info>s"),
+      assi("Question: %<question>s")
     ].freeze
 
     # The prompt to use for the engine.

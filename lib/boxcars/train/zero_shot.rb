@@ -62,21 +62,21 @@ module Boxcars
     end
 
     CTEMPLATE = [
-      [:system, "Answer the following questions as best you can. You have access to the following actions:\n" \
-                "%<boxcar_descriptions>s"],
-      [:system, "Use the following format:\n" \
-                "Question: the input question you must answer\n" \
-                "Thought: you should always think about what to do\n" \
-                "Action: the action to take, should be one of [%<boxcar_names>s]\n" \
-                "Action Input: the input to the action\n" \
-                "Observation: the result of the action\n" \
-                "... (this Thought/Action/Action Input/Observation sequence can repeat N times)\n" \
-                "Thought: I now know the final answer\n" \
-                "Final Answer: the final answer to the original input question\n" \
-                "Next Actions: If you have them, up to 3 suggested actions for the user to take after getting this answer.\n" \
-                "Begin!"],
-      [:user, "Question: %<input>s"],
-      [:assistant, "Thought: %<agent_scratchpad>s"]
+      syst("Answer the following questions as best you can. You have access to the following actions:\n",
+           "%<boxcar_descriptions>s"),
+      syst("Use the following format:\n",
+           "Question: the input question you must answer\n",
+           "Thought: you should always think about what to do\n",
+           "Action: the action to take, should be one of [%<boxcar_names>s]\n",
+           "Action Input: the input to the action\n",
+           "Observation: the result of the action\n",
+           "... (this Thought/Action/Action Input/Observation sequence can repeat N times)\n",
+           "Thought: I now know the final answer\n",
+           "Final Answer: the final answer to the original input question\n",
+           "Next Actions: If you have them, up to 3 suggested actions for the user to take after getting this answer.\n",
+           "Begin!"),
+      user("Question: %<input>s"),
+      assi("Thought: %<agent_scratchpad>s")
     ].freeze
 
     def boxcar_names
