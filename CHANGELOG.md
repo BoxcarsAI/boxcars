@@ -9,6 +9,11 @@
 - return a structure from boxcars instead of just a string [\#31](https://github.com/BoxcarsAI/boxcars/issues/31)
 - modify SQL boxcar to take a list of Tables. Handy if you have a large database with many tables. [\#19](https://github.com/BoxcarsAI/boxcars/issues/19)
 
+**Closed issues:**
+
+- make a new type of prompt that uses conversations [\#38](https://github.com/BoxcarsAI/boxcars/issues/38)
+- Add test coverage [\#8](https://github.com/BoxcarsAI/boxcars/issues/8)
+
 ## [v0.2.1](https://github.com/BoxcarsAI/boxcars/tree/v0.2.1) (2023-03-08)
 
 [Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.2.0...v0.2.1)
