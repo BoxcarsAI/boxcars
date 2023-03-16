@@ -10,7 +10,7 @@ module Boxcars
     # The default parameters to use when asking the engine.
     DEFAULT_PARAMS = {
       model: "gpt-3.5-turbo",
-      temperature: 0.7,
+      temperature: 0.2,
       max_tokens: 512
     }.freeze
 
@@ -47,7 +47,7 @@ module Boxcars
         prompt = prompt.first if prompt.is_a?(Array)
         params = prompt.as_messages(inputs).merge(params)
         if Boxcars.configuration.log_prompts
-          Boxcars.debug(params[:messages].map { |p| "#{p[:role]}: #{p[:content]}" }.join("\n"), :cyan)
+          Boxcars.debug(params[:messages].map { |p| ">>>>>> Role: #{p[:role]} <<<<<<\n#{p[:content]}" }.join("\n"), :cyan)
         end
         clnt.chat(parameters: params)
       else
@@ -132,8 +132,8 @@ module Boxcars
           response = client(prompt: sprompts, inputs: inputs, **params)
           check_response(response)
           choices.concat(response["choices"])
-          keys_to_use = inkeys & response["usage"].keys
-          keys_to_use.each { |key| token_usage[key] = token_usage[key].to_i + response["usage"][key] }
+          usage_keys = inkeys & response["usage"].keys
+          usage_keys.each { |key| token_usage[key] = token_usage[key].to_i + response["usage"][key] }
         end
       end
 

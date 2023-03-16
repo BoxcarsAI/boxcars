@@ -131,6 +131,7 @@ module Boxcars
     end
 
     def run_active_record_code(code)
+      code = ::Regexp.last_match(1) if code =~ /`(.+)`/
       Boxcars.debug code, :yellow
       if read_only?
         rollback_after_running do
@@ -150,16 +151,29 @@ module Boxcars
       output
     end
 
+    def extract_code(code)
+      case code
+      when /^```ruby/
+        code.split('```ruby').last.split('```').first.strip
+      when /^`(.+)`/
+        ::Regexp.last_match(1)
+      else
+        code
+      end
+    end
+
     def get_active_record_answer(text)
-      code = text[/^ARCode: (.*)/, 1]
-      changes_code = text[/^ARChanges: (.*)/, 1]
+      code = extract_code text.split('ARChanges:').first.strip.split('ARCode:').last.strip
+      changes_code = extract_code text.split('ARChanges:').last.strip if text =~ /^ARChanges:/
       return Result.new(status: :ok, explanation: "code to run", code: code, changes_code: changes_code) if code_only?
 
       raise SecurityError, "Permission to run code that makes changes denied" unless approved?(changes_code, code)
 
       output = clean_up_output(run_active_record_code(code))
       Result.new(status: :ok, answer: output, explanation: "Answer: #{output.to_json}", code: code)
-    rescue StandardError => e
+    rescue SecurityError, ConfigurationError => e
+      raise e
+    rescue Boxcars::Error => e
       Result.new(status: :error, answer: nil, explanation: "Error: #{e.message}", code: code)
     end
 
@@ -170,27 +184,29 @@ module Boxcars
       when /^Answer:/
         Result.from_text(text)
       else
-        Result.from_error("Unknown format from engine: #{text}")
+        Result.from_error("Try answering again. Expected your answer to start with 'ARCode:'. You gave me:\n#{text}")
       end
     end
 
     CTEMPLATE = [
+      syst("You are a Ruby on Rails Active Record code generator"),
       syst("Given an input question, first create a syntactically correct Rails Active Record code to run, ",
            "then look at the results of the code and return the answer. Unless the user specifies ",
            "in her question a specific number of examples she wishes to obtain, limit your code ",
            "to at most %<top_k>s results.\n",
            "Never query for all the columns from a specific model, ",
            "only ask for the relevant attributes given the question.\n",
-           "Pay attention to use only the attribute names that you can see in the model description. ",
-           "Be careful to not query for attributes that do not exist.\n",
            "Also, pay attention to which attribute is in which model."),
       syst("Use the following format:\n",
-           "Question: 'Question here'\n",
-           "ARCode: 'Active Record code to run'\n",
-           "ARChanges: 'Active Record code to compute the number of records going to change' - ",
+           "Question: ${{Question here}}\n",
+           "ARCode: ${{Active Record code to run}} - make sure you use valid code\n",
+           "ARChanges: ${{Active Record code to compute the number of records going to change}} - ",
            "Only add this line if the ARCode on the line before will make data changes.\n",
-           "Answer: 'Final answer here'"),
-      syst("Only use the following Active Record models: %<model_info>s"),
+           "Answer: ${{Final answer here}}"),
+      syst("Only use the following Active Record models: %<model_info>s\n",
+           "Pay attention to use only the attribute names that you can see in the model description. ",
+           "Be careful to not query for attributes that do not exist.\n"
+          ),
       assi("Question: %<question>s")
     ].freeze
 

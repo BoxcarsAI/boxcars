@@ -2,98 +2,30 @@
 http_interactions:
 - request:
     method: post
-    uri: https://api.openai.com/v1/completions
-    body:
-      encoding: UTF-8
-      string: '{"prompt":["Given an input question, first create a syntactically correct
-        Rails Active Record code to run,\nthen look at the results of the code and
-        return the answer. Unless the user specifies\nin her question a specific number
-        of examples she wishes to obtain, limit your code\nto at most 5 results.\n\nNever
-        query for all the columns from a specific model, only ask for a the few relevant
-        attributes given the question.\n\nPay attention to use only the attribute
-        names that you can see in the model description. Be careful to not query for
-        attributes that do not exist.\nAlso, pay attention to which attribute is in
-        which model.\n\nUse the following format:\nQuestion: \"Question here\"\nARCode:
-        \"Active Record code to run\"\nARChanges: \"Active Record code to compute
-        the number of records going to change\" - Only add this line if the ARCode
-        on the line before will make data changes\nAnswer: \"Final answer here\"\n\nOnly
-        use the following Active Record models:\n[User(id: integer, name: string,
-        created_at: datetime, updated_at: datetime), Comment(id: integer, content:
-        text, user_id: integer, ticket_id: integer, created_at: datetime, updated_at:
-        datetime), Ticket(id: integer, title: string, user_id: integer, status: integer,
-        body: text, created_at: datetime, updated_at: datetime)]\n\nQuestion: count
-        how many comments are there from John?\n"],"model":"gpt-3.5-turbo","temperature":0.7,"max_tokens":512,"stop":["Answer:"]}'
-    headers:
-      Content-Type:
-      - application/json
-      Authorization:
-      - Bearer <openai_access_token>
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      Accept:
-      - "*/*"
-      User-Agent:
-      - Ruby
-  response:
-    status:
-      code: 404
-      message: Not Found
-    headers:
-      Date:
-      - Thu, 02 Mar 2023 22:17:24 GMT
-      Content-Type:
-      - application/json
-      Content-Length:
-      - '227'
-      Connection:
-      - keep-alive
-      Access-Control-Allow-Origin:
-      - "*"
-      Openai-Organization:
-      - user-ri9zw9ahumb1bo9vs73mudbi
-      Openai-Processing-Ms:
-      - '88'
-      Openai-Version:
-      - '2020-10-01'
-      Strict-Transport-Security:
-      - max-age=15724800; includeSubDomains
-      X-Request-Id:
-      - 0bc1ce916bdfff52c0bc14769f18c992
-    body:
-      encoding: UTF-8
-      string: |
-        {
-          "error": {
-            "message": "This is a chat model and not supported in the v1/completions endpoint. Did you mean to use v1/chat/completions?",
-            "type": "invalid_request_error",
-            "param": "model",
-            "code": null
-          }
-        }
-  recorded_at: Thu, 02 Mar 2023 22:17:24 GMT
-- request:
-    method: post
     uri: https://api.openai.com/v1/chat/completions
     body:
       encoding: UTF-8
-      string: '{"messages":[{"role":"user","content":"Given an input question, first
-        create a syntactically correct Rails Active Record code to run,\nthen look
-        at the results of the code and return the answer. Unless the user specifies\nin
-        her question a specific number of examples she wishes to obtain, limit your
-        code\nto at most 5 results.\n\nNever query for all the columns from a specific
-        model, only ask for a the few relevant attributes given the question.\n\nPay
-        attention to use only the attribute names that you can see in the model description.
-        Be careful to not query for attributes that do not exist.\nAlso, pay attention
-        to which attribute is in which model.\n\nUse the following format:\nQuestion:
-        \"Question here\"\nARCode: \"Active Record code to run\"\nARChanges: \"Active
-        Record code to compute the number of records going to change\" - Only add
-        this line if the ARCode on the line before will make data changes\nAnswer:
-        \"Final answer here\"\n\nOnly use the following Active Record models:\n[User(id:
-        integer, name: string, created_at: datetime, updated_at: datetime), Comment(id:
-        integer, content: text, user_id: integer, ticket_id: integer, created_at:
-        datetime, updated_at: datetime), Ticket(id: integer, title: string, user_id:
-        integer, status: integer, body: text, created_at: datetime, updated_at: datetime)]\n\nQuestion:
-        count how many comments are there from John?\n"}],"model":"gpt-3.5-turbo","temperature":0.7,"max_tokens":512,"stop":["Answer:"]}'
+      string: '{"messages":[{"role":"system","content":"You are a Ruby on Rails Active
+        Record code generator"},{"role":"system","content":"Given an input question,
+        first create a syntactically correct Rails Active Record code to run, then
+        look at the results of the code and return the answer. Unless the user specifies
+        in her question a specific number of examples she wishes to obtain, limit
+        your code to at most 5 results.\nNever query for all the columns from a specific
+        model, only ask for the relevant attributes given the question.\nAlso, pay
+        attention to which attribute is in which model."},{"role":"system","content":"Use
+        the following format:\nQuestion: ${{Question here}}\nARCode: ${{Active Record
+        code to run}} - make sure you use valid code\nARChanges: ${{Active Record
+        code to compute the number of records going to change}} - Only add this line
+        if the ARCode on the line before will make data changes.\nAnswer: ${{Final
+        answer here}}"},{"role":"system","content":"Only use the following Active
+        Record models: [User(id: integer, name: string, created_at: datetime, updated_at:
+        datetime), Comment(id: integer, content: text, user_id: integer, ticket_id:
+        integer, created_at: datetime, updated_at: datetime), Ticket(id: integer,
+        title: string, user_id: integer, status: integer, body: text, created_at:
+        datetime, updated_at: datetime)]\nPay attention to use only the attribute
+        names that you can see in the model description. Be careful to not query for
+        attributes that do not exist.\n"},{"role":"assistant","content":"Question:
+        count how many comments are there from John?"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["Answer:"]}'
     headers:
       Content-Type:
       - application/json
@@ -111,11 +43,11 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 08 Mar 2023 14:51:10 GMT
+      - Thu, 16 Mar 2023 19:41:05 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '361'
+      - '358'
       Connection:
       - keep-alive
       Access-Control-Allow-Origin:
@@ -127,18 +59,18 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '990'
+      - '1245'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
       - max-age=15724800; includeSubDomains
       X-Request-Id:
-      - bddb4094f526396738162edbfac1c8c8
+      - b5e7c3ed1cc6f509aaa5c09125be6c23
     body:
       encoding: UTF-8
-      string: '{"id":"chatcmpl-6rpQDpEu3VO8epiOz8yWHTFpNyUy1","object":"chat.completion","created":1678287069,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":295,"completion_tokens":22,"total_tokens":317},"choices":[{"message":{"role":"assistant","content":"\n\nARCode:
-        Comment.joins(:user).where(users: { name: \"John\" }).count\n"},"finish_reason":"stop","index":0}]}
+      string: '{"id":"chatcmpl-6unlAs4iVgQiSerbFVTwCz5Q8oQtz","object":"chat.completion","created":1678995664,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":333,"completion_tokens":23,"total_tokens":356},"choices":[{"message":{"role":"assistant","content":"ARCode:
+        `Comment.joins(:user).where(users: {name: ''John''}).count` \n\n"},"finish_reason":"stop","index":0}]}
 
         '
-  recorded_at: Wed, 08 Mar 2023 14:51:10 GMT
+  recorded_at: Thu, 16 Mar 2023 19:41:05 GMT
 recorded_with: VCR 6.1.0

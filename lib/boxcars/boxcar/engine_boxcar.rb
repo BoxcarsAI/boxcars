@@ -33,54 +33,39 @@ module Boxcars
       prompt.output_variables
     end
 
+    # the first output key
+    def output_key
+      output_keys.first
+    end
+
     # generate a response from the engine
     # @param input_list [Array<Hash>] A list of hashes of input values to use for the prompt.
+    # @param current_conversation [Boxcars::Conversation] Optional ongoing conversation to use for the prompt.
     # @return [Boxcars::EngineResult] The result from the engine.
-    def generate(input_list:)
+    def generate(input_list:, current_conversation: nil)
       stop = input_list[0][:stop]
-      prompts = input_list.map { |inputs| [prompt, inputs] }
+      the_prompt = current_conversation ? prompt.with_conversation(current_conversation) : prompt
+      prompts = input_list.map { |inputs| [the_prompt, inputs] }
       engine.generate(prompts: prompts, stop: stop)
     end
 
     # apply a response from the engine
     # @param input_list [Array<Hash>] A list of hashes of input values to use for the prompt.
+    # @param current_conversation [Boxcars::Conversation] Optional ongoing conversation to use for the prompt.
     # @return [Hash] A hash of the output key and the output value.
-    def apply(input_list:)
-      response = generate(input_list: input_list)
+    def apply(input_list:, current_conversation: nil)
+      response = generate(input_list: input_list, current_conversation: current_conversation)
       response.generations.to_h do |generation|
         [output_keys.first, generation[0].text]
       end
     end
 
     # predict a response from the engine
+    # @param current_conversation [Boxcars::Conversation] Optional ongoing conversation to use for the prompt.
     # @param kwargs [Hash] A hash of input values to use for the prompt.
     # @return [String] The output value.
-    def predict(**kwargs)
-      apply(input_list: [kwargs])[output_keys.first]
-    end
-
-    # predict a response from the engine and parse it
-    # @param kwargs [Hash] A hash of input values to use for the prompt.
-    # @return [String] The output value.
-    def predict_and_parse(**kwargs)
-      result = predict(**kwargs)
-      if prompt.output_parser
-        prompt.output_parser.parse(result)
-      else
-        result
-      end
-    end
-
-    # apply a response from the engine and parse it
-    # @param input_list [Array<Hash>] A list of hashes of input values to use for the prompt.
-    # @return [Array<String>] The output values.
-    def apply_and_parse(input_list:)
-      result = apply(input_list: input_list)
-      if prompt.output_parser
-        result.map { |r| prompt.output_parser.parse(r[output_keys.first]) }
-      else
-        result
-      end
+    def predict(current_conversation: nil, **kwargs)
+      apply(current_conversation: current_conversation, input_list: [kwargs])[output_keys.first]
     end
 
     # check that there is exactly one output key
@@ -95,10 +80,28 @@ module Boxcars
     # @param inputs [Hash] The inputs to the boxcar.
     # @return [Hash] The outputs from the boxcar.
     def call(inputs:)
-      t = predict(**prediction_variables(inputs)).strip
-      answer = get_answer(t)
-      Boxcars.debug answer.to_json, :magenta
-      { output_keys.first => answer }
+      # if we get errors back, try predicting again giving the errors with the inputs
+      conversation = nil
+      answer = nil
+      4.times do
+        t = predict(current_conversation: conversation, **prediction_variables(inputs)).strip
+        answer = get_answer(t)
+        if answer.status == :error
+          Boxcars.debug "have error, trying again: #{answer.answer}", :red
+          conversation ||= Conversation.new
+          conversation.add_user(answer.answer)
+        else
+          Boxcars.debug answer.to_json, :magenta
+          return { output_keys.first => answer }
+        end
+      end
+      Boxcars.error answer.to_json, :red
+      { output_key => "Error: #{answer}" }
+    rescue Boxcars::ConfigurationError => e
+      raise e
+    rescue Boxcars::Error => e
+      Boxcars.error e.message, :red
+      { output_key => "Error: #{e.message}" }
     end
 
     # @param inputs [Hash] The inputs to the boxcar.

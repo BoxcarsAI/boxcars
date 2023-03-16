@@ -87,7 +87,7 @@ module Boxcars
       when /^Answer:/
         Result.from_text(text)
       else
-        Result.from_error("Unknown format from engine: #{text}")
+        Result.from_error("Try answering again. Expected your answer to start with 'SQLQuery:'. You gave me:\n#{text}")
       end
     end
 

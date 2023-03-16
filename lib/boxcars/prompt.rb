@@ -30,6 +30,15 @@ module Boxcars
       { messages: [{ role: :assistant, content: format(inputs) }] }
     end
 
+    # tack on the ongoing conversation if present to the prompt
+    def with_conversation(conversation)
+      return self unless conversation
+
+      new_prompt = dup
+      new_prompt.template += "\n\n#{conversation.message_text}"
+      new_prompt
+    end
+
     private
 
     # format the prompt with the input variables

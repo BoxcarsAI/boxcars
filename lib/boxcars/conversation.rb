@@ -59,6 +59,16 @@ module Boxcars
       @lines += lines
     end
 
+    # add a conversation to the conversation
+    def add_conversation(conversation)
+      @lines += conversation.lines
+    end
+
+    # return just the messages for the conversation
+    def message_text
+      lines.map(&:last).join("\n")
+    end
+
     # compute the prompt parameters with input substitutions (used for chatGPT)
     # @param inputs [Hash] The inputs to use for the prompt.
     # @return [Hash] The formatted prompt { messages: ...}

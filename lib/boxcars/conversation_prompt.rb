@@ -27,5 +27,14 @@ module Boxcars
     def as_prompt(inputs)
       { prompt: conversation.as_prompt(inputs) }
     end
+
+    # tack on the ongoing conversation if present to the prompt
+    def with_conversation(conversation)
+      return self unless conversation
+
+      new_prompt = dup
+      new_prompt.conversation.add_conversation(conversation)
+      new_prompt
+    end
   end
 end

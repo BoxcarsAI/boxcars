@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe Boxcars::Calculator do
-  context "without a serpapi api key" do
+  context "without openai api key" do
     it "raises an error", skip_tokens: true do
       expect do
         described_class.new.run("1 + 1")
@@ -9,7 +9,7 @@ RSpec.describe Boxcars::Calculator do
     end
   end
 
-  context "with a serpapi api key" do
+  context "with openai api key" do
     it "can do hard math" do
       VCR.use_cassette("calculator") do
         expect(described_class.new

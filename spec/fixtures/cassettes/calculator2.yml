@@ -18,7 +18,7 @@ http_interactions:
         is a hard example:\nthe user asks: What is 37593 * 67?\nyour answer: ```ruby\nputs(37593
         * 67)\n```\n```output\n2518731\n```\nAnswer: 2518731"},{"role":"system","content":"basic
         example:\nuser asks: What is 2518731 + 0?\nyou answer: Answer: 2518731"},{"role":"system","content":"Begin."},{"role":"user","content":"what
-        is 2.173 to the power of 22.1 then diveded by 27.2 to 5 significant digits?"}],"model":"gpt-3.5-turbo","temperature":0.3,"max_tokens":512,"stop":["```output"]}'
+        is 1 plus 2?"}],"model":"gpt-3.5-turbo","temperature":0.7,"max_tokens":512,"stop":["```output"]}'
     headers:
       Content-Type:
       - application/json
@@ -36,11 +36,11 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Thu, 16 Mar 2023 16:12:34 GMT
+      - Wed, 15 Mar 2023 23:04:48 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '340'
+      - '296'
       Connection:
       - keep-alive
       Access-Control-Allow-Origin:
@@ -52,18 +52,18 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '1336'
+      - '432'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
       - max-age=15724800; includeSubDomains
       X-Request-Id:
-      - bf9f8be4249771e6c230b3cf1e38a3a3
+      - 8b29e230fbce96c3957843d12ef31720
     body:
       encoding: UTF-8
-      string: '{"id":"chatcmpl-6ukVNL7dFeg9yFbrKnJLgKHCxrXeW","object":"chat.completion","created":1678983153,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":284,"completion_tokens":26,"total_tokens":310},"choices":[{"message":{"role":"assistant","content":"```ruby\nputs
-        (2.173 ** 22.1 / 27.2).round(5)\n```\n"},"finish_reason":"stop","index":0}]}
+      string: '{"id":"chatcmpl-6uUSl1c1JzA3S3vmvCvVn1PddNG4T","object":"chat.completion","created":1678921487,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":263,"completion_tokens":5,"total_tokens":268},"choices":[{"message":{"role":"assistant","content":"Answer:
+        3"},"finish_reason":"stop","index":0}]}
 
         '
-  recorded_at: Thu, 16 Mar 2023 16:12:34 GMT
+  recorded_at: Wed, 15 Mar 2023 23:04:48 GMT
 recorded_with: VCR 6.1.0
