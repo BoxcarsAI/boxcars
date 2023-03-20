@@ -2,7 +2,15 @@
 
 ## [Unreleased](https://github.com/BoxcarsAI/boxcars/tree/HEAD)
 
-[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.2.1...HEAD)
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.2.2...HEAD)
+
+**Merged pull requests:**
+
+- better error handling and retry for Active Record Boxcar [\#39](https://github.com/BoxcarsAI/boxcars/pull/39) ([francis](https://github.com/francis))
+
+## [v0.2.2](https://github.com/BoxcarsAI/boxcars/tree/v0.2.2) (2023-03-16)
+
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.2.1...v0.2.2)
 
 **Implemented enhancements:**
 
