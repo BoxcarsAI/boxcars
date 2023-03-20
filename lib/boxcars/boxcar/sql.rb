@@ -20,6 +20,8 @@ module Boxcars
       kwargs[:name] ||= "Database"
       kwargs[:description] ||= format(SQLDESC, name: name)
       kwargs[:prompt] ||= my_prompt
+      kwargs[:stop] ||= ["SQLResult:"]
+
       super(**kwargs)
     end
 
@@ -73,6 +75,7 @@ module Boxcars
 
     def get_embedded_sql_answer(text)
       code = text[/^SQLQuery: (.*)/, 1]
+      code = extract_code text.split('SQLQuery:').last.strip
       Boxcars.debug code, :yellow
       output = clean_up_output(connection.exec_query(code))
       Result.new(status: :ok, answer: output, explanation: "Answer: #{output.to_json}", code: code)
@@ -87,7 +90,8 @@ module Boxcars
       when /^Answer:/
         Result.from_text(text)
       else
-        Result.from_error("Try answering again. Expected your answer to start with 'SQLQuery:'. You gave me:\n#{text}")
+        Result.from_error("Your answer wasn't formatted properly - try again. I expected your answer to " \
+                          "start with \"SQLQuery:\".")
       end
     end
 
@@ -99,8 +103,8 @@ module Boxcars
            "to return the most interesting examples in the database.\n",
            "Never query for all the columns from a specific table, only ask for the elevant columns given the question.\n",
            "Pay attention to use only the column names that you can see in the schema description. Be careful to ",
-           "not query for columns that do not exist. Also, pay attention to which column is in which table."),
-      syst("Use the following format:\n",
+           "not query for columns that do not exist. Also, pay attention to which column is in which table.\n",
+           "Use the following format:\n",
            "Question: 'Question here'\n",
            "SQLQuery: 'SQL Query to run'\n",
            "SQLResult: 'Result of the SQLQuery'\n",

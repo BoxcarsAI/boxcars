@@ -27,6 +27,7 @@ module Boxcars
     # Extract the boxcar name and input from the text.
     # @param text [String] The text to extract from.
     def extract_boxcar_and_input(text)
+      Result.new(status: :ok, answer: text, explanation: engine_output)
     end
 
     # build the scratchpad for the engine
@@ -56,6 +57,7 @@ module Boxcars
       end
       if parsed_output.is_a?(Result)
         TrainAction.from_result(boxcar: "Final Answer", result: parsed_output, log: full_output)
+      # elsif parsed_output[0] == "Error"
       else
         TrainAction.new(boxcar: parsed_output[0], boxcar_input: parsed_output[1], log: full_output)
       end
@@ -198,6 +200,9 @@ module Boxcars
             Boxcars.error "Error in #{boxcar.name} boxcar#call: #{e}", :red
             observation = "Error - #{e}, correct and try again."
           end
+        elsif output.boxcar == :error
+          observation = output.log
+          return_direct = false
         else
           observation = "#{output.boxcar} is not a valid boxcar, try another one."
           return_direct = false

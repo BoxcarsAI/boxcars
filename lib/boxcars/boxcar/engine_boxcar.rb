@@ -65,7 +65,9 @@ module Boxcars
     # @param kwargs [Hash] A hash of input values to use for the prompt.
     # @return [String] The output value.
     def predict(current_conversation: nil, **kwargs)
-      apply(current_conversation: current_conversation, input_list: [kwargs])[output_keys.first]
+      prediction = apply(current_conversation: current_conversation, input_list: [kwargs])[output_keys.first]
+      Boxcars.debug(prediction, :white) if Boxcars.configuration.log_generated
+      prediction
     end
 
     # check that there is exactly one output key
@@ -84,11 +86,12 @@ module Boxcars
       conversation = nil
       answer = nil
       4.times do
-        t = predict(current_conversation: conversation, **prediction_variables(inputs)).strip
-        answer = get_answer(t)
+        text = predict(current_conversation: conversation, **prediction_variables(inputs)).strip
+        answer = get_answer(text)
         if answer.status == :error
           Boxcars.debug "have error, trying again: #{answer.answer}", :red
           conversation ||= Conversation.new
+          conversation.add_assistant(text)
           conversation.add_user(answer.answer)
         else
           Boxcars.debug answer.to_json, :magenta
@@ -119,6 +122,20 @@ module Boxcars
     # @return Hash The variables for this boxcar.
     def prediction_variables(inputs)
       prediction_input(inputs).merge(prediction_additional)
+    end
+
+    # remove backticks or triple backticks from the code
+    # @param code [String] The code to remove backticks from.
+    # @return [String] The code without backticks.
+    def extract_code(code)
+      case code
+      when /^```\w*/
+        code.split(/```\w*\n/).last.split('```').first.strip
+      when /^`(.+)`/
+        ::Regexp.last_match(1)
+      else
+        code.gsub("`", "")
+      end
     end
   end
 end

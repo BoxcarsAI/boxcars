@@ -25,12 +25,13 @@ module Boxcars
   # Configuration contains gem settings
   class Configuration
     attr_writer :openai_access_token, :serpapi_api_key
-    attr_accessor :organization_id, :logger, :log_prompts, :default_train, :default_engine
+    attr_accessor :organization_id, :logger, :log_prompts, :log_generated, :default_train, :default_engine
 
     def initialize
       @organization_id = nil
       @logger = Rails.logger if defined?(Rails)
       @log_prompts = ENV.fetch("LOG_PROMPTS", false)
+      @log_generated = ENV.fetch("LOG_GEN", false)
     end
 
     # @return [String] The OpenAI Access Token either from arg or env.

@@ -71,13 +71,21 @@ module Boxcars
 
     # to be safe, we wrap the code in a transaction and rollback
     def rollback_after_running
-      rv = nil
+      result = nil
+      runtime_exception = nil
       ::ActiveRecord::Base.transaction do
-        rv = yield
+        begin
+          result = yield
+        rescue ::NameError, ::Error => e
+          Boxcars.error("Error while running code: #{e.message[0..60]} ...", :red)
+          runtime_exception = e
+        end
       ensure
         raise ::ActiveRecord::Rollback
       end
-      rv
+      raise runtime_exception if runtime_exception
+
+      result
     end
 
     # check for dangerous code that is outside of ActiveRecord
@@ -122,8 +130,11 @@ module Boxcars
       return true unless changes&.positive?
 
       Boxcars.debug "#{name}(Pending Changes): #{changes}", :yellow
-      change_str = "#{changes} change#{'s' if changes.to_i > 1}"
-      raise SecurityError, "Can not run code that makes #{change_str} in read-only mode" if read_only?
+      if read_only?
+        change_str = "#{changes} change#{'s' if changes.to_i > 1}"
+        Boxcars.error("Can not run code that makes #{change_str} in read-only mode", :red)
+        return false
+      end
 
       return approval_callback.call(changes, code) if approval_callback.is_a?(Proc)
 
@@ -151,30 +162,32 @@ module Boxcars
       output
     end
 
-    def extract_code(code)
-      case code
-      when /^```ruby/
-        code.split('```ruby').last.split('```').first.strip
-      when /^`(.+)`/
-        ::Regexp.last_match(1)
-      else
-        code
-      end
+    def error_message(err, stage)
+      msg = err.message
+      msg = ::Regexp.last_match(1) if msg =~ /^(.+)' for #<Boxcars::ActiveRecord/
+      "#{stage} Error: #{msg} - please fix \"#{stage}:\" to not have this error"
     end
 
     def get_active_record_answer(text)
-      code = extract_code text.split('ARChanges:').first.strip.split('ARCode:').last.strip
-      changes_code = extract_code text.split('ARChanges:').last.strip if text =~ /^ARChanges:/
+      changes_code = extract_code text.split('ARCode:').first.split('ARChanges:').last.strip if text =~ /^ARChanges:/
+      code = extract_code text.split('ARCode:').last.strip
       return Result.new(status: :ok, explanation: "code to run", code: code, changes_code: changes_code) if code_only?
 
-      raise SecurityError, "Permission to run code that makes changes denied" unless approved?(changes_code, code)
+      have_approval = false
+      begin
+        have_approval = approved?(changes_code, code)
+      rescue NameError, ::Error => e
+        return Result.new(status: :error, explanation: error_message(e, "ARChanges"), changes_code: changes_code)
+      end
 
-      output = clean_up_output(run_active_record_code(code))
-      Result.new(status: :ok, answer: output, explanation: "Answer: #{output.to_json}", code: code)
-    rescue SecurityError, ConfigurationError => e
-      raise e
-    rescue Boxcars::Error => e
-      Result.new(status: :error, answer: nil, explanation: "Error: #{e.message}", code: code)
+      raise SecurityError, "Permission to run code that makes changes denied" unless have_approval
+
+      begin
+        output = clean_up_output(run_active_record_code(code))
+        Result.new(status: :ok, answer: output, explanation: "Answer: #{output.to_json}", code: code)
+      rescue NameError, ::Error => e
+        Result.new(status: :error, answer: nil, explanation: error_message(e, "ARCode"), code: code)
+      end
     end
 
     def get_answer(text)
@@ -184,7 +197,8 @@ module Boxcars
       when /^Answer:/
         Result.from_text(text)
       else
-        Result.from_error("Try answering again. Expected your answer to start with 'ARCode:'. You gave me:\n#{text}")
+        Result.from_error("Error: Your answer wasn't formatted properly - try again. I expected your answer to " \
+                          "start with \"ARChanges:\" or \"ARCode:\"")
       end
     end
 
@@ -196,18 +210,19 @@ module Boxcars
            "to at most %<top_k>s results.\n",
            "Never query for all the columns from a specific model, ",
            "only ask for the relevant attributes given the question.\n",
-           "Also, pay attention to which attribute is in which model."),
-      syst("Use the following format:\n",
+           "Also, pay attention to which attribute is in which model.\n\n",
+           "Use the following format:\n",
            "Question: ${{Question here}}\n",
-           "ARCode: ${{Active Record code to run}} - make sure you use valid code\n",
            "ARChanges: ${{Active Record code to compute the number of records going to change}} - ",
-           "Only add this line if the ARCode on the line before will make data changes.\n",
-           "Answer: ${{Final answer here}}"),
-      syst("Only use the following Active Record models: %<model_info>s\n",
-           "Pay attention to use only the attribute names that you can see in the model description. ",
-           "Be careful to not query for attributes that do not exist.\n"
+           "Only add this line if the ARCode on the next line will make data changes.\n",
+           "ARCode: ${{Active Record code to run}} - make sure you use valid code\n",
+           "Answer: ${{Final answer here}}\n\n",
+           "Only use the following Active Record models: %<model_info>s\n",
+           "Pay attention to use only the attribute names that you can see in the model description.\n",
+           "Do not make up variable or attribute names, and do not share variables between the code in ARChanges and ARCode\n",
+           "Be careful to not query for attributes that do not exist, and to use the format specified above.\n"
           ),
-      assi("Question: %<question>s")
+      user("Question: %<question>s")
     ].freeze
 
     # The prompt to use for the engine.

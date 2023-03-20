@@ -35,9 +35,11 @@ RSpec.configure do |c|
     otoken = example.metadata[:skip_tokens] ? nil : ENV.fetch("OPENAI_ACCESS_TOKEN", "abcdef")
     stoken = example.metadata[:skip_tokens] ? nil : ENV.fetch("SERPAPI_API_KEY", "abcdefg")
     log_prompts = ENV.fetch("LOG_PROMPTS", false)
+    log_generated = ENV.fetch("LOG_GEN", false)
     allow(ENV).to receive(:fetch).with("OPENAI_ACCESS_TOKEN", nil).and_return(otoken)
     allow(ENV).to receive(:fetch).with("SERPAPI_API_KEY", nil).and_return(stoken)
     allow(ENV).to receive(:fetch).with("LOG_PROMPTS", false).and_return(log_prompts)
+    allow(ENV).to receive(:fetch).with("LOG_GEN", false).and_return(log_generated)
   end
 end
 
