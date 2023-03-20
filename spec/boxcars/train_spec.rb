@@ -8,7 +8,7 @@ RSpec.describe Boxcars::Train do
   it "can execute the default train" do
     VCR.use_cassette("train") do
       question = "how many days in a year?"
-      expect(train.run(question)).to include("There are 365 days in a year.")
+      expect(train.run(question)).to include("365 days")
     end
   end
 end

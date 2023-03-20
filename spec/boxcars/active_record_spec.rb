@@ -52,7 +52,7 @@ RSpec.describe Boxcars::ActiveRecord do
     open_tickets = Ticket.where(user: john, status: :open)
     it "can not save reassign open tickets" do
       VCR.use_cassette("ar5") do
-        expect(boxcar.run("Move John's open tickets to Sally")).to include("Error: Can not run code")
+        expect(boxcar.run("Move John's open tickets to Sally")).to include("Error: Permission to run code that")
       end
     end
 
@@ -76,7 +76,7 @@ RSpec.describe Boxcars::ActiveRecord do
     it "can return just the code" do
       VCR.use_cassette("ar6") do
         code_results = boxcar3.conduct("count of comments from Sally?").to_h
-        expect(code_results[:code]).to eq("Comment.joins(:user).where(users: {name: 'Sally'}).count")
+        expect(code_results[:code]).to eq("Comment.joins(:user).where(users: {name: \"Sally\"}).count")
       end
     end
 

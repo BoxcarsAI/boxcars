@@ -1,0 +1,221 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://api.openai.com/v1/chat/completions
+    body:
+      encoding: UTF-8
+      string: '{"messages":[{"role":"system","content":"Answer the following questions
+        as best you can. You have access to the following actions:\nCalculator: useful
+        for when you need to answer questions about math\nUse the following format:\nQuestion:
+        the input question you must answer\nThought: you should always think about
+        what to do\nAction: the action to take, should be one from this list: [Calculator]\nAction
+        Input: the input to the action\nObservation: the result of the action\n...
+        (this Thought/Action/Action Input/Observation sequence can repeat N times)\nThought:
+        I know the final answer\nFinal Answer: the final answer to the original input
+        question\nNext Actions: Up to 3 logical suggested next questions for the user
+        to ask after getting this answer.\nRemember to start a line with \"Final Answer:\"
+        to give me the final answer.\nBegin!"},{"role":"user","content":"Question:
+        what is pi squared to 7 digits?"},{"role":"assistant","content":"Thought:
+        "}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["\nObservation:
+        "]}'
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer <openai_access_token>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Mon, 20 Mar 2023 22:13:49 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '408'
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - no-cache, must-revalidate
+      Openai-Model:
+      - gpt-3.5-turbo-0301
+      Openai-Organization:
+      - user-ri9zw9ahumb1bo9vs73mudbi
+      Openai-Processing-Ms:
+      - '2930'
+      Openai-Version:
+      - '2020-10-01'
+      Strict-Transport-Security:
+      - max-age=15724800; includeSubDomains
+      X-Ratelimit-Limit-Requests:
+      - '3500'
+      X-Ratelimit-Remaining-Requests:
+      - '3499'
+      X-Ratelimit-Reset-Requests:
+      - 17ms
+      X-Request-Id:
+      - f716e0756997d5083159f88cb0a90e76
+    body:
+      encoding: UTF-8
+      string: '{"id":"chatcmpl-6wI38cin1TXrIdSQQEwjm9GYigbqg","object":"chat.completion","created":1679350426,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":199,"completion_tokens":31,"total_tokens":230},"choices":[{"message":{"role":"assistant","content":"I
+        need to use a calculator to find the value of pi squared to 7 digits. \n\nAction:
+        Calculator \n\nAction Input: pi^2 \n"},"finish_reason":"stop","index":0}]}
+
+        '
+  recorded_at: Mon, 20 Mar 2023 22:13:49 GMT
+- request:
+    method: post
+    uri: https://api.openai.com/v1/chat/completions
+    body:
+      encoding: UTF-8
+      string: '{"messages":[{"role":"system","content":"You can do basic math, but
+        for any hard calculations that a human could not do in their head, use the
+        following approach instead. Return code written in the Ruby programming language
+        that prints the results. If anyone gives you a hard math problem, just use
+        the following format and we’ll take care of the rest:\n${{Question with hard
+        calculation.}}\nreply only with the following format:\n```ruby\n${{only Ruby
+        code that prints the answer}}\n```\n```output\n${{Output of your code}}\n```\n\nOtherwise,
+        you should use this simpler format:\n${{Question without hard calculation}}\nAnswer:
+        ${{Answer}}\n\nDo not give an explanation of the answer and make sure your
+        answer starts with either ''Answer:'' or ''```ruby''."},{"role":"system","content":"here
+        is a hard example:\nthe user asks: What is 37593 * 67?\nyour answer: ```ruby\nputs(37593
+        * 67)\n```\n```output\n2518731\n```\nAnswer: 2518731"},{"role":"system","content":"basic
+        example:\nuser asks: What is 2518731 + 0?\nyou answer: Answer: 2518731"},{"role":"system","content":"Begin."},{"role":"user","content":"pi^2"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["```output"]}'
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer <openai_access_token>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Mon, 20 Mar 2023 22:13:50 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '321'
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - no-cache, must-revalidate
+      Openai-Model:
+      - gpt-3.5-turbo-0301
+      Openai-Organization:
+      - user-ri9zw9ahumb1bo9vs73mudbi
+      Openai-Processing-Ms:
+      - '1230'
+      Openai-Version:
+      - '2020-10-01'
+      Strict-Transport-Security:
+      - max-age=15724800; includeSubDomains
+      X-Ratelimit-Limit-Requests:
+      - '3500'
+      X-Ratelimit-Remaining-Requests:
+      - '3499'
+      X-Ratelimit-Reset-Requests:
+      - 17ms
+      X-Request-Id:
+      - 70e0d56bb60d9a68fe033d63dc69eef4
+    body:
+      encoding: UTF-8
+      string: '{"id":"chatcmpl-6wI3BwDUxlkGZHzcp3YVROWx0UcUp","object":"chat.completion","created":1679350429,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":258,"completion_tokens":13,"total_tokens":271},"choices":[{"message":{"role":"assistant","content":"```ruby\nputs(Math::PI**2)\n```\n"},"finish_reason":"stop","index":0}]}
+
+        '
+  recorded_at: Mon, 20 Mar 2023 22:13:50 GMT
+- request:
+    method: post
+    uri: https://api.openai.com/v1/chat/completions
+    body:
+      encoding: UTF-8
+      string: '{"messages":[{"role":"system","content":"Answer the following questions
+        as best you can. You have access to the following actions:\nCalculator: useful
+        for when you need to answer questions about math\nUse the following format:\nQuestion:
+        the input question you must answer\nThought: you should always think about
+        what to do\nAction: the action to take, should be one from this list: [Calculator]\nAction
+        Input: the input to the action\nObservation: the result of the action\n...
+        (this Thought/Action/Action Input/Observation sequence can repeat N times)\nThought:
+        I know the final answer\nFinal Answer: the final answer to the original input
+        question\nNext Actions: Up to 3 logical suggested next questions for the user
+        to ask after getting this answer.\nRemember to start a line with \"Final Answer:\"
+        to give me the final answer.\nBegin!"},{"role":"user","content":"Question:
+        what is pi squared to 7 digits?"},{"role":"assistant","content":"Thought:  I
+        need to use a calculator to find the value of pi squared to 7 digits. \n\nAction:
+        Calculator \n\nAction Input: pi^2 \n\nObservation: 9.869604401089358\nThought:"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["\nObservation:
+        "]}'
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer <openai_access_token>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Mon, 20 Mar 2023 22:13:56 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '500'
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - no-cache, must-revalidate
+      Openai-Model:
+      - gpt-3.5-turbo-0301
+      Openai-Organization:
+      - user-ri9zw9ahumb1bo9vs73mudbi
+      Openai-Processing-Ms:
+      - '5166'
+      Openai-Version:
+      - '2020-10-01'
+      Strict-Transport-Security:
+      - max-age=15724800; includeSubDomains
+      X-Ratelimit-Limit-Requests:
+      - '3500'
+      X-Ratelimit-Remaining-Requests:
+      - '3499'
+      X-Ratelimit-Reset-Requests:
+      - 17ms
+      X-Request-Id:
+      - 98163c87d5b4acc343a36b10875f397d
+    body:
+      encoding: UTF-8
+      string: '{"id":"chatcmpl-6wI3D9VTnO4aYztdkAi24Wqo9ETv4","object":"chat.completion","created":1679350431,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":243,"completion_tokens":64,"total_tokens":307},"choices":[{"message":{"role":"assistant","content":"I
+        have the value of pi squared to 7 digits. \n\nFinal Answer: 9.8696044\n\nNext
+        Actions:\n1. What is the value of pi to 7 digits?\n2. What is the square root
+        of pi squared?\n3. What is the value of e to 7 digits?"},"finish_reason":"stop","index":0}]}
+
+        '
+  recorded_at: Mon, 20 Mar 2023 22:13:56 GMT
+recorded_with: VCR 6.1.0

@@ -5,20 +5,22 @@ http_interactions:
     uri: https://api.openai.com/v1/chat/completions
     body:
       encoding: UTF-8
-      string: '{"messages":[{"role":"user","content":"Answer the following questions
-        as best you can. You have access to the following actions:\n\nhelpdesk: useful
-        for when you need to query a database for an application named helpdesk.\nCalculator:
+      string: '{"messages":[{"role":"system","content":"Answer the following questions
+        as best you can. You have access to the following actions:\nhelpdesk: useful
+        for when you need to query a database for an application named .\nCalculator:
         useful for when you need to answer questions about math\nSearch: useful for
         when you need to answer questions about current events.You should ask targeted
-        questions\n\nUse the following format:\n\nQuestion: the input question you
-        must answer\nThought: you should always think about what to do\nAction: the
-        action to take, should be one of [helpdesk, Calculator, Search]\nAction Input:
-        the input to the action\nObservation: the result of the action\n... (this
-        Thought/Action/Action Input/Observation sequence can repeat N times)\nThought:
-        I now know the final answer\nFinal Answer: the final answer to the original
-        input question\nNext Actions: If you have them, up to three suggested actions
-        for the user to take after getting this answer.\n\n\nBegin!\n\nQuestion: Count
-        the comments from John for open tickets and multiply by pi to 5 decimal places.\nThought:\n"}],"model":"gpt-3.5-turbo","temperature":0.7,"max_tokens":512,"stop":["\nObservation:
+        questions\nUse the following format:\nQuestion: the input question you must
+        answer\nThought: you should always think about what to do\nAction: the action
+        to take, should be one from this list: [helpdesk, Calculator, Search]\nAction
+        Input: the input to the action\nObservation: the result of the action\n...
+        (this Thought/Action/Action Input/Observation sequence can repeat N times)\nThought:
+        I know the final answer\nFinal Answer: the final answer to the original input
+        question\nNext Actions: Up to 3 logical suggested next questions for the user
+        to ask after getting this answer.\nRemember to start a line with \"Final Answer:\"
+        to give me the final answer.\nBegin!"},{"role":"user","content":"Question:
+        The number of comments from John for open tickets multiplied by pi to 5 decimal
+        places."},{"role":"assistant","content":"Thought: "}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["\nObservation:
         "]}'
     headers:
       Content-Type:
@@ -37,11 +39,11 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Tue, 07 Mar 2023 20:16:33 GMT
+      - Mon, 20 Mar 2023 22:30:39 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '505'
+      - '525'
       Connection:
       - keep-alive
       Access-Control-Allow-Origin:
@@ -53,45 +55,56 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '1783'
+      - '4479'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
       - max-age=15724800; includeSubDomains
+      X-Ratelimit-Limit-Requests:
+      - '3500'
+      X-Ratelimit-Remaining-Requests:
+      - '3499'
+      X-Ratelimit-Reset-Requests:
+      - 17ms
       X-Request-Id:
-      - fa7d759a1179ecbaaf1858ed109ffeb4
+      - 6a75a00603e4491000cbd5cf41d50442
     body:
       encoding: UTF-8
-      string: '{"id":"chatcmpl-6rY1XeANg8jGLDETVolsVoiXFh5Xz","object":"chat.completion","created":1678220191,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":223,"completion_tokens":48,"total_tokens":271},"choices":[{"message":{"role":"assistant","content":"I
-        need to find a way to access the number of comments from John for open tickets
-        and then multiply that by pi to 5 decimal places.\nAction: helpdesk\nAction
-        Input: Query for number of comments from John for open tickets"},"finish_reason":null,"index":0}]}
+      string: '{"id":"chatcmpl-6wIJOljDCAUrBLteZgFYIWAgHubbz","object":"chat.completion","created":1679351434,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":249,"completion_tokens":53,"total_tokens":302},"choices":[{"message":{"role":"assistant","content":"We
+        need to query a database to get the number of comments from John for open
+        tickets and then multiply it by pi to 5 decimal places. \n\nAction: helpdesk
+        \n\nAction Input: \"What is the number of comments from John for open tickets?\"
+        \n"},"finish_reason":"stop","index":0}]}
 
         '
-  recorded_at: Tue, 07 Mar 2023 20:16:33 GMT
+  recorded_at: Mon, 20 Mar 2023 22:30:39 GMT
 - request:
     method: post
     uri: https://api.openai.com/v1/chat/completions
     body:
       encoding: UTF-8
-      string: '{"messages":[{"role":"user","content":"Given an input question, first
-        create a syntactically correct Rails Active Record code to run,\nthen look
-        at the results of the code and return the answer. Unless the user specifies\nin
-        her question a specific number of examples she wishes to obtain, limit your
-        code\nto at most 5 results.\n\nNever query for all the columns from a specific
-        model, only ask for a the few relevant attributes given the question.\n\nPay
-        attention to use only the attribute names that you can see in the model description.
-        Be careful to not query for attributes that do not exist.\nAlso, pay attention
-        to which attribute is in which model.\n\nUse the following format:\nQuestion:
-        \"Question here\"\nARCode: \"Active Record code to run\"\nARChanges: \"Active
-        Record code to compute the number of records going to change\" - Only add
-        this line if the ARCode on the line before will make data changes\nAnswer:
-        \"Final answer here\"\n\nOnly use the following Active Record models:\n[Comment(id:
-        integer, content: text, user_id: integer, ticket_id: integer, created_at:
-        datetime, updated_at: datetime), Ticket(id: integer, title: string, user_id:
-        integer, status: integer, body: text, created_at: datetime, updated_at: datetime),
-        User(id: integer, name: string, created_at: datetime, updated_at: datetime)]\n\nQuestion:
-        Query for number of comments from John for open tickets\n"}],"model":"gpt-3.5-turbo","temperature":0.7,"max_tokens":512,"stop":["Answer:"]}'
+      string: '{"messages":[{"role":"system","content":"You are a Ruby on Rails Active
+        Record code generator"},{"role":"system","content":"Given an input question,
+        first create a syntactically correct Rails Active Record code to run, then
+        look at the results of the code and return the answer. Unless the user specifies
+        in her question a specific number of examples she wishes to obtain, limit
+        your code to at most 5 results.\nNever query for all the columns from a specific
+        model, only ask for the relevant attributes given the question.\nAlso, pay
+        attention to which attribute is in which model.\n\nUse the following format:\nQuestion:
+        ${{Question here}}\nARChanges: ${{Active Record code to compute the number
+        of records going to change}} - Only add this line if the ARCode on the next
+        line will make data changes.\nARCode: ${{Active Record code to run}} - make
+        sure you use valid code\nAnswer: ${{Final answer here}}\n\nOnly use the following
+        Active Record models: [Comment(id: integer, content: text, user_id: integer,
+        ticket_id: integer, created_at: datetime, updated_at: datetime), Ticket(id:
+        integer, title: string, user_id: integer, status: integer, body: text, created_at:
+        datetime, updated_at: datetime), User(id: integer, name: string, created_at:
+        datetime, updated_at: datetime)]\nPay attention to use only the attribute
+        names that you can see in the model description.\nDo not make up variable
+        or attribute names, and do not share variables between the code in ARChanges
+        and ARCode\nBe careful to not query for attributes that do not exist, and
+        to use the format specified above.\n"},{"role":"user","content":"Question:
+        What is the number of comments from John for open tickets?"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["Answer:"]}'
     headers:
       Content-Type:
       - application/json
@@ -109,11 +122,11 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Tue, 07 Mar 2023 20:16:35 GMT
+      - Mon, 20 Mar 2023 22:30:42 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '398'
+      - '396'
       Connection:
       - keep-alive
       Access-Control-Allow-Origin:
@@ -125,44 +138,51 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '1333'
+      - '2857'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
       - max-age=15724800; includeSubDomains
+      X-Ratelimit-Limit-Requests:
+      - '3500'
+      X-Ratelimit-Remaining-Requests:
+      - '3499'
+      X-Ratelimit-Reset-Requests:
+      - 17ms
       X-Request-Id:
-      - 31dc12684729ef15a0113f7340ea3061
+      - 3d8a75afc164da13889d987408091f31
     body:
       encoding: UTF-8
-      string: '{"id":"chatcmpl-6rY1aNwD6tB9eYCF2B0wgc8rhxjDt","object":"chat.completion","created":1678220194,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":297,"completion_tokens":34,"total_tokens":331},"choices":[{"message":{"role":"assistant","content":"\n\nARCode:
+      string: '{"id":"chatcmpl-6wIJTD421bonnXdOS7xxcOmjQmYan","object":"chat.completion","created":1679351439,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":358,"completion_tokens":34,"total_tokens":392},"choices":[{"message":{"role":"assistant","content":"ARCode:
         Comment.joins(:ticket, :user).where(users: {name: ''John''}, tickets: {status:
-        ''open''}).count(:id)\n"},"finish_reason":"stop","index":0}]}
+        ''open''}).count(:id)\n\n"},"finish_reason":"stop","index":0}]}
 
         '
-  recorded_at: Tue, 07 Mar 2023 20:16:35 GMT
+  recorded_at: Mon, 20 Mar 2023 22:30:42 GMT
 - request:
     method: post
     uri: https://api.openai.com/v1/chat/completions
     body:
       encoding: UTF-8
-      string: '{"messages":[{"role":"user","content":"Answer the following questions
-        as best you can. You have access to the following actions:\n\nhelpdesk: useful
-        for when you need to query a database for an application named helpdesk.\nCalculator:
+      string: '{"messages":[{"role":"system","content":"Answer the following questions
+        as best you can. You have access to the following actions:\nhelpdesk: useful
+        for when you need to query a database for an application named .\nCalculator:
         useful for when you need to answer questions about math\nSearch: useful for
         when you need to answer questions about current events.You should ask targeted
-        questions\n\nUse the following format:\n\nQuestion: the input question you
-        must answer\nThought: you should always think about what to do\nAction: the
-        action to take, should be one of [helpdesk, Calculator, Search]\nAction Input:
-        the input to the action\nObservation: the result of the action\n... (this
-        Thought/Action/Action Input/Observation sequence can repeat N times)\nThought:
-        I now know the final answer\nFinal Answer: the final answer to the original
-        input question\nNext Actions: If you have them, up to three suggested actions
-        for the user to take after getting this answer.\n\n\nBegin!\n\nQuestion: Count
-        the comments from John for open tickets and multiply by pi to 5 decimal places.\nThought:
-        I need to find a way to access the number of comments from John for open tickets
-        and then multiply that by pi to 5 decimal places.\nAction: helpdesk\nAction
-        Input: Query for number of comments from John for open tickets\nObservation:
-        Answer: 2\nThought:\n"}],"model":"gpt-3.5-turbo","temperature":0.7,"max_tokens":512,"stop":["\nObservation:
+        questions\nUse the following format:\nQuestion: the input question you must
+        answer\nThought: you should always think about what to do\nAction: the action
+        to take, should be one from this list: [helpdesk, Calculator, Search]\nAction
+        Input: the input to the action\nObservation: the result of the action\n...
+        (this Thought/Action/Action Input/Observation sequence can repeat N times)\nThought:
+        I know the final answer\nFinal Answer: the final answer to the original input
+        question\nNext Actions: Up to 3 logical suggested next questions for the user
+        to ask after getting this answer.\nRemember to start a line with \"Final Answer:\"
+        to give me the final answer.\nBegin!"},{"role":"user","content":"Question:
+        The number of comments from John for open tickets multiplied by pi to 5 decimal
+        places."},{"role":"assistant","content":"Thought:  We need to query a database
+        to get the number of comments from John for open tickets and then multiply
+        it by pi to 5 decimal places. \n\nAction: helpdesk \n\nAction Input: \"What
+        is the number of comments from John for open tickets?\" \n\nObservation: 2\nThought:"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["\nObservation:
         "]}'
     headers:
       Content-Type:
@@ -181,11 +201,11 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Tue, 07 Mar 2023 20:16:37 GMT
+      - Mon, 20 Mar 2023 22:30:53 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '402'
+      - '476'
       Connection:
       - keep-alive
       Access-Control-Allow-Origin:
@@ -197,39 +217,47 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '1407'
+      - '4085'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
       - max-age=15724800; includeSubDomains
+      X-Ratelimit-Limit-Requests:
+      - '3500'
+      X-Ratelimit-Remaining-Requests:
+      - '3499'
+      X-Ratelimit-Reset-Requests:
+      - 17ms
       X-Request-Id:
-      - fc10adeadc52a007017566d7718c9b8a
+      - c597f2066e33e69b502714a209c537de
     body:
       encoding: UTF-8
-      string: '{"id":"chatcmpl-6rY1bxHNNMB9Gt6ETonxa0eurdfTY","object":"chat.completion","created":1678220195,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":281,"completion_tokens":31,"total_tokens":312},"choices":[{"message":{"role":"assistant","content":"Now
-        I need to multiply this by pi to 5 decimal places.\nAction: Calculator\nAction
-        Input: 2 * pi to 5 decimal places"},"finish_reason":null,"index":0}]}
+      string: '{"id":"chatcmpl-6wIJdvWWulU2LmdmuJfN2WVHTLspX","object":"chat.completion","created":1679351449,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":309,"completion_tokens":45,"total_tokens":354},"choices":[{"message":{"role":"assistant","content":"We
+        have the number of comments from John for open tickets, now we need to multiply
+        it by pi to 5 decimal places.\n\nAction: Calculator\n\nAction Input: 2 * pi
+        rounded to 5 decimal places\n"},"finish_reason":"stop","index":0}]}
 
         '
-  recorded_at: Tue, 07 Mar 2023 20:16:37 GMT
+  recorded_at: Mon, 20 Mar 2023 22:30:53 GMT
 - request:
     method: post
     uri: https://api.openai.com/v1/chat/completions
     body:
       encoding: UTF-8
-      string: '{"messages":[{"role":"user","content":"You are GPT-3, and you can''t
-        do math.\nYou can do basic math, and your memorization abilities are impressive,
-        but you can''t do any complex calculations that a human could not do in their
-        head. You also have an annoying tendency to just make up highly specific,
-        but wrong, answers.\nSo we hooked you up to a Ruby 3 kernel, and now you can
-        execute code written in the Ruby programming language. If anyone gives you
-        a hard math problem, just use this format and we’ll take care of the rest:\n\nQuestion:
-        ${{Question with hard calculation.}}\n```ruby\n${{Code that prints what you
-        need to know}}\n```\n```output\n${{Output of your code}}\n```\nAnswer: ${{Answer}}\n\nOtherwise,
-        use this simpler format:\n\nQuestion: ${{Question without hard calculation}}\nAnswer:
-        ${{Answer}}\n\nBegin.\n\nQuestion: What is 37593 * 67?\n```ruby\nputs(37593
-        * 67)\n```\n```output\n2518731\n```\nAnswer: 2518731\n\nQuestion: what is
-        2518731 + 0?\nAnswer: 2518731\n\nQuestion: 2 * pi to 5 decimal places\n"}],"model":"gpt-3.5-turbo","temperature":0.7,"max_tokens":512,"stop":["```output"]}'
+      string: '{"messages":[{"role":"system","content":"You can do basic math, but
+        for any hard calculations that a human could not do in their head, use the
+        following approach instead. Return code written in the Ruby programming language
+        that prints the results. If anyone gives you a hard math problem, just use
+        the following format and we’ll take care of the rest:\n${{Question with hard
+        calculation.}}\nreply only with the following format:\n```ruby\n${{only Ruby
+        code that prints the answer}}\n```\n```output\n${{Output of your code}}\n```\n\nOtherwise,
+        you should use this simpler format:\n${{Question without hard calculation}}\nAnswer:
+        ${{Answer}}\n\nDo not give an explanation of the answer and make sure your
+        answer starts with either ''Answer:'' or ''```ruby''."},{"role":"system","content":"here
+        is a hard example:\nthe user asks: What is 37593 * 67?\nyour answer: ```ruby\nputs(37593
+        * 67)\n```\n```output\n2518731\n```\nAnswer: 2518731"},{"role":"system","content":"basic
+        example:\nuser asks: What is 2518731 + 0?\nyou answer: Answer: 2518731"},{"role":"system","content":"Begin."},{"role":"user","content":"2
+        * pi rounded to 5 decimal places"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["```output"]}'
     headers:
       Content-Type:
       - application/json
@@ -247,11 +275,11 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Tue, 07 Mar 2023 20:16:38 GMT
+      - Mon, 20 Mar 2023 22:30:56 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '336'
+      - '332'
       Connection:
       - keep-alive
       Access-Control-Allow-Origin:
@@ -263,44 +291,53 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '773'
+      - '1829'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
       - max-age=15724800; includeSubDomains
+      X-Ratelimit-Limit-Requests:
+      - '3500'
+      X-Ratelimit-Remaining-Requests:
+      - '3499'
+      X-Ratelimit-Reset-Requests:
+      - 17ms
       X-Request-Id:
-      - dda6c1573f4dae527c0792e36f8599de
+      - 07fd64995778c470f5861d78692c5b79
     body:
       encoding: UTF-8
-      string: '{"id":"chatcmpl-6rY1dafvYMzKrkZFBwvRPW0rZMPOq","object":"chat.completion","created":1678220197,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":257,"completion_tokens":18,"total_tokens":275},"choices":[{"message":{"role":"assistant","content":"\n\n```ruby\nputs
+      string: '{"id":"chatcmpl-6wIJis1Dy9Kqh8sDf9loXPh8408MZ","object":"chat.completion","created":1679351454,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":264,"completion_tokens":18,"total_tokens":282},"choices":[{"message":{"role":"assistant","content":"```ruby\nputs
         (2 * Math::PI).round(5)\n```\n"},"finish_reason":"stop","index":0}]}
 
         '
-  recorded_at: Tue, 07 Mar 2023 20:16:38 GMT
+  recorded_at: Mon, 20 Mar 2023 22:30:56 GMT
 - request:
     method: post
     uri: https://api.openai.com/v1/chat/completions
     body:
       encoding: UTF-8
-      string: '{"messages":[{"role":"user","content":"Answer the following questions
-        as best you can. You have access to the following actions:\n\nhelpdesk: useful
-        for when you need to query a database for an application named helpdesk.\nCalculator:
+      string: '{"messages":[{"role":"system","content":"Answer the following questions
+        as best you can. You have access to the following actions:\nhelpdesk: useful
+        for when you need to query a database for an application named .\nCalculator:
         useful for when you need to answer questions about math\nSearch: useful for
         when you need to answer questions about current events.You should ask targeted
-        questions\n\nUse the following format:\n\nQuestion: the input question you
-        must answer\nThought: you should always think about what to do\nAction: the
-        action to take, should be one of [helpdesk, Calculator, Search]\nAction Input:
-        the input to the action\nObservation: the result of the action\n... (this
-        Thought/Action/Action Input/Observation sequence can repeat N times)\nThought:
-        I now know the final answer\nFinal Answer: the final answer to the original
-        input question\nNext Actions: If you have them, up to three suggested actions
-        for the user to take after getting this answer.\n\n\nBegin!\n\nQuestion: Count
-        the comments from John for open tickets and multiply by pi to 5 decimal places.\nThought:
-        I need to find a way to access the number of comments from John for open tickets
-        and then multiply that by pi to 5 decimal places.\nAction: helpdesk\nAction
-        Input: Query for number of comments from John for open tickets\nObservation:
-        Answer: 2\nThought: Now I need to multiply this by pi to 5 decimal places.\nAction:
-        Calculator\nAction Input: 2 * pi to 5 decimal places\nObservation: 6.28319\nThought:\n"}],"model":"gpt-3.5-turbo","temperature":0.7,"max_tokens":512,"stop":["\nObservation:
+        questions\nUse the following format:\nQuestion: the input question you must
+        answer\nThought: you should always think about what to do\nAction: the action
+        to take, should be one from this list: [helpdesk, Calculator, Search]\nAction
+        Input: the input to the action\nObservation: the result of the action\n...
+        (this Thought/Action/Action Input/Observation sequence can repeat N times)\nThought:
+        I know the final answer\nFinal Answer: the final answer to the original input
+        question\nNext Actions: Up to 3 logical suggested next questions for the user
+        to ask after getting this answer.\nRemember to start a line with \"Final Answer:\"
+        to give me the final answer.\nBegin!"},{"role":"user","content":"Question:
+        The number of comments from John for open tickets multiplied by pi to 5 decimal
+        places."},{"role":"assistant","content":"Thought:  We need to query a database
+        to get the number of comments from John for open tickets and then multiply
+        it by pi to 5 decimal places. \n\nAction: helpdesk \n\nAction Input: \"What
+        is the number of comments from John for open tickets?\" \n\nObservation: 2\nThought:
+        We have the number of comments from John for open tickets, now we need to
+        multiply it by pi to 5 decimal places.\n\nAction: Calculator\n\nAction Input:
+        2 * pi rounded to 5 decimal places\n\nObservation: 6.28319\nThought:"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["\nObservation:
         "]}'
     headers:
       Content-Type:
@@ -319,11 +356,11 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Tue, 07 Mar 2023 20:16:40 GMT
+      - Mon, 20 Mar 2023 22:31:03 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '383'
+      - '608'
       Connection:
       - keep-alive
       Access-Control-Allow-Origin:
@@ -335,19 +372,28 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '1103'
+      - '6286'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
       - max-age=15724800; includeSubDomains
+      X-Ratelimit-Limit-Requests:
+      - '3500'
+      X-Ratelimit-Remaining-Requests:
+      - '3499'
+      X-Ratelimit-Reset-Requests:
+      - 17ms
       X-Request-Id:
-      - 8e1278ca0ababeea26026e05b8b2232a
+      - 25bbe9758ef3724fe955433c856169d0
     body:
       encoding: UTF-8
-      string: '{"id":"chatcmpl-6rY1fT5GiO1S6tBKSqbDt8yRVAI1f","object":"chat.completion","created":1678220199,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":323,"completion_tokens":28,"total_tokens":351},"choices":[{"message":{"role":"assistant","content":"I
-        now know the final answer\nFinal Answer: 6.28319\nNext Actions: None, the
-        answer is complete."},"finish_reason":"stop","index":0}]}
+      string: '{"id":"chatcmpl-6wIJltj300w6aWhkZIJKev6tBjlsj","object":"chat.completion","created":1679351457,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":364,"completion_tokens":73,"total_tokens":437},"choices":[{"message":{"role":"assistant","content":"We
+        have the result of multiplying the number of comments from John for open tickets
+        by pi to 5 decimal places.\n\nFinal Answer: 6.28319\n\nNext Actions:\n1. What
+        is the average number of comments per open ticket?\n2. How many open tickets
+        are there in total?\n3. What is the average number of comments per closed
+        ticket?"},"finish_reason":"stop","index":0}]}
 
         '
-  recorded_at: Tue, 07 Mar 2023 20:16:40 GMT
+  recorded_at: Mon, 20 Mar 2023 22:31:03 GMT
 recorded_with: VCR 6.1.0

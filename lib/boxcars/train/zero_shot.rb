@@ -49,11 +49,15 @@ module Boxcars
       else
         # the thought should be the frist line here if it doesn't start with "Action:"
         thought = engine_output.split(/\n+/).reject(&:empty?).first
-        Boxcars.debug("Though: #{thought}", :cyan)
-        regex = /Action: (?<action>.*)\nAction Input: (?<action_input>.*)/
+        Boxcars.debug("Thought: #{thought}", :yellow)
+        regex = /Action: (?<action>.*)\n+Action Input: (?<action_input>.*)/
         match = regex.match(engine_output)
-        # TODO: this should return an error to the results that can be used for corrections
-        raise ValueError, "Could not parse engine output: #{engine_output}" unless match
+
+        # we have an unexpected output from the engine
+        unless match
+          return [:error, "You gave me an improperly fomatted answer - try again. For example, if you know the final anwwer, " \
+                          "start with #{FINAL_ANSWER_ACTION.inspect}"]
+        end
 
         action = match[:action].strip
         action_input = match[:action_input].strip.delete_prefix('"').delete_suffix('"')
@@ -63,24 +67,25 @@ module Boxcars
 
     CTEMPLATE = [
       syst("Answer the following questions as best you can. You have access to the following actions:\n",
-           "%<boxcar_descriptions>s"),
-      syst("Use the following format:\n",
+           "%<boxcar_descriptions>s\n",
+           "Use the following format:\n",
            "Question: the input question you must answer\n",
            "Thought: you should always think about what to do\n",
-           "Action: the action to take, should be one of [%<boxcar_names>s]\n",
+           "Action: the action to take, should be one from this list: %<boxcar_names>s\n",
            "Action Input: the input to the action\n",
            "Observation: the result of the action\n",
            "... (this Thought/Action/Action Input/Observation sequence can repeat N times)\n",
-           "Thought: I now know the final answer\n",
+           "Thought: I know the final answer\n",
            "Final Answer: the final answer to the original input question\n",
-           "Next Actions: If you have them, up to 3 suggested actions for the user to take after getting this answer.\n",
+           "Next Actions: Up to 3 logical suggested next questions for the user to ask after getting this answer.\n",
+           "Remember to start a line with \"Final Answer:\" to give me the final answer.\n",
            "Begin!"),
       user("Question: %<input>s"),
       assi("Thought: %<agent_scratchpad>s")
     ].freeze
 
     def boxcar_names
-      @boxcar_names ||= boxcars.map(&:name)
+      @boxcar_names ||= "[#{boxcars.map(&:name).join(', ')}]"
     end
 
     def boxcar_descriptions

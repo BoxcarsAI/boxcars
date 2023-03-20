@@ -2,94 +2,21 @@
 http_interactions:
 - request:
     method: post
-    uri: https://api.openai.com/v1/completions
-    body:
-      encoding: UTF-8
-      string: '{"prompt":["Given an input question, first create a syntactically correct
-        SQLite3 query to run,\nthen look at the results of the query and return the
-        answer. Unless the user specifies\nin his question a specific number of examples
-        he wishes to obtain, always limit your query\nto at most 5 results using a
-        LIMIT clause. You can order the results by a relevant column\nto return the
-        most interesting examples in the database.\n\nNever query for all the columns
-        from a specific table, only ask for a the few relevant columns given the question.\n\nPay
-        attention to use only the column names that you can see in the schema description.
-        Be careful to not query for columns that do not exist.\nAlso, pay attention
-        to which column is in which table.\n\nUse the following format:\nQuestion:
-        \"Question here\"\nSQLQuery: \"SQL Query to run\"\nSQLResult: \"Result of
-        the SQLQuery\"\nAnswer: \"Final answer here\"\n\nOnly use the following tables:\nCREATE
-        TABLE users (\n id INTEGER NOT NULL,\n name varchar NULL,\n created_at datetime(6)
-        NOT NULL,\n updated_at datetime(6) NOT NULL\n);\nCREATE TABLE comments (\n
-        id INTEGER NOT NULL,\n content TEXT NULL,\n user_id INTEGER NULL,\n ticket_id
-        INTEGER NULL,\n created_at datetime(6) NOT NULL,\n updated_at datetime(6)
-        NOT NULL\n);\nCREATE TABLE tickets (\n id INTEGER NOT NULL,\n title varchar
-        NULL,\n user_id INTEGER NULL,\n status INTEGER NULL,\n body TEXT NULL,\n created_at
-        datetime(6) NOT NULL,\n updated_at datetime(6) NOT NULL\n);\n\nQuestion: What
-        is the last comment for the first post?\n"],"model":"gpt-3.5-turbo","temperature":0.7,"max_tokens":512,"stop":["Answer:"]}'
-    headers:
-      Content-Type:
-      - application/json
-      Authorization:
-      - Bearer <openai_access_token>
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      Accept:
-      - "*/*"
-      User-Agent:
-      - Ruby
-  response:
-    status:
-      code: 404
-      message: Not Found
-    headers:
-      Date:
-      - Thu, 02 Mar 2023 22:17:34 GMT
-      Content-Type:
-      - application/json
-      Content-Length:
-      - '227'
-      Connection:
-      - keep-alive
-      Access-Control-Allow-Origin:
-      - "*"
-      Openai-Organization:
-      - user-ri9zw9ahumb1bo9vs73mudbi
-      Openai-Processing-Ms:
-      - '95'
-      Openai-Version:
-      - '2020-10-01'
-      Strict-Transport-Security:
-      - max-age=15724800; includeSubDomains
-      X-Request-Id:
-      - 716343eae8cfb21064d29fee7cc44d39
-    body:
-      encoding: UTF-8
-      string: |
-        {
-          "error": {
-            "message": "This is a chat model and not supported in the v1/completions endpoint. Did you mean to use v1/chat/completions?",
-            "type": "invalid_request_error",
-            "param": "model",
-            "code": null
-          }
-        }
-  recorded_at: Thu, 02 Mar 2023 22:17:34 GMT
-- request:
-    method: post
     uri: https://api.openai.com/v1/chat/completions
     body:
       encoding: UTF-8
-      string: '{"messages":[{"role":"user","content":"Given an input question, first
-        create a syntactically correct SQLite3 query to run,\nthen look at the results
-        of the query and return the answer. Unless the user specifies\nin his question
-        a specific number of examples he wishes to obtain, always limit your query\nto
-        at most 5 results using a LIMIT clause. You can order the results by a relevant
-        column\nto return the most interesting examples in the database.\n\nNever
-        query for all the columns from a specific table, only ask for a the few relevant
-        columns given the question.\n\nPay attention to use only the column names
-        that you can see in the schema description. Be careful to not query for columns
-        that do not exist.\nAlso, pay attention to which column is in which table.\n\nUse
-        the following format:\nQuestion: \"Question here\"\nSQLQuery: \"SQL Query
-        to run\"\nSQLResult: \"Result of the SQLQuery\"\nAnswer: \"Final answer here\"\n\nOnly
+      string: '{"messages":[{"role":"system","content":"Given an input question, first
+        create a syntactically correct SQLite3 SQL query to run, then look at the
+        results of the query and return the answer. Unless the user specifies in her
+        question a specific number of examples he wishes to obtain, always limit your
+        query to at most 5 results using a LIMIT clause. You can order the results
+        by a relevant column to return the most interesting examples in the database.\nNever
+        query for all the columns from a specific table, only ask for the elevant
+        columns given the question.\nPay attention to use only the column names that
+        you can see in the schema description. Be careful to not query for columns
+        that do not exist. Also, pay attention to which column is in which table.\nUse
+        the following format:\nQuestion: ''Question here''\nSQLQuery: ''SQL Query
+        to run''\nSQLResult: ''Result of the SQLQuery''\nAnswer: ''Final answer here''"},{"role":"system","content":"Only
         use the following tables:\nCREATE TABLE users (\n id INTEGER NOT NULL,\n name
         varchar NULL,\n created_at datetime(6) NOT NULL,\n updated_at datetime(6)
         NOT NULL\n);\nCREATE TABLE comments (\n id INTEGER NOT NULL,\n content TEXT
@@ -97,8 +24,8 @@ http_interactions:
         NOT NULL,\n updated_at datetime(6) NOT NULL\n);\nCREATE TABLE tickets (\n
         id INTEGER NOT NULL,\n title varchar NULL,\n user_id INTEGER NULL,\n status
         INTEGER NULL,\n body TEXT NULL,\n created_at datetime(6) NOT NULL,\n updated_at
-        datetime(6) NOT NULL\n);\n\nQuestion: What is the last comment for the first
-        post?\n"}],"model":"gpt-3.5-turbo","temperature":0.7,"max_tokens":512,"stop":["Answer:"]}'
+        datetime(6) NOT NULL\n);"},{"role":"user","content":"Question: What is the
+        last comment for the first post?"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["SQLResult:"]}'
     headers:
       Content-Type:
       - application/json
@@ -116,11 +43,11 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 08 Mar 2023 18:47:15 GMT
+      - Mon, 20 Mar 2023 22:11:44 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '466'
+      - '410'
       Connection:
       - keep-alive
       Access-Control-Allow-Origin:
@@ -132,19 +59,25 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '1979'
+      - '3347'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
       - max-age=15724800; includeSubDomains
+      X-Ratelimit-Limit-Requests:
+      - '3500'
+      X-Ratelimit-Remaining-Requests:
+      - '3499'
+      X-Ratelimit-Reset-Requests:
+      - 17ms
       X-Request-Id:
-      - 89d632d204c10ac93464a4c807f363b4
+      - fc0094e43c454a07611c882e04ae42b2
     body:
       encoding: UTF-8
-      string: '{"id":"chatcmpl-6rt6fIbNweBG1Up0YdKEIpJTf50iC","object":"chat.completion","created":1678301233,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":330,"completion_tokens":50,"total_tokens":380},"choices":[{"message":{"role":"assistant","content":"\n\nSQLQuery:
-        SELECT content, created_at FROM comments WHERE ticket_id = 1 ORDER BY created_at
-        DESC LIMIT 1;\nSQLResult: \"Great post! Thanks for sharing.|2021-05-13 10:30:00\"\n"},"finish_reason":"stop","index":0}]}
+      string: '{"id":"chatcmpl-6wI17HrXKmuEE5gy8gFnnzojmvM8H","object":"chat.completion","created":1679350301,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":337,"completion_tokens":35,"total_tokens":372},"choices":[{"message":{"role":"assistant","content":"SQLQuery:
+        \n```\nSELECT content, created_at\nFROM comments\nWHERE ticket_id = 1\nORDER
+        BY created_at DESC\nLIMIT 1;\n```\n"},"finish_reason":"stop","index":0}]}
 
         '
-  recorded_at: Wed, 08 Mar 2023 18:47:15 GMT
+  recorded_at: Mon, 20 Mar 2023 22:11:44 GMT
 recorded_with: VCR 6.1.0
