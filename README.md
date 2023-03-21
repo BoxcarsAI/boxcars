@@ -66,10 +66,10 @@ Produces:
 ```text
 > Entering Calculator#run
 what is pi to the forth power divided by 22.1?
-RubyREPL: puts(Math::PI**4 / 22.1)
+RubyREPL: puts (Math::PI**4)/22.1
 Answer: 4.407651178009159
 
-4.407651178009159
+{"status":"ok","answer":"4.407651178009159","explanation":"Answer: 4.407651178009159","code":"puts (Math::PI**4)/22.1"}
 < Exiting Calculator#run
 4.407651178009159
 ```
@@ -94,27 +94,34 @@ Here is what we have so far, but please put up a PR with your new ideas.
 # run a Train for a calculator, and search using default Engine
 boxcars = [Boxcars::Calculator.new, Boxcars::Serp.new]
 train = Boxcars.train.new(boxcars: boxcars)
-puts train.run "What is pi times the square root of the average temperature in Austin TX in January?"
+train.run "What is pi times the square root of the average temperature in Austin TX in January?"
 ```
 Produces:
 ```text
 > Entering Zero Shot#run
 What is pi times the square root of the average temperature in Austin TX in January?
+Thought: We need to find the average temperature in Austin TX in January and then multiply it by pi and the square root of that value. We can use a search engine to find the average temperature and a calculator to perform the multiplication. 
 Question: Average temperature in Austin TX in January
 Answer: increase from 62°F to 64°F
-#Observation: increase from 62°F to 64°F
+Observation: increase from 62°F to 64°F
+Thought: The average temperature in Austin TX in January is around 63°F.
 > Entering Calculator#run
-64°F x pi
-RubyREPL: puts (64 * Math::PI).round(2)
-Answer: 201.06
+pi * sqrt(63)
+RubyREPL: puts(Math::PI * Math.sqrt(63))
+Answer: 24.935618646198247
 
-201.06
+{"status":"ok","answer":"24.935618646198247","explanation":"Answer: 24.935618646198247","code":"puts(Math::PI * Math.sqrt(63))"}
 < Exiting Calculator#run
-#Observation: 201.06
-I now know the final answer
-Final Answer: 201.06
+Observation: 24.935618646198247
+The result of pi times the square root of the average temperature in Austin TX in January is approximately 24.94.
+
+Final Answer: 24.94
+
+Next Actions:
+1. What is the average temperature in Austin TX in July?
+2. What is the formula for calculating the area of a circle?
+3. What is the value of pi to 10 decimal places?
 < Exiting Zero Shot#run
-201.06
 ```
 ### More Examples
 See [this](https://github.com/BoxcarsAI/boxcars/blob/main/notebooks/boxcars_examples.ipynb) Jupyter Notebook for more examples.
