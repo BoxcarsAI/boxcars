@@ -50,7 +50,7 @@ module Boxcars
         # the thought should be the frist line here if it doesn't start with "Action:"
         thought = engine_output.split(/\n+/).reject(&:empty?).first
         Boxcars.debug("Thought: #{thought}", :yellow)
-        regex = /Action: (?<action>.+?)\n+Action Input:(?<action_input>.+?)^[\w\s]+:/m
+        regex = /Action: (?<action>.+?)\n+Action Input:(?<action_input>.+)/m
         match = regex.match(engine_output)
 
         # we have an unexpected output from the engine
