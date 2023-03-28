@@ -100,7 +100,7 @@ module Boxcars
       end
       Boxcars.error answer.to_json, :red
       { output_key => "Error: #{answer}" }
-    rescue Boxcars::ConfigurationError => e
+    rescue Boxcars::ConfigurationError, Boxcars::SecurityError => e
       raise e
     rescue Boxcars::Error => e
       Boxcars.error e.message, :red

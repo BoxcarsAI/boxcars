@@ -49,8 +49,8 @@ module Boxcars
       [:answer_box, :snippet_highlighted_words, 0],
       %i[sports_results game_spotlight],
       %i[knowledge_graph description],
-      [:organic_results, 0, :snippet_highlighted_words, 0],
-      [:organic_results, 0, :snippet]
+      [:organic_results, 0, :snippet],
+      [:organic_results, 0, :snippet_highlighted_words, 0]
     ].freeze
 
     def find_answer(res)

@@ -196,6 +196,8 @@ module Boxcars
           begin
             observation = boxcar.run(output.boxcar_input)
             return_direct = boxcar.return_direct
+          rescue Boxcars::ConfigurationError, Boxcars::SecurityError => e
+            raise e
           rescue StandardError => e
             Boxcars.error "Error in #{boxcar.name} boxcar#call: #{e}", :red
             observation = "Error - #{e}, correct and try again."

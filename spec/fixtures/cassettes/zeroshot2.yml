@@ -39,11 +39,11 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Mon, 20 Mar 2023 22:30:39 GMT
+      - Tue, 28 Mar 2023 20:10:07 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '525'
+      - '569'
       Connection:
       - keep-alive
       Access-Control-Allow-Origin:
@@ -55,7 +55,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '4479'
+      - '2457'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -67,17 +67,17 @@ http_interactions:
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Request-Id:
-      - 6a75a00603e4491000cbd5cf41d50442
+      - b19198f7212dbdd0e2965ae28b33b202
     body:
       encoding: UTF-8
-      string: '{"id":"chatcmpl-6wIJOljDCAUrBLteZgFYIWAgHubbz","object":"chat.completion","created":1679351434,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":249,"completion_tokens":53,"total_tokens":302},"choices":[{"message":{"role":"assistant","content":"We
+      string: '{"id":"chatcmpl-6z9voCnbBL6wPzv9ElUWVzR2FmQIl","object":"chat.completion","created":1680034204,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":250,"completion_tokens":59,"total_tokens":309},"choices":[{"message":{"role":"assistant","content":"We
         need to query a database to get the number of comments from John for open
-        tickets and then multiply it by pi to 5 decimal places. \n\nAction: helpdesk
-        \n\nAction Input: \"What is the number of comments from John for open tickets?\"
-        \n"},"finish_reason":"stop","index":0}]}
+        tickets and then multiply it by pi to 5 decimal places. This requires both
+        math and database query skills.\n\nAction: helpdesk\nAction Input: \"What
+        is the number of comments from John for open tickets?\""},"finish_reason":"stop","index":0}]}
 
         '
-  recorded_at: Mon, 20 Mar 2023 22:30:39 GMT
+  recorded_at: Tue, 28 Mar 2023 20:10:06 GMT
 - request:
     method: post
     uri: https://api.openai.com/v1/chat/completions
@@ -122,11 +122,11 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Mon, 20 Mar 2023 22:30:42 GMT
+      - Tue, 28 Mar 2023 20:10:08 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '396'
+      - '391'
       Connection:
       - keep-alive
       Access-Control-Allow-Origin:
@@ -138,7 +138,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '2857'
+      - '1636'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -150,15 +150,15 @@ http_interactions:
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Request-Id:
-      - 3d8a75afc164da13889d987408091f31
+      - 37db507c64befadb9d7a52a3715a3d33
     body:
       encoding: UTF-8
-      string: '{"id":"chatcmpl-6wIJTD421bonnXdOS7xxcOmjQmYan","object":"chat.completion","created":1679351439,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":358,"completion_tokens":34,"total_tokens":392},"choices":[{"message":{"role":"assistant","content":"ARCode:
+      string: '{"id":"chatcmpl-6z9vr1QOBarCMJEApUwbKs6F0tUSe","object":"chat.completion","created":1680034207,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":359,"completion_tokens":31,"total_tokens":390},"choices":[{"message":{"role":"assistant","content":"ARCode:
         Comment.joins(:ticket, :user).where(users: {name: ''John''}, tickets: {status:
-        ''open''}).count(:id)\n\n"},"finish_reason":"stop","index":0}]}
+        ''open''}).count\n\n"},"finish_reason":"stop","index":0}]}
 
         '
-  recorded_at: Mon, 20 Mar 2023 22:30:42 GMT
+  recorded_at: Tue, 28 Mar 2023 20:10:08 GMT
 - request:
     method: post
     uri: https://api.openai.com/v1/chat/completions
@@ -181,8 +181,9 @@ http_interactions:
         The number of comments from John for open tickets multiplied by pi to 5 decimal
         places."},{"role":"assistant","content":"Thought:  We need to query a database
         to get the number of comments from John for open tickets and then multiply
-        it by pi to 5 decimal places. \n\nAction: helpdesk \n\nAction Input: \"What
-        is the number of comments from John for open tickets?\" \n\nObservation: 2\nThought:"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["\nObservation:
+        it by pi to 5 decimal places. This requires both math and database query skills.\n\nAction:
+        helpdesk\nAction Input: \"What is the number of comments from John for open
+        tickets?\"\nObservation: 2\nThought:"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["\nObservation:
         "]}'
     headers:
       Content-Type:
@@ -201,11 +202,11 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Mon, 20 Mar 2023 22:30:53 GMT
+      - Tue, 28 Mar 2023 20:10:11 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '476'
+      - '464'
       Connection:
       - keep-alive
       Access-Control-Allow-Origin:
@@ -217,7 +218,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '4085'
+      - '1908'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -229,16 +230,16 @@ http_interactions:
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Request-Id:
-      - c597f2066e33e69b502714a209c537de
+      - b7f0ee517505c3b8b25bd078893fec52
     body:
       encoding: UTF-8
-      string: '{"id":"chatcmpl-6wIJdvWWulU2LmdmuJfN2WVHTLspX","object":"chat.completion","created":1679351449,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":309,"completion_tokens":45,"total_tokens":354},"choices":[{"message":{"role":"assistant","content":"We
-        have the number of comments from John for open tickets, now we need to multiply
-        it by pi to 5 decimal places.\n\nAction: Calculator\n\nAction Input: 2 * pi
-        rounded to 5 decimal places\n"},"finish_reason":"stop","index":0}]}
+      string: '{"id":"chatcmpl-6z9vt2HFHfzWCFmoA4z8bB14KxjxX","object":"chat.completion","created":1680034209,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":317,"completion_tokens":41,"total_tokens":358},"choices":[{"message":{"role":"assistant","content":"We
+        have the number of comments from John for open tickets. Now we need to use
+        a calculator to multiply it by pi to 5 decimal places.\n\nAction: Calculator\nAction
+        Input: 2 * pi"},"finish_reason":"stop","index":0}]}
 
         '
-  recorded_at: Mon, 20 Mar 2023 22:30:53 GMT
+  recorded_at: Tue, 28 Mar 2023 20:10:10 GMT
 - request:
     method: post
     uri: https://api.openai.com/v1/chat/completions
@@ -257,7 +258,7 @@ http_interactions:
         is a hard example:\nthe user asks: What is 37593 * 67?\nyour answer: ```ruby\nputs(37593
         * 67)\n```\n```output\n2518731\n```\nAnswer: 2518731"},{"role":"system","content":"basic
         example:\nuser asks: What is 2518731 + 0?\nyou answer: Answer: 2518731"},{"role":"system","content":"Begin."},{"role":"user","content":"2
-        * pi rounded to 5 decimal places"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["```output"]}'
+        * pi"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["```output"]}'
     headers:
       Content-Type:
       - application/json
@@ -275,11 +276,11 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Mon, 20 Mar 2023 22:30:56 GMT
+      - Tue, 28 Mar 2023 20:10:12 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '332'
+      - '322'
       Connection:
       - keep-alive
       Access-Control-Allow-Origin:
@@ -291,7 +292,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '1829'
+      - '730'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -303,14 +304,14 @@ http_interactions:
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Request-Id:
-      - 07fd64995778c470f5861d78692c5b79
+      - c2860057a05e9134254dea40f98bb6ab
     body:
       encoding: UTF-8
-      string: '{"id":"chatcmpl-6wIJis1Dy9Kqh8sDf9loXPh8408MZ","object":"chat.completion","created":1679351454,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":264,"completion_tokens":18,"total_tokens":282},"choices":[{"message":{"role":"assistant","content":"```ruby\nputs
-        (2 * Math::PI).round(5)\n```\n"},"finish_reason":"stop","index":0}]}
+      string: '{"id":"chatcmpl-6z9vv6M5d47Rl0krGMmSSdAKT91dK","object":"chat.completion","created":1680034211,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":259,"completion_tokens":13,"total_tokens":272},"choices":[{"message":{"role":"assistant","content":"```ruby\nputs(2
+        * Math::PI)\n```\n"},"finish_reason":"stop","index":0}]}
 
         '
-  recorded_at: Mon, 20 Mar 2023 22:30:56 GMT
+  recorded_at: Tue, 28 Mar 2023 20:10:11 GMT
 - request:
     method: post
     uri: https://api.openai.com/v1/chat/completions
@@ -333,11 +334,12 @@ http_interactions:
         The number of comments from John for open tickets multiplied by pi to 5 decimal
         places."},{"role":"assistant","content":"Thought:  We need to query a database
         to get the number of comments from John for open tickets and then multiply
-        it by pi to 5 decimal places. \n\nAction: helpdesk \n\nAction Input: \"What
-        is the number of comments from John for open tickets?\" \n\nObservation: 2\nThought:
-        We have the number of comments from John for open tickets, now we need to
-        multiply it by pi to 5 decimal places.\n\nAction: Calculator\n\nAction Input:
-        2 * pi rounded to 5 decimal places\n\nObservation: 6.28319\nThought:"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["\nObservation:
+        it by pi to 5 decimal places. This requires both math and database query skills.\n\nAction:
+        helpdesk\nAction Input: \"What is the number of comments from John for open
+        tickets?\"\nObservation: 2\nThought: We have the number of comments from John
+        for open tickets. Now we need to use a calculator to multiply it by pi to
+        5 decimal places.\n\nAction: Calculator\nAction Input: 2 * pi\nObservation:
+        6.283185307179586\nThought:"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["\nObservation:
         "]}'
     headers:
       Content-Type:
@@ -356,11 +358,11 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Mon, 20 Mar 2023 22:31:03 GMT
+      - Tue, 28 Mar 2023 20:10:15 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '608'
+      - '614'
       Connection:
       - keep-alive
       Access-Control-Allow-Origin:
@@ -372,7 +374,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '6286'
+      - '3354'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -384,16 +386,16 @@ http_interactions:
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Request-Id:
-      - 25bbe9758ef3724fe955433c856169d0
+      - df8dca55308144dd64393db2f5cfb4a2
     body:
       encoding: UTF-8
-      string: '{"id":"chatcmpl-6wIJltj300w6aWhkZIJKev6tBjlsj","object":"chat.completion","created":1679351457,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":364,"completion_tokens":73,"total_tokens":437},"choices":[{"message":{"role":"assistant","content":"We
+      string: '{"id":"chatcmpl-6z9vwZqcffOi035EBKQyxxRu0grao","object":"chat.completion","created":1680034212,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":373,"completion_tokens":74,"total_tokens":447},"choices":[{"message":{"role":"assistant","content":"We
         have the result of multiplying the number of comments from John for open tickets
         by pi to 5 decimal places.\n\nFinal Answer: 6.28319\n\nNext Actions:\n1. What
         is the average number of comments per open ticket?\n2. How many open tickets
-        are there in total?\n3. What is the average number of comments per closed
-        ticket?"},"finish_reason":"stop","index":0}]}
+        are there in total?\n3. Who are the other top commenters for open tickets
+        besides John?"},"finish_reason":"stop","index":0}]}
 
         '
-  recorded_at: Mon, 20 Mar 2023 22:31:03 GMT
+  recorded_at: Tue, 28 Mar 2023 20:10:15 GMT
 recorded_with: VCR 6.1.0

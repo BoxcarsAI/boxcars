@@ -9,8 +9,8 @@ RSpec.describe Boxcars::ZeroShot do
     train = described_class.new(engine: engine, boxcars: [search, calculator])
 
     VCR.use_cassette("zeroshot") do
-      question = "What is pi times the square root of the average Fahrenheit temperature in Austin TX in January?"
-      expect(train.run(question)).to include("25.52241936")
+      question = "What is pi times the square root of the average high temperature in Austin TX in January?"
+      expect(train.run(question)).to include("25.13")
     end
   end
 

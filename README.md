@@ -11,7 +11,7 @@
   <a href="https://github.com/BoxcarsAI/boxcars/blob/main/LICENSE.txt"><img src="https://img.shields.io/badge/license-MIT-informational" alt="License"></a>
 </p>
 
-Boxcars is a gem that enables you to create new systems with AI composability, using various concepts such as OpenAI, Search, SQL, Rails Active Record and more. This can even be extended with your concepts as well.(including your concepts).
+Boxcars is a gem that enables you to create new systems with AI composability, using various concepts such as OpenAI, Search, SQL, Rails Active Record and more. This can even be extended with your concepts as well (including your concepts).
 
 This gem was inspired by the popular Python library Langchain. However, we wanted to give it a Ruby spin and make it more user-friendly for beginners to get started.
 
@@ -22,6 +22,11 @@ All of these concepts are in a module named Boxcars:
 - Train - Given a list of Boxcars and optionally an Engine, a Train breaks down a problem into pieces for individual Boxcars to solve. The individual results are then combined until a final answer is found. ZeroShot is the only current implementation of Train (but we are adding more soon), and you can either construct it directly or use `Boxcars::train` when you want to build a Train.
 - Prompt - used by an Engine to generate text results. Most of the Boxcars have built-in prompts, so you only need to worry about these if you are extending the system.
 - Engine - an entity that generates text from a Prompt. OpenAI's LLM text generator is the default Engine if no other is specified.
+
+## Security
+Currently, our system is designed for individuals who already possess administrative privileges for their project. It is likely possible to manipulate the system's prompts to carry out malicious actions, but if you already have administrative access, you can perform such actions without requiring boxcars in the first place.
+
+*Note:* We are actively seeking ways to improve our system's ability to identify and prevent any nefarious attempts from occurring. If you have any suggestions or recommendations, please feel free to share them with us by either finding an existing issue or creating a new one and providing us with your feedback.
 
 ## Installation
 
