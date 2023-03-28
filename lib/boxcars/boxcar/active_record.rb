@@ -76,7 +76,7 @@ module Boxcars
       ::ActiveRecord::Base.transaction do
         begin
           result = yield
-        rescue ::NameError, ::Error => e
+        rescue SecurityError, ::NameError, ::Error => e
           Boxcars.error("Error while running code: #{e.message[0..60]} ...", :red)
           runtime_exception = e
         end
@@ -93,13 +93,22 @@ module Boxcars
       bad_words = %w[commit drop_constraint drop_constraint! drop_extension drop_extension! drop_foreign_key drop_foreign_key! \
                      drop_index drop_index! drop_join_table drop_join_table! drop_materialized_view drop_materialized_view! \
                      drop_partition drop_partition! drop_schema drop_schema! drop_table drop_table! drop_trigger drop_trigger! \
-                     drop_view drop_view! eval execute reset revoke rollback truncate].freeze
+                     drop_view drop_view! eval instance_eval send system execute reset revoke rollback truncate \
+                     encrypted_password].freeze
       without_strings = code.gsub(/('([^'\\]*(\\.[^'\\]*)*)'|"([^"\\]*(\\.[^"\\]*)*"))/, 'XX')
-      word_list = without_strings.split(/[.,()]/)
+
+      if without_strings.include?("`")
+        Boxcars.info "code included possibly destructive backticks #{code}", :red
+        return false
+      end
+
+      word_list = without_strings.split(/[.,() :]/)
+
+      puts word_list.inspect
 
       bad_words.each do |w|
         if word_list.include?(w)
-          Boxcars.info "code included destructive instruction: #{w} #{code}", :red
+          Boxcars.info "code included possibly destructive instruction: '#{w}' in #{code}", :red
           return false
         end
       end
@@ -176,7 +185,7 @@ module Boxcars
       have_approval = false
       begin
         have_approval = approved?(changes_code, code)
-      rescue NameError, ::Error => e
+      rescue NameError, Error => e
         return Result.new(status: :error, explanation: error_message(e, "ARChanges"), changes_code: changes_code)
       end
 
@@ -185,7 +194,9 @@ module Boxcars
       begin
         output = clean_up_output(run_active_record_code(code))
         Result.new(status: :ok, answer: output, explanation: "Answer: #{output.to_json}", code: code)
-      rescue NameError, ::Error => e
+      rescue SecurityError => e
+        raise e
+      rescue ::StandardError => e
         Result.new(status: :error, answer: nil, explanation: error_message(e, "ARCode"), code: code)
       end
     end

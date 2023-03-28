@@ -36,11 +36,11 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Mon, 20 Mar 2023 22:13:49 GMT
+      - Tue, 28 Mar 2023 20:10:17 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '408'
+      - '401'
       Connection:
       - keep-alive
       Access-Control-Allow-Origin:
@@ -52,7 +52,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '2930'
+      - '1700'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -64,15 +64,15 @@ http_interactions:
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Request-Id:
-      - f716e0756997d5083159f88cb0a90e76
+      - c378b4bebc49baf05b3f4a95e70f6b52
     body:
       encoding: UTF-8
-      string: '{"id":"chatcmpl-6wI38cin1TXrIdSQQEwjm9GYigbqg","object":"chat.completion","created":1679350426,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":199,"completion_tokens":31,"total_tokens":230},"choices":[{"message":{"role":"assistant","content":"I
-        need to use a calculator to find the value of pi squared to 7 digits. \n\nAction:
-        Calculator \n\nAction Input: pi^2 \n"},"finish_reason":"stop","index":0}]}
+      string: '{"id":"chatcmpl-6z9w05NExm1MWPD0PcspeWdrAwwDj","object":"chat.completion","created":1680034216,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":200,"completion_tokens":29,"total_tokens":229},"choices":[{"message":{"role":"assistant","content":"I
+        should use a calculator to find the value of pi squared to 7 digits. \nAction:
+        Calculator \nAction Input: pi^2 "},"finish_reason":"stop","index":0}]}
 
         '
-  recorded_at: Mon, 20 Mar 2023 22:13:49 GMT
+  recorded_at: Tue, 28 Mar 2023 20:10:17 GMT
 - request:
     method: post
     uri: https://api.openai.com/v1/chat/completions
@@ -108,7 +108,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Mon, 20 Mar 2023 22:13:50 GMT
+      - Tue, 28 Mar 2023 20:10:18 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -124,7 +124,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '1230'
+      - '721'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -136,13 +136,13 @@ http_interactions:
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Request-Id:
-      - 70e0d56bb60d9a68fe033d63dc69eef4
+      - 2e9362b1a75241638efa546e44ee767f
     body:
       encoding: UTF-8
-      string: '{"id":"chatcmpl-6wI3BwDUxlkGZHzcp3YVROWx0UcUp","object":"chat.completion","created":1679350429,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":258,"completion_tokens":13,"total_tokens":271},"choices":[{"message":{"role":"assistant","content":"```ruby\nputs(Math::PI**2)\n```\n"},"finish_reason":"stop","index":0}]}
+      string: '{"id":"chatcmpl-6z9w2pbZw9kWbvnwoJ0bDeEYQYXMo","object":"chat.completion","created":1680034218,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":259,"completion_tokens":12,"total_tokens":271},"choices":[{"message":{"role":"assistant","content":"```ruby\nputs(Math::PI**2)\n```\n"},"finish_reason":"stop","index":0}]}
 
         '
-  recorded_at: Mon, 20 Mar 2023 22:13:50 GMT
+  recorded_at: Tue, 28 Mar 2023 20:10:18 GMT
 - request:
     method: post
     uri: https://api.openai.com/v1/chat/completions
@@ -160,8 +160,8 @@ http_interactions:
         to ask after getting this answer.\nRemember to start a line with \"Final Answer:\"
         to give me the final answer.\nBegin!"},{"role":"user","content":"Question:
         what is pi squared to 7 digits?"},{"role":"assistant","content":"Thought:  I
-        need to use a calculator to find the value of pi squared to 7 digits. \n\nAction:
-        Calculator \n\nAction Input: pi^2 \n\nObservation: 9.869604401089358\nThought:"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["\nObservation:
+        should use a calculator to find the value of pi squared to 7 digits. \nAction:
+        Calculator \nAction Input: pi^2 \nObservation: 9.869604401089358\nThought:"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["\nObservation:
         "]}'
     headers:
       Content-Type:
@@ -180,11 +180,11 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Mon, 20 Mar 2023 22:13:56 GMT
+      - Tue, 28 Mar 2023 20:10:22 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '500'
+      - '571'
       Connection:
       - keep-alive
       Access-Control-Allow-Origin:
@@ -196,7 +196,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '5166'
+      - '3521'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -208,14 +208,15 @@ http_interactions:
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Request-Id:
-      - 98163c87d5b4acc343a36b10875f397d
+      - 3501552653fd342007e15b2446ae3315
     body:
       encoding: UTF-8
-      string: '{"id":"chatcmpl-6wI3D9VTnO4aYztdkAi24Wqo9ETv4","object":"chat.completion","created":1679350431,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":243,"completion_tokens":64,"total_tokens":307},"choices":[{"message":{"role":"assistant","content":"I
-        have the value of pi squared to 7 digits. \n\nFinal Answer: 9.8696044\n\nNext
-        Actions:\n1. What is the value of pi to 7 digits?\n2. What is the square root
-        of pi squared?\n3. What is the value of e to 7 digits?"},"finish_reason":"stop","index":0}]}
+      string: '{"id":"chatcmpl-6z9w3Wa0MXj1Vrd9Xjx8MOhRxFDld","object":"chat.completion","created":1680034219,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":243,"completion_tokens":81,"total_tokens":324},"choices":[{"message":{"role":"assistant","content":"The
+        calculator has given me the value of pi squared to 15 decimal places, but
+        I only need 7 digits. \nFinal Answer: 9.8696044\nNext Actions:\n1. What is
+        the value of pi to 7 digits?\n2. What is the square root of pi squared to
+        7 digits?\n3. What is the value of pi cubed to 7 digits?"},"finish_reason":"stop","index":0}]}
 
         '
-  recorded_at: Mon, 20 Mar 2023 22:13:56 GMT
+  recorded_at: Tue, 28 Mar 2023 20:10:22 GMT
 recorded_with: VCR 6.1.0
