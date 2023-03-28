@@ -1,8 +1,20 @@
 # Changelog
 
-## [Unreleased](https://github.com/BoxcarsAI/boxcars/tree/HEAD)
+## [v0.2.4](https://github.com/BoxcarsAI/boxcars/tree/v0.2.4) (2023-03-28)
 
-[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.2.2...HEAD)
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.2.3...v0.2.4)
+
+**Closed issues:**
+
+- security [\#40](https://github.com/BoxcarsAI/boxcars/issues/40)
+
+**Merged pull requests:**
+
+- Fix regex action input [\#41](https://github.com/BoxcarsAI/boxcars/pull/41) ([makevoid](https://github.com/makevoid))
+
+## [v0.2.3](https://github.com/BoxcarsAI/boxcars/tree/v0.2.3) (2023-03-20)
+
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.2.2...v0.2.3)
 
 **Merged pull requests:**
 
