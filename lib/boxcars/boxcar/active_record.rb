@@ -102,9 +102,7 @@ module Boxcars
         return false
       end
 
-      word_list = without_strings.split(/[.,() :]/)
-
-      puts word_list.inspect
+      word_list = without_strings.split(/[.,() :\[\]]/)
 
       bad_words.each do |w|
         if word_list.include?(w)
@@ -120,10 +118,12 @@ module Boxcars
     # @param code [String] The code to run
     # @return [Object] The result of the code
     def eval_safe_wrapper(code)
+      # if the code used ActiveRecord, we need to add :: in front of it to escape the module
+      new_code = code.gsub(/(\W)ActiveRecord::/, '\1::ActiveRecord::')
       proc do
         $SAFE = 4
         # rubocop:disable Security/Eval
-        eval code
+        eval new_code
         # rubocop:enable Security/Eval
       end.call
     end
@@ -241,7 +241,8 @@ module Boxcars
            "Only use the following Active Record models: %<model_info>s\n",
            "Pay attention to use only the attribute names that you can see in the model description.\n",
            "Do not make up variable or attribute names, and do not share variables between the code in ARChanges and ARCode\n",
-           "Be careful to not query for attributes that do not exist, and to use the format specified above.\n"
+           "Be careful to not query for attributes that do not exist, and to use the format specified above.\n",
+           "Finally, do not use print or puts in your code."
           ),
       user("Question: %<question>s")
     ].freeze

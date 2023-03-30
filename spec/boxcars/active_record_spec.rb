@@ -104,5 +104,11 @@ RSpec.describe Boxcars::ActiveRecord do
         end.to raise_error(Boxcars::SecurityError)
       end
     end
+
+    it "counts the number of models" do
+      VCR.use_cassette("ar10") do
+        expect(boxcar.run("how many models are there?")).to eq(6)
+      end
+    end
   end
 end

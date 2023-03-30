@@ -1,0 +1,91 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://api.openai.com/v1/chat/completions
+    body:
+      encoding: UTF-8
+      string: '{"messages":[{"role":"system","content":"You are a Ruby on Rails Active
+        Record code generator"},{"role":"system","content":"Given an input question,
+        first create a syntactically correct Rails Active Record code to run, then
+        look at the results of the code and return the answer. Unless the user specifies
+        in her question a specific number of examples she wishes to obtain, limit
+        your code to at most 5 results.\nNever query for all the columns from a specific
+        model, only ask for the relevant attributes given the question.\nAlso, pay
+        attention to which attribute is in which model.\n\nUse the following format:\nQuestion:
+        ${{Question here}}\nARChanges: ${{Active Record code to compute the number
+        of records going to change}} - Only add this line if the ARCode on the next
+        line will make data changes.\nARCode: ${{Active Record code to run}} - make
+        sure you use valid code\nAnswer: ${{Final answer here}}\n\nOnly use the following
+        Active Record models: [Comment(id: integer, content: text, user_id: integer,
+        ticket_id: integer, created_at: datetime, updated_at: datetime), Ticket(id:
+        integer, title: string, user_id: integer, status: integer, body: text, created_at:
+        datetime, updated_at: datetime), User(id: integer, name: string, created_at:
+        datetime, updated_at: datetime)]\nPay attention to use only the attribute
+        names that you can see in the model description.\nDo not make up variable
+        or attribute names, and do not share variables between the code in ARChanges
+        and ARCode\nBe careful to not query for attributes that do not exist, and
+        to use the format specified above.\nFinally, do not use print or puts in your
+        code."},{"role":"user","content":"Question: how many models are there?"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["Answer:"]}'
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer <openai_access_token>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Thu, 30 Mar 2023 20:44:16 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - no-cache, must-revalidate
+      Openai-Model:
+      - gpt-3.5-turbo-0301
+      Openai-Organization:
+      - user-ri9zw9ahumb1bo9vs73mudbi
+      Openai-Processing-Ms:
+      - '853'
+      Openai-Version:
+      - '2020-10-01'
+      Strict-Transport-Security:
+      - max-age=15724800; includeSubDomains
+      X-Ratelimit-Limit-Requests:
+      - '3500'
+      X-Ratelimit-Remaining-Requests:
+      - '3499'
+      X-Ratelimit-Reset-Requests:
+      - 17ms
+      X-Request-Id:
+      - a055d0ac8e36735b2269ebc8b6b14811
+      Cf-Cache-Status:
+      - DYNAMIC
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 7b0330868da927d0-SLC
+      Alt-Svc:
+      - h3=":443"; ma=86400, h3-29=":443"; ma=86400
+    body:
+      encoding: ASCII-8BIT
+      string: '{"id":"chatcmpl-6ztPzwY659Y1l1wfiz204uizAPwGV","object":"chat.completion","created":1680209055,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":365,"completion_tokens":19,"total_tokens":384},"choices":[{"message":{"role":"assistant","content":"ARCode:
+        \n```\nmodels = ActiveRecord::Base.descendants\nmodels.count\n```\n"},"finish_reason":"stop","index":0}]}
+
+        '
+  recorded_at: Thu, 30 Mar 2023 20:44:16 GMT
+recorded_with: VCR 6.1.0
