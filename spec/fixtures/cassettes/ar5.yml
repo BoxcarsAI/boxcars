@@ -44,11 +44,11 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Mon, 20 Mar 2023 16:55:54 GMT
+      - Thu, 30 Mar 2023 20:05:47 GMT
       Content-Type:
       - application/json
-      Content-Length:
-      - '473'
+      Transfer-Encoding:
+      - chunked
       Connection:
       - keep-alive
       Access-Control-Allow-Origin:
@@ -60,7 +60,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '3914'
+      - '1816'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -72,16 +72,24 @@ http_interactions:
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Request-Id:
-      - 32d6ba642c14a23bdb5e6ac263705563
+      - 062c187e4a8e9223b056127e55d76ca9
+      Cf-Cache-Status:
+      - DYNAMIC
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 7b02f8211f5f27ec-SLC
+      Alt-Svc:
+      - h3=":443"; ma=86400, h3-29=":443"; ma=86400
     body:
-      encoding: UTF-8
-      string: '{"id":"chatcmpl-6wD5SFCMTkl02DvRshrYR9cyoVc27","object":"chat.completion","created":1679331350,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":353,"completion_tokens":55,"total_tokens":408},"choices":[{"message":{"role":"assistant","content":"ARChanges:
+      encoding: ASCII-8BIT
+      string: '{"id":"chatcmpl-6zsojbkicSiLnJOq0HmVoHOBXzEKl","object":"chat.completion","created":1680206745,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":354,"completion_tokens":53,"total_tokens":407},"choices":[{"message":{"role":"assistant","content":"ARChanges:
         `Ticket.where(user_id: john.id, status: \"open\").update_all(user_id: sally.id)`
         \nARCode: `Ticket.where(user_id: john.id, status: \"open\").update_all(user_id:
-        sally.id)` \n"},"finish_reason":"stop","index":0}]}
+        sally.id)`\n"},"finish_reason":"stop","index":0}]}
 
         '
-  recorded_at: Mon, 20 Mar 2023 16:55:53 GMT
+  recorded_at: Thu, 30 Mar 2023 20:05:47 GMT
 - request:
     method: post
     uri: https://api.openai.com/v1/chat/completions
@@ -130,11 +138,11 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Mon, 20 Mar 2023 16:56:04 GMT
+      - Thu, 30 Mar 2023 20:05:51 GMT
       Content-Type:
       - application/json
-      Content-Length:
-      - '851'
+      Transfer-Encoding:
+      - chunked
       Connection:
       - keep-alive
       Access-Control-Allow-Origin:
@@ -146,7 +154,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '9823'
+      - '3455'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -158,18 +166,24 @@ http_interactions:
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Request-Id:
-      - 92dcf7bc11be497ccb5b2be34b6bc0b1
+      - bc219948f74abd7cf23943bf9dca2ac5
+      Cf-Cache-Status:
+      - DYNAMIC
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 7b02f82da89127f4-SLC
+      Alt-Svc:
+      - h3=":443"; ma=86400, h3-29=":443"; ma=86400
     body:
-      encoding: UTF-8
-      string: '{"id":"chatcmpl-6wD5WFJTkZJjoGYZTbA114OZqeKu6","object":"chat.completion","created":1679331354,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":439,"completion_tokens":141,"total_tokens":580},"choices":[{"message":{"role":"assistant","content":"I
+      encoding: ASCII-8BIT
+      string: '{"id":"chatcmpl-6zsolX1BRNdrpuK51rCFjheiLdL5D","object":"chat.completion","created":1680206747,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":440,"completion_tokens":106,"total_tokens":546},"choices":[{"message":{"role":"assistant","content":"I
         apologize for that mistake. I assumed the existence of a variable that was
-        not defined. Here is the corrected version:\n\nARChanges: `Ticket.where(user_id:
+        not defined. Here''s the corrected version:\n\nARChanges: `Ticket.where(user_id:
         User.find_by(name: \"John\").id, status: \"open\").update_all(user_id: User.find_by(name:
-        \"Sally\").id)` \n\nARCode: `Ticket.where(user_id: User.find_by(name: \"John\").id,
-        status: \"open\").update_all(user_id: User.find_by(name: \"Sally\").id)`\n\nThis
-        code will find the user with name \"John\" and the user with name \"Sally\"
-        and update all open tickets belonging to John to belong to Sally instead."},"finish_reason":"stop","index":0}]}
+        \"Sally\").id)` \nARCode: `Ticket.where(user_id: User.find_by(name: \"John\").id,
+        status: \"open\").update_all(user_id: User.find_by(name: \"Sally\").id)` \n"},"finish_reason":"stop","index":0}]}
 
         '
-  recorded_at: Mon, 20 Mar 2023 16:56:03 GMT
+  recorded_at: Thu, 30 Mar 2023 20:05:51 GMT
 recorded_with: VCR 6.1.0

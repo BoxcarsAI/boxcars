@@ -43,11 +43,11 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Mon, 20 Mar 2023 22:11:41 GMT
+      - Thu, 30 Mar 2023 20:06:39 GMT
       Content-Type:
       - application/json
-      Content-Length:
-      - '398'
+      Transfer-Encoding:
+      - chunked
       Connection:
       - keep-alive
       Access-Control-Allow-Origin:
@@ -59,7 +59,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '2421'
+      - '1091'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -71,13 +71,21 @@ http_interactions:
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Request-Id:
-      - 57f075e0649ecf93162bf01d15242f6a
+      - 0103663a937568faf04af0e91c86feb1
+      Cf-Cache-Status:
+      - DYNAMIC
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 7b02f966dd842806-SLC
+      Alt-Svc:
+      - h3=":443"; ma=86400, h3-29=":443"; ma=86400
     body:
-      encoding: UTF-8
-      string: '{"id":"chatcmpl-6wI15o5pvNhy4N4aac0wjlXIsdBpL","object":"chat.completion","created":1679350299,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":335,"completion_tokens":25,"total_tokens":360},"choices":[{"message":{"role":"assistant","content":"SQLQuery:
-        SELECT COUNT(*) FROM comments JOIN users ON comments.user_id = users.id WHERE
-        users.name = ''John'';\n"},"finish_reason":"stop","index":0}]}
+      encoding: ASCII-8BIT
+      string: '{"id":"chatcmpl-6zspah7tsiDwwuU8RRDaPx8Hr01cQ","object":"chat.completion","created":1680206798,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":336,"completion_tokens":26,"total_tokens":362},"choices":[{"message":{"role":"assistant","content":"SQLQuery:
+        SELECT COUNT(*) FROM comments c JOIN users u ON c.user_id = u.id WHERE u.name
+        = ''John'';\n\n"},"finish_reason":"stop","index":0}]}
 
         '
-  recorded_at: Mon, 20 Mar 2023 22:11:41 GMT
+  recorded_at: Thu, 30 Mar 2023 20:06:39 GMT
 recorded_with: VCR 6.1.0

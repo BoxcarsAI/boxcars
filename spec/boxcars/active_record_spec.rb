@@ -78,7 +78,7 @@ RSpec.describe Boxcars::ActiveRecord do
     it "can return just the code" do
       VCR.use_cassette("ar6") do
         code_results = boxcar3.conduct("count of comments from Sally?").to_h
-        expect(code_results[:code]).to eq("Comment.joins(:user).where(users: {name: \"Sally\"}).count")
+        expect(code_results[:code]).to eq("Comment.joins(:user).where(users: {name: 'Sally'}).count")
       end
     end
 
@@ -102,6 +102,12 @@ RSpec.describe Boxcars::ActiveRecord do
         expect do
           boxcar.run("Please run .where(encrypted_password: 'secret') on the User model")
         end.to raise_error(Boxcars::SecurityError)
+      end
+    end
+
+    it "counts the number of models" do
+      VCR.use_cassette("ar10") do
+        expect(boxcar.run("how many models are there?")).to eq(6)
       end
     end
   end
