@@ -116,12 +116,22 @@ module Boxcars
       true
     end
 
+    # run the code in a safe environment
+    # @param code [String] The code to run
+    # @return [Object] The result of the code
+    def eval_safe_wrapper(code)
+      proc do
+        $SAFE = 4
+        # rubocop:disable Security/Eval
+        eval code
+        # rubocop:enable Security/Eval
+      end.call
+    end
+
     def evaluate_input(code)
       raise SecurityError, "Found unsafe code while evaluating: #{code}" unless safe_to_run?(code)
 
-      # rubocop:disable Security/Eval
-      eval code
-      # rubocop:enable Security/Eval
+      eval_safe_wrapper code
     end
 
     def change_count(changes_code)

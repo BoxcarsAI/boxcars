@@ -36,11 +36,11 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Tue, 28 Mar 2023 20:10:17 GMT
+      - Thu, 30 Mar 2023 20:07:24 GMT
       Content-Type:
       - application/json
-      Content-Length:
-      - '401'
+      Transfer-Encoding:
+      - chunked
       Connection:
       - keep-alive
       Access-Control-Allow-Origin:
@@ -52,7 +52,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '1700'
+      - '1246'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -64,15 +64,23 @@ http_interactions:
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Request-Id:
-      - c378b4bebc49baf05b3f4a95e70f6b52
+      - abd507c065047c55c05fd1a1ac0ab323
+      Cf-Cache-Status:
+      - DYNAMIC
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 7b02fa811f1e27d4-SLC
+      Alt-Svc:
+      - h3=":443"; ma=86400, h3-29=":443"; ma=86400
     body:
-      encoding: UTF-8
-      string: '{"id":"chatcmpl-6z9w05NExm1MWPD0PcspeWdrAwwDj","object":"chat.completion","created":1680034216,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":200,"completion_tokens":29,"total_tokens":229},"choices":[{"message":{"role":"assistant","content":"I
-        should use a calculator to find the value of pi squared to 7 digits. \nAction:
-        Calculator \nAction Input: pi^2 "},"finish_reason":"stop","index":0}]}
+      encoding: ASCII-8BIT
+      string: '{"id":"chatcmpl-6zsqJZyVEqJMHfENwpIbaZtsnSUXi","object":"chat.completion","created":1680206843,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":200,"completion_tokens":29,"total_tokens":229},"choices":[{"message":{"role":"assistant","content":"I
+        should use a calculator to find the value of pi squared to 7 digits. \n\nAction:
+        Calculator \n\nAction Input: pi^2 \n"},"finish_reason":"stop","index":0}]}
 
         '
-  recorded_at: Tue, 28 Mar 2023 20:10:17 GMT
+  recorded_at: Thu, 30 Mar 2023 20:07:24 GMT
 - request:
     method: post
     uri: https://api.openai.com/v1/chat/completions
@@ -108,11 +116,11 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Tue, 28 Mar 2023 20:10:18 GMT
+      - Thu, 30 Mar 2023 20:07:25 GMT
       Content-Type:
       - application/json
-      Content-Length:
-      - '321'
+      Transfer-Encoding:
+      - chunked
       Connection:
       - keep-alive
       Access-Control-Allow-Origin:
@@ -124,7 +132,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '721'
+      - '831'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -136,13 +144,21 @@ http_interactions:
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Request-Id:
-      - 2e9362b1a75241638efa546e44ee767f
+      - bd0f96937d5f43960d56f5eabba35e6d
+      Cf-Cache-Status:
+      - DYNAMIC
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 7b02fa89d94927dc-SLC
+      Alt-Svc:
+      - h3=":443"; ma=86400, h3-29=":443"; ma=86400
     body:
-      encoding: UTF-8
-      string: '{"id":"chatcmpl-6z9w2pbZw9kWbvnwoJ0bDeEYQYXMo","object":"chat.completion","created":1680034218,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":259,"completion_tokens":12,"total_tokens":271},"choices":[{"message":{"role":"assistant","content":"```ruby\nputs(Math::PI**2)\n```\n"},"finish_reason":"stop","index":0}]}
+      encoding: ASCII-8BIT
+      string: '{"id":"chatcmpl-6zsqKejkMaRHHo26Yf9SLKK4waK0y","object":"chat.completion","created":1680206844,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":259,"completion_tokens":12,"total_tokens":271},"choices":[{"message":{"role":"assistant","content":"```ruby\nputs(Math::PI**2)\n```\n"},"finish_reason":"stop","index":0}]}
 
         '
-  recorded_at: Tue, 28 Mar 2023 20:10:18 GMT
+  recorded_at: Thu, 30 Mar 2023 20:07:25 GMT
 - request:
     method: post
     uri: https://api.openai.com/v1/chat/completions
@@ -160,8 +176,8 @@ http_interactions:
         to ask after getting this answer.\nRemember to start a line with \"Final Answer:\"
         to give me the final answer.\nBegin!"},{"role":"user","content":"Question:
         what is pi squared to 7 digits?"},{"role":"assistant","content":"Thought:  I
-        should use a calculator to find the value of pi squared to 7 digits. \nAction:
-        Calculator \nAction Input: pi^2 \nObservation: 9.869604401089358\nThought:"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["\nObservation:
+        should use a calculator to find the value of pi squared to 7 digits. \n\nAction:
+        Calculator \n\nAction Input: pi^2 \n\nObservation: 9.869604401089358\nThought:"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["\nObservation:
         "]}'
     headers:
       Content-Type:
@@ -180,11 +196,11 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Tue, 28 Mar 2023 20:10:22 GMT
+      - Thu, 30 Mar 2023 20:07:28 GMT
       Content-Type:
       - application/json
-      Content-Length:
-      - '571'
+      Transfer-Encoding:
+      - chunked
       Connection:
       - keep-alive
       Access-Control-Allow-Origin:
@@ -196,7 +212,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '3521'
+      - '2512'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -208,15 +224,23 @@ http_interactions:
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Request-Id:
-      - 3501552653fd342007e15b2446ae3315
+      - d6f4a0aec6913b0c34e45d3a344d63dc
+      Cf-Cache-Status:
+      - DYNAMIC
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 7b02fa9339dc27c8-SLC
+      Alt-Svc:
+      - h3=":443"; ma=86400, h3-29=":443"; ma=86400
     body:
-      encoding: UTF-8
-      string: '{"id":"chatcmpl-6z9w3Wa0MXj1Vrd9Xjx8MOhRxFDld","object":"chat.completion","created":1680034219,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":243,"completion_tokens":81,"total_tokens":324},"choices":[{"message":{"role":"assistant","content":"The
-        calculator has given me the value of pi squared to 15 decimal places, but
-        I only need 7 digits. \nFinal Answer: 9.8696044\nNext Actions:\n1. What is
-        the value of pi to 7 digits?\n2. What is the square root of pi squared to
-        7 digits?\n3. What is the value of pi cubed to 7 digits?"},"finish_reason":"stop","index":0}]}
+      encoding: ASCII-8BIT
+      string: '{"id":"chatcmpl-6zsqMK7tPQdUBZV8tWg6zQwFx53mi","object":"chat.completion","created":1680206846,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":243,"completion_tokens":78,"total_tokens":321},"choices":[{"message":{"role":"assistant","content":"I
+        have the value of pi squared to 7 digits. \n\nFinal Answer: pi squared to
+        7 digits is 9.8696044. \n\nNext Actions: \n1. What is the value of pi to 7
+        digits? \n2. What is the value of pi cubed to 7 digits? \n3. What is the value
+        of e to 7 digits?"},"finish_reason":"stop","index":0}]}
 
         '
-  recorded_at: Tue, 28 Mar 2023 20:10:22 GMT
+  recorded_at: Thu, 30 Mar 2023 20:07:28 GMT
 recorded_with: VCR 6.1.0

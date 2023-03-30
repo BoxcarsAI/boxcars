@@ -44,11 +44,11 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Mon, 20 Mar 2023 22:09:36 GMT
+      - Thu, 30 Mar 2023 20:21:24 GMT
       Content-Type:
       - application/json
-      Content-Length:
-      - '358'
+      Transfer-Encoding:
+      - chunked
       Connection:
       - keep-alive
       Access-Control-Allow-Origin:
@@ -60,7 +60,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '2201'
+      - '794'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -72,12 +72,20 @@ http_interactions:
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Request-Id:
-      - 33c6a17cc034e38c58e13686ddd4569c
+      - 4c11924b9eec479e5ac79aa6341ad241
+      Cf-Cache-Status:
+      - DYNAMIC
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 7b030f058c0a27dc-SLC
+      Alt-Svc:
+      - h3=":443"; ma=86400, h3-29=":443"; ma=86400
     body:
-      encoding: UTF-8
-      string: '{"id":"chatcmpl-6wHz4q6shbIjzDygD7ucyCCZ0QMFT","object":"chat.completion","created":1679350174,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":352,"completion_tokens":24,"total_tokens":376},"choices":[{"message":{"role":"assistant","content":"ARCode:
-        `Comment.joins(:user).where(users: {name: \"Sally\"}).count`\n"},"finish_reason":"stop","index":0}]}
+      encoding: ASCII-8BIT
+      string: '{"id":"chatcmpl-6zt3ruG3pP3sM9PHgWHbsROsrM065","object":"chat.completion","created":1680207683,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":353,"completion_tokens":22,"total_tokens":375},"choices":[{"message":{"role":"assistant","content":"ARCode:
+        `Comment.joins(:user).where(users: {name: ''Sally''}).count`\n\n"},"finish_reason":"stop","index":0}]}
 
         '
-  recorded_at: Mon, 20 Mar 2023 22:09:36 GMT
+  recorded_at: Thu, 30 Mar 2023 20:21:24 GMT
 recorded_with: VCR 6.1.0

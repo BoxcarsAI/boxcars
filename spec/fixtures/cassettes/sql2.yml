@@ -43,11 +43,11 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Mon, 20 Mar 2023 22:11:44 GMT
+      - Thu, 30 Mar 2023 20:06:40 GMT
       Content-Type:
       - application/json
-      Content-Length:
-      - '410'
+      Transfer-Encoding:
+      - chunked
       Connection:
       - keep-alive
       Access-Control-Allow-Origin:
@@ -59,7 +59,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '3347'
+      - '1072'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -71,13 +71,21 @@ http_interactions:
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Request-Id:
-      - fc0094e43c454a07611c882e04ae42b2
+      - f67e56d472c40f4638b0628f49e84d15
+      Cf-Cache-Status:
+      - DYNAMIC
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 7b02f96f8e20a068-SLC
+      Alt-Svc:
+      - h3=":443"; ma=86400, h3-29=":443"; ma=86400
     body:
-      encoding: UTF-8
-      string: '{"id":"chatcmpl-6wI17HrXKmuEE5gy8gFnnzojmvM8H","object":"chat.completion","created":1679350301,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":337,"completion_tokens":35,"total_tokens":372},"choices":[{"message":{"role":"assistant","content":"SQLQuery:
-        \n```\nSELECT content, created_at\nFROM comments\nWHERE ticket_id = 1\nORDER
-        BY created_at DESC\nLIMIT 1;\n```\n"},"finish_reason":"stop","index":0}]}
+      encoding: ASCII-8BIT
+      string: '{"id":"chatcmpl-6zspbi846iOm7OOHjzYgWmpXzKnfL","object":"chat.completion","created":1680206799,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":338,"completion_tokens":25,"total_tokens":363},"choices":[{"message":{"role":"assistant","content":"SQLQuery:
+        SELECT content, created_at FROM comments WHERE ticket_id = 1 ORDER BY created_at
+        DESC LIMIT 1;\n"},"finish_reason":"stop","index":0}]}
 
         '
-  recorded_at: Mon, 20 Mar 2023 22:11:44 GMT
+  recorded_at: Thu, 30 Mar 2023 20:06:40 GMT
 recorded_with: VCR 6.1.0
