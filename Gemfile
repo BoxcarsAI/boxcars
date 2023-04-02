@@ -30,3 +30,5 @@ gem "faraday-retry", "~> 2.0"
 gem "activesupport", "~> 7.0"
 
 gem "rest-client", "~> 2.1"
+
+gem "hnswlib", "~> 0.8.1"
