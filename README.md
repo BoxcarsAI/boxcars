@@ -97,7 +97,7 @@ Here is what we have so far, but please put up a PR with your new ideas.
 ### Run a list of Boxcars
 ```ruby
 # run a Train for a calculator, and search using default Engine
-boxcars = [Boxcars::Calculator.new, Boxcars::Serp.new]
+boxcars = [Boxcars::Calculator.new, Boxcars::GoogleSearch.new]
 train = Boxcars.train.new(boxcars: boxcars)
 train.run "What is pi times the square root of the average temperature in Austin TX in January?"
 ```
@@ -105,27 +105,27 @@ Produces:
 ```text
 > Entering Zero Shot#run
 What is pi times the square root of the average temperature in Austin TX in January?
-Thought: We need to find the average temperature in Austin TX in January and then multiply it by pi and the square root of that value. We can use a search engine to find the average temperature and a calculator to perform the multiplication. 
+Thought: We need to find the average temperature in Austin TX in January and then multiply it by pi and the square root of the average temperature. We can use a search engine to find the average temperature in Austin TX in January and a calculator to perform the multiplication. 
 Question: Average temperature in Austin TX in January
-Answer: increase from 62°F to 64°F
-Observation: increase from 62°F to 64°F
-Thought: The average temperature in Austin TX in January is around 63°F.
+Answer: January Weather in Austin Texas, United States. Daily high temperatures increase by 2°F, from 62°F to 64°F, rarely falling below 45°F or exceeding 76° ...
+Observation: January Weather in Austin Texas, United States. Daily high temperatures increase by 2°F, from 62°F to 64°F, rarely falling below 45°F or exceeding 76° ...
+Thought: We have found the average temperature in Austin TX in January, which is 64°F. Now we can use a calculator to perform the multiplication.
 > Entering Calculator#run
-pi * sqrt(63)
-RubyREPL: puts(Math::PI * Math.sqrt(63))
-Answer: 24.935618646198247
+pi * sqrt(64)
+RubyREPL: puts(Math::PI * Math.sqrt(64))
+Answer: 25.132741228718345
 
-{"status":"ok","answer":"24.935618646198247","explanation":"Answer: 24.935618646198247","code":"puts(Math::PI * Math.sqrt(63))"}
+{"status":"ok","answer":"25.132741228718345","explanation":"Answer: 25.132741228718345","code":"puts(Math::PI * Math.sqrt(64))"}
 < Exiting Calculator#run
-Observation: 24.935618646198247
-The result of pi times the square root of the average temperature in Austin TX in January is approximately 24.94.
+Observation: 25.132741228718345
+We have the final answer.
 
-Final Answer: 24.94
+Final Answer: 25.132741228718345
 
 Next Actions:
 1. What is the average temperature in Austin TX in July?
-2. What is the formula for calculating the area of a circle?
-3. What is the value of pi to 10 decimal places?
+2. What is the value of pi to 10 decimal places?
+3. What is the square root of the average temperature in Miami FL in January?
 < Exiting Zero Shot#run
 ```
 ### More Examples
