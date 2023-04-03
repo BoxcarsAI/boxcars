@@ -136,7 +136,7 @@ Note, some folks that we talked to didn't know that you could run Ruby Jupyter n
 ### Logging
 If you use this in a Rails application, or configure `Boxcars.configuration.logger = your_logger`, logging will go to your log file.
 
-Also, if you set this flag: `Boxcars.configuration.lop_prompts = true`
+Also, if you set this flag: `Boxcars.configuration.log_prompts = true`
 The actual prompts handed to the connected Engine will be logged. This is off by default because it is very wordy, but handy if you are debugging prompts.
 
 Otherwise, we print to standard out.
