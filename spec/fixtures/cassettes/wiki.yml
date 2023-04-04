@@ -1,0 +1,255 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://en.wikipedia.org/w/api.php?action=query&format=json&list=search&srsearch=what%20is%20the%20average%20temperature%20in%20Austin%20TX?
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      Host:
+      - en.wikipedia.org
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 04 Apr 2023 16:32:34 GMT
+      Server:
+      - mw2443.codfw.wmnet
+      X-Content-Type-Options:
+      - nosniff
+      X-Search-Id:
+      - 6esv3b40iv9yy7838tv0wihy8
+      X-Frame-Options:
+      - SAMEORIGIN
+      Content-Disposition:
+      - inline; filename=api-result.json
+      Vary:
+      - Accept-Encoding,Treat-as-Untrusted,X-Forwarded-Proto,Cookie,Authorization
+      Cache-Control:
+      - private, must-revalidate, max-age=0
+      Content-Type:
+      - application/json; charset=utf-8
+      Age:
+      - '0'
+      X-Cache:
+      - cp4042 miss, cp4042 pass
+      X-Cache-Status:
+      - pass
+      Server-Timing:
+      - cache;desc="pass", host;desc="cp4042"
+      Strict-Transport-Security:
+      - max-age=106384710; includeSubDomains; preload
+      Report-To:
+      - '{ "group": "wm_nel", "max_age": 604800, "endpoints": [{ "url": "https://intake-logging.wikimedia.org/v1/events?stream=w3c.reportingapi.network_error&schema_uri=/w3c/reportingapi/network_error/1.0.0"
+        }] }'
+      Nel:
+      - '{ "report_to": "wm_nel", "max_age": 604800, "failure_fraction": 0.05, "success_fraction":
+        0.0}'
+      Set-Cookie:
+      - GeoIP=US:AZ:Benson:31.99:-110.29:v4; Path=/; secure; Domain=.wikipedia.org
+      - WMF-Last-Access-Global=04-Apr-2023;Path=/;Domain=.wikipedia.org;HttpOnly;secure;Expires=Sat,
+        06 May 2023 12:00:00 GMT
+      - WMF-Last-Access=04-Apr-2023;Path=/;HttpOnly;secure;Expires=Sat, 06 May 2023
+        12:00:00 GMT
+      X-Client-Ip:
+      - 184.170.190.74
+      Accept-Ranges:
+      - bytes
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: ASCII-8BIT
+      string: '{"batchcomplete":"","continue":{"sroffset":10,"continue":"-||"},"query":{"searchinfo":{"totalhits":150},"search":[{"ns":0,"title":"Austin,
+        Texas","pageid":1998,"size":222005,"wordcount":20690,"snippet":"<span class=\"searchmatch\">Austin</span>
+        <span class=\"searchmatch\">is</span> <span class=\"searchmatch\">the</span>
+        capital city of <span class=\"searchmatch\">the</span> U.S. state of Texas,
+        as well as <span class=\"searchmatch\">the</span> seat and largest city of
+        Travis County, with portions extending into Hays and Williamson","timestamp":"2023-03-27T23:15:51Z"},{"ns":0,"title":"Greater
+        Austin","pageid":11288301,"size":75373,"wordcount":5918,"snippet":"<span class=\"searchmatch\">The</span>
+        <span class=\"searchmatch\">Austin</span>\u2013Round\u00a0Rock\u2013San Marcos
+        metropolitan statistical area (or Greater <span class=\"searchmatch\">Austin</span>)
+        <span class=\"searchmatch\">is</span> a five-county metropolitan area <span
+        class=\"searchmatch\">in</span> <span class=\"searchmatch\">the</span> U.S.
+        state of Texas, as defined","timestamp":"2023-03-29T14:57:59Z"},{"ns":0,"title":"Texas","pageid":29810,"size":272993,"wordcount":26038,"snippet":"Kingsville,
+        where <span class=\"searchmatch\">the</span> <span class=\"searchmatch\">average</span>
+        high <span class=\"searchmatch\">temperature</span> <span class=\"searchmatch\">in</span>
+        December <span class=\"searchmatch\">is</span> 65\u00a0\u00b0F. Maximum <span
+        class=\"searchmatch\">temperatures</span> <span class=\"searchmatch\">in</span>
+        <span class=\"searchmatch\">the</span> summer months <span class=\"searchmatch\">average</span>
+        from <span class=\"searchmatch\">the</span> 80s \u00b0F (26\u00a0\u00b0C)
+        <span class=\"searchmatch\">in</span> <span class=\"searchmatch\">the</span>
+        mountains","timestamp":"2023-04-04T08:40:17Z"},{"ns":0,"title":"Wichita Falls,
+        Texas","pageid":136795,"size":57876,"wordcount":5022,"snippet":"freezing.
+        <span class=\"searchmatch\">The</span> monthly daily <span class=\"searchmatch\">average</span>
+        <span class=\"searchmatch\">temperature</span> ranges from 42.0\u00a0\u00b0F
+        (5.6\u00a0\u00b0C) <span class=\"searchmatch\">in</span> January to 84.4\u00a0\u00b0F
+        (29.1\u00a0\u00b0C) <span class=\"searchmatch\">in</span> July. <span class=\"searchmatch\">The</span>
+        record low <span class=\"searchmatch\">temperature</span> <span class=\"searchmatch\">is</span>
+        \u221212\u00a0\u00b0F","timestamp":"2023-04-04T08:45:32Z"},{"ns":0,"title":"Denton,
+        Texas","pageid":135768,"size":80451,"wordcount":6506,"snippet":"of Texas at
+        <span class=\"searchmatch\">Austin</span>). Archived from <span class=\"searchmatch\">the</span>
+        original on July 25, 2011. Retrieved November 20, 2009. &quot;<span class=\"searchmatch\">Average</span>
+        Weather for Denton, <span class=\"searchmatch\">TX</span> \u2013 <span class=\"searchmatch\">Temperature</span>
+        and Precipitation&quot;","timestamp":"2023-01-27T01:55:19Z"},{"ns":0,"title":"Fort
+        Worth, Texas","pageid":53839,"size":128998,"wordcount":12183,"snippet":"living
+        <span class=\"searchmatch\">in</span>) \u2013 Texas (<span class=\"searchmatch\">TX</span>)
+        \u2013 Page 2 \u2013 City-Data Forum&quot;. City-data.com. June 25, 2008.
+        Retrieved August 7, 2010. &quot;Daily and <span class=\"searchmatch\">average</span>
+        <span class=\"searchmatch\">temperatures</span> for July","timestamp":"2023-03-31T14:38:03Z"},{"ns":0,"title":"Tulia,
+        Texas","pageid":136632,"size":23931,"wordcount":1965,"snippet":"lowest <span
+        class=\"searchmatch\">temperature</span> <span class=\"searchmatch\">in</span>
+        Texas, \u221223\u00a0\u00b0F (\u221231\u00a0\u00b0C), set during <span class=\"searchmatch\">the</span>
+        Great Blizzard of 1899. <span class=\"searchmatch\">The</span> <span class=\"searchmatch\">temperature</span>
+        was matched by Seminole, Texas, <span class=\"searchmatch\">in</span> 1933.
+        As of <span class=\"searchmatch\">the</span> 2020","timestamp":"2023-03-03T03:28:50Z"},{"ns":0,"title":"Fulshear,
+        Texas","pageid":135887,"size":36120,"wordcount":3609,"snippet":"904. <span
+        class=\"searchmatch\">The</span> median household income <span class=\"searchmatch\">in</span>
+        Fulshear, <span class=\"searchmatch\">TX</span> <span class=\"searchmatch\">is</span>
+        $174,194. Males <span class=\"searchmatch\">in</span> Fulshear, <span class=\"searchmatch\">TX</span>
+        have an <span class=\"searchmatch\">average</span> income that <span class=\"searchmatch\">is</span>
+        1.41 times higher than <span class=\"searchmatch\">the</span> <span class=\"searchmatch\">average</span>
+        income","timestamp":"2023-02-15T21:22:51Z"},{"ns":0,"title":"List of locations
+        with a subtropical climate","pageid":39065779,"size":35593,"wordcount":2381,"snippet":"of
+        <span class=\"searchmatch\">the</span> year within <span class=\"searchmatch\">the</span>
+        subtropics have an <span class=\"searchmatch\">average</span> <span class=\"searchmatch\">temperature</span>
+        at or above 10\u00a0\u00b0C (50\u00a0\u00b0F). <span class=\"searchmatch\">The</span>
+        K\u00f6ppen climate classification instead classifies <span class=\"searchmatch\">the</span>
+        warmest","timestamp":"2023-04-03T00:35:20Z"},{"ns":0,"title":"Dallas\u2013Fort
+        Worth metroplex","pageid":328591,"size":104826,"wordcount":6628,"snippet":"of
+        37.3\u00a0\u00b0F (3\u00a0\u00b0C). The normal daily <span class=\"searchmatch\">average</span>
+        <span class=\"searchmatch\">temperature</span> <span class=\"searchmatch\">in</span>
+        January <span class=\"searchmatch\">is</span> 47.0\u00a0\u00b0F (8\u00a0\u00b0C)
+        but sharp swings <span class=\"searchmatch\">in</span> <span class=\"searchmatch\">temperature</span>
+        can occur, as strong cold fronts known","timestamp":"2023-04-04T11:09:45Z"}]}}'
+  recorded_at: Tue, 04 Apr 2023 16:32:34 GMT
+- request:
+    method: get
+    uri: https://en.wikipedia.org/w/api.php?action=query&format=json&list=search&srsearch=What%20county%20is%20Austin%20in?
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      Host:
+      - en.wikipedia.org
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 04 Apr 2023 16:34:28 GMT
+      Server:
+      - mw2320.codfw.wmnet
+      X-Content-Type-Options:
+      - nosniff
+      X-Search-Id:
+      - 3ycaky7tir4zaqkdc178xlvx4
+      X-Frame-Options:
+      - SAMEORIGIN
+      Content-Disposition:
+      - inline; filename=api-result.json
+      Vary:
+      - Accept-Encoding,Treat-as-Untrusted,X-Forwarded-Proto,Cookie,Authorization
+      Cache-Control:
+      - private, must-revalidate, max-age=0
+      Content-Type:
+      - application/json; charset=utf-8
+      Age:
+      - '0'
+      X-Cache:
+      - cp4042 miss, cp4042 pass
+      X-Cache-Status:
+      - pass
+      Server-Timing:
+      - cache;desc="pass", host;desc="cp4042"
+      Strict-Transport-Security:
+      - max-age=106384710; includeSubDomains; preload
+      Report-To:
+      - '{ "group": "wm_nel", "max_age": 604800, "endpoints": [{ "url": "https://intake-logging.wikimedia.org/v1/events?stream=w3c.reportingapi.network_error&schema_uri=/w3c/reportingapi/network_error/1.0.0"
+        }] }'
+      Nel:
+      - '{ "report_to": "wm_nel", "max_age": 604800, "failure_fraction": 0.05, "success_fraction":
+        0.0}'
+      Set-Cookie:
+      - GeoIP=US:AZ:Benson:31.99:-110.29:v4; Path=/; secure; Domain=.wikipedia.org
+      - WMF-Last-Access-Global=04-Apr-2023;Path=/;Domain=.wikipedia.org;HttpOnly;secure;Expires=Sat,
+        06 May 2023 12:00:00 GMT
+      - WMF-Last-Access=04-Apr-2023;Path=/;HttpOnly;secure;Expires=Sat, 06 May 2023
+        12:00:00 GMT
+      X-Client-Ip:
+      - 184.170.190.74
+      Accept-Ranges:
+      - bytes
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: ASCII-8BIT
+      string: '{"batchcomplete":"","continue":{"sroffset":10,"continue":"-||"},"query":{"searchinfo":{"totalhits":11213,"suggestion":"what
+        country is austin in ","suggestionsnippet":"what <em>country</em> is austin
+        in "},"search":[{"ns":0,"title":"Austin, Texas","pageid":1998,"size":222005,"wordcount":20690,"snippet":"<span
+        class=\"searchmatch\">Austin</span> <span class=\"searchmatch\">is</span>
+        the capital city of the U.S. state of Texas, as well as the seat and largest
+        city of Travis <span class=\"searchmatch\">County</span>, with portions extending
+        into Hays and Williamson","timestamp":"2023-03-27T23:15:51Z"},{"ns":0,"title":"Stone
+        Cold Steve Austin","pageid":356167,"size":182555,"wordcount":16572,"snippet":"Steve
+        <span class=\"searchmatch\">Austin</span> (born Steven James Anderson; December
+        18, 1964), better known by his ring name &quot;Stone Cold&quot; Steve <span
+        class=\"searchmatch\">Austin</span>, <span class=\"searchmatch\">is</span>
+        an American media personality","timestamp":"2023-04-03T02:15:35Z"},{"ns":0,"title":"Mower
+        County, Minnesota","pageid":94937,"size":26463,"wordcount":1837,"snippet":"Mower
+        <span class=\"searchmatch\">County</span> (/\u02c8ma\u028a.\u0259r/) <span
+        class=\"searchmatch\">is</span> a <span class=\"searchmatch\">county</span>
+        <span class=\"searchmatch\">in</span> the U.S. state of Minnesota. As of the
+        2020 census, the population was 40,029. The <span class=\"searchmatch\">county</span>
+        seat <span class=\"searchmatch\">is</span> <span class=\"searchmatch\">Austin</span>.
+        Mower","timestamp":"2022-11-29T02:38:19Z"},{"ns":0,"title":"Circuit of the
+        Americas","pageid":28663179,"size":81581,"wordcount":6079,"snippet":"(COTA)
+        <span class=\"searchmatch\">is</span> a Grade 1 FIA-specification 3.426-mile
+        (5.514\u00a0km) motor racing track and facilities located within the extraterritorial
+        jurisdiction of <span class=\"searchmatch\">Austin</span>, Texas","timestamp":"2023-03-31T22:38:44Z"},{"ns":0,"title":"Travis
+        County, Texas","pageid":91426,"size":34726,"wordcount":3050,"snippet":"county
+        in Texas. Its <span class=\"searchmatch\">county</span> seat and largest city
+        <span class=\"searchmatch\">is</span> <span class=\"searchmatch\">Austin</span>,
+        the capital of Texas. The <span class=\"searchmatch\">county</span> was established
+        <span class=\"searchmatch\">in</span> 1840 and <span class=\"searchmatch\">is</span>
+        named <span class=\"searchmatch\">in</span> honor of William Barret","timestamp":"2023-03-31T05:22:59Z"},{"ns":0,"title":"Austin\u2013Bergstrom
+        International Airport","pageid":262542,"size":68326,"wordcount":4857,"snippet":"<span
+        class=\"searchmatch\">Austin</span>\u2013Bergstrom International Airport,
+        or ABIA (IATA: AUS, ICAO: KAUS, FAA LID: AUS, formerly BSM), <span class=\"searchmatch\">is</span>
+        a Class C international airport <span class=\"searchmatch\">in</span> <span
+        class=\"searchmatch\">Austin</span>, Texas","timestamp":"2023-04-03T00:35:21Z"},{"ns":0,"title":"Lloyd
+        Austin","pageid":2347492,"size":85050,"wordcount":6029,"snippet":"Lloyd James
+        <span class=\"searchmatch\">Austin</span> III (born August 8, 1953) <span
+        class=\"searchmatch\">is</span> a retired United States Army four-star general
+        who, since his appointment on January 22, 2021, has served","timestamp":"2023-04-03T02:00:53Z"},{"ns":0,"title":"Greater
+        Austin","pageid":11288301,"size":75373,"wordcount":5918,"snippet":"The <span
+        class=\"searchmatch\">Austin</span>\u2013Round\u00a0Rock\u2013San Marcos metropolitan
+        statistical area (or Greater <span class=\"searchmatch\">Austin</span>) <span
+        class=\"searchmatch\">is</span> a five-<span class=\"searchmatch\">county</span>
+        metropolitan area <span class=\"searchmatch\">in</span> the U.S. state of
+        Texas, as defined","timestamp":"2023-03-29T14:57:59Z"},{"ns":0,"title":"May
+        Mann Jennings","pageid":19359138,"size":15297,"wordcount":1452,"snippet":"May
+        Mann Jennings (born May <span class=\"searchmatch\">Austin</span> Elizabeth
+        Mann; April 25, 1872 \u2013 April 24, 1963) was an American activist who was
+        the first lady of Florida from 1901","timestamp":"2023-03-31T21:49:36Z"},{"ns":0,"title":"Austin
+        Ekeler","pageid":55128813,"size":33736,"wordcount":2720,"snippet":"<span class=\"searchmatch\">Austin</span>
+        Ekeler (/\u02c8\u025bkl\u0259r/ EHK-ler; born May 17, 1995) <span class=\"searchmatch\">is</span>
+        an American football running back for the Los Angeles Chargers of the National
+        Football League (NFL)","timestamp":"2023-03-30T01:06:08Z"}]}}'
+  recorded_at: Tue, 04 Apr 2023 16:34:28 GMT
+recorded_with: VCR 6.1.0

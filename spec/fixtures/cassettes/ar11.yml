@@ -26,8 +26,8 @@ http_interactions:
         or attribute names, and do not share variables between the code in ARChanges
         and ARCode\nBe careful to not query for attributes that do not exist, and
         to use the format specified above.\nFinally, try not to use print or puts
-        in your code"},{"role":"user","content":"Question: count of comments from
-        John?"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["Answer:"]}'
+        in your code"},{"role":"user","content":"Question: print the number of ActiveRecord
+        model classes"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["Answer:"]}'
     headers:
       Content-Type:
       - application/json
@@ -45,7 +45,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Tue, 04 Apr 2023 00:21:25 GMT
+      - Tue, 04 Apr 2023 18:26:21 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -61,7 +61,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '914'
+      - '949'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -73,20 +73,20 @@ http_interactions:
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Request-Id:
-      - e14d4230ff6a8f9e47448ce4a0e145aa
+      - 6fa5cca8d27b72d7bfb2fa3f4653efe3
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7b256419b96227d0-SLC
+      - 7b2b995dbedba026-SLC
       Alt-Svc:
       - h3=":443"; ma=86400, h3-29=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
-      string: '{"id":"chatcmpl-71OiKrz5aFn8ty6dRpWllJxIIzSA8","object":"chat.completion","created":1680567684,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":365,"completion_tokens":20,"total_tokens":385},"choices":[{"message":{"role":"assistant","content":"ARCode:
-        Comment.joins(:user).where(users: {name: ''John''}).count\n\n"},"finish_reason":"stop","index":0}]}
+      string: '{"id":"chatcmpl-71feGz1z7s4wuGtGQBq5bpCaA5ibV","object":"chat.completion","created":1680632780,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":366,"completion_tokens":16,"total_tokens":382},"choices":[{"message":{"role":"assistant","content":"ARCode:
+        \n```\nputs ActiveRecord::Base.descendants.count\n```\n"},"finish_reason":"stop","index":0}]}
 
         '
-  recorded_at: Tue, 04 Apr 2023 00:21:25 GMT
+  recorded_at: Tue, 04 Apr 2023 18:26:21 GMT
 recorded_with: VCR 6.1.0

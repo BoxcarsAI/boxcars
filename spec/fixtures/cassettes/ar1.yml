@@ -25,8 +25,9 @@ http_interactions:
         names that you can see in the model description.\nDo not make up variable
         or attribute names, and do not share variables between the code in ARChanges
         and ARCode\nBe careful to not query for attributes that do not exist, and
-        to use the format specified above.\n"},{"role":"user","content":"Question:
-        count how many comments are there from John?"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["Answer:"]}'
+        to use the format specified above.\nFinally, try not to use print or puts
+        in your code"},{"role":"user","content":"Question: count how many comments
+        are there from John?"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["Answer:"]}'
     headers:
       Content-Type:
       - application/json
@@ -44,7 +45,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Thu, 30 Mar 2023 20:03:37 GMT
+      - Tue, 04 Apr 2023 00:21:22 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -60,7 +61,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '835'
+      - '963'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -72,20 +73,20 @@ http_interactions:
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Request-Id:
-      - e6573a53c74f179d96636290b3e01844
+      - f7d01320effc2692f7b7dba919c420b2
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7b02f4f77c2527d8-SLC
+      - 7b25640a5831a062-SLC
       Alt-Svc:
       - h3=":443"; ma=86400, h3-29=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
-      string: '{"id":"chatcmpl-6zsmeTfyp6M0hkCUVQ9JUG1i7urFo","object":"chat.completion","created":1680206616,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":356,"completion_tokens":20,"total_tokens":376},"choices":[{"message":{"role":"assistant","content":"ARCode:
-        Comment.joins(:user).where(users: {name: ''John''}).count\n\n"},"finish_reason":"stop","index":0}]}
+      string: '{"id":"chatcmpl-71OiHMSOme7M7FhRVwDHantj1sriT","object":"chat.completion","created":1680567681,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":368,"completion_tokens":21,"total_tokens":389},"choices":[{"message":{"role":"assistant","content":"ARCode:
+        `Comment.joins(:user).where(users: {name: ''John''}).count`\n\n"},"finish_reason":"stop","index":0}]}
 
         '
-  recorded_at: Thu, 30 Mar 2023 20:03:37 GMT
+  recorded_at: Tue, 04 Apr 2023 00:21:22 GMT
 recorded_with: VCR 6.1.0
