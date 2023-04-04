@@ -90,6 +90,7 @@ You can change the default_engine with `Boxcars::configuration.default_engine = 
 
 Here is what we have so far, but please put up a PR with your new ideas.
 - GoogleSearch: uses the SERP API to do seaches
+- WikipediaSearch: uses the Wikipedia API to do searches
 - Calculator: uses an Engine to generate ruby code to do math
 - SQL: given an ActiveRecord connection, it will generate and run sql statments from a prompt.
 - ActiveRecord: given an ActiveRecord connection, it will generate and run ActiveRecord statements from a prompt.
