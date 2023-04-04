@@ -170,6 +170,7 @@ PLATFORMS
 
 DEPENDENCIES
   activerecord (~> 7.0)
+  activesupport (~> 7.0)
   boxcars!
   debug (~> 1.1)
   dotenv (~> 2.8)
