@@ -3,6 +3,7 @@
 # Boxcars is a framework for running a series of tools to get an answer to a question.
 module Boxcars
   # A Boxcar that interprets a prompt and executes SQL code to get answers
+  # rubocop:disable Metrics/ClassLength
   class ActiveRecord < EngineBoxcar
     # the description of this engine boxcar
     ARDESC = "useful for when you need to query a database for an application named %<name>s."
@@ -21,7 +22,7 @@ module Boxcars
       @approval_callback = approval_callback
       @read_only = read_only.nil? ? !approval_callback : read_only
       @code_only = kwargs.delete(:code_only) || false
-      kwargs[:name] ||= "Data"
+      kwargs[:name] ||= get_name
       kwargs[:description] ||= format(ARDESC, name: name)
       kwargs[:prompt] ||= my_prompt
       super(**kwargs)
@@ -33,6 +34,13 @@ module Boxcars
     end
 
     private
+
+    def get_name
+      return Rails.application.class.module_parent.name if defined?(Rails)
+    rescue StandardError => e
+      boxcars.error "Error getting rails name application name: #{e.message}"
+      nil
+    end
 
     def read_only?
       read_only
@@ -119,7 +127,10 @@ module Boxcars
     # @return [Object] The result of the code
     def eval_safe_wrapper(code)
       # if the code used ActiveRecord, we need to add :: in front of it to escape the module
-      new_code = code.gsub(/(\W)ActiveRecord::/, '\1::ActiveRecord::')
+      new_code = code.gsub(/\b(ActiveRecord::)/, '::\1')
+
+      # sometimes the code will have a puts or print in it, which will miss. Remove them.
+      new_code = new_code.gsub(/\b(puts|print)\b/, '')
       proc do
         $SAFE = 4
         # rubocop:disable Security/Eval
@@ -146,7 +157,11 @@ module Boxcars
     def approved?(changes_code, code)
       # find out how many changes there are
       changes = change_count(changes_code)
-      return true unless changes&.positive?
+      begin
+        return true unless changes&.positive?
+      rescue StandardError => e
+        Boscar.error "Error while computing change count: #{e.message}", :red
+      end
 
       Boxcars.debug "#{name}(Pending Changes): #{changes}", :yellow
       if read_only?
@@ -242,7 +257,7 @@ module Boxcars
            "Pay attention to use only the attribute names that you can see in the model description.\n",
            "Do not make up variable or attribute names, and do not share variables between the code in ARChanges and ARCode\n",
            "Be careful to not query for attributes that do not exist, and to use the format specified above.\n",
-           "Finally, do not use print or puts in your code."
+           "Finally, try not to use print or puts in your code"
           ),
       user("Question: %<question>s")
     ].freeze
@@ -257,4 +272,5 @@ module Boxcars
         output_variables: [:answer])
     end
   end
+  # rubocop:enable Metrics/ClassLength
 end
