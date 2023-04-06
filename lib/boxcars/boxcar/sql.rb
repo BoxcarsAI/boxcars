@@ -41,6 +41,8 @@ module Boxcars
         end
       elsif rtables
         raise ArgumentError, "tables needs to be an array of Strings"
+      else
+        @requested_tables = tables
       end
       @except_models = LOCKED_OUT_TABLES + exceptions.to_a
     end
@@ -55,8 +57,8 @@ module Boxcars
        ");"].join("\n")
     end
 
-    def schema(except_tables: ['ar_internal_metadata'])
-      wanted_tables = tables.to_a - except_tables
+    def schema
+      wanted_tables = @requested_tables - @except_models
       wanted_tables.map(&method(:table_schema)).join("\n")
     end
 
