@@ -52,6 +52,7 @@ module Boxcars
 
     def check_models(models, exceptions)
       if models.is_a?(Array) && models.length.positive?
+        models.map { |m| m.is_a?(Class) ? m : m.constantize }
         @requested_models = models
         models.each do |m|
           raise ArgumentError, "model #{m} needs to be an Active Record model" unless m.ancestors.include?(::ActiveRecord::Base)
