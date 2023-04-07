@@ -34,11 +34,11 @@ module Boxcars
     # @param question [String] The question to ask Google.
     # @return [String] The location found.
     def get_location(question)
+      Boxcars.debug "Question: #{question}", :yellow
       search = ::GoogleSearch.new(q: question, limit: 3)
-      rv = search.get_location
-      puts "Question: #{question}"
-      puts "Answer: #{rv}"
-      rv
+      answer = search.get_location
+      Boxcars.debug "Answer: #{answer}", :yellow, style: :bold
+      answer
     end
 
     private

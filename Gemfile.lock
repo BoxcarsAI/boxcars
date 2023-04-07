@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    boxcars (0.2.5)
+    boxcars (0.2.6)
       google_search_results (~> 2.2)
       ruby-openai (~> 3.0)
 
@@ -170,6 +170,7 @@ PLATFORMS
 
 DEPENDENCIES
   activerecord (~> 7.0)
+  activesupport (~> 7.0)
   boxcars!
   debug (~> 1.1)
   dotenv (~> 2.8)

@@ -1,0 +1,137 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://en.wikipedia.org/w/api.php?action=query&format=json&list=search&srsearch=What%20is%20the%20capital%20of%20Arizona?
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      Host:
+      - en.wikipedia.org
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 04 Apr 2023 16:45:20 GMT
+      Server:
+      - mw2400.codfw.wmnet
+      X-Content-Type-Options:
+      - nosniff
+      X-Search-Id:
+      - 8hhq9ds8yem38sfn4w3zkv03o
+      X-Frame-Options:
+      - SAMEORIGIN
+      Content-Disposition:
+      - inline; filename=api-result.json
+      Vary:
+      - Accept-Encoding,Treat-as-Untrusted,X-Forwarded-Proto,Cookie,Authorization
+      Cache-Control:
+      - private, must-revalidate, max-age=0
+      Content-Type:
+      - application/json; charset=utf-8
+      Age:
+      - '0'
+      X-Cache:
+      - cp4042 miss, cp4042 pass
+      X-Cache-Status:
+      - pass
+      Server-Timing:
+      - cache;desc="pass", host;desc="cp4042"
+      Strict-Transport-Security:
+      - max-age=106384710; includeSubDomains; preload
+      Report-To:
+      - '{ "group": "wm_nel", "max_age": 604800, "endpoints": [{ "url": "https://intake-logging.wikimedia.org/v1/events?stream=w3c.reportingapi.network_error&schema_uri=/w3c/reportingapi/network_error/1.0.0"
+        }] }'
+      Nel:
+      - '{ "report_to": "wm_nel", "max_age": 604800, "failure_fraction": 0.05, "success_fraction":
+        0.0}'
+      Set-Cookie:
+      - GeoIP=US:AZ:Benson:31.99:-110.29:v4; Path=/; secure; Domain=.wikipedia.org
+      - WMF-Last-Access-Global=04-Apr-2023;Path=/;Domain=.wikipedia.org;HttpOnly;secure;Expires=Sat,
+        06 May 2023 12:00:00 GMT
+      - WMF-Last-Access=04-Apr-2023;Path=/;HttpOnly;secure;Expires=Sat, 06 May 2023
+        12:00:00 GMT
+      X-Client-Ip:
+      - 184.170.190.74
+      Accept-Ranges:
+      - bytes
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: ASCII-8BIT
+      string: '{"batchcomplete":"","continue":{"sroffset":10,"continue":"-||"},"query":{"searchinfo":{"totalhits":5063},"search":[{"ns":0,"title":"Arizona","pageid":21883824,"size":159836,"wordcount":13485,"snippet":"States.
+        It <span class=\"searchmatch\">is</span> <span class=\"searchmatch\">the</span>
+        6th-largest and <span class=\"searchmatch\">the</span> 14th-most-populous
+        <span class=\"searchmatch\">of</span> <span class=\"searchmatch\">the</span>
+        50 states. Its <span class=\"searchmatch\">capital</span> and largest city
+        <span class=\"searchmatch\">is</span> Phoenix. <span class=\"searchmatch\">Arizona</span>
+        <span class=\"searchmatch\">is</span> part <span class=\"searchmatch\">of</span>
+        <span class=\"searchmatch\">the</span> Four Corners","timestamp":"2023-04-03T18:53:11Z"},{"ns":0,"title":"Phoenix,
+        Arizona","pageid":49121,"size":211772,"wordcount":19609,"snippet":"Bany\u00e0:nyuw\u00e1)
+        <span class=\"searchmatch\">is</span> <span class=\"searchmatch\">the</span>
+        <span class=\"searchmatch\">capital</span> and most populous city <span class=\"searchmatch\">of</span>
+        <span class=\"searchmatch\">the</span> U.S. state <span class=\"searchmatch\">of</span>
+        <span class=\"searchmatch\">Arizona</span>, with 1,608,139 residents as <span
+        class=\"searchmatch\">of</span> 2020. It <span class=\"searchmatch\">is</span>
+        <span class=\"searchmatch\">the</span> fifth most populous city in <span class=\"searchmatch\">the</span>
+        United","timestamp":"2023-03-31T14:38:17Z"},{"ns":0,"title":"Arizona State
+        Legislature","pageid":1449584,"size":13461,"wordcount":1048,"snippet":"Capitol
+        Complex in the state <span class=\"searchmatch\">capital</span> <span class=\"searchmatch\">of</span>
+        Phoenix, <span class=\"searchmatch\">Arizona</span>. Created by <span class=\"searchmatch\">the</span>
+        <span class=\"searchmatch\">Arizona</span> Constitution upon statehood in
+        1912, <span class=\"searchmatch\">the</span> <span class=\"searchmatch\">Arizona</span>
+        State Legislature met biennially","timestamp":"2023-03-07T06:56:24Z"},{"ns":0,"title":"2024
+        United States Senate election in Arizona","pageid":59480894,"size":25345,"wordcount":1432,"snippet":"<span
+        class=\"searchmatch\">The</span> 2024 United States Senate election in <span
+        class=\"searchmatch\">Arizona</span> will be held on November 5, 2024, to
+        elect a member <span class=\"searchmatch\">of</span> <span class=\"searchmatch\">the</span>
+        United States Senate to represent <span class=\"searchmatch\">the</span> State","timestamp":"2023-03-30T02:11:18Z"},{"ns":0,"title":"Prescott,
+        Arizona","pageid":106793,"size":71806,"wordcount":6531,"snippet":"Prescott
+        was designated as <span class=\"searchmatch\">the</span> <span class=\"searchmatch\">capital</span>
+        <span class=\"searchmatch\">of</span> <span class=\"searchmatch\">the</span>
+        <span class=\"searchmatch\">Arizona</span> Territory, replacing <span class=\"searchmatch\">the</span>
+        temporary <span class=\"searchmatch\">capital</span> <span class=\"searchmatch\">of</span>
+        Fort Whipple. <span class=\"searchmatch\">The</span> Territorial <span class=\"searchmatch\">Capital</span>
+        was moved to Tucson","timestamp":"2023-03-17T19:53:23Z"},{"ns":0,"title":"List
+        of capitals in the United States","pageid":255627,"size":117976,"wordcount":4916,"snippet":"This
+        <span class=\"searchmatch\">is</span> a list <span class=\"searchmatch\">of</span>
+        <span class=\"searchmatch\">capital</span> cities <span class=\"searchmatch\">of</span>
+        <span class=\"searchmatch\">the</span> United States, including places that
+        serve or have served as federal, state, insular area, territorial, colonial","timestamp":"2023-04-04T15:52:39Z"},{"ns":0,"title":"Tucson,
+        Arizona","pageid":57180,"size":172447,"wordcount":17411,"snippet":"O''odham:
+        Cuk-\u1e62on) <span class=\"searchmatch\">is</span> a city in and <span class=\"searchmatch\">the</span>
+        county seat <span class=\"searchmatch\">of</span> Pima County, <span class=\"searchmatch\">Arizona</span>,
+        United States, and <span class=\"searchmatch\">is</span> home to <span class=\"searchmatch\">the</span>
+        University <span class=\"searchmatch\">of</span> <span class=\"searchmatch\">Arizona</span>.
+        It <span class=\"searchmatch\">is</span> <span class=\"searchmatch\">the</span>
+        second-largest","timestamp":"2023-03-31T21:38:13Z"},{"ns":0,"title":"Confederate
+        Arizona","pageid":455170,"size":23064,"wordcount":2194,"snippet":"consisted
+        <span class=\"searchmatch\">of</span> <span class=\"searchmatch\">the</span>
+        portion <span class=\"searchmatch\">of</span> <span class=\"searchmatch\">the</span>
+        New Mexico Territory south <span class=\"searchmatch\">of</span> <span class=\"searchmatch\">the</span>
+        34th parallel, including parts <span class=\"searchmatch\">of</span> <span
+        class=\"searchmatch\">the</span> modern states <span class=\"searchmatch\">of</span>
+        New Mexico and <span class=\"searchmatch\">Arizona</span>. <span class=\"searchmatch\">The</span>
+        <span class=\"searchmatch\">capital</span> was","timestamp":"2023-03-31T00:47:14Z"},{"ns":0,"title":"Arizona
+        State University","pageid":1859,"size":191732,"wordcount":17318,"snippet":"<span
+        class=\"searchmatch\">Arizona</span> State University (<span class=\"searchmatch\">Arizona</span>
+        State or ASU) <span class=\"searchmatch\">is</span> a public research university
+        in <span class=\"searchmatch\">the</span> Phoenix metropolitan area. Founded
+        in 1885 by <span class=\"searchmatch\">the</span> 13th <span class=\"searchmatch\">Arizona</span>","timestamp":"2023-03-28T03:20:45Z"},{"ns":0,"title":"History
+        of Arizona","pageid":2366732,"size":62582,"wordcount":7357,"snippet":"settled
+        in <span class=\"searchmatch\">what</span> <span class=\"searchmatch\">is</span>
+        now <span class=\"searchmatch\">Arizona</span>. A few thousand years ago,
+        <span class=\"searchmatch\">the</span> Ancestral Puebloan, <span class=\"searchmatch\">the</span>
+        Hohokam, <span class=\"searchmatch\">the</span> Mogollon and <span class=\"searchmatch\">the</span>
+        Sinagua cultures inhabited <span class=\"searchmatch\">the</span> state.","timestamp":"2023-03-27T11:03:28Z"}]}}'
+  recorded_at: Tue, 04 Apr 2023 16:45:20 GMT
+recorded_with: VCR 6.1.0

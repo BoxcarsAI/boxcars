@@ -26,3 +26,5 @@ gem "activerecord", "~> 7.0"
 gem "github_changelog_generator", "~> 1.16"
 
 gem "faraday-retry", "~> 2.0"
+
+gem "activesupport", "~> 7.0"

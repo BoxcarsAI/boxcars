@@ -25,12 +25,12 @@ http_interactions:
         names that you can see in the model description.\nDo not make up variable
         or attribute names, and do not share variables between the code in ARChanges
         and ARCode\nBe careful to not query for attributes that do not exist, and
-        to use the format specified above.\n"},{"role":"user","content":"Question:
-        tickets asigned to Sally?"},{"role":"assistant","content":"ARChanges: `Ticket.where(user_id:
-        john.id, status: ''open'').update_all(user_id: sally.id)` \nARCode: `Ticket.where(user_id:
-        john.id, status: ''open'').update_all(user_id: sally.id)`"},{"role":"user","content":"ARChanges
-        Error: undefined local variable or method `john - please fix \"ARChanges:\"
-        to not have this error"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["Answer:"]}'
+        to use the format specified above.\nFinally, try not to use print or puts
+        in your code"},{"role":"user","content":"Question: tickets asigned to Sally?"},{"role":"assistant","content":"ARChanges:
+        `Ticket.where(user_id: john.id, status: ''open'').update_all(user_id: sally.id)`
+        \nARCode: `Ticket.where(user_id: john.id, status: ''open'').update_all(user_id:
+        sally.id)`"},{"role":"user","content":"ARChanges Error: undefined local variable
+        or method `john - please fix \"ARChanges:\" to not have this error"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["Answer:"]}'
     headers:
       Content-Type:
       - application/json
@@ -48,7 +48,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Thu, 30 Mar 2023 20:05:55 GMT
+      - Tue, 04 Apr 2023 00:21:37 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -64,7 +64,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '2622'
+      - '2925'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -76,23 +76,23 @@ http_interactions:
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Request-Id:
-      - 3e1e9d1ba2739b49787b6d9a72cd72cb
+      - 238425ba31d63e194c499ce8e3e5d08e
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7b02f84a9a1527d4-SLC
+      - 7b256459bf86a062-SLC
       Alt-Svc:
       - h3=":443"; ma=86400, h3-29=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
-      string: '{"id":"chatcmpl-6zsoqeM1R3kzZgTxz3GYL8jUjKqz0","object":"chat.completion","created":1680206752,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":439,"completion_tokens":77,"total_tokens":516},"choices":[{"message":{"role":"assistant","content":"I
+      string: '{"id":"chatcmpl-71OiUPnhq5QqnmOcurpqmxYavbWhu","object":"chat.completion","created":1680567694,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":451,"completion_tokens":77,"total_tokens":528},"choices":[{"message":{"role":"assistant","content":"I
         apologize for that mistake. Here''s the updated code:\n\nARChanges: `Ticket.where(user_id:
         User.find_by(name: ''John'').id, status: ''open'').update_all(user_id: User.find_by(name:
         ''Sally'').id)`\nARCode: `Ticket.where(user_id: User.find_by(name: ''Sally'').id).pluck(:title)`
         \n"},"finish_reason":"stop","index":0}]}
 
         '
-  recorded_at: Thu, 30 Mar 2023 20:05:55 GMT
+  recorded_at: Tue, 04 Apr 2023 00:21:37 GMT
 recorded_with: VCR 6.1.0

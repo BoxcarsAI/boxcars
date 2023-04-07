@@ -25,8 +25,9 @@ http_interactions:
         names that you can see in the model description.\nDo not make up variable
         or attribute names, and do not share variables between the code in ARChanges
         and ARCode\nBe careful to not query for attributes that do not exist, and
-        to use the format specified above.\n"},{"role":"user","content":"Question:
-        What is the content of the last comment for the first ticket?"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["Answer:"]}'
+        to use the format specified above.\nFinally, try not to use print or puts
+        in your code"},{"role":"user","content":"Question: What is the content of
+        the last comment for the first ticket?"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["Answer:"]}'
     headers:
       Content-Type:
       - application/json
@@ -44,7 +45,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Thu, 30 Mar 2023 20:03:38 GMT
+      - Tue, 04 Apr 2023 00:21:23 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -60,7 +61,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '851'
+      - '926'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -72,20 +73,20 @@ http_interactions:
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Request-Id:
-      - fa9a90e3517e593816b1c5ece7b09f5b
+      - 48a2f3a2d7434bc516c3fbfabe4dc041
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7b02f4fdef6327f4-SLC
+      - 7b2564121a5ba02c-SLC
       Alt-Svc:
       - h3=":443"; ma=86400, h3-29=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
-      string: '{"id":"chatcmpl-6zsmf9u7lBhDqWa5MTeTfQKEWfcub","object":"chat.completion","created":1680206617,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":360,"completion_tokens":15,"total_tokens":375},"choices":[{"message":{"role":"assistant","content":"ARCode:
-        `Comment.where(ticket_id: 1).last.content`\n\n"},"finish_reason":"stop","index":0}]}
+      string: '{"id":"chatcmpl-71OiI1NwdjQPN6La4872JmpVoxNwm","object":"chat.completion","created":1680567682,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":372,"completion_tokens":17,"total_tokens":389},"choices":[{"message":{"role":"assistant","content":"ARCode:
+        `Comment.where(ticket_id: Ticket.first.id).last.content` \n\n"},"finish_reason":"stop","index":0}]}
 
         '
-  recorded_at: Thu, 30 Mar 2023 20:03:38 GMT
+  recorded_at: Tue, 04 Apr 2023 00:21:23 GMT
 recorded_with: VCR 6.1.0
