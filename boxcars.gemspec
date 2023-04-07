@@ -37,6 +37,7 @@ Gem::Specification.new do |spec|
 
   # runtime dependencies
   spec.add_dependency "google_search_results", "~> 2.2"
+  spec.add_dependency "gpt4all", "~> 0.0.2"
   spec.add_dependency "ruby-openai", "~> 3.0"
 
   # For more information and examples about making a new gem, checkout our
