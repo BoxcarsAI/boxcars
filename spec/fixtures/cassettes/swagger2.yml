@@ -35,7 +35,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Tue, 11 Apr 2023 21:36:59 GMT
+      - Tue, 11 Apr 2023 21:53:44 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -51,7 +51,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '338'
+      - '380'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -63,20 +63,20 @@ http_interactions:
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Request-Id:
-      - b05e97270eb0e439704693a161241069
+      - 18b6b4c9d0bdb8f97a3d5134f5ef09fd
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7b665e3f697aa038-SLC
+      - 7b6676c8aa82290c-DEN
       Alt-Svc:
       - h3=":443"; ma=86400, h3-29=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
-      string: '{"id":"chatcmpl-74FxaTJ0vRusyB53oiFuuODyB4bog","object":"chat.completion","created":1681249018,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":209,"completion_tokens":4,"total_tokens":213},"choices":[{"message":{"role":"assistant","content":"Answer:
+      string: '{"id":"chatcmpl-74GDnrauzPd4l5qdKmukTOPBOdaTl","object":"chat.completion","created":1681250023,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":209,"completion_tokens":4,"total_tokens":213},"choices":[{"message":{"role":"assistant","content":"Answer:
         3"},"finish_reason":"stop","index":0}]}
 
         '
-  recorded_at: Tue, 11 Apr 2023 21:36:59 GMT
+  recorded_at: Tue, 11 Apr 2023 21:53:44 GMT
 recorded_with: VCR 6.1.0
