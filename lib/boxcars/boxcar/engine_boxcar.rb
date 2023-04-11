@@ -121,7 +121,7 @@ module Boxcars
     # @param inputs [Hash] The inputs to the boxcar.
     # @return Hash The variables for this boxcar.
     def prediction_variables(inputs)
-      prediction_input(inputs).merge(prediction_additional)
+      prediction_additional.merge(inputs)
     end
 
     # remove backticks or triple backticks from the code

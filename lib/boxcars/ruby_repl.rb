@@ -20,6 +20,7 @@ module Boxcars
         Boxcars.debug output, :red
         Result.from_error(output, code: code)
       else
+        output = ::Regexp.last_match(1) if output =~ /^\s*Answer:\s*(.*)$/
         Boxcars.debug "Answer: #{output}", :yellow, style: :bold
         Result.from_text(output, code: code)
       end
