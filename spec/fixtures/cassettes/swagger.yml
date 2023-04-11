@@ -17,8 +17,7 @@ http_interactions:
         calls}}\nAnswer: ${{Answer}}\n\nDo not give an explanation of the answer and
         make sure your answer starts with either ''Answer:'' or ''```ruby''. Make
         use of the rest-client gem to make your requests to the API. Just print the
-        answer."},{"role":"system","content":"Begin."},{"role":"user","content":"How
-        many Sentires are there?"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["```output"]}'
+        answer."},{"role":"user","content":"How many Sentires are there?"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["```output"]}'
     headers:
       Content-Type:
       - application/json
@@ -36,7 +35,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Tue, 11 Apr 2023 21:26:47 GMT
+      - Tue, 11 Apr 2023 21:36:51 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -52,7 +51,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '2165'
+      - '2475'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -64,22 +63,22 @@ http_interactions:
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Request-Id:
-      - ee77ff236b79c8d9db391a7ba307c631
+      - 335a7ac13cfb8893f914856fa369002e
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7b664f4799cf2806-SLC
+      - 7b665e030f65a05c-SLC
       Alt-Svc:
       - h3=":443"; ma=86400, h3-29=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
-      string: '{"id":"chatcmpl-74FnheYkMiDjlk1WhdIzcbZAFPC74","object":"chat.completion","created":1681248405,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":246,"completion_tokens":72,"total_tokens":318},"choices":[{"message":{"role":"assistant","content":"```ruby\nrequire
+      string: '{"id":"chatcmpl-74FxRrGNH2MSBNctreMgqidN76ri6","object":"chat.completion","created":1681249009,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":239,"completion_tokens":77,"total_tokens":316},"choices":[{"message":{"role":"assistant","content":"```ruby\nrequire
         ''rest-client''\nrequire ''json''\n\nresponse = RestClient.get(''https://app.mightycanary.com/api/v1/sentries'',
         {''Authorization'': ''Bearer <Authorization>''})\nsentries = JSON.parse(response.body)\nputs
-        \"Answer: #{sentries.size}\"\n```"},"finish_reason":"stop","index":0}]}
+        \"Answer: #{sentries.count}\"\n``` \nAnswer: 3"},"finish_reason":"stop","index":0}]}
 
         '
-  recorded_at: Tue, 11 Apr 2023 21:26:47 GMT
+  recorded_at: Tue, 11 Apr 2023 21:36:51 GMT
 recorded_with: VCR 6.1.0

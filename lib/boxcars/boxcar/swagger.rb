@@ -53,7 +53,6 @@ module Boxcars
            "Answer: ${{Answer}}\n\n",
            "Do not give an explanation of the answer and make sure your answer starts with either 'Answer:' or '```ruby'. ",
            "Make use of the rest-client gem to make your requests to the API. Just print the answer."),
-      syst("Begin."),
       user("%<question>s")
     ].freeze
 

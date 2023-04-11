@@ -16,7 +16,7 @@ http_interactions:
         simpler format:\n${{Question not needing API calls}}\nAnswer: ${{Answer}}\n\nDo
         not give an explanation of the answer and make sure your answer starts with
         either ''Answer:'' or ''```ruby''. Make use of the rest-client gem to make
-        your requests to the API. Just print the answer."},{"role":"system","content":"Begin."},{"role":"user","content":"what
+        your requests to the API. Just print the answer."},{"role":"user","content":"what
         is 1 plus 2?"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["```output"]}'
     headers:
       Content-Type:
@@ -35,7 +35,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Tue, 11 Apr 2023 21:26:56 GMT
+      - Tue, 11 Apr 2023 21:36:59 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -51,7 +51,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '663'
+      - '338'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -63,20 +63,20 @@ http_interactions:
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Request-Id:
-      - fb020e32870be10b3d5428b3f6f44a56
+      - b05e97270eb0e439704693a161241069
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7b664f83a8221f46-DEN
+      - 7b665e3f697aa038-SLC
       Alt-Svc:
       - h3=":443"; ma=86400, h3-29=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
-      string: '{"id":"chatcmpl-74FnrlaKK1BCdP2hfeqVsXKeLi0uc","object":"chat.completion","created":1681248415,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":216,"completion_tokens":12,"total_tokens":228},"choices":[{"message":{"role":"assistant","content":"This
-        question does not require API calls.\n\nAnswer: 3"},"finish_reason":"stop","index":0}]}
+      string: '{"id":"chatcmpl-74FxaTJ0vRusyB53oiFuuODyB4bog","object":"chat.completion","created":1681249018,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":209,"completion_tokens":4,"total_tokens":213},"choices":[{"message":{"role":"assistant","content":"Answer:
+        3"},"finish_reason":"stop","index":0}]}
 
         '
-  recorded_at: Tue, 11 Apr 2023 21:26:56 GMT
+  recorded_at: Tue, 11 Apr 2023 21:36:59 GMT
 recorded_with: VCR 6.1.0
