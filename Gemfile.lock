@@ -3,7 +3,7 @@ PATH
   specs:
     boxcars (0.2.6)
       google_search_results (~> 2.2)
-      gpt4all (~> 0.0.2)
+      gpt4all (~> 0.0.4)
       ruby-openai (~> 3.0)
 
 GEM
@@ -70,7 +70,7 @@ GEM
       rainbow (>= 2.2.1)
       rake (>= 10.0)
     google_search_results (2.2.0)
-    gpt4all (0.0.2)
+    gpt4all (0.0.4)
       faraday (~> 2.7)
       os (~> 1.1)
       tty-progressbar (~> 0.18.2)
