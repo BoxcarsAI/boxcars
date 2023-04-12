@@ -6,18 +6,19 @@ http_interactions:
     body:
       encoding: UTF-8
       string: '{"messages":[{"role":"system","content":"Study this Open API Swagger
-        file https://app.mightycanary.com/api-docs/v1/swagger.yaml\nand write a Ruby
-        Program that prints the answer to the following questions using the appropriate
-        API calls:\nAdditional context that you might need in the Ruby program: (API_token:
-        7LYc1qfL8BfYas8T2X3mUSkT)\nUse the following format:\n${{Question needing
-        API calls and code}}\nreply only with the following format:\n```ruby\n${{Ruby
-        code with API calls and code that prints the answer}}\n```\n```output\n${{Output
-        of your code}}\n```\n\nOtherwise, if you know the answer and do not need any
+        file https://petstore.swagger.io/v2/swagger.json\nand write a Ruby Program
+        that prints the answer to the following questions using the appropriate API
+        calls:\nAdditional context that you might need in the Ruby program: (API_token:
+        secret-key)\nUse the following format:\n${{Question needing API calls and
+        code}}\nreply only with the following format:\n```ruby\n${{Ruby code with
+        API calls and code that prints the answer}}\n```\n```output\n${{Output of
+        your code}}\n```\n\nOtherwise, if you know the answer and do not need any
         API calls, you should use this simpler format:\n${{Question not needing API
         calls}}\nAnswer: ${{Answer}}\n\nDo not give an explanation of the answer and
         make sure your answer starts with either ''Answer:'' or ''```ruby''. Make
         use of the rest-client gem to make your requests to the API. Just print the
-        answer."},{"role":"user","content":"How many Sentries are there?"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["```output"]}'
+        answer."},{"role":"user","content":"I was watching pet with id 40010473. Has
+        she sold?"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["```output"]}'
     headers:
       Content-Type:
       - application/json
@@ -35,7 +36,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 12 Apr 2023 18:55:17 GMT
+      - Wed, 12 Apr 2023 21:12:26 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -51,7 +52,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '3580'
+      - '2629'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -63,22 +64,22 @@ http_interactions:
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Request-Id:
-      - 27113c434f2ce3777abdd62e561356f1
+      - a3f93dceaac3c18919668e4af34f337b
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7b6daeb11e172a85-LAX
+      - 7b6e779a2ec008fc-LAX
       Alt-Svc:
       - h3=":443"; ma=86400, h3-29=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
-      string: '{"id":"chatcmpl-74Zuc4SxupL1hVySdg4jWbD1qPL3e","object":"chat.completion","created":1681325714,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":232,"completion_tokens":83,"total_tokens":315},"choices":[{"message":{"role":"assistant","content":"```ruby\nrequire
-        ''rest-client''\nrequire ''json''\n\nresponse = RestClient.get(''https://app.mightycanary.com/api/v1/sentries'',
-        {Authorization: ''Bearer 7LYc1qfL8BfYas8T2X3mUSkT''})\nsentries = JSON.parse(response.body)\nputs
-        \"Answer: #{sentries.count}\"\n``` \nAnswer: 3"},"finish_reason":"stop","index":0}]}
+      string: '{"id":"chatcmpl-74c3LP6vJbVPKYvmI9gI0SIOWRtDJ","object":"chat.completion","created":1681333943,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":214,"completion_tokens":66,"total_tokens":280},"choices":[{"message":{"role":"assistant","content":"```ruby\nrequire
+        ''rest-client''\nrequire ''json''\n\nresponse = RestClient.get ''https://petstore.swagger.io/v2/pet/40010473''\npet
+        = JSON.parse(response.body)\n\nputs \"Answer: #{pet[''status''] == ''sold''
+        ? ''Yes'' : ''No''}\"\n```\nAnswer: No"},"finish_reason":"stop","index":0}]}
 
         '
-  recorded_at: Wed, 12 Apr 2023 18:55:17 GMT
+  recorded_at: Wed, 12 Apr 2023 21:12:26 GMT
 recorded_with: VCR 6.1.0

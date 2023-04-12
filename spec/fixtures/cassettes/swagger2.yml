@@ -6,9 +6,9 @@ http_interactions:
     body:
       encoding: UTF-8
       string: '{"messages":[{"role":"system","content":"Study this Open API Swagger
-        file https://app.mightycanary.com/api-docs/v1/swagger.yaml\nand write a Ruby
-        Program that prints the answer to the following questions using the appropriate
-        API calls:\nAdditional context that you might need in the Ruby program: ()\nUse
+        file https://petstore.swagger.io/v2/swagger.json\nand write a Ruby Program
+        that prints the answer to the following questions using the appropriate API
+        calls:\nAdditional context that you might need in the Ruby program: ()\nUse
         the following format:\n${{Question needing API calls and code}}\nreply only
         with the following format:\n```ruby\n${{Ruby code with API calls and code
         that prints the answer}}\n```\n```output\n${{Output of your code}}\n```\n\nOtherwise,
@@ -35,7 +35,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 12 Apr 2023 18:27:21 GMT
+      - Wed, 12 Apr 2023 21:12:27 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -51,7 +51,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '420'
+      - '417'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -63,20 +63,20 @@ http_interactions:
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Request-Id:
-      - d233f1a004b7269c5fa981923fb5527e
+      - 2cc68252d2a9dfde043431c9af2ebc47
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7b6d85d70dee3209-LAX
+      - 7b6e77b1baad0fb7-LAX
       Alt-Svc:
       - h3=":443"; ma=86400, h3-29=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
-      string: '{"id":"chatcmpl-74ZTc7wzzDOCKjSxBORI0STRNrKgC","object":"chat.completion","created":1681324040,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":207,"completion_tokens":4,"total_tokens":211},"choices":[{"message":{"role":"assistant","content":"Answer:
+      string: '{"id":"chatcmpl-74c3PRbkS2QwBBHYMWbNKMWeF9uaj","object":"chat.completion","created":1681333947,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":201,"completion_tokens":4,"total_tokens":205},"choices":[{"message":{"role":"assistant","content":"Answer:
         3"},"finish_reason":"stop","index":0}]}
 
         '
-  recorded_at: Wed, 12 Apr 2023 18:27:21 GMT
+  recorded_at: Wed, 12 Apr 2023 21:12:27 GMT
 recorded_with: VCR 6.1.0

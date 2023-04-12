@@ -2,14 +2,15 @@
 
 RSpec.describe Boxcars::Swagger do
   context "with openai api key" do
-    let(:swagger_url) { "https://app.mightycanary.com/api-docs/v1/swagger.yaml" }
-    let(:mc_api_token) { "7LYc1qfL8BfYas8T2X3mUSkT" }
+    let(:swagger_url) { "https://petstore.swagger.io/v2/swagger.json" }
+    let(:api_token) { "secret-key" }
+    let(:my_pet) { "40010473" }
 
     it "can do simple API call from swagger file" do
       VCR.use_cassette("swagger") do
         expect(described_class.new
-          .run(question: "How many Sentries are there?", swagger_url: swagger_url,
-               context: "API_token: #{mc_api_token}")).to eq("2")
+          .run(question: "I was watching pet with id #{my_pet}. Has she sold?", swagger_url: swagger_url,
+               context: "API_token: #{api_token}")).to eq("Yes")
       end
     end
 
@@ -21,7 +22,7 @@ RSpec.describe Boxcars::Swagger do
 
     it "can answer a question about the API" do
       VCR.use_cassette("swagger3") do
-        expect(described_class.new.run(question: "describe the available APIs for sentries", context: "don't forget to require the yaml library", swagger_url: swagger_url)).to include("api/v1/sentries")
+        expect(described_class.new.run(question: "describe the available APIs for pets", context: "don't forget to require the yaml library", swagger_url: swagger_url)).to include("/pet/")
       end
     end
   end

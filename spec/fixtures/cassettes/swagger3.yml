@@ -6,9 +6,9 @@ http_interactions:
     body:
       encoding: UTF-8
       string: '{"messages":[{"role":"system","content":"Study this Open API Swagger
-        file https://app.mightycanary.com/api-docs/v1/swagger.yaml\nand write a Ruby
-        Program that prints the answer to the following questions using the appropriate
-        API calls:\nAdditional context that you might need in the Ruby program: (don''t
+        file https://petstore.swagger.io/v2/swagger.json\nand write a Ruby Program
+        that prints the answer to the following questions using the appropriate API
+        calls:\nAdditional context that you might need in the Ruby program: (don''t
         forget to require the yaml library)\nUse the following format:\n${{Question
         needing API calls and code}}\nreply only with the following format:\n```ruby\n${{Ruby
         code with API calls and code that prints the answer}}\n```\n```output\n${{Output
@@ -17,7 +17,7 @@ http_interactions:
         calls}}\nAnswer: ${{Answer}}\n\nDo not give an explanation of the answer and
         make sure your answer starts with either ''Answer:'' or ''```ruby''. Make
         use of the rest-client gem to make your requests to the API. Just print the
-        answer."},{"role":"user","content":"describe the available APIs for sentries"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["```output"]}'
+        answer."},{"role":"user","content":"describe the available APIs for pets"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["```output"]}'
     headers:
       Content-Type:
       - application/json
@@ -35,7 +35,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 12 Apr 2023 18:27:29 GMT
+      - Wed, 12 Apr 2023 21:12:33 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -51,7 +51,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '7885'
+      - '5340'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -63,22 +63,26 @@ http_interactions:
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Request-Id:
-      - addc10a1ff23181633ae671e88b7fefa
+      - 3bdfcfb5a0d10b94abdd337ee66c57f9
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7b6d85da9a732ee5-LAX
+      - 7b6e77b55e7d7c01-LAX
       Alt-Svc:
       - h3=":443"; ma=86400, h3-29=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
-      string: '{"id":"chatcmpl-74ZTdpCEHvnY3lC6mDjiw5NDVZrjL","object":"chat.completion","created":1681324041,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":215,"completion_tokens":201,"total_tokens":416},"choices":[{"message":{"role":"assistant","content":"Answer:
-        \n\n```ruby\nrequire ''yaml''\nrequire ''rest-client''\n\nresponse = RestClient.get(''https://app.mightycanary.com/api-docs/v1/swagger.yaml'')\ndata
-        = YAML.load(response.body)\n\nsentry_apis = data[''paths''].select { |path|
-        path.include?(''/sentries'') }\nsentry_apis.each do |api, value|\n  puts api\nend\n```\n\nOutput:\n```\n/sentries\n/sentries/{sentry_id}\n/sentries/{sentry_id}/events\n/sentries/{sentry_id}/events/{event_id}\n/sentries/{sentry_id}/events/{event_id}/attachments\n/sentries/{sentry_id}/events/{event_id}/contexts\n/sentries/{sentry_id}/events/{event_id}/user-feedback\n/sentries/{sentry_id}/owners\n/sentries/{sentry_id}/projects\n/sentries/{sentry_id}/tags\n/sentries/{sentry_id}/user-feedback\n```"},"finish_reason":"stop","index":0}]}
+      string: '{"id":"chatcmpl-74c3PjtFiPLuLRFtsxOpctecdoieu","object":"chat.completion","created":1681333947,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":208,"completion_tokens":148,"total_tokens":356},"choices":[{"message":{"role":"assistant","content":"```ruby\nrequire
+        ''rest-client''\nrequire ''json''\n\nresponse = RestClient.get(''https://petstore.swagger.io/v2/swagger.json'')\njson
+        = JSON.parse(response.body)\n\napis = json[''paths''].keys\nputs \"Answer:
+        The available APIs for pets are: #{apis}\"\n``` \nOutput:\n```\nAnswer: The
+        available APIs for pets are: [\"/pet\", \"/pet/findByStatus\", \"/pet/findByTags\",
+        \"/pet/{petId}\", \"/pet/{petId}/uploadImage\", \"/store/inventory\", \"/store/order\",
+        \"/store/order/{orderId}\", \"/user\", \"/user/createWithArray\", \"/user/createWithList\",
+        \"/user/login\", \"/user/logout\", \"/user/{username}\"]\n```"},"finish_reason":"stop","index":0}]}
 
         '
-  recorded_at: Wed, 12 Apr 2023 18:27:29 GMT
+  recorded_at: Wed, 12 Apr 2023 21:12:33 GMT
 recorded_with: VCR 6.1.0
