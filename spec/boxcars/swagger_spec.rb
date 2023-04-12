@@ -9,7 +9,7 @@ RSpec.describe Boxcars::Swagger do
       VCR.use_cassette("swagger") do
         expect(described_class.new
           .run(question: "How many Sentries are there?", swagger_url: swagger_url,
-               context: "API_token: #{mc_api_token}")).to eq("194")
+               context: "API_token: #{mc_api_token}")).to eq("2")
       end
     end
 

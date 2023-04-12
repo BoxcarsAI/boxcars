@@ -35,7 +35,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 12 Apr 2023 18:18:08 GMT
+      - Wed, 12 Apr 2023 18:27:19 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -51,7 +51,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '3074'
+      - '3524'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -63,22 +63,22 @@ http_interactions:
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Request-Id:
-      - 4e12410c09ff34c9c259aca6683e2a61
+      - db67fa0758e0acab33011b4189151ced
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7b6d78478e2a7d10-LAX
+      - 7b6d85bae8072acf-LAX
       Alt-Svc:
       - h3=":443"; ma=86400, h3-29=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
-      string: '{"id":"chatcmpl-74ZKf8iyRMup5POFeEuhiL4agok2q","object":"chat.completion","created":1681323485,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":226,"completion_tokens":77,"total_tokens":303},"choices":[{"message":{"role":"assistant","content":"```ruby\nrequire
+      string: '{"id":"chatcmpl-74ZTYGXJE8ruy9Y3hEGizU1DBbz4V","object":"chat.completion","created":1681324036,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":232,"completion_tokens":83,"total_tokens":315},"choices":[{"message":{"role":"assistant","content":"```ruby\nrequire
         ''rest-client''\nrequire ''json''\n\nresponse = RestClient.get(''https://app.mightycanary.com/api/v1/sentries'',
         {Authorization: ''Bearer <Authorization>''})\nsentries = JSON.parse(response.body)\nputs
-        \"Answer: #{sentries.size}\"\n``` \nAnswer: 6"},"finish_reason":"stop","index":0}]}
+        \"Answer: #{sentries.size}\"\n``` \nAnswer: 3"},"finish_reason":"stop","index":0}]}
 
         '
-  recorded_at: Wed, 12 Apr 2023 18:18:08 GMT
+  recorded_at: Wed, 12 Apr 2023 18:27:19 GMT
 recorded_with: VCR 6.1.0
