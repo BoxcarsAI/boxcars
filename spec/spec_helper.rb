@@ -18,7 +18,7 @@ VCR.configure do |c|
   c.filter_sensitive_data("<SERPAPI_API_KEY>") { Boxcars.configuration.serpapi_api_key }
   c.filter_sensitive_data("<openai_access_token>") { Boxcars.configuration.openai_access_token }
   c.filter_sensitive_data("<OPENAI_ORGANIZATION_ID>") { Boxcars.configuration.organization_id }
-  c.filter_sensitive_data("<Authorization>") { ENV.fetch("MC_API_TOKEN", "") }
+  # c.filter_sensitive_data("<Authorization>") { ENV.fetch("MC_API_TOKEN", "") }
 end
 
 RSpec.configure do |c|
