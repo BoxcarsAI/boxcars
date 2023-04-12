@@ -9,10 +9,10 @@ http_interactions:
         file https://app.mightycanary.com/api-docs/v1/swagger.yaml\nand write a Ruby
         Program that prints the answer to the following questions using the appropriate
         API calls:\nAdditional context that you might need in the Ruby program: (API_token:
-        <Authorization>)\nUse the following format:\n${{Question needing API calls
-        and code}}\nreply only with the following format:\n```ruby\n${{Ruby code with
-        API calls and code that prints the answer}}\n```\n```output\n${{Output of
-        your code}}\n```\n\nOtherwise, if you know the answer and do not need any
+        7LYc1qfL8BfYas8T2X3mUSkT)\nUse the following format:\n${{Question needing
+        API calls and code}}\nreply only with the following format:\n```ruby\n${{Ruby
+        code with API calls and code that prints the answer}}\n```\n```output\n${{Output
+        of your code}}\n```\n\nOtherwise, if you know the answer and do not need any
         API calls, you should use this simpler format:\n${{Question not needing API
         calls}}\nAnswer: ${{Answer}}\n\nDo not give an explanation of the answer and
         make sure your answer starts with either ''Answer:'' or ''```ruby''. Make
@@ -35,7 +35,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 12 Apr 2023 18:27:19 GMT
+      - Wed, 12 Apr 2023 18:55:17 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -51,7 +51,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '3524'
+      - '3580'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -63,22 +63,22 @@ http_interactions:
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Request-Id:
-      - db67fa0758e0acab33011b4189151ced
+      - 27113c434f2ce3777abdd62e561356f1
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7b6d85bae8072acf-LAX
+      - 7b6daeb11e172a85-LAX
       Alt-Svc:
       - h3=":443"; ma=86400, h3-29=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
-      string: '{"id":"chatcmpl-74ZTYGXJE8ruy9Y3hEGizU1DBbz4V","object":"chat.completion","created":1681324036,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":232,"completion_tokens":83,"total_tokens":315},"choices":[{"message":{"role":"assistant","content":"```ruby\nrequire
+      string: '{"id":"chatcmpl-74Zuc4SxupL1hVySdg4jWbD1qPL3e","object":"chat.completion","created":1681325714,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":232,"completion_tokens":83,"total_tokens":315},"choices":[{"message":{"role":"assistant","content":"```ruby\nrequire
         ''rest-client''\nrequire ''json''\n\nresponse = RestClient.get(''https://app.mightycanary.com/api/v1/sentries'',
-        {Authorization: ''Bearer <Authorization>''})\nsentries = JSON.parse(response.body)\nputs
-        \"Answer: #{sentries.size}\"\n``` \nAnswer: 3"},"finish_reason":"stop","index":0}]}
+        {Authorization: ''Bearer 7LYc1qfL8BfYas8T2X3mUSkT''})\nsentries = JSON.parse(response.body)\nputs
+        \"Answer: #{sentries.count}\"\n``` \nAnswer: 3"},"finish_reason":"stop","index":0}]}
 
         '
-  recorded_at: Wed, 12 Apr 2023 18:27:19 GMT
+  recorded_at: Wed, 12 Apr 2023 18:55:17 GMT
 recorded_with: VCR 6.1.0

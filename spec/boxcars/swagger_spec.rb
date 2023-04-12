@@ -3,7 +3,7 @@
 RSpec.describe Boxcars::Swagger do
   context "with openai api key" do
     let(:swagger_url) { "https://app.mightycanary.com/api-docs/v1/swagger.yaml" }
-    let(:mc_api_token) { ENV.fetch("MC_API_TOKEN", "") }
+    let(:mc_api_token) { "7LYc1qfL8BfYas8T2X3mUSkT" }
 
     it "can do simple API call from swagger file" do
       VCR.use_cassette("swagger") do
