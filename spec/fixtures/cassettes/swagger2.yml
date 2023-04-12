@@ -8,10 +8,10 @@ http_interactions:
       string: '{"messages":[{"role":"system","content":"Study this Open API Swagger
         file https://app.mightycanary.com/api-docs/v1/swagger.yaml\nand write a Ruby
         Program that prints the answer to the following questions using the appropriate
-        API calls:\nHere is additional context that you might need in the Ruby program:
-        ()\nUse the following format:\n${{Question needing API calls and code}}\nreply
-        only with the following format:\n```ruby\n${{Ruby code with API calls and
-        code that prints the answer}}\n```\n```output\n${{Output of your code}}\n```\n\nOtherwise,
+        API calls:\nAdditional context that you might need in the Ruby program: ()\nUse
+        the following format:\n${{Question needing API calls and code}}\nreply only
+        with the following format:\n```ruby\n${{Ruby code with API calls and code
+        that prints the answer}}\n```\n```output\n${{Output of your code}}\n```\n\nOtherwise,
         if you know the answer and do not need any API calls, you should use this
         simpler format:\n${{Question not needing API calls}}\nAnswer: ${{Answer}}\n\nDo
         not give an explanation of the answer and make sure your answer starts with
@@ -35,7 +35,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Tue, 11 Apr 2023 21:53:44 GMT
+      - Wed, 12 Apr 2023 18:18:15 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -51,7 +51,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '380'
+      - '485'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -63,20 +63,20 @@ http_interactions:
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Request-Id:
-      - 18b6b4c9d0bdb8f97a3d5134f5ef09fd
+      - 79ab517d13338286f67f5c36c22386b5
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7b6676c8aa82290c-DEN
+      - 7b6d7881edc17bc1-LAX
       Alt-Svc:
       - h3=":443"; ma=86400, h3-29=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
-      string: '{"id":"chatcmpl-74GDnrauzPd4l5qdKmukTOPBOdaTl","object":"chat.completion","created":1681250023,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":209,"completion_tokens":4,"total_tokens":213},"choices":[{"message":{"role":"assistant","content":"Answer:
+      string: '{"id":"chatcmpl-74ZKoaPTxHRifrsTkjetm1cMiwjzL","object":"chat.completion","created":1681323494,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":207,"completion_tokens":4,"total_tokens":211},"choices":[{"message":{"role":"assistant","content":"Answer:
         3"},"finish_reason":"stop","index":0}]}
 
         '
-  recorded_at: Tue, 11 Apr 2023 21:53:44 GMT
+  recorded_at: Wed, 12 Apr 2023 18:18:15 GMT
 recorded_with: VCR 6.1.0

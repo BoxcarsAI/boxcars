@@ -42,7 +42,7 @@ module Boxcars
     CTEMPLATE = [
       syst("Study this Open API Swagger file %<swagger_url>s\n",
            "and write a Ruby Program that prints the answer to the following questions using the appropriate API calls:\n",
-           "Here is additional context that you might need in the Ruby program: (%<context>s)\n",
+           "Additional context that you might need in the Ruby program: (%<context>s)\n",
            "Use the following format:\n",
            "${{Question needing API calls and code}}\n",
            "reply only with the following format:\n",

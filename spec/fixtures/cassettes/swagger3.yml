@@ -8,8 +8,8 @@ http_interactions:
       string: '{"messages":[{"role":"system","content":"Study this Open API Swagger
         file https://app.mightycanary.com/api-docs/v1/swagger.yaml\nand write a Ruby
         Program that prints the answer to the following questions using the appropriate
-        API calls:\nHere is additional context that you might need in the Ruby program:
-        (don''t forget to require the yaml library)\nUse the following format:\n${{Question
+        API calls:\nAdditional context that you might need in the Ruby program: (don''t
+        forget to require the yaml library)\nUse the following format:\n${{Question
         needing API calls and code}}\nreply only with the following format:\n```ruby\n${{Ruby
         code with API calls and code that prints the answer}}\n```\n```output\n${{Output
         of your code}}\n```\n\nOtherwise, if you know the answer and do not need any
@@ -35,7 +35,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 12 Apr 2023 17:50:59 GMT
+      - Wed, 12 Apr 2023 18:18:23 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -51,7 +51,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '4307'
+      - '8343'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -63,23 +63,23 @@ http_interactions:
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Request-Id:
-      - feb00476775d5d85919836bf7480fe61
+      - da244e3b59eb2207095ae20011b2b0e7
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7b6d5078dc592f6b-LAX
+      - 7b6d7885fa2a08f8-LAX
       Alt-Svc:
       - h3=":443"; ma=86400, h3-29=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
-      string: '{"id":"chatcmpl-74YuMcal2uKApBiRjxFwcoegayU0G","object":"chat.completion","created":1681321854,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":217,"completion_tokens":98,"total_tokens":315},"choices":[{"message":{"role":"assistant","content":"```ruby\nrequire
-        ''yaml''\nrequire ''rest-client''\n\nswagger = YAML.load(RestClient.get(''https://app.mightycanary.com/api-docs/v1/swagger.yaml''))\n\nsentry_apis
-        = swagger[''paths''].select { |path| path.include?(''/sentries'') }\n\nputs
-        \"Answer: The available APIs for sentries are:\"\nsentry_apis.each do |path,
-        methods|\n  puts \"#{path}: #{methods.keys.join('', '')}\"\nend\n```"},"finish_reason":"stop","index":0}]}
+      string: '{"id":"chatcmpl-74ZKpQvhXMOaFBEkI9TQPRHedoGL0","object":"chat.completion","created":1681323495,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":215,"completion_tokens":209,"total_tokens":424},"choices":[{"message":{"role":"assistant","content":"Answer:
+        \n\n```ruby\nrequire ''yaml''\nrequire ''rest-client''\n\nurl = ''https://app.mightycanary.com/api-docs/v1/swagger.yaml''\nresponse
+        = RestClient.get(url)\ndata = YAML.load(response)\n\nsentry_apis = data[''paths''].select
+        { |path| path.include?(''/sentries'') }\n\nputs \"Available APIs for Sentries:\"\nsentry_apis.each
+        do |api, _|\n  puts api\nend\n```\n\nOutput:\n```\nAvailable APIs for Sentries:\n/sentries\n/sentries/{sentry_id}\n/sentries/{sentry_id}/events\n/sentries/{sentry_id}/events/{event_id}\n/sentries/{sentry_id}/events/{event_id}/attachments\n/sentries/{sentry_id}/events/{event_id}/contexts\n/sentries/{sentry_id}/events/{event_id}/user-feedback\n/sentries/{sentry_id}/owners\n/sentries/{sentry_id}/tags\n/sentries/{sentry_id}/user-feedback\n```"},"finish_reason":"stop","index":0}]}
 
         '
-  recorded_at: Wed, 12 Apr 2023 17:50:59 GMT
+  recorded_at: Wed, 12 Apr 2023 18:18:23 GMT
 recorded_with: VCR 6.1.0
