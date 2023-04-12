@@ -7,15 +7,26 @@ module Boxcars
     # the description of this engine boxcar
     DESC = "useful for when you need to make Open API calls to get an answer."
 
+    attr_accessor :swagger_url, :context
+
+    # @param swagger_url [String] The URL of the Open API Swagger file to use.
     # @param engine [Boxcars::Engine] The engine to user for this boxcar. Can be inherited from a train if nil.
     # @param prompt [Boxcars::Prompt] The prompt to use for this boxcar. Defaults to built-in prompt.
+    # @param context [String] Additional context to use for the prompt.
     # @param kwargs [Hash] Any other keyword arguments to pass to the parent class.
-    def initialize(engine: nil, prompt: nil, **kwargs)
+    def initialize(swagger_url:, engine: nil, prompt: nil, context: "", **kwargs)
+      @swagger_url = swagger_url
+      @context = context
       the_prompt = prompt || my_prompt
       kwargs[:stop] ||= ["```output"]
       kwargs[:name] ||= "Swagger API"
       kwargs[:description] ||= DESC
       super(engine: engine, prompt: the_prompt, **kwargs)
+    end
+
+    # @return Hash The additional variables for this boxcar.
+    def prediction_additional
+      { swagger_url: swagger_url, context: context }.merge super
     end
 
     private
@@ -61,7 +72,8 @@ module Boxcars
       @conversation ||= Conversation.new(lines: CTEMPLATE)
       @my_prompt ||= ConversationPrompt.new(
         conversation: @conversation,
-        input_variables: [:question, :context, :swagger_url],
+        input_variables: [:question],
+        other_inputs: [:context, :swagger_url],
         output_variables: [:answer])
     end
   end

@@ -8,21 +8,20 @@ RSpec.describe Boxcars::Swagger do
 
     it "can do simple API call from swagger file" do
       VCR.use_cassette("swagger") do
-        expect(described_class.new
-          .run(question: "I was watching pet with id #{my_pet}. Has she sold?", swagger_url: swagger_url,
-               context: "API_token: #{api_token}")).to eq("Yes")
+        expect(described_class.new(swagger_url: swagger_url, context: "API_token: #{api_token}")
+          .run("I was watching pet with id #{my_pet}. Has she sold?")).to eq("Yes")
       end
     end
 
     it "can do easy question" do
       VCR.use_cassette("swagger2") do
-        expect(described_class.new.run(question: "what is 1 plus 2?", context: "", swagger_url: swagger_url)).to include("3")
+        expect(described_class.new(swagger_url: swagger_url, context: "API_token: #{api_token}").run("what is 1 plus 2?")).to include("3")
       end
     end
 
     it "can answer a question about the API" do
       VCR.use_cassette("swagger3") do
-        expect(described_class.new.run(question: "describe the available APIs for pets", context: "don't forget to require the yaml library", swagger_url: swagger_url)).to include("/pet/")
+        expect(described_class.new(swagger_url: swagger_url).run("describe the available APIs for pets")).to include("/pet/")
       end
     end
   end
