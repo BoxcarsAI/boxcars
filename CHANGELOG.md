@@ -1,8 +1,8 @@
 # Changelog
 
-## [Unreleased](https://github.com/BoxcarsAI/boxcars/tree/HEAD)
+## [v0.2.7](https://github.com/BoxcarsAI/boxcars/tree/v0.2.7) (2023-04-13)
 
-[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.2.5...HEAD)
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.2.5...v0.2.7)
 
 **Closed issues:**
 
