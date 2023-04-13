@@ -119,7 +119,10 @@ module Boxcars
 
         return run_boxcar(inputs: args[0])[output_keys.first]
       end
-      return run_boxcar(**kwargs)[output_keys].first if args.empty?
+      if args.empty?
+        ans = run_boxcar(inputs: kwargs)
+        return ans[output_keys.first]
+      end
 
       raise Boxcars::ArgumentError, "run supported with either positional or keyword arguments but not both. Got args" \
                                     ": #{args} and kwargs: #{kwargs}."
@@ -151,4 +154,5 @@ require "boxcars/boxcar/calculator"
 require "boxcars/boxcar/google_search"
 require "boxcars/boxcar/wikipedia_search"
 require "boxcars/boxcar/sql"
+require "boxcars/boxcar/swagger"
 require "boxcars/boxcar/active_record"

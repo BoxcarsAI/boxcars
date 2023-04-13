@@ -94,6 +94,7 @@ Here is what we have so far, but please put up a PR with your new ideas.
 - Calculator: uses an Engine to generate ruby code to do math
 - SQL: given an ActiveRecord connection, it will generate and run sql statments from a prompt.
 - ActiveRecord: given an ActiveRecord connection, it will generate and run ActiveRecord statements from a prompt.
+- Swagger: give a Swagger Open API file (YAML or JSON), answer questions about or run against the referenced service. See [here](https://github.com/BoxcarsAI/boxcars/blob/main/notebooks/swagger_examples.ipynb) for examples.
 
 ### Run a list of Boxcars
 ```ruby
@@ -131,6 +132,8 @@ Next Actions:
 ```
 ### More Examples
 See [this](https://github.com/BoxcarsAI/boxcars/blob/main/notebooks/boxcars_examples.ipynb) Jupyter Notebook for more examples.
+
+For the new Swagger boxcar, see [this](https://github.com/BoxcarsAI/boxcars/blob/main/notebooks/swagger_examples.ipynb) Jupyter Notebook.
 
 Note, some folks that we talked to didn't know that you could run Ruby Jupyter notebooks. [You can](https://github.com/SciRuby/iruby).
 

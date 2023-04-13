@@ -1,0 +1,88 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://api.openai.com/v1/chat/completions
+    body:
+      encoding: UTF-8
+      string: '{"messages":[{"role":"system","content":"Study this Open API Swagger
+        file https://petstore.swagger.io/v2/swagger.json\nand write a Ruby Program
+        that prints the answer to the following questions using the appropriate API
+        calls:\nAdditional context that you might need in the Ruby program: ()\nUse
+        the following format:\n${{Question needing API calls and code}}\nreply only
+        with the following format:\n```ruby\n${{Ruby code with API calls and code
+        that prints the answer}}\n```\n```output\n${{Output of your code}}\n```\n\nOtherwise,
+        if you know the answer and do not need any API calls, you should use this
+        simpler format:\n${{Question not needing API calls}}\nAnswer: ${{Answer}}\n\nDo
+        not give an explanation of the answer and make sure your answer starts with
+        either ''Answer:'' or ''```ruby''. Make use of the rest-client gem to make
+        your requests to the API. Just print the answer."},{"role":"user","content":"describe
+        the available APIs for pets"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["```output"]}'
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer <openai_access_token>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 12 Apr 2023 21:40:07 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - no-cache, must-revalidate
+      Openai-Model:
+      - gpt-3.5-turbo-0301
+      Openai-Organization:
+      - user-ri9zw9ahumb1bo9vs73mudbi
+      Openai-Processing-Ms:
+      - '4818'
+      Openai-Version:
+      - '2020-10-01'
+      Strict-Transport-Security:
+      - max-age=15724800; includeSubDomains
+      X-Ratelimit-Limit-Requests:
+      - '3500'
+      X-Ratelimit-Remaining-Requests:
+      - '3499'
+      X-Ratelimit-Reset-Requests:
+      - 17ms
+      X-Request-Id:
+      - a1edb50fa3e94780a5454d1e2c9069ac
+      Cf-Cache-Status:
+      - DYNAMIC
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 7b6ea01ebc192f39-LAX
+      Alt-Svc:
+      - h3=":443"; ma=86400, h3-29=":443"; ma=86400
+    body:
+      encoding: ASCII-8BIT
+      string: '{"id":"chatcmpl-74cU7CeUBpjFBgx0sRp8qXV8ESNaO","object":"chat.completion","created":1681335603,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":199,"completion_tokens":146,"total_tokens":345},"choices":[{"message":{"role":"assistant","content":"```ruby\nrequire
+        ''rest-client''\nrequire ''json''\n\nresponse = RestClient.get(''https://petstore.swagger.io/v2/swagger.json'')\njson
+        = JSON.parse(response.body)\n\napis = json[''paths''].keys\n\nputs \"Answer:
+        The available APIs for pets are #{apis}\"\n``` \nOutput:\n```\nAnswer: The
+        available APIs for pets are [\"/pet\", \"/pet/findByStatus\", \"/pet/findByTags\",
+        \"/pet/{petId}\", \"/pet/{petId}/uploadImage\", \"/store/inventory\", \"/store/order\",
+        \"/store/order/{orderId}\", \"/user\", \"/user/createWithArray\", \"/user/createWithList\",
+        \"/user/login\", \"/user/logout\", \"/user/{username}\"]\n```"},"finish_reason":"stop","index":0}]}
+
+        '
+  recorded_at: Wed, 12 Apr 2023 21:40:07 GMT
+recorded_with: VCR 6.1.0
