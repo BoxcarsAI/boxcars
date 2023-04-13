@@ -18,10 +18,10 @@ This gem was inspired by the popular Python library Langchain. However, we wante
 ## Concepts
 All of these concepts are in a module named Boxcars:
 
-- Boxcar - an encapsulation that performs something of interest (such as search, math, SQL or an Active Record Query). A Boxcar can use an Engine (described below) to do its work.
+- Boxcar - an encapsulation that performs something of interest (such as search, math, SQL, an Active Record Query, or an API call to a service). A Boxcar can use an Engine (described below) to do its work, and if not specified but needed, the default Engine is used `Boxcars.engine`.
 - Train - Given a list of Boxcars and optionally an Engine, a Train breaks down a problem into pieces for individual Boxcars to solve. The individual results are then combined until a final answer is found. ZeroShot is the only current implementation of Train (but we are adding more soon), and you can either construct it directly or use `Boxcars::train` when you want to build a Train.
-- Prompt - used by an Engine to generate text results. Most of the Boxcars have built-in prompts, so you only need to worry about these if you are extending the system.
-- Engine - an entity that generates text from a Prompt. OpenAI's LLM text generator is the default Engine if no other is specified.
+- Prompt - used by an Engine to generate text results. Our Boxcars have built-in prompts, but you have the flexibility to change or augment them if you so desire.
+- Engine - an entity that generates text from a Prompt. OpenAI's LLM text generator is the default Engine if no other is specified, and you can override the default engine if so desired (`Boxcar.configuration.default_engine`).
 
 ## Security
 Currently, our system is designed for individuals who already possess administrative privileges for their project. It is likely possible to manipulate the system's prompts to carry out malicious actions, but if you already have administrative access, you can perform such actions without requiring boxcars in the first place.

@@ -1,5 +1,29 @@
 # Changelog
 
+## [Unreleased](https://github.com/BoxcarsAI/boxcars/tree/HEAD)
+
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.2.5...HEAD)
+
+**Closed issues:**
+
+- The class name in the sample code of BoxCar-Google-Search wiki has not been changed. [\#50](https://github.com/BoxcarsAI/boxcars/issues/50)
+
+**Merged pull requests:**
+
+- Add Swagger Boxcar [\#51](https://github.com/BoxcarsAI/boxcars/pull/51) ([francis](https://github.com/francis))
+- Boxcars::SQL tables and except\_tables [\#47](https://github.com/BoxcarsAI/boxcars/pull/47) ([arihh](https://github.com/arihh))
+- ActiveRecord updates and new Wikipedia Search boxcar [\#46](https://github.com/BoxcarsAI/boxcars/pull/46) ([francis](https://github.com/francis))
+- Fix README.md log\_prompts settings [\#45](https://github.com/BoxcarsAI/boxcars/pull/45) ([arihh](https://github.com/arihh))
+- Update README.md to use the GoogleSearch Boxcar [\#44](https://github.com/BoxcarsAI/boxcars/pull/44) ([stockandawe](https://github.com/stockandawe))
+
+## [v0.2.5](https://github.com/BoxcarsAI/boxcars/tree/v0.2.5) (2023-03-30)
+
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.2.4...v0.2.5)
+
+**Merged pull requests:**
+
+- switch to safe level 4 for eval, and rerun tests [\#43](https://github.com/BoxcarsAI/boxcars/pull/43) ([francis](https://github.com/francis))
+
 ## [v0.2.4](https://github.com/BoxcarsAI/boxcars/tree/v0.2.4) (2023-03-28)
 
 [Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.2.3...v0.2.4)
