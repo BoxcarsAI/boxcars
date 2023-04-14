@@ -13,9 +13,9 @@ RSpec.describe Boxcars::Embeddings::Hnswlib::BuildVectorStore do
       doc_text_file_path: doc_text_file_path
     }
   end
-  let(:doc_text_file_path) { 'tmp/test_doc_text_file' }
+  let(:doc_text_file_path) { File.join(Dir.tmpdir, 'test_doc_text_file') }
+  let(:index_file_path) { File.join(Dir.tmpdir, 'test_hnsw_index') }
   let(:training_data_path) { File.expand_path('spec/fixtures/training_data/**/*.md') }
-  let(:index_file_path) { 'tmp/test_hnsw_index' }
   let(:openai_client) { instance_double(OpenAI::Client) }
 
   before do
@@ -42,7 +42,6 @@ RSpec.describe Boxcars::Embeddings::Hnswlib::BuildVectorStore do
 
       expect(File.exist?(index_file_path)).to be true
       expect(result[:vector_store]).to be_a(Hnswlib::HierarchicalNSW)
-      # expect(result[:document_embeddings]).to be_a(Array)
       expect(result[:document_embeddings].first.keys).to eq(%i[doc_id embedding document])
     end
     # rubocop:enable RSpec/MultipleExpectations
