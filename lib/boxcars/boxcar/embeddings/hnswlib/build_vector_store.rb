@@ -2,6 +2,7 @@
 
 require 'fileutils'
 require 'hnswlib'
+require 'json'
 
 module Boxcars
   module Embeddings
@@ -9,10 +10,16 @@ module Boxcars
       class BuildVectorStore
         include Embeddings
 
+        # This class is responsible for building the vector store for the hnswlib similarity search.
+        # It will load the training data, generate the embeddings, and save the vector store.
+        # It will also load the vector store into memory.
+        # For later use, it will save the splitted document with index numbers to a json file.
+        #
         # @param training_data_path [String] The path to the training data. Can be a glob pattern.
         # @param index_file_path [String] The path to the index file.
         # @param split_chunk_size [Integer] The number of documents to split the text into. default 2000
-        # @option json_doc_file_path [String] Optional. The path to the json file containing the document text.
+        # @option json_doc_file_path [String]. The json file containing the document text.
+        #                                      if nil, it will reuse index file name.
         # @option force_rebuild [Boolean] Optional. If true, will rebuild the index even if it already exists.
         def initialize(
           training_data_path:,
@@ -24,7 +31,7 @@ module Boxcars
           @training_data_path = training_data_path
           @index_file_path = index_file_path
           @split_chunk_size = split_chunk_size
-          @json_doc_file_path = json_doc_file_path
+          @json_doc_file_path = json_doc_file_path || index_file_path.gsub(/\.bin$/, '.json')
           @force_rebuild = force_rebuild
         end
 
@@ -33,8 +40,8 @@ module Boxcars
           data = load_files
           documents = split_text_into_chunks(data)
           embeddings_with_config = generate_embeddings(documents)
-          configs = save_vector_store(embeddings_with_config)
-          load_hnsw(configs)
+          save_vector_store(embeddings_with_config)
+          load_hnsw
         end
 
         private
@@ -78,12 +85,10 @@ module Boxcars
         end
 
         def rebuild_required?
+          hnswlib_config_json = "#{File.dirname(index_file_path)}/hnswlib_config.json"
           return true unless File.exist?(index_file_path)
-
-          if File.exist?(json_doc_file_path) && force_rebuild
-            puts "Rebuilding index because force_rebuild is true"
-            return true
-          end
+          return true if File.exist?(index_file_path) && !File.exist?(hnswlib_config_json)
+          return true if force_rebuild
 
           false
         end
@@ -114,9 +119,6 @@ module Boxcars
             hnswlib_config: hnswlib_config(embeddings_with_config[:dim])
           )
           puts "VectorStore saved"
-
-          # space: The distance metric between vectors ('l2', 'dot', or 'cosine').
-          { space: 'l2', dim: embeddings_with_config[:dim], document_embeddings: embeddings_with_config[:document_embeddings] }
         end
 
         def hnswlib_config(dim)
@@ -126,11 +128,26 @@ module Boxcars
           )
         end
 
-        def load_hnsw(configs)
+        def load_hnsw
           puts "Loading Hnswlib"
-          search_index = ::Hnswlib::HierarchicalNSW.new(space: configs[:space], dim: configs[:dim])
+
+          config_file = "#{File.dirname(index_file_path)}/hnswlib_config.json"
+          json_config = parse_json_file(config_file)
+          document_embeddings = parse_json_file(json_doc_file_path)
+
+          search_index = ::Hnswlib::HierarchicalNSW.new(space: json_config[:metric], dim: json_config[:dim])
           search_index.load_index(index_file_path)
-          { vector_store: search_index, document_embeddings: configs[:document_embeddings] }
+
+          { vector_store: search_index, document_embeddings: document_embeddings }
+        end
+
+        def parse_json_file(file_path)
+          return [] if file_path.nil?
+
+          file_content = File.read(file_path)
+          JSON.parse(file_content, symbolize_names: true)
+        rescue JSON::ParserError => e
+          raise_error("Error parsing hnswlib_config.json: #{e.message}")
         end
 
         def raise_error(message)

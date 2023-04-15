@@ -5,27 +5,21 @@ require 'json'
 RSpec.describe Boxcars::Embeddings::SimilaritySearch do
   subject(:neighbors) { similarity_search.call(query: query) }
 
-  let(:similarity_search) { described_class.new(embeddings: embeddings, vector_store: vector_store, openai_connection: openai_client) }
+  let(:similarity_search) do
+    described_class.new(
+      embeddings: json_doc_path,
+      vector_store: vector_store,
+      openai_connection: openai_client
+    )
+  end
   let(:query) { 'how many implementations are there for hnswlib?' }
   let(:num_neighbors) { 2 }
-
-  let(:paths) do
-    {
-      embeddings_file: 'spec/fixtures/embeddings/result.json',
-      index_file: 'spec/fixtures/embeddings/test_hnsw_index'
-    }
-  end
-
+  let(:json_doc_path) { 'spec/fixtures/embeddings/test_doc_text_file.json' }
+  let(:index_path) { 'spec/fixtures/embeddings/test_hnsw_index' }
   let(:vector_store) do
     search_index = Hnswlib::HierarchicalNSW.new(space: 'l2', dim: 1536)
-    search_index.load_index(paths[:index_file])
+    search_index.load_index(index_path)
     search_index
-  end
-
-  let(:embeddings) do
-    JSON.parse(File.read(paths[:embeddings_file])).map.with_index do |(_id, text), index|
-      { 'doc_id' => index, 'document' => text }
-    end
   end
   let(:openai_client) { instance_double(OpenAI::Client) }
 

@@ -12,7 +12,7 @@ module Boxcars
         @openai_connection = openai_connection
       end
 
-      def call(query:, _num_neighbors: 1)
+      def call(query:)
         validate_query(query)
         query_vector = convert_query_to_vector(query)
         @similarity_search_instance.call(query_vector)
@@ -34,7 +34,10 @@ module Boxcars
       def create_similarity_search_instance
         case vector_store
         when ::Hnswlib::HierarchicalNSW
-          Boxcars::Embeddings::Hnswlib::SimilaritySearch.new(document_embeddings: embeddings, vector_store: vector_store)
+          Boxcars::Embeddings::Hnswlib::HnswlibSearch.new(
+            vector_store: vector_store,
+            options: { json_doc_path: embeddings, num_neighbors: 2 }
+          )
         else
           raise_error 'Unsupported vector store provided'
         end

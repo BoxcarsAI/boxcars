@@ -17,7 +17,7 @@ module Boxcars
         def initialize(document_embeddings:, index_file_path:, hnswlib_config:, json_doc_file_path: nil)
           @document_embeddings = document_embeddings
           @index_file_path = index_file_path
-          @json_doc_file_path = json_doc_file_path
+          @json_doc_file_path = json_doc_file_path || index_file_path.gsub(/\.bin$/, '.json')
 
           @hnswlib_config = hnswlib_config
           @index = ::Hnswlib::HnswIndex.new(
@@ -29,24 +29,28 @@ module Boxcars
 
         def call
           validate_params
-          document_texts = {}
+          document_texts = []
 
           document_embeddings.each do |embedding|
-            doc_id = embedding[:doc_id]
-            index.add_item(doc_id, embedding[:embedding])
-            document_texts[doc_id] = embedding[:document]
+            index.add_item(embedding[:doc_id], embedding[:embedding])
+
+            document_texts << { doc_id: embedding[:doc_id], embedding: embedding[:embedding], document: embedding[:document] }
           end
 
-          if json_doc_file_path
-            FileUtils.mkdir_p(File.dirname(json_doc_file_path))
-            File.write(json_doc_file_path, document_texts.to_json)
-          end
-
-          FileUtils.mkdir_p(File.dirname(index_file_path))
-          index.save(index_file_path)
+          write_files(index, document_texts)
         end
 
         private
+
+        def write_files(index, document_texts)
+          FileUtils.mkdir_p(File.dirname(json_doc_file_path))
+          File.write(json_doc_file_path, document_texts.to_json)
+
+          FileUtils.mkdir_p(File.dirname(index_file_path))
+          File.write("#{File.dirname(index_file_path)}/hnswlib_config.json", hnswlib_config.to_json)
+
+          index.save(index_file_path)
+        end
 
         attr_reader :index, :document_embeddings, :index_file_path, :json_doc_file_path, :hnswlib_config
 

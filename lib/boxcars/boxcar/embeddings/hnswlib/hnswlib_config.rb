@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'json'
+
 module Boxcars
   module Embeddings
     module Hnswlib
@@ -34,6 +36,19 @@ module Boxcars
 
         def space
           @metric == 'dot' ? 'ip' : 'l2'
+        end
+
+        def to_json(*args)
+          JSON.pretty_generate(
+            {
+              metric: @metric,
+              max_item: @max_item,
+              dim: @dim,
+              ef_construction: @ef_construction,
+              max_outgoing_connection: @max_outgoing_connection
+            },
+            *args
+          )
         end
       end
     end

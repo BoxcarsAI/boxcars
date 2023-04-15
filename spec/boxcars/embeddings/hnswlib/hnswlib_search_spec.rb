@@ -1,12 +1,17 @@
 require 'spec_helper'
 require 'json'
 
-# rubocop:disable RSpec/MultipleMemoizedHelpers
-RSpec.describe Boxcars::Embeddings::Hnswlib::SimilaritySearch do
-  subject(:neighbors) { similarity_search.call(query_embedding) }
+RSpec.describe Boxcars::Embeddings::Hnswlib::HnswlibSearch do
+  subject(:neighbors) { hnswlib_search.call(query_embedding) }
 
-  let(:query_embedding) { Array.new(1536) { 0.5 } }
-  let(:num_neighbors) { 2 }
+  let(:hnswlib_search) do
+    described_class.new(
+      vector_store: vector_store,
+      options: { json_doc_path: json_doc_path, num_neighbors: 2 }
+    )
+  end
+  let(:json_doc_path) { 'spec/fixtures/embeddings/test_doc_text_file.json' }
+  let(:query_embedding) { Array.new(1536) { 0.2 } }
 
   let(:vector_store_and_embeddings) do
     embeddings_file = 'spec/fixtures/embeddings/result.json'
@@ -21,13 +26,7 @@ RSpec.describe Boxcars::Embeddings::Hnswlib::SimilaritySearch do
 
     [search_index, embeddings]
   end
-
   let(:vector_store) { vector_store_and_embeddings.first }
-  let(:embeddings) { vector_store_and_embeddings.last }
-
-  let(:similarity_search) do
-    described_class.new(vector_store: vector_store, document_embeddings: embeddings, num_neighbors: num_neighbors)
-  end
 
   describe '#call' do
     it 'returns an array' do
@@ -35,12 +34,16 @@ RSpec.describe Boxcars::Embeddings::Hnswlib::SimilaritySearch do
     end
 
     it 'returns at most num_neighbors results' do
-      expect(neighbors.size).to be <= num_neighbors
+      expect(neighbors.size).to be <= 2
     end
 
     it 'returns results with the correct keys' do
-      expect(neighbors.first.keys).to eq(%i[document distance])
+      expect(neighbors.first.keys).to eq([:document, :distance])
+    end
+
+    it 'returns results with distances sorted in ascending order' do
+      distances = neighbors.map { |result| result[:distance] }
+      expect(distances).to eq(distances.sort)
     end
   end
 end
-# rubocop:enable RSpec/MultipleMemoizedHelpers

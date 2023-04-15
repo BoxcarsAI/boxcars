@@ -2,6 +2,8 @@
 
 require 'spec_helper'
 
+# rubocop:disable RSpec/MultipleMemoizedHelpers
+# rubocop:disable RSpec/MultipleExpectations
 RSpec.describe Boxcars::Embeddings::Hnswlib::BuildVectorStore do
   subject(:build_vector_store) { call_command }
 
@@ -13,16 +15,28 @@ RSpec.describe Boxcars::Embeddings::Hnswlib::BuildVectorStore do
       json_doc_file_path: json_doc_file_path
     }
   end
-  let(:json_doc_file_path) { File.join(Dir.tmpdir, 'test_doc_text_file') }
-  let(:index_file_path) { File.join(Dir.tmpdir, 'test_hnsw_index') }
+
   let(:training_data_path) { File.expand_path('spec/fixtures/training_data/**/*.md') }
+
+  let(:json_doc_file_path) { File.join(Dir.tmpdir, 'test_doc_text_file.json') }
+  let(:index_file_path) { File.join(Dir.tmpdir, 'test_hnsw_index.bin') }
+  let(:hnswlib_config_json) { File.join(Dir.tmpdir, 'hnswlib_config.json') }
+
   let(:openai_client) { instance_double(OpenAI::Client) }
+  let(:hnswlib_config) do
+    {
+      metric: 'l2',
+      max_item: 10000,
+      dim: 7,
+      ef_construction: 200,
+      max_outgoing_connection: 16
+    }.to_json
+  end
 
   before do
     allow(ENV).to receive(:fetch).with('OPENAI_API_KEY', nil).and_return('mock_api_key')
     allow(OpenAI::Client).to receive(:new).and_return(openai_client)
     allow(openai_client).to receive(:is_a?).with(OpenAI::Client).and_return(true)
-
     allow(openai_client).to receive(:embeddings) do |_params|
       JSON.parse(File.read('spec/fixtures/embeddings/embeddings_response.json'))
     end
@@ -31,9 +45,9 @@ RSpec.describe Boxcars::Embeddings::Hnswlib::BuildVectorStore do
   after do
     FileUtils.rm_rf(index_file_path)
     FileUtils.rm_rf(json_doc_file_path) if json_doc_file_path
+    FileUtils.rm_f(hnswlib_config_json)
   end
 
-  # rubocop:disable RSpec/MultipleExpectations
   describe '#call' do
     it 'builds the vector store successfully and creates the VectorStore' do
       expect(File.exist?(index_file_path)).to be false
@@ -125,7 +139,6 @@ RSpec.describe Boxcars::Embeddings::Hnswlib::BuildVectorStore do
       end
     end
   end
-  # rubocop:enable RSpec/MultipleExpectations
 
   context 'when the training_data path is invalid' do
     let(:training_data_path) { 'invalid/path/**/*.md' }
@@ -165,6 +178,8 @@ RSpec.describe Boxcars::Embeddings::Hnswlib::BuildVectorStore do
       expect { build_vector_store }.to raise_error(Boxcars::Error)
     end
   end
+  # rubocop:enable RSpec/MultipleExpectations
+  # rubocop:enable RSpec/MultipleMemoizedHelpers
 
   def call_command
     described_class.call(**arguments)

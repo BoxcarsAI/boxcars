@@ -5,3 +5,4 @@
 pkg
 example.rb
 /.idea
+/tmp/*
