@@ -21,25 +21,25 @@ RSpec.describe Boxcars::Embeddings::Hnswlib::SaveToHnswlib do
   let(:test_file_paths) do
     {
       index_file_path: 'tmp/test_hnsw_index2',
-      doc_text_file_path: 'tmp/test_doc_texts.json'
+      json_doc_file_path: 'tmp/test_doc_texts.json'
     }
   end
 
   after do
     FileUtils.rm_f(test_file_paths[:index_file_path])
-    FileUtils.rm_f(test_file_paths[:doc_text_file_path])
+    FileUtils.rm_f(test_file_paths[:json_doc_file_path])
   end
 
   # rubocop:disable RSpec/MultipleExpectations
   describe '#call' do
     it 'saves the index and document texts to the specified paths' do
       expect(File.exist?(test_file_paths[:index_file_path])).to be(false)
-      expect(File.exist?(test_file_paths[:doc_text_file_path])).to be(false)
+      expect(File.exist?(test_file_paths[:json_doc_file_path])).to be(false)
 
       save_to_hnswlib
 
       expect(File.exist?(test_file_paths[:index_file_path])).to be(true)
-      expect(File.exist?(test_file_paths[:doc_text_file_path])).to be(true)
+      expect(File.exist?(test_file_paths[:json_doc_file_path])).to be(true)
     end
   end
 

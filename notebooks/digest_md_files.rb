@@ -1,3 +1,5 @@
+# The Notion_DB data is from https://github.com/hwchase17/notion-qa
+
 require 'dotenv/load'
 lib_path = File.expand_path('../lib', __dir__)
 $LOAD_PATH.unshift(lib_path) unless $LOAD_PATH.include?(lib_path)
@@ -6,7 +8,7 @@ require 'boxcars'
 storage = Boxcars::Embeddings::Hnswlib::BuildVectorStore.call(
   training_data_path: './Notion_DB/**/*.md',
   index_file_path: './hnswlib_notion_db_index.bin',
-  doc_text_file_path: './hnswlib_notion_db_doc_text.json'
+  json_doc_file_path: './hnswlib_notion_db_doc_text.json'
 )
 
 openai_client = OpenAI::Client.new(access_token: ENV.fetch('OPENAI_API_KEY', nil))

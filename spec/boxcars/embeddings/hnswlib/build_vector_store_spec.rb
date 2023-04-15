@@ -10,10 +10,10 @@ RSpec.describe Boxcars::Embeddings::Hnswlib::BuildVectorStore do
       training_data_path: training_data_path,
       index_file_path: index_file_path,
       split_chunk_size: 200,
-      doc_text_file_path: doc_text_file_path
+      json_doc_file_path: json_doc_file_path
     }
   end
-  let(:doc_text_file_path) { File.join(Dir.tmpdir, 'test_doc_text_file') }
+  let(:json_doc_file_path) { File.join(Dir.tmpdir, 'test_doc_text_file') }
   let(:index_file_path) { File.join(Dir.tmpdir, 'test_hnsw_index') }
   let(:training_data_path) { File.expand_path('spec/fixtures/training_data/**/*.md') }
   let(:openai_client) { instance_double(OpenAI::Client) }
@@ -30,11 +30,11 @@ RSpec.describe Boxcars::Embeddings::Hnswlib::BuildVectorStore do
 
   after do
     FileUtils.rm_rf(index_file_path)
-    FileUtils.rm_rf(doc_text_file_path)
+    FileUtils.rm_rf(json_doc_file_path) if json_doc_file_path
   end
 
+  # rubocop:disable RSpec/MultipleExpectations
   describe '#call' do
-    # rubocop:disable RSpec/MultipleExpectations
     it 'builds the vector store successfully and creates the VectorStore' do
       expect(File.exist?(index_file_path)).to be false
 
@@ -44,7 +44,6 @@ RSpec.describe Boxcars::Embeddings::Hnswlib::BuildVectorStore do
       expect(result[:vector_store]).to be_a(Hnswlib::HierarchicalNSW)
       expect(result[:document_embeddings].first.keys).to eq(%i[doc_id embedding document])
     end
-    # rubocop:enable RSpec/MultipleExpectations
 
     context 'when the training data path is invalid' do
       let(:training_data_path) { File.expand_path('invalid/path/**/*.md') }
@@ -61,7 +60,72 @@ RSpec.describe Boxcars::Embeddings::Hnswlib::BuildVectorStore do
         expect { build_vector_store }.to raise_error(Boxcars::Error)
       end
     end
+
+    context 'when the json_doc_file_path is empty' do
+      let(:json_doc_file_path) { nil }
+
+      it 'still builds the vector store' do
+        expect(File.exist?(index_file_path)).to be false
+
+        result = build_vector_store
+
+        expect(File.exist?(index_file_path)).to be true
+        expect(result[:vector_store]).to be_a(Hnswlib::HierarchicalNSW)
+        expect(result[:document_embeddings].first.keys).to eq(%i[doc_id embedding document])
+      end
+    end
+
+    context 'with force_rebuild: true' do
+      let(:arguments) do
+        {
+          training_data_path: training_data_path,
+          index_file_path: index_file_path,
+          split_chunk_size: 200,
+          json_doc_file_path: json_doc_file_path,
+          force_rebuild: true
+        }
+      end
+
+      before do
+        allow(Boxcars::Embeddings::Hnswlib::SaveToHnswlib).to receive(:call).and_call_original
+      end
+
+      it 'builds the vector store successfully and creates the VectorStore' do
+        expect(File.exist?(index_file_path)).to be false
+
+        result = build_vector_store
+
+        expect(Boxcars::Embeddings::Hnswlib::SaveToHnswlib).to have_received(:call).once
+        expect(result[:vector_store]).to be_a(Hnswlib::HierarchicalNSW)
+        expect(result[:document_embeddings].first.keys).to eq(%i[doc_id embedding document])
+      end
+    end
+
+    context 'with force_rebuild: false' do
+      before do
+        build_vector_store
+      end
+
+      let(:arguments) do
+        {
+          training_data_path: training_data_path,
+          index_file_path: index_file_path,
+          split_chunk_size: 200,
+          json_doc_file_path: json_doc_file_path,
+          force_rebuild: false
+        }
+      end
+
+      it 'returns the vector store successfully and creates the VectorStore' do
+        result = build_vector_store
+
+        expect(File.exist?(index_file_path)).to be true
+        expect(result[:vector_store]).to be_a(Hnswlib::HierarchicalNSW)
+        expect(result[:document_embeddings].first.keys).to eq(%i[doc_id embedding document])
+      end
+    end
   end
+  # rubocop:enable RSpec/MultipleExpectations
 
   context 'when the training_data path is invalid' do
     let(:training_data_path) { 'invalid/path/**/*.md' }
@@ -71,8 +135,16 @@ RSpec.describe Boxcars::Embeddings::Hnswlib::BuildVectorStore do
     end
   end
 
-  context 'when the index_file_path is invalid' do
-    let(:index_file_path) { 'invalid/path/index.file' }
+  context 'when the parent directory of index_file_path does not exist' do
+    let(:index_file_path) { 'invalid_parent_directory/index.file' }
+
+    before do
+      FileUtils.rm_rf('invalid_parent_directory') if File.directory?('invalid_parent_directory')
+    end
+
+    after do
+      FileUtils.rm_rf('invalid_parent_directory') if File.directory?('invalid_parent_directory')
+    end
 
     it 'raises an error' do
       expect { build_vector_store }.to raise_error(Boxcars::Error)
@@ -85,7 +157,7 @@ RSpec.describe Boxcars::Embeddings::Hnswlib::BuildVectorStore do
         training_data_path: training_data_path,
         index_file_path: index_file_path,
         split_chunk_size: 'invalid',
-        doc_text_file_path: doc_text_file_path
+        json_doc_file_path: json_doc_file_path
       }
     end
 
