@@ -35,7 +35,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 12 Apr 2023 21:40:07 GMT
+      - Tue, 18 Apr 2023 19:08:35 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -51,7 +51,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '4818'
+      - '21987'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -63,26 +63,48 @@ http_interactions:
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Request-Id:
-      - a1edb50fa3e94780a5454d1e2c9069ac
+      - 917bfe6b949d948bc19ebb3eee44efbd
       Cf-Cache-Status:
       - DYNAMIC
+      Set-Cookie:
+      - _cfuvid=2xti6Fhiqan0fuHBXZpYSoAA9aKePI_g.O5SmJFBOXc-1681844915293-0-604800000;
+        path=/; domain=.api.openai.com; HttpOnly; Secure; SameSite=None
       Server:
       - cloudflare
       Cf-Ray:
-      - 7b6ea01ebc192f39-LAX
+      - 7b9f31f66f0427d4-SLC
       Alt-Svc:
       - h3=":443"; ma=86400, h3-29=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
-      string: '{"id":"chatcmpl-74cU7CeUBpjFBgx0sRp8qXV8ESNaO","object":"chat.completion","created":1681335603,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":199,"completion_tokens":146,"total_tokens":345},"choices":[{"message":{"role":"assistant","content":"```ruby\nrequire
-        ''rest-client''\nrequire ''json''\n\nresponse = RestClient.get(''https://petstore.swagger.io/v2/swagger.json'')\njson
-        = JSON.parse(response.body)\n\napis = json[''paths''].keys\n\nputs \"Answer:
-        The available APIs for pets are #{apis}\"\n``` \nOutput:\n```\nAnswer: The
-        available APIs for pets are [\"/pet\", \"/pet/findByStatus\", \"/pet/findByTags\",
-        \"/pet/{petId}\", \"/pet/{petId}/uploadImage\", \"/store/inventory\", \"/store/order\",
-        \"/store/order/{orderId}\", \"/user\", \"/user/createWithArray\", \"/user/createWithList\",
-        \"/user/login\", \"/user/logout\", \"/user/{username}\"]\n```"},"finish_reason":"stop","index":0}]}
+      string: '{"id":"chatcmpl-76kyTIljWdgQxEAjapenoHnZVQUWc","object":"chat.completion","created":1681844893,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":199,"completion_tokens":512,"total_tokens":711},"choices":[{"message":{"role":"assistant","content":"Question:
+        describe the available APIs for pets\n\n```ruby\nrequire ''rest-client''\nrequire
+        ''json''\n\nresponse = RestClient.get(''https://petstore.swagger.io/v2/swagger.json'')\njson
+        = JSON.parse(response.body)\n\njson[''paths''].each do |path, value|\n  if
+        path.include?(''/pet'')\n    puts \"API: #{path}\"\n    puts \"Description:
+        #{value.values[0][''summary'']}\"\n    puts \"HTTP Method: #{value.keys[0]}\"\n    puts
+        \"Request Body: #{value.values[0][''requestBody'']}\"\n    puts \"Response:
+        #{value.values[0][''responses'']}\"\n    puts \"\\n\"\n  end\nend\n```\n\nAnswer:\n```\nAPI:
+        /pet\nDescription: Add a new pet to the store\nHTTP Method: post\nRequest
+        Body: {\"description\"=>\"Pet object that needs to be added to the store\",
+        \"content\"=>{\"application/json\"=>{\"schema\"=>{\"$ref\"=>\"#/components/schemas/Pet\"}}}}\nResponse:
+        {\"200\"=>{\"description\"=>\"successful operation\", \"content\"=>{\"application/xml\"=>{},
+        \"application/json\"=>{}}}, \"405\"=>{\"description\"=>\"Invalid input\"}},
+        {\"description\"=>\"successful operation\"}\n\nAPI: /pet/findByStatus\nDescription:
+        Finds Pets by status\nHTTP Method: get\nRequest Body: \nResponse: {\"200\"=>{\"description\"=>\"successful
+        operation\", \"content\"=>{\"application/xml\"=>{}, \"application/json\"=>{}}},
+        \"400\"=>{\"description\"=>\"Invalid status value\"}}\n\nAPI: /pet/findByTags\nDescription:
+        Finds Pets by tags\nHTTP Method: get\nRequest Body: \nResponse: {\"200\"=>{\"description\"=>\"successful
+        operation\", \"content\"=>{\"application/xml\"=>{}, \"application/json\"=>{}}},
+        \"400\"=>{\"description\"=>\"Invalid tag value\"}}\n\nAPI: /pet/{petId}\nDescription:
+        Find pet by ID\nHTTP Method: get\nRequest Body: \nResponse: {\"200\"=>{\"description\"=>\"successful
+        operation\", \"content\"=>{\"application/xml\"=>{}, \"application/json\"=>{}}},
+        \"400\"=>{\"description\"=>\"Invalid ID supplied\"}, \"404\"=>{\"description\"=>\"Pet
+        not found\"}}\n\nAPI: /pet/{petId}\nDescription: Updates a pet in the store
+        with form data\nHTTP Method: post\nRequest Body: \nResponse: {\"405\"=>{\"description\"=>\"Invalid
+        input\"}}\n\nAPI: /pet/{petId}\nDescription: Deletes a pet\nHTTP Method: delete\nRequest
+        Body: \nResponse: {\"400\"=>{\"description\"=>\"Invalid ID supplied"},"finish_reason":"length","index":0}]}
 
         '
-  recorded_at: Wed, 12 Apr 2023 21:40:07 GMT
+  recorded_at: Tue, 18 Apr 2023 19:08:35 GMT
 recorded_with: VCR 6.1.0
