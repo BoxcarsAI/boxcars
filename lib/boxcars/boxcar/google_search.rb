@@ -57,7 +57,15 @@ module Boxcars
       raise Error, "Got error from SerpAPI: {res[:error]}" if res[:error]
 
       ANSWER_LOCATIONS.each do |path|
-        return res.dig(*path) if res.dig(*path)
+        next unless res.dig(*path)
+
+        Boxcars.debug("Found SERP answer at #{path}", :cyan)
+        path_link = path.dup
+        last_word = path_link.pop
+        path_link << :link
+        return { last_word => res.dig(*path), url: res.dig(*path_link) } if last_word.is_a?(Symbol) && res.dig(*path_link)
+
+        return res.dig(*path)
       end
       "No good search result found"
     end
