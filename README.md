@@ -2,7 +2,6 @@
 
 <h4 align="center">
   <a href="https://www.boxcars.ai">Website</a> |
-  <a href="https://www.boxcars.ai/roadmap">Roadmap</a> |
   <a href="https://www.boxcars.ai/blog">Blog</a> |
   <a href="https://github.com/BoxcarsAI/boxcars/wiki">Documentation</a> 
 </h4>
