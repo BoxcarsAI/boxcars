@@ -8,6 +8,7 @@ require "ruby/openai"
 require "vcr"
 require "debug"
 require "support/helpdesk_sample_app"
+require 'tmpdir'
 
 Dir[File.expand_path("spec/support/**/*.rb")].sort.each { |f| require f }
 VCR.configure do |c|

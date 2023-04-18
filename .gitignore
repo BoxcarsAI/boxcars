@@ -4,3 +4,5 @@
 .rspec_status
 pkg
 example.rb
+/.idea
+/tmp/*
