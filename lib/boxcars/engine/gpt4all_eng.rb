@@ -38,7 +38,7 @@ module Boxcars
       Boxcars.debug("Prompt after formatting:\n#{input_text}", :cyan) if Boxcars.configuration.log_prompts
       gpt4all.prompt(input_text)
     rescue StandardError => e
-      Boxcars.error(["Error from gpt4all engine: #{e}", e.backtrace[-4..-1]].flatten.join("\n   "))
+      Boxcars.error(["Error from gpt4all engine: #{e}", e.backtrace[-5..-1]].flatten.join("\n   "))
     ensure
       gpt4all.stop_bot
     end

@@ -13,9 +13,7 @@ RSpec.describe Boxcars::Gpt4allEng do
     end
 
     it "can write a short poem" do
-      VCR.use_cassette("gpt4all") do
-        expect(described_class.new.run("write a haiku about love")).to include("Love, like poetry")
-      end
+      expect(described_class.new.run("write a haiku about love")).to include("Love, like poetry")
     end
   end
 end
