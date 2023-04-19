@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
 RSpec.describe Boxcars::Gpt4allEng do
-  context "with an open ai api key" do
+  context "with gpt4all gem" do
     before do
       unless ENV["CALL_GPT4ALL"] == "true"
         # rubocop:disable RSpec/AnyInstance
-        allow_any_instance_of(IO).to receive(:read_nonblock).and_return('Bot is ready >', 'Love, like poetry', '>')
+        allow_any_instance_of(Gpt4all).to receive(:start_bot).and_return(true)
+        allow_any_instance_of(Gpt4all).to receive(:stop_bot).and_return(true)
+        allow_any_instance_of(Gpt4all).to receive(:promt).and_return('Love, like poetry')
         # rubocop:enable RSpec/AnyInstance
       end
     end
