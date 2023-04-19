@@ -1,5 +1,20 @@
 # Changelog
 
+## [Unreleased](https://github.com/BoxcarsAI/boxcars/tree/HEAD)
+
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.2.7...HEAD)
+
+**Closed issues:**
+
+- Getting the same verbosity as in the examples [\#54](https://github.com/BoxcarsAI/boxcars/issues/54)
+
+**Merged pull requests:**
+
+- Add Engine for Gpt4all [\#55](https://github.com/BoxcarsAI/boxcars/pull/55) ([francis](https://github.com/francis))
+- update google search to return URL for result if present [\#53](https://github.com/BoxcarsAI/boxcars/pull/53) ([francis](https://github.com/francis))
+- Draft: added gpt4all [\#49](https://github.com/BoxcarsAI/boxcars/pull/49) ([jaigouk](https://github.com/jaigouk))
+- Embeddings with hnswlib [\#48](https://github.com/BoxcarsAI/boxcars/pull/48) ([jaigouk](https://github.com/jaigouk))
+
 ## [v0.2.7](https://github.com/BoxcarsAI/boxcars/tree/v0.2.7) (2023-04-13)
 
 [Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.2.5...v0.2.7)
