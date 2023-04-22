@@ -5,11 +5,11 @@ require 'hnswlib'
 module Boxcars
   module Embeddings
     class SimilaritySearch
-      def initialize(embeddings:, vector_store:, openai_connection:)
+      def initialize(embeddings:, vector_store:, openai_connection: nil, openai_access_token: nil)
         @embeddings = embeddings
         @vector_store = vector_store
         @similarity_search_instance = create_similarity_search_instance
-        @openai_connection = openai_connection
+        @openai_connection = openai_connection || default_connection(openai_access_token: openai_access_token)
       end
 
       def call(query:)
@@ -21,6 +21,12 @@ module Boxcars
       private
 
       attr_reader :embeddings, :vector_store, :openai_connection
+
+      def default_connection(openai_access_token: nil)
+        access_token = Boxcars.configuration.openai_access_token(openai_access_token: openai_access_token)
+        organization_id = Boxcars.configuration.organization_id
+        ::OpenAI::Client.new(access_token: access_token, organization_id: organization_id)
+      end
 
       def validate_query(query)
         raise_error 'query must be a string' unless query.is_a?(String)
