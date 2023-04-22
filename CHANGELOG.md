@@ -1,5 +1,13 @@
 # Changelog
 
+## [Unreleased](https://github.com/BoxcarsAI/boxcars/tree/HEAD)
+
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.2.9...HEAD)
+
+**Implemented enhancements:**
+
+- Notion Q&A [\#13](https://github.com/BoxcarsAI/boxcars/issues/13)
+
 ## [v0.2.9](https://github.com/BoxcarsAI/boxcars/tree/v0.2.9) (2023-04-22)
 
 [Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.2.8...v0.2.9)
