@@ -1,8 +1,20 @@
 # Changelog
 
-## [Unreleased](https://github.com/BoxcarsAI/boxcars/tree/HEAD)
+## [v0.2.9](https://github.com/BoxcarsAI/boxcars/tree/v0.2.9) (2023-04-22)
 
-[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.2.7...HEAD)
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.2.8...v0.2.9)
+
+**Closed issues:**
+
+- Getting started docs out of date [\#58](https://github.com/BoxcarsAI/boxcars/issues/58)
+
+**Merged pull requests:**
+
+- add default openai client, and new notebook [\#59](https://github.com/BoxcarsAI/boxcars/pull/59) ([francis](https://github.com/francis))
+
+## [v0.2.8](https://github.com/BoxcarsAI/boxcars/tree/v0.2.8) (2023-04-19)
+
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.2.7...v0.2.8)
 
 **Closed issues:**
 
