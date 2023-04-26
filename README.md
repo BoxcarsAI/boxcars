@@ -85,7 +85,7 @@ calc = Boxcars::Calculator.new # just use the default Engine
 puts calc.run "what is pi to the forth power divided by 22.1?"
 ```
 You can change the default_engine with `Boxcars::configuration.default_engine = NewDefaultEngine`
-### Boxcars currently implemmented
+### Boxcars currently implemented
 
 Here is what we have so far, but please put up a PR with your new ideas.
 - GoogleSearch: uses the SERP API to do seaches
