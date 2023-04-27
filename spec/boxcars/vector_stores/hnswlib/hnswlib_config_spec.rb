@@ -4,7 +4,7 @@ require 'spec_helper'
 
 # rubocop:disable RSpec/MultipleExpectations
 # rubocop:disable RSpec/ExampleLength
-RSpec.describe Boxcars::Embeddings::Hnswlib::HnswlibConfig do
+RSpec.describe Boxcars::VectorStores::Hnswlib::HnswlibConfig do
   subject(:config) { described_class.new(**args) }
 
   let(:args) { {} }

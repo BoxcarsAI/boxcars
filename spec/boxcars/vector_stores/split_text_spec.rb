@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Boxcars::Embeddings::SplitText do
+RSpec.describe Boxcars::VectorStores::SplitText do
   subject(:output) { call_command }
 
   let(:arguments) do

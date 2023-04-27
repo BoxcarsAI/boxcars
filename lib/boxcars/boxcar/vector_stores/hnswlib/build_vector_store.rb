@@ -5,10 +5,10 @@ require 'hnswlib'
 require 'json'
 
 module Boxcars
-  module Embeddings
+  module VectorStores
     module Hnswlib
       class BuildVectorStore
-        include Embeddings
+        include VectorStore
 
         # This class is responsible for building the vector store for the hnswlib similarity search.
         # It will load the training data, generate the embeddings, and save the vector store.
@@ -76,7 +76,7 @@ module Boxcars
 
           docs = []
           data.each do |chunk|
-            doc_output = Boxcars::Embeddings::SplitText.call(
+            doc_output = Boxcars::VectorStores::SplitText.call(
               separator: "\n", chunk_size: split_chunk_size, chunk_overlap: 0, text: chunk
             )
             docs.concat(doc_output)
@@ -99,7 +99,7 @@ module Boxcars
           puts "Initializing Store..."
           openai_client = OpenAI::Client.new(access_token: ENV.fetch('OPENAI_API_KEY', nil))
 
-          embeddings_with_dim = Boxcars::Embeddings::EmbedViaOpenAI.call(texts: documents, openai_connection: openai_client)
+          embeddings_with_dim = Boxcars::VectorStores::EmbedViaOpenAI.call(texts: documents, openai_connection: openai_client)
 
           document_embeddings = embeddings_with_dim.map.with_index do |item, index|
             { doc_id: index, embedding: item[:embedding], document: documents[index] }
@@ -112,7 +112,7 @@ module Boxcars
           return true unless rebuild_required?
 
           puts "Saving Vectorstore"
-          Boxcars::Embeddings::Hnswlib::SaveToHnswlib.call(
+          Boxcars::VectorStores::Hnswlib::SaveToHnswlib.call(
             document_embeddings: embeddings_with_config[:document_embeddings],
             index_file_path: index_file_path,
             json_doc_file_path: json_doc_file_path,
@@ -123,7 +123,7 @@ module Boxcars
 
         def hnswlib_config(dim)
           # dim: length of datum point vector that will be indexed.
-          Boxcars::Embeddings::Hnswlib::HnswlibConfig.new(
+          Boxcars::VectorStores::Hnswlib::HnswlibConfig.new(
             metric: "l2", max_item: 10000, dim: dim
           )
         end

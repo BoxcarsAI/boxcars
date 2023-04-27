@@ -5,14 +5,14 @@ require 'json'
 require 'fileutils'
 
 module Boxcars
-  module Embeddings
+  module VectorStores
     module Hnswlib
       class SaveToHnswlib
-        include Embeddings
+        include VectorStore
 
         # @param document_embeddings [Array] An array of hashes containing the document id, document text, and embedding.
         # @param index_file_path [String] The path to the index file.
-        # @param hnswlib_config [Boxcars::Embeddings::Hnswlib::Config] The config object for the hnswlib index.
+        # @param hnswlib_config [Boxcars::VectorStores::Hnswlib::Config] The config object for the hnswlib index.
         # @option json_doc_file_path [String] Optional. The path to the json file containing the document text.
         def initialize(document_embeddings:, index_file_path:, hnswlib_config:, json_doc_file_path: nil)
           @document_embeddings = document_embeddings

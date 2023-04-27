@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Boxcars::Embeddings::EmbedViaOpenAI do
+RSpec.describe Boxcars::VectorStores::EmbedViaOpenAI do
   subject(:embedding) { call_command }
 
   let(:arguments) do
