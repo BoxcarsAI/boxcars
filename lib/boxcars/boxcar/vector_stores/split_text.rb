@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 module Boxcars
-  module Embeddings
+  module VectorStores
     # Split a text into chunks of a given size.
     class SplitText
-      include Embeddings
+      include VectorStore
 
       attr_reader :separator, :chunk_size, :chunk_overlap, :text
 

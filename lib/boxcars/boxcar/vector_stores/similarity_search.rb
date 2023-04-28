@@ -3,7 +3,7 @@
 require 'hnswlib'
 
 module Boxcars
-  module Embeddings
+  module VectorStores
     class SimilaritySearch
       def initialize(embeddings:, vector_store:, openai_connection: nil, openai_access_token: nil)
         @embeddings = embeddings
@@ -34,13 +34,13 @@ module Boxcars
       end
 
       def convert_query_to_vector(query)
-        Boxcars::Embeddings::EmbedViaOpenAI.call(texts: [query], openai_connection: openai_connection).first[:embedding]
+        Boxcars::VectorStores::EmbedViaOpenAI.call(texts: [query], openai_connection: openai_connection).first[:embedding]
       end
 
       def create_similarity_search_instance
         case vector_store
         when ::Hnswlib::HierarchicalNSW
-          Boxcars::Embeddings::Hnswlib::HnswlibSearch.new(
+          Boxcars::VectorStores::Hnswlib::HnswlibSearch.new(
             vector_store: vector_store,
             options: { json_doc_path: embeddings, num_neighbors: 2 }
           )

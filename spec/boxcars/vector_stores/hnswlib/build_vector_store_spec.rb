@@ -4,7 +4,7 @@ require 'spec_helper'
 
 # rubocop:disable RSpec/MultipleMemoizedHelpers
 # rubocop:disable RSpec/MultipleExpectations
-RSpec.describe Boxcars::Embeddings::Hnswlib::BuildVectorStore do
+RSpec.describe Boxcars::VectorStores::Hnswlib::BuildVectorStore do
   subject(:build_vector_store) { call_command }
 
   let(:arguments) do
@@ -101,7 +101,7 @@ RSpec.describe Boxcars::Embeddings::Hnswlib::BuildVectorStore do
       end
 
       before do
-        allow(Boxcars::Embeddings::Hnswlib::SaveToHnswlib).to receive(:call).and_call_original
+        allow(Boxcars::VectorStores::Hnswlib::SaveToHnswlib).to receive(:call).and_call_original
       end
 
       it 'builds the vector store successfully and creates the VectorStore' do
@@ -109,7 +109,7 @@ RSpec.describe Boxcars::Embeddings::Hnswlib::BuildVectorStore do
 
         result = build_vector_store
 
-        expect(Boxcars::Embeddings::Hnswlib::SaveToHnswlib).to have_received(:call).once
+        expect(Boxcars::VectorStores::Hnswlib::SaveToHnswlib).to have_received(:call).once
         expect(result[:vector_store]).to be_a(Hnswlib::HierarchicalNSW)
         expect(result[:document_embeddings].first.keys).to eq(%i[doc_id embedding document])
       end

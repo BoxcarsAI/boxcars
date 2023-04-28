@@ -3,9 +3,9 @@
 require 'openai'
 
 module Boxcars
-  module Embeddings
+  module VectorStores
     class EmbedViaOpenAI
-      include Embeddings
+      include VectorStore
 
       attr_accessor :texts, :openai_connection, :model
 
