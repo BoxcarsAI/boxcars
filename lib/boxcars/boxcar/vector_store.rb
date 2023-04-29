@@ -23,9 +23,12 @@ end
 
 require_relative "vector_stores/document"
 require_relative "vector_stores/embed_via_open_ai"
+require_relative "vector_stores/embed_via_tensorflow"
 require_relative "vector_stores/split_text"
 require_relative "vector_stores/similarity_search"
 require_relative "vector_stores/hnswlib/hnswlib_config"
 require_relative "vector_stores/hnswlib/save_to_hnswlib"
 require_relative "vector_stores/hnswlib/build_vector_store"
 require_relative "vector_stores/hnswlib/hnswlib_search"
+require_relative "vector_stores/in_memory/add_documents"
+require_relative "vector_stores/in_memory/search"
