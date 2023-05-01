@@ -3,18 +3,15 @@
 require 'spec_helper'
 
 RSpec.describe Boxcars::VectorStores::InMemory::AddDocuments do
-  subject(:vector_documents) { call_command }
+  subject(:vector_store) { call_command }
 
   let(:arguments) do
     {
-      embedding_tool: :openai,
+      embedding_tool: embedding_tool,
       documents: documents
     }
   end
-  let(:embeddings) do
-    JSON.parse(File.read('spec/fixtures/embeddings/documents_embedding_for_in_memory.json'))
-  end
-  let(:openai_client) { instance_double(OpenAI::Client) }
+  let(:embedding_tool) { :openai }
 
   let(:documents) do
     [
@@ -24,6 +21,9 @@ RSpec.describe Boxcars::VectorStores::InMemory::AddDocuments do
       { page_content: "what's this", metadata: { a: 1 } },
     ]
   end
+  let(:embeddings) do
+    JSON.parse(File.read('spec/fixtures/embeddings/documents_embedding_for_in_memory.json'))
+  end
 
   before do
     allow(ENV).to receive(:fetch).with('OPENAI_API_KEY', nil).and_return('mock_api_key')
@@ -32,31 +32,39 @@ RSpec.describe Boxcars::VectorStores::InMemory::AddDocuments do
 
   describe '#call' do
     context 'with valid parameters' do
-      # rubocop:disable RSpec/MultipleExpectations
-      # rubocop:disable RSpec/ExampleLength
-      xit 'adds documents with vectors' do
-        expect(vector_documents).to be_an(Array)
-        expect(vector_documents.size).to eq(documents.size)
+      it 'returns same number of data as document size' do
+        expect(vector_store.size).to eq(documents.size)
+      end
 
-        vector_documents.each_with_index do |vector_document, index|
-          expect(vector_document).to be_a(Hash)
-          expect(vector_document[:document]).to be_a(Boxcars::VectorStores::Document)
-          expect(vector_document[:document].page_content).to eq(documents[index][:page_content])
-          expect(vector_document[:vector]).to be_an(Array)
+      it 'adds memory vectors to memory_vectors array' do
+        vector_store.each_with_index do |memory_vector, index|
+          expect(memory_vector.content).to eq(documents[index][:page_content])
         end
       end
-      # rubocop:enable RSpec/MultipleExpectations
-      # rubopcop:enable RSpec/ExampleLength
     end
 
-    context 'with invalid parameters' do
-      xit 'raises ArgumentError for invalid embeddings parameter' do
-        expect { described_class.new('invalid_parameter') }.to raise_error(ArgumentError, "embeddings must be an instance of Boxcars::VectorStores::EmbedViaOpenAI")
+    context 'when documents is nil' do
+      let(:documents) { nil }
+
+      it 'raises ArgumentError for nil documents parameter' do
+        expect { call_command }.to raise_error(
+          Boxcars::ArgumentError, 'documents is nil'
+        )
       end
     end
-  end
 
-  def call_command
-    described_class.call(**arguments)
+    context 'when embedding_tool is not one of the supported tools' do
+      let(:embedding_tool) { :not_supported }
+
+      it 'raises ArgumentError for invalid embedding_tool parameter' do
+        expect { call_command }.to raise_error(
+          Boxcars::ArgumentError, 'embedding_tool is invalid'
+        )
+      end
+    end
+
+    def call_command
+      described_class.call(**arguments)
+    end
   end
 end

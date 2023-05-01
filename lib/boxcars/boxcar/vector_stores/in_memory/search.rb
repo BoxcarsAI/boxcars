@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-# frozen_string_literal: true
-
 # require 'openai'
 #
 # OpenAI.api_key = "your_api_key_here"
@@ -42,7 +40,9 @@ module Boxcars
         private
 
         def validate_params(vector_documents)
-          unless vector_documents.is_a?(Array) && vector_documents.all? { |doc| doc.is_a?(Hash) && doc.key?(:document) && doc.key?(:vector) }
+          unless vector_documents.is_a?(Array) && vector_documents.all? do |doc|
+                   doc.is_a?(Hash) && doc.key?(:document) && doc.key?(:vector)
+                 end
             raise ::Boxcars::ArgumentError, "vector_documents must be an array of hashes with :document and :vector keys"
           end
         end
@@ -57,13 +57,13 @@ module Boxcars
               similarity: cosine_similarity(query_vector, doc[:vector])
             }
           end
-          results.sort_by { |result| -result[:similarity] }.first[:document]
+          results.min_by { |result| -result[:similarity] }[:document]
         end
 
         def cosine_similarity(vector1, vector2)
-          dot_product = vector1.zip(vector2).reduce(0) { |sum, (a, b)| sum + a * b }
-          magnitude1 = Math.sqrt(vector1.reduce(0) { |sum, a| sum + a**2 })
-          magnitude2 = Math.sqrt(vector2.reduce(0) { |sum, b| sum + b**2 })
+          dot_product = vector1.zip(vector2).reduce(0) { |sum, (a, b)| sum + (a * b) }
+          magnitude1 = Math.sqrt(vector1.reduce(0) { |sum, a| sum + (a**2) })
+          magnitude2 = Math.sqrt(vector2.reduce(0) { |sum, b| sum + (b**2) })
           dot_product / (magnitude1 * magnitude2)
         end
       end

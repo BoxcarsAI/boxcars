@@ -3,10 +3,10 @@
 module Boxcars
   module VectorStores
     module InMemory
+      MemoryVector = Struct.new(:content, :embedding, :metadatax)
+
       class AddDocuments
         include VectorStore
-
-        MemoryVector = Struct.new(:content, :embedding, :metadata)
 
         def initialize(embedding_tool:, documents: nil)
           validate_params(embedding_tool, documents)
@@ -19,21 +19,16 @@ module Boxcars
           texts = @documents.map { |doc| doc[:page_content] }
           vectors = generate_vectors(texts)
           add_vectors(vectors, @documents)
+          @memory_vectors
         end
 
         private
 
         def validate_params(embedding_tool, documents)
           raise ::Boxcars::ArgumentError, 'documents is nil' unless documents
+          return if %i[openai tensorflow].include?(embedding_tool)
 
-          valid_embedding_tools = [Boxcars::VectorStores::EmbedViaOpenAI, Boxcars::VectorStores::EmbedViaTensorflow]
-          return if valid_embedding_tools.include?(embedding_tool.class) && documents.is_a?(Array)
-
-          error_message = "embedding_tool must be an instance of a valid embedding class "\
-                          "(e.g., EmbedViaOpenAI or EmbedViaTensorflow), "\
-                          "and documents must be an array of hashes with :page_content key"
-
-          raise ::Boxcars::ArgumentError, error_message
+          raise ::Boxcars::ArgumentError, 'embedding_tool is invalid'
         end
 
         # returns array of documents with vectors
@@ -61,7 +56,7 @@ module Boxcars
         end
 
         def openai_client
-          @openai_client ||= OpenAI::Client.new(api_key: ENV.fetch('OPENAI_API_KEY'))
+          @openai_client ||= OpenAI::Client.new(access_token: ENV.fetch('OPENAI_API_KEY', nil))
         end
       end
     end
