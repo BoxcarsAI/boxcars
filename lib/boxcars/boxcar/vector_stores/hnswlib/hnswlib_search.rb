@@ -46,7 +46,7 @@ module Boxcars
         end
 
         def raise_error(message)
-          raise ArgumentError, message
+          raise ::Boxcars::ArgumentError, message
         end
       end
     end

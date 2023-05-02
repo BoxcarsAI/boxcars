@@ -7,12 +7,12 @@ module Boxcars
     class EmbedViaOpenAI
       include VectorStore
 
-      attr_accessor :texts, :openai_connection, :model
+      attr_accessor :texts, :client, :model
 
-      def initialize(texts:, openai_connection:, model: 'text-embedding-ada-002')
-        validate_params(texts, openai_connection)
+      def initialize(texts:, client:, model: 'text-embedding-ada-002')
+        validate_params(texts, client)
         @texts = texts
-        @openai_connection = openai_connection
+        @client = client
         @model = model
       end
 
@@ -28,13 +28,13 @@ module Boxcars
 
       private
 
-      def validate_params(texts, openai_connection)
+      def validate_params(texts, client)
         raise_error 'texts must be an array of strings' unless texts.is_a?(Array) && texts.all? { |text| text.is_a?(String) }
-        raise_error 'openai_connection must be an OpenAI::Client' unless openai_connection.is_a?(OpenAI::Client)
+        raise_error 'openai_connection must be an OpenAI::Client' unless client.is_a?(OpenAI::Client)
       end
 
       def embedding_with_retry(request)
-        response = @openai_connection.embeddings(parameters: request)
+        response = @client.embeddings(parameters: request)
         response['data'][0]['embedding']
       end
 
