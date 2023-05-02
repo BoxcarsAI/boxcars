@@ -2,9 +2,6 @@
 
 # require 'openai'
 #
-# OpenAI.api_key = "your_api_key_here"
-# openai_connection = OpenAI::Client.new
-#
 # documents = [
 #     { page_content: "hello", metadata: { a: 1 } },
 #     { page_content: "hi", metadata: { a: 1 } },

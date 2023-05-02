@@ -8,7 +8,7 @@ module Boxcars
       class AddDocuments
         include VectorStore
 
-        def initialize(embedding_tool:, documents: nil)
+        def initialize(embedding_tool: :openai, documents: nil)
           validate_params(embedding_tool, documents)
           @embedding_tool = embedding_tool
           @documents = documents

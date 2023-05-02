@@ -8,7 +8,7 @@ RSpec.describe Boxcars::VectorStores::EmbedViaOpenAI do
   let(:arguments) do
     {
       texts: texts,
-      openai_connection: openai_client
+      client: openai_client
     }
   end
   let(:texts) { ['example text'] }
