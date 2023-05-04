@@ -23,9 +23,7 @@ module Boxcars
       attr_reader :embeddings, :vector_store, :openai_connection
 
       def default_connection(openai_access_token: nil)
-        access_token = Boxcars.configuration.openai_access_token(openai_access_token: openai_access_token)
-        organization_id = Boxcars.configuration.organization_id
-        ::OpenAI::Client.new(access_token: access_token, organization_id: organization_id)
+        Openai.open_ai_client(openai_access_token: openai_access_token)
       end
 
       def validate_query(query)
@@ -34,7 +32,7 @@ module Boxcars
       end
 
       def convert_query_to_vector(query)
-        Boxcars::VectorStores::EmbedViaOpenAI.call(texts: [query], openai_connection: openai_connection).first[:embedding]
+        Boxcars::VectorStores::EmbedViaOpenAI.call(texts: [query], client: openai_connection).first[:embedding]
       end
 
       def create_similarity_search_instance

@@ -97,10 +97,8 @@ module Boxcars
           return true unless rebuild_required?
 
           puts "Initializing Store..."
-          openai_client = OpenAI::Client.new(access_token: ENV.fetch('OPENAI_API_KEY', nil))
-
+          openai_client = Openai.open_ai_client
           embeddings_with_dim = Boxcars::VectorStores::EmbedViaOpenAI.call(texts: documents, client: openai_client)
-
           document_embeddings = embeddings_with_dim.map.with_index do |item, index|
             { doc_id: index, embedding: item[:embedding], document: documents[index] }
           end

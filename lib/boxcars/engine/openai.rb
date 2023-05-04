@@ -33,15 +33,23 @@ module Boxcars
       super(description: description, name: name)
     end
 
+    # Get the OpenAI API client
+    # @param openai_access_token [String] The access token to use when asking the engine.
+    #   Defaults to Boxcars.configuration.openai_access_token.
+    # @return [OpenAI::Client] The OpenAI API client.
+    def self.open_ai_client(openai_access_token: nil)
+      access_token = Boxcars.configuration.openai_access_token(openai_access_token: openai_access_token)
+      organization_id = Boxcars.configuration.organization_id
+      ::OpenAI::Client.new(access_token: access_token, organization_id: organization_id)
+    end
+
     # Get an answer from the engine.
     # @param prompt [String] The prompt to use when asking the engine.
     # @param openai_access_token [String] The access token to use when asking the engine.
     #   Defaults to Boxcars.configuration.openai_access_token.
     # @param kwargs [Hash] Additional parameters to pass to the engine if wanted.
     def client(prompt:, inputs: {}, openai_access_token: nil, **kwargs)
-      access_token = Boxcars.configuration.openai_access_token(openai_access_token: openai_access_token)
-      organization_id = Boxcars.configuration.organization_id
-      clnt = ::OpenAI::Client.new(access_token: access_token, organization_id: organization_id)
+      clnt = Openai.open_ai_client(openai_access_token: openai_access_token)
       params = open_ai_params.merge(kwargs)
       if params[:model] == "gpt-3.5-turbo"
         prompt = prompt.first if prompt.is_a?(Array)

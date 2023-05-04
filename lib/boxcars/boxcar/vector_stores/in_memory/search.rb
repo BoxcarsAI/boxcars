@@ -56,6 +56,10 @@ module Boxcars
           ).first
         end
 
+        def openai_client(openai_access_token: nil)
+          @openai_client ||= Openai.open_ai_client(openai_access_token: openai_access_token)
+        end
+
         def embeddings_method(embedding_tool)
           case embedding_tool
           when :openai
@@ -63,10 +67,6 @@ module Boxcars
           when :tensorflow
             { klass: Boxcars::VectorStores::EmbedViaTensorflow, client: nil }
           end
-        end
-
-        def openai_client
-          @openai_client ||= OpenAI::Client.new(access_token: ENV.fetch('OPENAI_API_KEY', nil))
         end
 
         def cosine_similarity(vector1, vector2)

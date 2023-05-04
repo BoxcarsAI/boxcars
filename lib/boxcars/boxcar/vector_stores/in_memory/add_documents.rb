@@ -55,8 +55,11 @@ module Boxcars
             end
         end
 
-        def openai_client
-          @openai_client ||= OpenAI::Client.new(access_token: ENV.fetch('OPENAI_API_KEY', nil))
+        # Get the OpenAI client
+        # @param openai_access_token [String] the OpenAI access token
+        # @return [OpenAI::Client]
+        def openai_client(openai_access_token: nil)
+          @openai_client ||= Openai.open_ai_client(openai_access_token: openai_access_token)
         end
       end
     end

@@ -24,7 +24,7 @@ RSpec.describe Boxcars::VectorStores::SimilaritySearch do
   let(:openai_client) { instance_double(OpenAI::Client) }
 
   before do
-    allow(Boxcars::VectorStores::EmbedViaOpenAI).to receive(:call).with(texts: [query], openai_connection: openai_client) do |_params|
+    allow(Boxcars::VectorStores::EmbedViaOpenAI).to receive(:call).with(texts: [query], client: openai_client) do |_params|
       JSON.parse(File.read('spec/fixtures/embeddings/text_to_vector.json'), symbolize_names: true)
     end
     allow(openai_client).to receive(:is_a?).with(OpenAI::Client).and_return(true)
