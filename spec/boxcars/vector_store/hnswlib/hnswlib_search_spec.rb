@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'json'
 
-RSpec.describe Boxcars::VectorStores::Hnswlib::HnswlibSearch do
+RSpec.describe Boxcars::VectorStore::Hnswlib::HnswlibSearch do
   subject(:neighbors) { hnswlib_search.call(query_embedding) }
 
   let(:hnswlib_search) do

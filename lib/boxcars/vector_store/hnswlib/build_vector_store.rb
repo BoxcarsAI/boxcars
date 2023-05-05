@@ -5,7 +5,7 @@ require 'hnswlib'
 require 'json'
 
 module Boxcars
-  module VectorStores
+  module VectorStore
     module Hnswlib
       class BuildVectorStore
         include VectorStore
@@ -76,7 +76,7 @@ module Boxcars
 
           docs = []
           data.each do |chunk|
-            doc_output = Boxcars::VectorStores::SplitText.call(
+            doc_output = Boxcars::VectorStore::SplitText.call(
               separator: "\n", chunk_size: split_chunk_size, chunk_overlap: 0, text: chunk
             )
             docs.concat(doc_output)
@@ -98,7 +98,7 @@ module Boxcars
 
           puts "Initializing Store..."
           openai_client = Openai.open_ai_client
-          embeddings_with_dim = Boxcars::VectorStores::EmbedViaOpenAI.call(texts: documents, client: openai_client)
+          embeddings_with_dim = Boxcars::VectorStore::EmbedViaOpenAI.call(texts: documents, client: openai_client)
           document_embeddings = embeddings_with_dim.map.with_index do |item, index|
             { doc_id: index, embedding: item[:embedding], document: documents[index] }
           end
@@ -110,7 +110,7 @@ module Boxcars
           return true unless rebuild_required?
 
           puts "Saving Vectorstore"
-          Boxcars::VectorStores::Hnswlib::SaveToHnswlib.call(
+          Boxcars::VectorStore::Hnswlib::SaveToHnswlib.call(
             document_embeddings: embeddings_with_config[:document_embeddings],
             index_file_path: index_file_path,
             json_doc_file_path: json_doc_file_path,
@@ -121,7 +121,7 @@ module Boxcars
 
         def hnswlib_config(dim)
           # dim: length of datum point vector that will be indexed.
-          Boxcars::VectorStores::Hnswlib::HnswlibConfig.new(
+          Boxcars::VectorStore::Hnswlib::HnswlibConfig.new(
             metric: "l2", max_item: 10000, dim: dim
           )
         end

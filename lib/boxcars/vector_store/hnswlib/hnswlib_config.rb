@@ -3,7 +3,7 @@
 require 'json'
 
 module Boxcars
-  module VectorStores
+  module VectorStore
     module Hnswlib
       class HnswlibConfig
         attr_reader :metric, :max_item, :dim, :ef_construction, :m

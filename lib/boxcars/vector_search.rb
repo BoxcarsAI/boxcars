@@ -8,4 +8,4 @@ module Boxcars
   end
 end
 
-require "boxcars/boxcar/vector_store"
+require "boxcars/vector_store"

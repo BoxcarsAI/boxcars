@@ -9,14 +9,14 @@
 #     { page_content: "what's this", metadata: { a: 1 } },
 # ]
 #
-# vector_documents = Boxcars::VectorStores::InMemory::AddDocuments.call(embedding_tool: :openai, documents: documents)
+# vector_documents = Boxcars::VectorStore::InMemory::AddDocuments.call(embedding_tool: :openai, documents: documents)
 #
-# result = Boxcars::VectorStores::InMemory::Search.call(vecotr_documents: vector_documents, query: "hello")
+# result = Boxcars::VectorStore::InMemory::Search.call(vecotr_documents: vector_documents, query: "hello")
 #
-# expect(result).to eq(Boxcars::VectorStores::Document.new({ page_content: "hello", metadata: { a: 1 } }))
+# expect(result).to eq(Boxcars::VectorStore::Document.new({ page_content: "hello", metadata: { a: 1 } }))
 
 module Boxcars
-  module VectorStores
+  module VectorStore
     module InMemory
       class Search
         include VectorStore
@@ -63,9 +63,9 @@ module Boxcars
         def embeddings_method(embedding_tool)
           case embedding_tool
           when :openai
-            { klass: Boxcars::VectorStores::EmbedViaOpenAI, client: openai_client }
+            { klass: Boxcars::VectorStore::EmbedViaOpenAI, client: openai_client }
           when :tensorflow
-            { klass: Boxcars::VectorStores::EmbedViaTensorflow, client: nil }
+            { klass: Boxcars::VectorStore::EmbedViaTensorflow, client: nil }
           end
         end
 

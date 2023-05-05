@@ -5,7 +5,7 @@ require 'spec_helper'
 # rubocop:disable RSpec/ExampleLength
 # rubocop:disable RSpec/MultipleMemoizedHelpers
 # rubocop:disable RSpec/MultipleExpectations
-RSpec.describe Boxcars::VectorStores::Hnswlib::SaveToHnswlib do
+RSpec.describe Boxcars::VectorStore::Hnswlib::SaveToHnswlib do
   subject(:save_to_hnswlib) { call_command }
 
   let(:document_embeddings) do
@@ -16,7 +16,7 @@ RSpec.describe Boxcars::VectorStores::Hnswlib::SaveToHnswlib do
     ]
   end
   let(:hnswlib_config) do
-    Boxcars::VectorStores::Hnswlib::HnswlibConfig.new(
+    Boxcars::VectorStore::Hnswlib::HnswlibConfig.new(
       metric: "l2", max_item: 10000, dim: 2
     )
   end

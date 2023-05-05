@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Boxcars
-  module VectorStores
+  module VectorStore
     module InMemory
       MemoryVector = Struct.new(:content, :embedding, :metadatax)
 
@@ -49,9 +49,9 @@ module Boxcars
           @embeddings_method ||=
             case @embedding_tool
             when :openai
-              { klass: Boxcars::VectorStores::EmbedViaOpenAI, client: openai_client }
+              { klass: Boxcars::VectorStore::EmbedViaOpenAI, client: openai_client }
             when :tensorflow
-              { klass: Boxcars::VectorStores::EmbedViaTensorflow, client: nil }
+              { klass: Boxcars::VectorStore::EmbedViaTensorflow, client: nil }
             end
         end
 
