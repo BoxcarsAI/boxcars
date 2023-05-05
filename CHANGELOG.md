@@ -1,12 +1,24 @@
 # Changelog
 
-## [Unreleased](https://github.com/BoxcarsAI/boxcars/tree/HEAD)
+## [v0.2.10](https://github.com/BoxcarsAI/boxcars/tree/v0.2.10) (2023-05-05)
 
-[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.2.9...HEAD)
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.2.9...v0.2.10)
 
 **Implemented enhancements:**
 
 - Notion Q&A [\#13](https://github.com/BoxcarsAI/boxcars/issues/13)
+
+**Closed issues:**
+
+- undefined method `default\_train' for Boxcars:Module \(ActiveRecord example\) [\#66](https://github.com/BoxcarsAI/boxcars/issues/66)
+- Chore: reduce the number of markdown files in Notion DB folder [\#56](https://github.com/BoxcarsAI/boxcars/issues/56)
+
+**Merged pull requests:**
+
+- \[DRAFT\] Feature - add in memory vector store [\#65](https://github.com/BoxcarsAI/boxcars/pull/65) ([jaigouk](https://github.com/jaigouk))
+- Chore - rename module name from Embeddings to VectorStores [\#63](https://github.com/BoxcarsAI/boxcars/pull/63) ([jaigouk](https://github.com/jaigouk))
+- remove bunch of markdown files in Notion\_DB directory [\#62](https://github.com/BoxcarsAI/boxcars/pull/62) ([jaigouk](https://github.com/jaigouk))
+- Fixed typo in README.md [\#61](https://github.com/BoxcarsAI/boxcars/pull/61) ([robmack](https://github.com/robmack))
 
 ## [v0.2.9](https://github.com/BoxcarsAI/boxcars/tree/v0.2.9) (2023-04-22)
 
