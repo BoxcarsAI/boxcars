@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Boxcars::VectorStores::InMemory::AddDocuments do
+RSpec.describe Boxcars::VectorStore::InMemory::AddDocuments do
   subject(:vector_store) { call_command }
 
   let(:arguments) do
@@ -27,7 +27,7 @@ RSpec.describe Boxcars::VectorStores::InMemory::AddDocuments do
 
   before do
     allow(ENV).to receive(:fetch).with('OPENAI_API_KEY', nil).and_return('mock_api_key')
-    allow(Boxcars::VectorStores::EmbedViaOpenAI).to receive(:call).and_return(embeddings)
+    allow(Boxcars::VectorStore::EmbedViaOpenAI).to receive(:call).and_return(embeddings)
   end
 
   describe '#call' do

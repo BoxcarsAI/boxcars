@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Boxcars::VectorStores::InMemory::Search do
+RSpec.describe Boxcars::VectorStore::InMemory::Search do
   let(:search_result) { call_command }
   let(:arguments) do
     {
@@ -24,7 +24,7 @@ RSpec.describe Boxcars::VectorStores::InMemory::Search do
 
   before do
     allow(ENV).to receive(:fetch).with('OPENAI_API_KEY', nil).and_return('mock_api_key')
-    allow(Boxcars::VectorStores::EmbedViaOpenAI).to receive(:call).and_return([[1.0, 2.0, 3.0]])
+    allow(Boxcars::VectorStore::EmbedViaOpenAI).to receive(:call).and_return([[1.0, 2.0, 3.0]])
   end
 
   describe '#call' do

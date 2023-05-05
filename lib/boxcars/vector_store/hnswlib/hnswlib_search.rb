@@ -4,7 +4,7 @@ require 'hnswlib'
 require 'json'
 
 module Boxcars
-  module VectorStores
+  module VectorStore
     module Hnswlib
       class HnswlibSearch
         def initialize(vector_store:, options: {})

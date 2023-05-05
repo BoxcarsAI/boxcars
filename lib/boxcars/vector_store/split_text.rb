@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Boxcars
-  module VectorStores
+  module VectorStore
     # Split a text into chunks of a given size.
     class SplitText
       include VectorStore

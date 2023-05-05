@@ -3,7 +3,7 @@
 require 'openai'
 
 module Boxcars
-  module VectorStores
+  module VectorStore
     class EmbedViaOpenAI
       include VectorStore
 

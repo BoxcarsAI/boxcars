@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Boxcars
-  module VectorStores
+  module VectorStore
     class Document
       attr_accessor :page_content, :metadata
 
