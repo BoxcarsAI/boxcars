@@ -1,5 +1,17 @@
 # Changelog
 
+## [v0.2.11](https://github.com/BoxcarsAI/boxcars/tree/v0.2.11) (2023-05-05)
+
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.2.10...v0.2.11)
+
+**Closed issues:**
+
+- Chore: move vector store to top level [\#67](https://github.com/BoxcarsAI/boxcars/issues/67)
+
+**Merged pull requests:**
+
+- Move vector store [\#69](https://github.com/BoxcarsAI/boxcars/pull/69) ([francis](https://github.com/francis))
+
 ## [v0.2.10](https://github.com/BoxcarsAI/boxcars/tree/v0.2.10) (2023-05-05)
 
 [Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.2.9...v0.2.10)
