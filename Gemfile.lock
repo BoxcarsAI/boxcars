@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    boxcars (0.2.11)
+    boxcars (0.2.12)
       google_search_results (~> 2.2)
       gpt4all (~> 0.0.4)
       ruby-openai (~> 4.0)

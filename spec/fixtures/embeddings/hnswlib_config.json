@@ -1,7 +1,7 @@
 {
   "metric": "l2",
   "max_item": 10000,
-  "dim": 7,
+  "dim": 1560,
   "ef_construction": 200,
   "max_outgoing_connection": 16
 }

@@ -3,10 +3,11 @@
 module Boxcars
   module VectorStore
     class Document
-      attr_accessor :page_content, :metadata
+      attr_accessor :content, :metadata, :embedding
 
       def initialize(fields = {})
-        @page_content = fields[:page_content] || ""
+        @content = fields[:content] || ""
+        @embedding = fields[:embedding] || []
         @metadata = fields[:metadata] || {}
       end
     end

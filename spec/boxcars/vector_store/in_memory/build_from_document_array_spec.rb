@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Boxcars::VectorStore::InMemory::AddDocuments do
-  subject(:vector_store) { call_command }
+RSpec.describe Boxcars::VectorStore::InMemory::BuildFromDocumentArray do
+  subject(:result) { call_command }
 
   let(:arguments) do
     {
@@ -15,10 +15,10 @@ RSpec.describe Boxcars::VectorStore::InMemory::AddDocuments do
 
   let(:documents) do
     [
-      { page_content: "hello", metadata: { a: 1 } },
-      { page_content: "hi", metadata: { a: 1 } },
-      { page_content: "bye", metadata: { a: 1 } },
-      { page_content: "what's this", metadata: { a: 1 } },
+      { content: "hello", metadata: { a: 1 } },
+      { content: "hi", metadata: { a: 1 } },
+      { content: "bye", metadata: { a: 1 } },
+      { content: "what's this", metadata: { a: 1 } }
     ]
   end
   let(:embeddings) do
@@ -26,19 +26,29 @@ RSpec.describe Boxcars::VectorStore::InMemory::AddDocuments do
   end
 
   before do
-    allow(ENV).to receive(:fetch).with('OPENAI_API_KEY', nil).and_return('mock_api_key')
     allow(Boxcars::VectorStore::EmbedViaOpenAI).to receive(:call).and_return(embeddings)
   end
 
   describe '#call' do
     context 'with valid parameters' do
+      it 'returns in_memory type' do
+        expect(result[:type]).to eq(:in_memory)
+      end
+
       it 'returns same number of data as document size' do
-        expect(vector_store.size).to eq(documents.size)
+        expect(result[:vector_store].size).to eq(documents.size)
       end
 
       it 'adds memory vectors to memory_vectors array' do
-        vector_store.each_with_index do |memory_vector, index|
-          expect(memory_vector.content).to eq(documents[index][:page_content])
+        result[:vector_store].each_with_index do |memory_vector, index|
+          expect(memory_vector.content).to eq(documents[index][:content])
+        end
+      end
+
+      it 'merges metadata' do
+        result[:vector_store].each_with_index do |memory_vector, index|
+          check = documents[index][:metadata].keys.all? { |k| memory_vector.metadata.key?(k) }
+          expect(check).to be_truthy
         end
       end
     end
