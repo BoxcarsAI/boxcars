@@ -15,5 +15,21 @@ RSpec.describe Boxcars::Openai do
         expect(described_class.new.run("write a haiku about love")).to eq("Love, a gentle breeze\nWhispers sweet nothings in ear\nHeart beats as one, true")
       end
     end
+
+    it "raises an error when nil response" do
+      oi = described_class.new
+      allow(oi).to receive(:client).and_return(nil)
+      expect { oi.run("foobar") }.to raise_error(Boxcars::Error, "OpenAI: No response from API")
+    end
+
+    it "raises an when open ai returns one" do
+      oi = described_class.new
+      allow(oi).to receive(:client).and_return("error" => "foobar")
+      expect { oi.run("foobar") }.to raise_error(Boxcars::Error, "OpenAI: foobar")
+    end
+
+    it "thinks gpt-4 is a conversation model" do
+      expect(described_class.new.conversation_model?("gpt-4")).to be(true)
+    end
   end
 end
