@@ -43,6 +43,10 @@ module Boxcars
       ::OpenAI::Client.new(access_token: access_token, organization_id: organization_id)
     end
 
+    def conversation_model?(model)
+      ["gpt-3.5-turbo", "gpt-4"].include?(model)
+    end
+
     # Get an answer from the engine.
     # @param prompt [String] The prompt to use when asking the engine.
     # @param openai_access_token [String] The access token to use when asking the engine.
@@ -51,7 +55,7 @@ module Boxcars
     def client(prompt:, inputs: {}, openai_access_token: nil, **kwargs)
       clnt = Openai.open_ai_client(openai_access_token: openai_access_token)
       params = open_ai_params.merge(kwargs)
-      if params[:model] == "gpt-3.5-turbo"
+      if conversation_model?(params[:model])
         prompt = prompt.first if prompt.is_a?(Array)
         params = prompt.as_messages(inputs).merge(params)
         if Boxcars.configuration.log_prompts
@@ -71,6 +75,9 @@ module Boxcars
     def run(question, **kwargs)
       prompt = Prompt.new(template: question)
       response = client(prompt: prompt, **kwargs)
+      raise Error, "OpenAI: No response from API" unless response
+      raise Error, "OpenAI: #{response['error']}" if response["error"]
+
       answer = response["choices"].map { |c| c.dig("message", "content") || c["text"] }.join("\n").strip
       puts answer
       answer
