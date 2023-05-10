@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
   spec.description = "You simply set an OpenAI key, give a number of Boxcars to a Train, and magic ensues when you run it."
   spec.homepage = "https://github.com/BoxcarsAI/boxcars"
   spec.license = "MIT"
-  spec.required_ruby_version = ">= 2.6.0"
+  spec.required_ruby_version = ">= 3"
 
   spec.metadata["homepage_uri"] = spec.homepage
   spec.metadata["source_code_uri"] = spec.homepage
