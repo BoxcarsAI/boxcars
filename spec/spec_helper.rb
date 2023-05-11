@@ -10,7 +10,7 @@ require "debug"
 require "support/helpdesk_sample_app"
 require 'tmpdir'
 
-Dir[File.expand_path("spec/support/**/*.rb")].sort.each { |f| require f }
+Dir[File.expand_path("spec/support/**/*.rb")].each { |f| require f }
 VCR.configure do |c|
   c.hook_into :webmock
   c.cassette_library_dir = "spec/fixtures/cassettes"

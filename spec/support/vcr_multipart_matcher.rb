@@ -1,5 +1,5 @@
 class VCRMultipartMatcher
-  MULTIPART_HEADER_MATCHER = %r{^multipart/form-data; boundary=(.+)$}.freeze
+  MULTIPART_HEADER_MATCHER = %r{^multipart/form-data; boundary=(.+)$}
   BOUNDARY_SUBSTITUTION = "----MultipartBoundaryAbcD3fGhiXyz00001".freeze
 
   def call(request1, request2)
@@ -25,7 +25,7 @@ class VCRMultipartMatcher
   end
 
   def headers_excluding_content_type(request)
-    request.headers.reject { |key, _| key == "Content-Type" }
+    request.headers.except("Content-Type")
   end
 
   def normalized_multipart_body(request)

@@ -3,6 +3,7 @@ require:
   - rubocop-rake
 
 AllCops:
+  TargetRubyVersion: 3
   Exclude:
     - 'bin/{rails,rake}'
     - 'node_modules/**/*'
