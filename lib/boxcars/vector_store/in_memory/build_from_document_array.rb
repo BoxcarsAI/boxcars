@@ -14,7 +14,7 @@ module Boxcars
         end
 
         def call
-          texts = documents.map { |doc| doc[:page_content] }
+          texts = documents
           vectors = generate_vectors(texts)
           add_vectors(vectors, documents)
           {

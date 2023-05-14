@@ -10,7 +10,6 @@ on:
 jobs:
   specs:
     runs-on: ubuntu-latest
-
     strategy:
       fail-fast: false
       matrix:
@@ -25,8 +24,22 @@ jobs:
       with:
         ruby-version: ${{ matrix.ruby-version }}
         bundler-cache: true
+    - uses: ankane/setup-postgres@v1
+      with:
+        database: boxcars_test
+        dev-files: true
+      id: postgre
+    - run: |
+        cd /tmp
+        git clone --branch v0.4.1 https://github.com/pgvector/pgvector.git
+        cd pgvector
+        make
+        sudo make install
     - name: Run tests
+      env:
+        DATABASE_URL: postgres://postgres:@localhost:5432/boxcars_test
       run: bundle exec rake spec
+
   rubocop:
     runs-on: ubuntu-latest
 
