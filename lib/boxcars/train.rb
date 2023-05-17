@@ -69,7 +69,7 @@ module Boxcars
     # @return [Boxcars::Action] Action specifying what boxcar to use.
     def plan(intermediate_steps, **kwargs)
       thoughts = construct_scratchpad(intermediate_steps)
-      full_inputs = prediction_additional.merge(kwargs).merge(agent_scratchpad: thoughts)
+      full_inputs = prediction_additional(kwargs).merge(kwargs).merge(agent_scratchpad: thoughts)
       action = get_next_action(full_inputs)
       return TrainFinish.new({ output: action.boxcar_input }, log: action.log) if action.boxcar == finish_boxcar_name
 

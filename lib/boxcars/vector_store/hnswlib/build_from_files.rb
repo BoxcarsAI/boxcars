@@ -22,7 +22,7 @@ module Boxcars
           validate_params(@training_data_path, @index_file_path, split_chunk_size)
 
           @json_doc_file_path = absolute_json_doc_file_path(@index_file_path, params[:json_doc_file_path])
-          @force_rebuild = params[:force_rebuild] || true
+          @force_rebuild = params.key?(:force_rebuild) ? params[:force_rebuild] : true
           @hnsw_vectors = []
         end
 

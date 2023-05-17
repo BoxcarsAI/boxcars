@@ -158,3 +158,5 @@ require "boxcars/boxcar/swagger"
 require "boxcars/boxcar/active_record"
 require "boxcars/vector_store"
 require "boxcars/vector_search"
+require "boxcars/boxcar/vector_answer"
+
