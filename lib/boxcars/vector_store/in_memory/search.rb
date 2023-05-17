@@ -1,72 +1,51 @@
 # frozen_string_literal: true
 
-# require 'openai'
-#
-# documents = [
-#     { page_content: "hello", metadata: { a: 1 } },
-#     { page_content: "hi", metadata: { a: 1 } },
-#     { page_content: "bye", metadata: { a: 1 } },
-#     { page_content: "what's this", metadata: { a: 1 } },
-# ]
-#
-# vector_documents = Boxcars::VectorStore::InMemory::AddDocuments.call(embedding_tool: :openai, documents: documents)
-#
-# result = Boxcars::VectorStore::InMemory::Search.call(vecotr_documents: vector_documents, query: "hello")
-#
-# expect(result).to eq(Boxcars::VectorStore::Document.new({ page_content: "hello", metadata: { a: 1 } }))
-
 module Boxcars
   module VectorStore
     module InMemory
       class Search
         include VectorStore
-        def initialize(vector_documents:, query:, embedding_tool: :openai)
-          validate_params(vector_documents, query, embedding_tool)
-          @vector_documents = vector_documents
-          @query = query
-          @embedding_tool = embedding_tool
+
+        def initialize(params)
+          validate_params(params[:vector_documents])
+          @vector_documents = params[:vector_documents]
         end
 
-        def call
-          results = @vector_documents.map do |doc|
-            {
-              document: doc,
-              similarity: cosine_similarity(query_vector, doc[:vector])
-            }
-          end
-          results.min_by { |result| -result[:similarity] }[:document]
+        def call(query_vector:, count: 1)
+          raise ::Boxcars::ArgumentError, 'query_vector is empty' if query_vector.empty?
+
+          search(query_vector, count)
         end
 
         private
 
-        def validate_params(vector_documents, query, embedding_tool)
-          raise ::Boxcars::ArgumentError, 'query is empty' if query.to_s.empty?
-          raise ::Boxcars::ArgumentError, 'embedding_tool is invalid' unless %i[openai tensorflow].include?(embedding_tool)
+        attr_reader :vector_documents
 
-          unless vector_documents.is_a?(Array) && vector_documents.all? do |doc|
-                   doc.is_a?(Hash) && doc.key?(:document) && doc.key?(:vector)
-                 end
-            raise ::Boxcars::ArgumentError, "vector_documents is not valid"
+        def validate_params(vector_documents)
+          return if valid_vector_store?(vector_documents)
+
+          raise ::Boxcars::ArgumentError, "vector_documents is not valid"
+        end
+
+        def valid_vector_store?(vector_documents)
+          vector_documents && vector_documents[:type] == :in_memory &&
+            vector_documents[:vector_store].is_a?(Array) &&
+            vector_documents[:vector_store].all? do |doc|
+              doc.is_a?(Boxcars::VectorStore::Document)
+            end
+        end
+
+        def search(query_vector, num_neighbors)
+          results = vector_documents[:vector_store].map do |doc|
+            {
+              document: doc,
+              similarity: cosine_similarity(query_vector, doc.embedding)
+            }
           end
-        end
-
-        def query_vector
-          embeddings_method(@embedding_tool)[:klass].call(
-            texts: [@query], client: embeddings_method(@embedding_tool)[:client]
-          ).first
-        end
-
-        def openai_client(openai_access_token: nil)
-          @openai_client ||= Openai.open_ai_client(openai_access_token: openai_access_token)
-        end
-
-        def embeddings_method(embedding_tool)
-          case embedding_tool
-          when :openai
-            { klass: Boxcars::VectorStore::EmbedViaOpenAI, client: openai_client }
-          when :tensorflow
-            { klass: Boxcars::VectorStore::EmbedViaTensorflow, client: nil }
-          end
+          results.sort_by { |result| -result[:similarity] }
+                 .first(num_neighbors)
+        rescue StandardError => e
+          raise_error "Error searching for #{query_vector}: #{e.message}"
         end
 
         def cosine_similarity(vector1, vector2)
@@ -74,6 +53,10 @@ module Boxcars
           magnitude1 = Math.sqrt(vector1.reduce(0) { |sum, a| sum + (a**2) })
           magnitude2 = Math.sqrt(vector2.reduce(0) { |sum, b| sum + (b**2) })
           dot_product / (magnitude1 * magnitude2)
+        end
+
+        def raise_error(message)
+          raise ::Boxcars::ArgumentError, message
         end
       end
     end

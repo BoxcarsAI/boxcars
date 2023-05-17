@@ -7,8 +7,6 @@ module Boxcars
     class EmbedViaOpenAI
       include VectorStore
 
-      attr_accessor :texts, :client, :model
-
       def initialize(texts:, client:, model: 'text-embedding-ada-002')
         validate_params(texts, client)
         @texts = texts
@@ -27,6 +25,8 @@ module Boxcars
       end
 
       private
+
+      attr_accessor :texts, :client, :model
 
       def validate_params(texts, client)
         raise_error 'texts must be an array of strings' unless texts.is_a?(Array) && texts.all? { |text| text.is_a?(String) }

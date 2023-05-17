@@ -6,8 +6,6 @@ module Boxcars
     class SplitText
       include VectorStore
 
-      attr_reader :separator, :chunk_size, :chunk_overlap, :text
-
       # @param separator [String] The string to use to split the text.
       # @param chunk_size [Integer] The size of each chunk.
       # @param chunk_overlap [Integer] The amount of overlap between chunks.
@@ -30,6 +28,8 @@ module Boxcars
       end
 
       private
+
+      attr_reader :separator, :chunk_size, :chunk_overlap, :text
 
       def validate_params(separator, chunk_size, chunk_overlap, text)
         raise_error("separator must be a string") unless separator.is_a?(String)
