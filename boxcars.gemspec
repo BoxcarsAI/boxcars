@@ -30,15 +30,11 @@ Gem::Specification.new do |spec|
   spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  # dev / test dependencies
-  spec.add_development_dependency "debug", "~> 1.1"
-  spec.add_development_dependency "dotenv", "~> 2.8"
-  spec.add_development_dependency "rspec", "~> 3.2"
-
   # runtime dependencies
   spec.add_dependency "google_search_results", "~> 2.2"
   spec.add_dependency "gpt4all", "~> 0.0.4"
-  spec.add_dependency "ruby-openai", "~> 4.0"
+  spec.add_dependency "hnswlib", "~> 0.8"
+  spec.add_dependency "ruby-openai", "~> 4.1"
 
   # For more information and examples about making a new gem, checkout our
   # guide at: https://bundler.io/guides/creating_gem.html
