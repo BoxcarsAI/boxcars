@@ -59,6 +59,25 @@ RSpec.describe Boxcars::VectorSearch do
 
         expect(content).to include('implementation')
       end
+
+      context 'multiple calls' do
+        it 'returns results with the same instace' do
+          # first call
+          first_result = vector_search.call(
+            query: query,
+            count: 1
+          )
+
+          # second call
+          second_query = 'What is the first step to do when there is a harassment?'
+          second_result = vector_search.call(
+            query: second_query,
+            count: 1
+          )
+
+          # require 'debug'; debugger
+        end
+      end
     end
 
     context 'with in memory search' do
