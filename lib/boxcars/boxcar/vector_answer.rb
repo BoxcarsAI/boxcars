@@ -39,7 +39,7 @@ module Boxcars
 
     # our template
     CTEMPLATE = [
-      syst("The following text was returned from the vector search:\n", 
+      syst("The following text was returned from the vector search:\n",
            "```text\n%<search_content>s\n```\n\n",
            "Using the above as context, please answer the following question (without saying according to the provided text):\n"),
       user("%<question>s")
