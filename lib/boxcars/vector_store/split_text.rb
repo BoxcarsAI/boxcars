@@ -11,7 +11,6 @@ module Boxcars
       # @param chunk_overlap [Integer] The amount of overlap between chunks.
       # @param text [String] The text to split.
       def initialize(separator: "Search", chunk_size: 7, chunk_overlap: 3, text: "")
-        # require 'debugger'; debugger
         validate_params(separator, chunk_size, chunk_overlap, text)
 
         @separator = separator

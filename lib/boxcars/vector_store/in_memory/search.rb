@@ -45,7 +45,8 @@ module Boxcars
           results.sort_by { |result| -result[:similarity] }
                  .first(num_neighbors)
         rescue StandardError => e
-          raise_error "Error searching for #{query_vector}: #{e.message}"
+          raise_argument_error("Error searching for #{query_vector}: #{e.message}")
+          raise_error
         end
 
         def cosine_similarity(vector1, vector2)
@@ -53,10 +54,6 @@ module Boxcars
           magnitude1 = Math.sqrt(vector1.reduce(0) { |sum, a| sum + (a**2) })
           magnitude2 = Math.sqrt(vector2.reduce(0) { |sum, b| sum + (b**2) })
           dot_product / (magnitude1 * magnitude2)
-        end
-
-        def raise_error(message)
-          raise ::Boxcars::ArgumentError, message
         end
       end
     end

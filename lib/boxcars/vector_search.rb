@@ -31,8 +31,12 @@ module Boxcars
         Boxcars::VectorStore::InMemory::Search.new(
           vector_documents: vector_documents
         )
+      when :pgvector
+        Boxcars::VectorStore::Pgvector::Search.new(
+          vector_documents: vector_documents
+        )
       else
-        raise_error 'Unsupported vector store provided'
+        raise_argument_error('Unsupported vector store provided')
       end
     end
 
@@ -41,8 +45,8 @@ module Boxcars
     end
 
     def validate_query(query)
-      raise_error 'query must be a string' unless query.is_a?(String)
-      raise_error 'query must not be empty' if query.empty?
+      raise_argument_error('query must be a string') unless query.is_a?(String)
+      raise_argument_error('query must not be empty') if query.empty?
     end
 
     def convert_query_to_vector(query)
@@ -62,8 +66,8 @@ module Boxcars
       end
     end
 
-    def raise_error(message)
-      raise ArgumentError, message
+    def raise_argument_error(message)
+      raise ::Boxcars::ArgumentError, message
     end
   end
 end
