@@ -17,7 +17,7 @@ RSpec.describe Boxcars::VectorSearch do
       openai_connection: openai_client
     )
   end
-  let(:query) { 'how many implementations are there for hnswlib?' }
+  let(:query) { 'custom user defined distances' }
   let(:openai_client) { instance_double(OpenAI::Client) }
   let(:query_vector) do
     JSON.parse(File.read('spec/fixtures/embeddings/query_vector.json'), symbolize_names: true)
@@ -25,19 +25,21 @@ RSpec.describe Boxcars::VectorSearch do
 
   describe '#call' do
     context 'with hnswlib search' do
-      let(:num_neighbors) { 2 }
+      let(:num_neighbors) { 1 }
       let(:vector_documents) do
         Boxcars::VectorStore::Hnswlib::LoadFromDisk.call(
+          base_dir_path: base_dir_path,
           index_file_path: hnswlib_index,
           json_doc_file_path: json_doc
         )
       end
 
-      let(:json_doc) { 'spec/fixtures/embeddings/test_doc_text_file.json' }
-      let(:hnswlib_index) { 'spec/fixtures/embeddings/test_hnsw_index.bin' }
+      let(:base_dir_path) { '.' }
+      let(:json_doc) { './spec/fixtures/embeddings/test_hnsw_index.json' }
+      let(:hnswlib_index) { './spec/fixtures/embeddings/test_hnsw_index.bin' }
 
       before do
-        allow(Boxcars::VectorStore::EmbedViaOpenAI).to receive(:call).and_return(query_vector)
+        allow(Boxcars::VectorStore::EmbedViaOpenAI).to receive(:call).with(texts: [query], client: openai_client).and_return(query_vector)
       end
 
       it 'returns an Document array' do
@@ -46,8 +48,8 @@ RSpec.describe Boxcars::VectorSearch do
         expect(search_result.first[:document]).to be_a(Boxcars::VectorStore::Document)
       end
 
-      it 'returns at most num_neighbors results' do
-        expect(search_result.size).to be <= num_neighbors
+      it 'returns num_neighbors results' do
+        expect(search_result.size).to eq(num_neighbors)
       end
 
       it 'returns results with the correct keys' do
@@ -60,20 +62,38 @@ RSpec.describe Boxcars::VectorSearch do
         expect(content).to include('implementation')
       end
 
-      context 'multiple calls' do
+      context 'with multiple calls' do
+        let(:question_one) { 'Tell me about the cost ratio of OpenAI embedding' }
+        let(:question_two) { 'What should do for user defined distances when I use Hnswlib' }
+        let(:cost_ratio_response) do
+          JSON.parse(File.read('spec/fixtures/embeddings/query_cost_ratio.json'), symbolize_names: true)
+        end
+        let(:hnaswlib_response) do
+          JSON.parse(File.read('spec/fixtures/embeddings/query_hnswlib.json'), symbolize_names: true)
+        end
+
+        before do
+          allow(Boxcars::VectorStore::EmbedViaOpenAI).to receive(:call).
+            with(texts: [question_one], client: openai_client).
+            and_return(cost_ratio_response)
+          allow(Boxcars::VectorStore::EmbedViaOpenAI).to receive(:call).
+            with(texts: [question_two], client: openai_client).
+            and_return(hnaswlib_response)
+        end
+
         it 'returns results with the same instace' do
           # first call
           first_result = vector_search.call(
-            query: query,
+            query: question_one,
             count: 1
-          )
+          ).first[:document].content
+          expect(first_result).to include('Cost Ratio of OpenAI embedding to Self-Hosted embedding')
 
           # second call
-          second_query = 'What is the first step to do when there is a harassment?'
           second_result = vector_search.call(
-            query: second_query,
+            query: question_two,
             count: 1
-          )
+          ).first[:document].content
 
           # require 'debug'; debugger
         end

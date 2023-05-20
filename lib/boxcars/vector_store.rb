@@ -54,7 +54,7 @@ module Boxcars
 
       file_content = File.read(file_path)
       JSON.parse(file_content, symbolize_names: true)
-    rescue JSON::ParserError => e
+    rescue JSON::ParserError, Errno::ENOENT => e
       raise_argument_error("Error parsing #{file_path}: #{e.message}")
     end
 
@@ -79,6 +79,11 @@ module Boxcars
         docs.concat(doc_output)
       end
       docs
+    end
+
+    def validate_string(value, name)
+      raise raise_argument_error("#{name} must be a string") unless value.is_a?(String)
+      raise raise_argument_error("#{name} is empty") if value.empty?
     end
   end
 end

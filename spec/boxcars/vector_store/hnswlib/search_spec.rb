@@ -11,7 +11,8 @@ RSpec.describe Boxcars::VectorStore::Hnswlib::Search do
       count: count
     )
   end
-  let(:query_vector) { Array.new(1536) { 0.2 } }
+  let(:query_vector) { Array.new(1536) { 0 } }
+
   let(:hnswlib_search) do
     described_class.new(
       vector_documents: vector_documents
@@ -21,13 +22,15 @@ RSpec.describe Boxcars::VectorStore::Hnswlib::Search do
 
   let(:vector_documents) do
     Boxcars::VectorStore::Hnswlib::LoadFromDisk.call(
-      index_file_path: hnswlib_index,
-      json_doc_file_path: json_doc
+      base_dir_path: base_dir_path,
+      index_file_path: index_file_path,
+      json_doc_file_path: json_doc_file_path
     )
   end
 
-  let(:json_doc) { 'spec/fixtures/embeddings/test_doc_text_file.json' }
-  let(:hnswlib_index) { 'spec/fixtures/embeddings/test_hnsw_index.bin' }
+  let(:base_dir_path) { '.' }
+  let(:json_doc_file_path) { './spec/fixtures/embeddings/test_hnsw_index.json' }
+  let(:index_file_path) { './spec/fixtures/embeddings/test_hnsw_index.bin' }
 
   before do
     allow(Boxcars::VectorStore::EmbedViaOpenAI).to receive(:call).and_return(query_vector)

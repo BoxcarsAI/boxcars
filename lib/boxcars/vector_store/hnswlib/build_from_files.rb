@@ -16,13 +16,10 @@ module Boxcars
 
         def initialize(params)
           @split_chunk_size = params[:split_chunk_size] || 2000
-          @training_data_path = File.absolute_path(params[:training_data_path])
-          @index_file_path = File.absolute_path(params[:index_file_path])
+          @base_dir_path, @index_file_path, @json_doc_file_path =
+            validate_params(params[:training_data_path], params[:index_file_path], split_chunk_size)
 
-          validate_params(@training_data_path, @index_file_path, split_chunk_size)
-
-          @json_doc_file_path = absolute_json_doc_file_path(@index_file_path, params[:json_doc_file_path])
-          @force_rebuild = params.key?(:force_rebuild) ? params[:force_rebuild] : true
+          @force_rebuild = params[:force_rebuild] || false
           @hnsw_vectors = []
         end
 
@@ -50,24 +47,29 @@ module Boxcars
 
         private
 
-        attr_reader :training_data_path, :index_file_path, :split_chunk_size, :json_doc_file_path, :force_rebuild, :hnsw_vectors
+        attr_reader :training_data_path, :index_file_path, :base_dir_path,
+                    :split_chunk_size, :json_doc_file_path, :force_rebuild, :hnsw_vectors
 
         def validate_params(training_data_path, index_file_path, split_chunk_size)
-          training_data_dir = File.dirname(training_data_path.gsub(/\*{1,2}/, ''))
+          validate_string(training_data_path, 'training_data_path')
+          validate_string(index_file_path, 'index_file_path')
 
-          raise_argument_error('training_data_path parent directory must exist') unless File.directory?(training_data_dir)
-          raise_argument_error('No files found at the training_data_path pattern') if Dir.glob(training_data_path).empty?
+          absolute_data_path = File.absolute_path(training_data_path)
+          base_data_dir_path = File.dirname(absolute_data_path.gsub(/\*{1,2}/, ''))
+          @training_data_path = training_data_path
 
-          index_dir = File.dirname(index_file_path)
+          raise_argument_error('training_data_path parent directory must exist') unless File.directory?(base_data_dir_path)
+          raise_argument_error('No files found at the training_data_path pattern') if Dir.glob(absolute_data_path).empty?
 
-          raise_argument_error('index_file_path parent directory must exist') unless File.directory?(index_dir)
+          absolute_index_path = File.absolute_path(index_file_path)
+          index_parent_dir = File.dirname(absolute_index_path)
+
+          raise_argument_error('index_file_path parent directory must exist') unless File.directory?(index_parent_dir)
           raise_argument_error('split_chunk_size must be an integer') unless split_chunk_size.is_a?(Integer)
-        end
 
-        def absolute_json_doc_file_path(index_file_path, json_doc_file_path)
-          return index_file_path.gsub(/\.bin$/, '.json') unless json_doc_file_path
+          json_doc_file_path = index_file_path.gsub(/\.bin$/, '.json')
 
-          File.absolute_path(json_doc_file_path)
+          [index_parent_dir, index_file_path, json_doc_file_path]
         end
 
         def add_vectors(vectors, texts)
@@ -80,6 +82,7 @@ module Boxcars
                 dim: vector[:dim],
                 metric: 'l2',
                 max_item: 10000,
+                base_dir_path: base_dir_path,
                 index_file_path: index_file_path,
                 json_doc_file_path: json_doc_file_path
               }
@@ -94,6 +97,7 @@ module Boxcars
 
         def load_existing_vector_store
           Boxcars::VectorStore::Hnswlib::LoadFromDisk.call(
+            base_dir_path: base_dir_path,
             index_file_path: index_file_path,
             json_doc_file_path: json_doc_file_path
           )

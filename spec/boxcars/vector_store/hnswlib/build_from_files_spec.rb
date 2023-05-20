@@ -9,16 +9,15 @@ RSpec.describe Boxcars::VectorStore::Hnswlib::BuildFromFiles do
     {
       training_data_path: training_data_path,
       index_file_path: index_file_path,
-      split_chunk_size: 200,
+      split_chunk_size: 900,
       json_doc_file_path: json_doc_file_path
     }
   end
 
-  let(:training_data_path) { File.expand_path('spec/fixtures/training_data/**/*.md') }
-
+  let(:training_data_path) { 'spec/fixtures/training_data/**/*.md' }
+  let(:index_file_path) { File.join(Dir.tmpdir, 'test_hnsw_index.bin') }
   let(:json_doc_file_path) { File.join(Dir.tmpdir, 'test_doc_text_file.json') }
   let(:parsed_texts) { JSON.parse(File.read(json_doc_file_path), symbolize_names: true) }
-  let(:index_file_path) { File.join(Dir.tmpdir, 'test_hnsw_index.bin') }
   let(:openai_client) { instance_double(OpenAI::Client) }
 
   before do
@@ -41,7 +40,7 @@ RSpec.describe Boxcars::VectorStore::Hnswlib::BuildFromFiles do
     end
 
     it 'returns vector_store' do
-      expect(build_vector_store[:vector_store].size).to eq(15)
+      expect(build_vector_store[:vector_store].size).to eq(19)
     end
 
     it 'returns Boxcars::VectorStore::Document' do
@@ -53,7 +52,7 @@ RSpec.describe Boxcars::VectorStore::Hnswlib::BuildFromFiles do
       build_vector_store[:vector_store].each do |doc|
         expect(doc.content.size).to be_positive
         expect(doc.embedding.size).to eq(7)
-        expect(doc.metadata.keys).to eq(%i[doc_id dim metric max_item index_file_path json_doc_file_path])
+        expect(doc.metadata.keys).to eq(%i[doc_id dim metric max_item base_dir_path index_file_path json_doc_file_path])
       end
     end
 
@@ -83,7 +82,7 @@ RSpec.describe Boxcars::VectorStore::Hnswlib::BuildFromFiles do
       let(:json_doc_file_path) { nil }
 
       it 'still builds the vector store' do
-        expect(build_vector_store[:vector_store].size).to eq(15)
+        expect(build_vector_store[:vector_store].size).to eq(19)
       end
     end
 
@@ -92,7 +91,7 @@ RSpec.describe Boxcars::VectorStore::Hnswlib::BuildFromFiles do
         {
           training_data_path: training_data_path,
           index_file_path: index_file_path,
-          split_chunk_size: 200,
+          split_chunk_size: 900,
           json_doc_file_path: json_doc_file_path,
           force_rebuild: true
         }
@@ -118,14 +117,14 @@ RSpec.describe Boxcars::VectorStore::Hnswlib::BuildFromFiles do
         {
           training_data_path: training_data_path,
           index_file_path: index_file_path,
-          split_chunk_size: 200,
+          split_chunk_size: 900,
           json_doc_file_path: json_doc_file_path,
           force_rebuild: false
         }
       end
 
       it 'returns the vector store successfully and creates the VectorStore' do
-        expect(build_vector_store[:vector_store].size).to eq(15)
+        expect(build_vector_store[:vector_store].size).to eq(19)
       end
     end
   end
