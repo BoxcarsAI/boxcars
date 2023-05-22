@@ -22,7 +22,7 @@ module Boxcars
           validate_params(@training_data_path, @index_file_path, split_chunk_size)
 
           @json_doc_file_path = absolute_json_doc_file_path(@index_file_path, params[:json_doc_file_path])
-          @force_rebuild = params[:force_rebuild] || true
+          @force_rebuild = params.key?(:force_rebuild) ? params[:force_rebuild] : true
           @hnsw_vectors = []
         end
 
@@ -32,9 +32,13 @@ module Boxcars
           else
             puts "Building Hnswlib vector store..."
             data = load_data_files(training_data_path)
+            Boxcars.debug("Loaded #{data.length} files from #{training_data_path}")
             texts = split_text_into_chunks(data)
+            Boxcars.debug("Split #{data.length} files into #{texts.length} chunks")
             vectors = generate_vectors(texts)
+            Boxcars.debug("Generated #{vectors.length} vectors")
             add_vectors(vectors, texts)
+            Boxcars.debug("Added #{vectors.length} vectors to vector store")
             save_vector_store
 
             {

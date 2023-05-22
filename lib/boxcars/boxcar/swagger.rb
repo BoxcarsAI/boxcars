@@ -25,7 +25,7 @@ module Boxcars
     end
 
     # @return Hash The additional variables for this boxcar.
-    def prediction_additional
+    def prediction_additional(_inputs)
       { swagger_url: swagger_url, context: context }.merge super
     end
 

@@ -5,6 +5,10 @@ source "https://rubygems.org"
 # Specify your gem's dependencies in boxcars.gemspec
 gemspec
 
+gem "debug", "~> 1.1"
+
+gem "dotenv", "~> 2.8"
+
 gem "rake", "~> 13.0"
 
 gem "sqlite3", "~> 1.6"

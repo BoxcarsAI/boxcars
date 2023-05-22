@@ -8,7 +8,7 @@ module Boxcars
       @vector_documents = params[:vector_documents]
       @embedding_tool = params[:embedding_tool] || :openai
       @vector_search_instance = vector_search_instance
-      @openai_connection = params[:openai_connection] || default_connection(openai_access_token: openai_access_token)
+      @openai_connection = params[:openai_connection] || default_connection(openai_access_token: params[:openai_access_token])
     end
 
     def call(query:, count: 1)

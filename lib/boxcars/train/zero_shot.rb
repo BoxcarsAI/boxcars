@@ -19,7 +19,7 @@ module Boxcars
     end
 
     # @return Hash The additional variables for this boxcar.
-    def prediction_additional
+    def prediction_additional(_inputs)
       { boxcar_names: boxcar_names, boxcar_descriptions: boxcar_descriptions }.merge super
     end
 
