@@ -1,0 +1,83 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://api.openai.com/v1/chat/completions
+    body:
+      encoding: UTF-8
+      string: '{"messages":[{"role":"system","content":"You are tasked with answering
+        a question using these possibly relevant excerpts from a large volume of text:\n```text\nFor
+        work, we provide you with a laptop that suits your job. HR will give you further
+        info.\n- **Workplace**: \nwe''ve built a pretty nice office to make sure you
+        like being at Blendle HQ.\n```\n\nUsing the above, just answer the question
+        as if you were answering directly."},{"role":"user","content":"Will I get
+        a laptop?"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["```output"]}'
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer <openai_access_token>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Mon, 22 May 2023 23:04:08 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - no-cache, must-revalidate
+      Openai-Model:
+      - gpt-3.5-turbo-0301
+      Openai-Organization:
+      - user-ri9zw9ahumb1bo9vs73mudbi
+      Openai-Processing-Ms:
+      - '2699'
+      Openai-Version:
+      - '2020-10-01'
+      Strict-Transport-Security:
+      - max-age=15724800; includeSubDomains
+      X-Ratelimit-Limit-Requests:
+      - '3500'
+      X-Ratelimit-Limit-Tokens:
+      - '90000'
+      X-Ratelimit-Remaining-Requests:
+      - '3499'
+      X-Ratelimit-Remaining-Tokens:
+      - '89385'
+      X-Ratelimit-Reset-Requests:
+      - 17ms
+      X-Ratelimit-Reset-Tokens:
+      - 410ms
+      X-Request-Id:
+      - 1495f77b01e9bc792721fbce55e5e7c8
+      Cf-Cache-Status:
+      - DYNAMIC
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 7cb8b23d18c51fd3-IAD
+      Alt-Svc:
+      - h3=":443"; ma=86400, h3-29=":443"; ma=86400
+    body:
+      encoding: ASCII-8BIT
+      string: '{"id":"chatcmpl-7J8rO4QJ7Fjq7rRJhuipEsLRfBOSh","object":"chat.completion","created":1684796646,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":103,"completion_tokens":27,"total_tokens":130},"choices":[{"message":{"role":"assistant","content":"Yes,
+        for work, you will be provided with a laptop that suits your job. Further
+        information will be given to you by HR."},"finish_reason":"stop","index":0}]}
+
+        '
+  recorded_at: Mon, 22 May 2023 23:04:08 GMT
+recorded_with: VCR 6.1.0

@@ -24,6 +24,7 @@ module Boxcars
       super(engine: engine, prompt: the_prompt, **kwargs)
     end
 
+    # @param inputs [Hash] The inputs to use for the prediction.
     # @return Hash The additional variables for this boxcar.
     def prediction_additional(inputs)
       { search_content: get_search_content(inputs[:question]) }.merge super
@@ -31,17 +32,29 @@ module Boxcars
 
     private
 
-    def get_search_content(question)
+    # @param results [Array] The results from the vector search.
+    # @return [String] The content of the search results.
+    def get_results_content(results)
+      results&.map do |result|
+        result[:document].content
+      end.to_a.join("\n\n")
+    end
+
+    # return the content of the search results for count results
+    # @params question [String] The question to search for.
+    # @params count [Integer] The number of results to return.
+    # @return [String] The content of the search results.
+    def get_search_content(question, count: 1)
       search = Boxcars::VectorSearch.new(embeddings: embeddings, vector_documents: vector_documents)
-      results = search.call query: question, count: 1
-      @search_content = results.first[:document].content
+      results = search.call query: question, count: count
+      @search_content = get_search_content(results)
     end
 
     # our template
     CTEMPLATE = [
-      syst("The following text was returned from the vector search:\n",
+      syst("You are tasked with answering a question using these possibly relevant excerpts from a large volume of text:\n" \
            "```text\n%<search_content>s\n```\n\n",
-           "Using the above as context, please answer the following question (without saying according to the provided text):\n"),
+           "Using the above, just answer the question as if you were answering directly."),
       user("%<question>s")
     ].freeze
 
