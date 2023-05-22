@@ -58,7 +58,7 @@ module Boxcars
               # override with kwargs if present
               kwargs[key]
             elsif (provided_val = instance_variable_get("@#{key}"))
-              # use saved value if present. Set using Boxcars::configuration.the_key = "abcde"
+              # use saved value if present. Set using Boxcars.configuration.the_key = "abcde"
               provided_val
             else
               # otherwise, dig out of the environment
