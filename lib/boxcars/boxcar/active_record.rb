@@ -161,7 +161,7 @@ module Boxcars
       begin
         return true unless changes&.positive?
       rescue StandardError => e
-        Boscar.error "Error while computing change count: #{e.message}", :red
+        Boxcars.error "Error while computing change count: #{e.message}", :red
       end
 
       Boxcars.debug "#{name}(Pending Changes): #{changes}", :yellow
