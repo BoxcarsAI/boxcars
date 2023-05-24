@@ -35,6 +35,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "gpt4all", "~> 0.0.4"
   spec.add_dependency "hnswlib", "~> 0.8"
   spec.add_dependency "ruby-openai", "~> 4.1"
+  spec.add_dependency "pgvector", "~> 0.2"
 
   # For more information and examples about making a new gem, checkout our
   # guide at: https://bundler.io/guides/creating_gem.html
