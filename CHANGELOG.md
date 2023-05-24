@@ -1,5 +1,35 @@
 # Changelog
 
+## [v0.2.13](https://github.com/BoxcarsAI/boxcars/tree/v0.2.13) (2023-05-24)
+
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.2.12...v0.2.13)
+
+**Closed issues:**
+
+- Typo "Boscar.error" should be "Boxcars.error" [\#82](https://github.com/BoxcarsAI/boxcars/issues/82)
+
+**Merged pull requests:**
+
+- Add vector answer boxcar [\#79](https://github.com/BoxcarsAI/boxcars/pull/79) ([francis](https://github.com/francis))
+
+## [v0.2.12](https://github.com/BoxcarsAI/boxcars/tree/v0.2.12) (2023-05-22)
+
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.2.11...v0.2.12)
+
+**Closed issues:**
+
+- GPT-4 support? [\#71](https://github.com/BoxcarsAI/boxcars/issues/71)
+- add PgVector Vector Store [\#68](https://github.com/BoxcarsAI/boxcars/issues/68)
+
+**Merged pull requests:**
+
+- issue\_82 typo "Boscar" instead of "Boxcars" [\#83](https://github.com/BoxcarsAI/boxcars/pull/83) ([MadBomber](https://github.com/MadBomber))
+- Update boxcars.rb config example [\#81](https://github.com/BoxcarsAI/boxcars/pull/81) ([nhorton](https://github.com/nhorton))
+- Feature- added pgvector vector store [\#80](https://github.com/BoxcarsAI/boxcars/pull/80) ([jaigouk](https://github.com/jaigouk))
+- drop support for pre ruby 3 version [\#75](https://github.com/BoxcarsAI/boxcars/pull/75) ([francis](https://github.com/francis))
+- Chore - refine VectorSearch [\#74](https://github.com/BoxcarsAI/boxcars/pull/74) ([jaigouk](https://github.com/jaigouk))
+- raise error if OpenAI API returns error or nil. closes \#71 [\#72](https://github.com/BoxcarsAI/boxcars/pull/72) ([francis](https://github.com/francis))
+
 ## [v0.2.11](https://github.com/BoxcarsAI/boxcars/tree/v0.2.11) (2023-05-05)
 
 [Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.2.10...v0.2.11)
