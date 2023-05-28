@@ -23,6 +23,7 @@ module Boxcars
           @memory_vectors = []
         end
 
+        # @return [Hash] vector_store: array of Inventor::VectorStore::Document
         def call
           texts = documents
           vectors = generate_vectors(texts)

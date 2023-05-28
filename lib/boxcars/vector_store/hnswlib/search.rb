@@ -9,12 +9,28 @@ module Boxcars
       class Search
         include VectorStore
 
+        # initialize the vector store search with the following parameters:
+        # @param params [Hash] A Hash containing the initial configuration.
+        # example:
+        # {
+        #   type: :hnswlib,
+        #   vector_store: [
+        #     Boxcars::VectorStore::Document.new(
+        #       content: "hello",
+        #       embedding: [0.1, 0.2, 0.3],
+        #       metadata: { a: 1 }
+        #     )
+        #   ]
+        # }
         def initialize(params)
           @vector_store = validate_params(params[:vector_documents])
           @metadata, @index_file = validate_files(vector_store)
           @search_index = load_index(metadata, index_file)
         end
 
+        # @param query_vector [Array] The query vector to search for.
+        # @param count [Integer] The number of results to return.
+        # @return [Array] array of hashes with :document and :distance keys
         def call(query_vector:, count: 1)
           search(query_vector, count)
         end

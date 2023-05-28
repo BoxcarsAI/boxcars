@@ -10,15 +10,15 @@ module Boxcars
       class BuildFromFiles
         include VectorStore
 
-        # params = {
-        #   training_data_path: training_data_path,
-        #   split_chunk_size: 200,
-        #   embedding_tool: embedding_tool,
-        #   database_url: db_url,
-        #   table_name: table_name,
-        #   embedding_column_name: embedding_column_name,
-        #   content_column_name: content_column_name
-        # }
+        # @param training_data_path [String] path to training data files
+        # @param split_chunk_size [Integer] number of characters to split the text into
+        # @param embedding_tool [Symbol] embedding tool to use
+        # @param database_url [String] database url
+        # @param table_name [String] table name
+        # @param embedding_column_name [String] embedding column name
+        # @param content_column_name [String] content column name
+        # @param metadata_column_name [String] metadata column name
+        # @return [Hash] vector_store: array of hashes with :content, :metadata, and :embedding keys
         def initialize(params)
           @split_chunk_size = params[:split_chunk_size] || 2000
           @training_data_path = File.absolute_path(params[:training_data_path])
@@ -35,6 +35,7 @@ module Boxcars
           @pg_vectors = []
         end
 
+        # @return [Hash] vector_store: array of Inventor::VectorStore::Document
         def call
           data = load_data_files(training_data_path)
           texts = split_text_into_chunks(data)

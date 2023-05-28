@@ -9,17 +9,21 @@ module Boxcars
       class Search
         include VectorStore
 
-        # required params:
+        # initialize the vector store with the following parameters:
+        # @param params [Hash] A Hash containing the initial configuration.
+        # @option params [Hash] :vector_documents The vector documents to search.
+        # example:
         # {
         #   type: :pgvector,
         #   vector_store: {
-        #     database_url: database_url,
-        #     table_name: table_name,
-        #     embedding_column_name: embedding_column_name,
-        #     content_column_name: content_column_name,
-        #     metadata_column_name: metadata_column_name
+        #     table_name: "vector_store",
+        #     embedding_column_name: "embedding",
+        #     content_column_name: "content",
+        #     database_url: ENV['DATABASE_URL']
         #   }
         # }
+        #
+        # @option params [Hash] :vector_store The vector store to search.
         def initialize(params)
           vector_store = validate_params(params)
           db_url = validate_vector_store(vector_store)
@@ -28,6 +32,20 @@ module Boxcars
           @vector_documents = params[:vector_documents]
         end
 
+        # @param query_vector [Array] The query vector to search for.
+        # @param count [Integer] The number of results to return.
+        # @return [Array] array of hashes with :document and :distance keys
+        # @example
+        #   [
+        #     {
+        #       document: Boxcars::VectorStore::Document.new(
+        #         content: "hello",
+        #         embedding: [0.1, 0.2, 0.3],
+        #         metadata: { a: 1 }
+        #       ),
+        #       distance: 0.1
+        #     }
+        #   ]
         def call(query_vector:, count: 1)
           raise ::Boxcars::ArgumentError, 'query_vector is empty' if query_vector.empty?
 

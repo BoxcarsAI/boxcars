@@ -9,13 +9,13 @@ module Boxcars
       class SaveToDatabase
         include VectorStore
 
-        # params = {
-        #   pg_vectors: pg_vectors,
-        #   database_url: db_url,
-        #   table_name: table_name,
-        #   embedding_column_name: embedding_column_name,
-        #   content_column_name: content_column_name
-        # }
+        # @param pg_vectors [Array] array of Boxcars::VectorStore::Document
+        # @param database_url [String] database url
+        # @param table_name [String] table name
+        # @param embedding_column_name [String] embedding column name
+        # @param content_column_name [String] content column name
+        # @param metadata_column_name [String] metadata column name
+        # @return [Array] array of Boxcars::VectorStore::Document
         def initialize(params)
           validate_param_types(params)
           @db_connection = test_db_params(params)
@@ -28,6 +28,7 @@ module Boxcars
           @pg_vectors = params[:pg_vectors]
         end
 
+        # @return [Array] array of Boxcars::VectorStore::Document
         def call
           add_vectors_to_database
         end

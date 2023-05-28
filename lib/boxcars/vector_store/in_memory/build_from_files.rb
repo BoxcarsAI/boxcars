@@ -6,6 +6,12 @@ module Boxcars
       class BuildFromFiles
         include VectorStore
 
+        # initialize the vector store with the following parameters:
+        # @param params [Hash] A Hash containing the initial configuration.
+        # @option params [Symbol] :embedding_tool The embedding tool to use.
+        # @option params [String] :training_data_path The path to the training data files.
+        # @option params [Integer] :split_chunk_size The number of characters to split the text into.
+        # @return [Hash] vector_store: array of hashes with :content, :metadata, and :embedding keys
         def initialize(params)
           @split_chunk_size = params[:split_chunk_size] || 2000
           @training_data_path = File.absolute_path(params[:training_data_path])
@@ -15,6 +21,7 @@ module Boxcars
           @memory_vectors = []
         end
 
+        # @return [Hash] vector_store: array of hashes with :content, :metadata, and :embedding keys
         def call
           data = load_data_files(training_data_path)
           texts = split_text_into_chunks(data)

@@ -125,8 +125,7 @@ RSpec.describe Boxcars::VectorSearch do
       let(:vector_documents) do
         {
           type: vector_store_type,
-          vector_store: vector_store,
-          json_doc: nil
+          vector_store: vector_store
         }
       end
       let(:vector_store_type) { :in_memory }
