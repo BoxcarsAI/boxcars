@@ -8,6 +8,13 @@ module Boxcars
 
         # @param embedding_tool [Symbol] :openai or other embedding tools
         # @param documents [Array] array of hashes with :content and :metadata keys
+        # each hash item should have content and metadata
+        # [
+        #   { content: "hello", metadata: { a: 1 } },
+        #   { content: "hi", metadata: { a: 1 } },
+        #   { content: "bye", metadata: { a: 1 } },
+        #   { content: "what's this", metadata: { a: 1 } }
+        # ]
         # @return [Hash] vector_store: array of hashes with :content, :metadata, and :embedding keys
         def initialize(embedding_tool: :openai, documents: nil)
           validate_params(embedding_tool, documents)

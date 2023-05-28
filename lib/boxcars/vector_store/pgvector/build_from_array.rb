@@ -13,6 +13,13 @@ module Boxcars
         #
         # @option params [Symbol] :embedding_tool The embedding tool to use. Must be provided.
         # @option params [Array] :input_array The array of inputs to use for the embedding tool. Must be provided.
+        # each hash item should have content and metadata
+        # [
+        #   { content: "hello", metadata: { a: 1 } },
+        #   { content: "hi", metadata: { a: 1 } },
+        #   { content: "bye", metadata: { a: 1 } },
+        #   { content: "what's this", metadata: { a: 1 } }
+        # ]
         # @option params [String] :database_url The URL of the database where embeddings are stored. Must be provided.
         # @option params [String] :table_name The name of the database table where embeddings are stored. Must be provided.
         # @option params [String] :embedding_column_name The name of the database column where embeddings are stored. required.
