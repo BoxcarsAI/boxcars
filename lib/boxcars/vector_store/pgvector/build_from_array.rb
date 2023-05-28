@@ -7,15 +7,17 @@ module Boxcars
       class BuildFromArray
         include VectorStore
 
-        # params =  {
-        #   embedding_tool: embedding_tool,
-        #   input_array: input_array,
-        #   database_url: db_url,
-        #   table_name: table_name,
-        #   embedding_column_name: embedding_column_name,
-        #   content_column_name: content_column_name,
-        #   metadata_column_name: metadata_column_name
-        # }
+        # initialize the vector store with the following parameters:
+        #
+        # @param params [Hash] A Hash containing the initial configuration.
+        #
+        # @option params [Symbol] :embedding_tool The embedding tool to use. Must be provided.
+        # @option params [Array] :input_array The array of inputs to use for the embedding tool. Must be provided.
+        # @option params [String] :database_url The URL of the database where embeddings are stored. Must be provided.
+        # @option params [String] :table_name The name of the database table where embeddings are stored. Must be provided.
+        # @option params [String] :embedding_column_name The name of the database column where embeddings are stored. required.
+        # @option params [String] :content_column_name The name of the database column where content is stored. Must be provided.
+        # @option params [String] :metadata_column_name The name of the database column where metadata is stored. required.
         def initialize(params)
           @embedding_tool = params[:embedding_tool] || :openai
 
@@ -31,6 +33,7 @@ module Boxcars
           @pg_vectors = []
         end
 
+        # @return [Hash] vector_store: array of hashes with :content, :metadata, and :embedding keys
         def call
           texts = input_array
           vectors = generate_vectors(texts)

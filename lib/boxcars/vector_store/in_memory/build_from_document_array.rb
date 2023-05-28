@@ -6,6 +6,9 @@ module Boxcars
       class BuildFromDocumentArray
         include VectorStore
 
+        # @param embedding_tool [Symbol] :openai or other embedding tools
+        # @param documents [Array] array of hashes with :content and :metadata keys
+        # @return [Hash] vector_store: array of hashes with :content, :metadata, and :embedding keys
         def initialize(embedding_tool: :openai, documents: nil)
           validate_params(embedding_tool, documents)
           @embedding_tool = embedding_tool
