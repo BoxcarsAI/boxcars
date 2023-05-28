@@ -17,7 +17,6 @@ module Boxcars
         #   content_column_name: content_column_name
         # }
         def initialize(params)
-          @errors = []
           validate_param_types(params)
           @db_connection = test_db_params(params)
 
@@ -30,8 +29,6 @@ module Boxcars
         end
 
         def call
-          return { success: false, error: errors } unless errors.empty?
-
           add_vectors_to_database
         end
 
@@ -39,7 +36,7 @@ module Boxcars
 
         attr_reader :database_url, :pg_vectors, :db_connection, :table_name,
                     :embedding_column_name, :content_column_name,
-                    :metadata_column_name, :errors
+                    :metadata_column_name
 
         def validate_param_types(params)
           pg_vectors = params[:pg_vectors]
