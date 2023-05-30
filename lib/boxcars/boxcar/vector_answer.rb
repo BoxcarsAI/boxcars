@@ -47,7 +47,7 @@ module Boxcars
     def get_search_content(question, count: 1)
       search = Boxcars::VectorSearch.new(embeddings: embeddings, vector_documents: vector_documents)
       results = search.call query: question, count: count
-      @search_content = get_search_content(results)
+      @search_content = get_results_content(results)
     end
 
     # our template
