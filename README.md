@@ -135,7 +135,7 @@ See [this](https://github.com/BoxcarsAI/boxcars/blob/main/notebooks/boxcars_exam
 
 For the Swagger boxcar, see [this](https://github.com/BoxcarsAI/boxcars/blob/main/notebooks/swagger_examples.ipynb) Jupyter Notebook.
 
-For simple vector storage and search, see [this](https://github.com/BoxcarsAI/boxcars/blob/main/notebooks/vector_store_examples.ipynb) Jupyter Notebook.
+For simple vector storage and search, see [this](https://github.com/BoxcarsAI/boxcars/blob/main/notebooks/vector_search_examples.ipynb) Jupyter Notebook.
 
 Note, some folks that we talked to didn't know that you could run Ruby Jupyter notebooks. [You can](https://github.com/SciRuby/iruby).
 
