@@ -43,6 +43,8 @@ module Boxcars
         # @return [Hash] vector_store: array of hashes with :content, :metadata, and :embedding keys
         def call
           texts = input_array
+          # TODO: need to refine the input argument for generate_vectors
+          # texts = documents.map { |doc| doc[:content] }
           vectors = generate_vectors(texts)
           add_vectors(vectors, texts)
           documents = save_vector_store

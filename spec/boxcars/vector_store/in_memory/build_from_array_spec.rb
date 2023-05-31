@@ -2,18 +2,18 @@
 
 require 'spec_helper'
 
-RSpec.describe Boxcars::VectorStore::InMemory::BuildFromDocumentArray do
+RSpec.describe Boxcars::VectorStore::InMemory::BuildFromArray do
   subject(:result) { call_command }
 
   let(:arguments) do
     {
       embedding_tool: embedding_tool,
-      documents: documents
+      documents: input_array
     }
   end
   let(:embedding_tool) { :openai }
 
-  let(:documents) do
+  let(:input_array) do
     [
       { content: "hello", metadata: { a: 1 } },
       { content: "hi", metadata: { a: 1 } },

@@ -3,7 +3,7 @@
 module Boxcars
   module VectorStore
     module InMemory
-      class BuildFromDocumentArray
+      class BuildFromArray
         include VectorStore
 
         # @param embedding_tool [Symbol] :openai or other embedding tools
@@ -26,6 +26,8 @@ module Boxcars
         # @return [Hash] vector_store: array of Inventor::VectorStore::Document
         def call
           texts = documents
+          # TODO: need to refine the input argument for generate_vectors
+          # texts = documents.map { |doc| doc[:content] }
           vectors = generate_vectors(texts)
           add_vectors(vectors, documents)
           {
