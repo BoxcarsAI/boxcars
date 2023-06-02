@@ -36,25 +36,25 @@ RSpec.describe Boxcars::VectorStore::InMemory::BuildFromArray do
       end
 
       it 'returns same number of data as document size' do
-        expect(result[:vector_store].size).to eq(documents.size)
+        expect(result[:vector_store].size).to eq(input_array.size)
       end
 
       it 'adds memory vectors to memory_vectors array' do
         result[:vector_store].each_with_index do |memory_vector, index|
-          expect(memory_vector.content).to eq(documents[index][:content])
+          expect(memory_vector.content).to eq(input_array[index][:content])
         end
       end
 
       it 'merges metadata' do
         result[:vector_store].each_with_index do |memory_vector, index|
-          check = documents[index][:metadata].keys.all? { |k| memory_vector.metadata.key?(k) }
+          check = input_array[index][:metadata].keys.all? { |k| memory_vector.metadata.key?(k) }
           expect(check).to be_truthy
         end
       end
     end
 
     context 'when documents is nil' do
-      let(:documents) { nil }
+      let(:input_array) { nil }
 
       it 'raises ArgumentError for nil documents parameter' do
         expect { call_command }.to raise_error(
