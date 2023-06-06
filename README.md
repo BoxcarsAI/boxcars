@@ -57,6 +57,9 @@ require "boxcars"
 Note: if you want to try out the examples below, run this command and then paste in the code segments of interest:
 ```bash
 irb -r dotenv/load -r boxcars
+
+# or if you prefer local repository
+irb -r dotenv/load -r ./lib/boxcars
 ```
 
 ### Direct Boxcar Use

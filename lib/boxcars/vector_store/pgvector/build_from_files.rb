@@ -58,7 +58,7 @@ module Boxcars
         def validate_params(embedding_tool, training_data_path)
           training_data_dir = File.dirname(training_data_path.gsub(/\*{1,2}/, ''))
 
-          raise_argument_error('training_data_path parent directory must exist') unless File.directory?(training_data_dir)
+          raise_argument_error('training_data_path parent directory must exist') unless Dir.exist?(training_data_dir)
           raise_argument_error('No files found at the training_data_path pattern') if Dir.glob(training_data_path).empty?
           return if %i[openai tensorflow].include?(embedding_tool)
 
