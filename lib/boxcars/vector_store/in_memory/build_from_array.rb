@@ -7,7 +7,7 @@ module Boxcars
         include VectorStore
 
         # @param embedding_tool [Symbol] :openai or other embedding tools
-        # @param documents [Array] array of hashes with :content and :metadata keys
+        # @param input_array [Array] array of hashes with :content and :metadata keys
         # each hash item should have content and metadata
         # [
         #   { content: "hello", metadata: { a: 1 } },
@@ -16,18 +16,19 @@ module Boxcars
         #   { content: "what's this", metadata: { a: 1 } }
         # ]
         # @return [Hash] vector_store: array of hashes with :content, :metadata, and :embedding keys
-        def initialize(embedding_tool: :openai, documents: nil)
-          validate_params(embedding_tool, documents)
+        def initialize(embedding_tool: :openai, input_array: nil)
+          validate_params(embedding_tool, input_array)
           @embedding_tool = embedding_tool
-          @documents = documents
+          @input_array = input_array
           @memory_vectors = []
         end
 
         # @return [Hash] vector_store: array of Inventor::VectorStore::Document
         def call
-          texts = documents.map { |doc| doc[:content] }
+          texts = input_array.map { |doc| doc[:content] }
           vectors = generate_vectors(texts)
-          add_vectors(vectors, documents)
+          add_vectors(vectors, input_array)
+
           {
             type: :in_memory,
             vector_store: memory_vectors
@@ -36,28 +37,30 @@ module Boxcars
 
         private
 
-        attr_reader :documents, :memory_vectors
+        attr_reader :input_array, :memory_vectors
 
-        def validate_params(embedding_tool, documents)
-          raise_argument_error('documents is nil') unless documents
-          raise_argument_error('documents must be an array') unless documents.is_a?(Array)
-          raise_argument_error('items in documents needs to have content and metadata') unless proper_document_array?(documents)
+        def validate_params(embedding_tool, input_array)
+          raise_argument_error('input_array is nil') unless input_array
+          raise_argument_error('input_array must be an array') unless input_array.is_a?(Array)
+          unless proper_document_array?(input_array)
+            raise_argument_error('items in input_array needs to have content and metadata')
+          end
 
           return if %i[openai tensorflow].include?(embedding_tool)
 
           raise_argument_error('embedding_tool is invalid')
         end
 
-        def proper_document_array?(documents)
+        def proper_document_array?(input_array)
           return false unless
-          documents.all? { |hash| hash.key?(:content) && hash.key?(:metadata) }
+            input_array.all? { |hash| hash.key?(:content) && hash.key?(:metadata) }
 
           true
         end
 
         # returns array of documents with vectors
-        def add_vectors(vectors, documents)
-          vectors.zip(documents).each do |vector, doc|
+        def add_vectors(vectors, input_array)
+          vectors.zip(input_array).each do |vector, doc|
             memory_vector = Document.new(
               content: doc[:content],
               embedding: vector[:embedding],

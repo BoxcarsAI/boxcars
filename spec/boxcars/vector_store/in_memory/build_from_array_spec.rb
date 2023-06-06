@@ -8,7 +8,7 @@ RSpec.describe Boxcars::VectorStore::InMemory::BuildFromArray do
   let(:arguments) do
     {
       embedding_tool: embedding_tool,
-      documents: input_array
+      input_array: input_array
     }
   end
   let(:embedding_tool) { :openai }
@@ -57,27 +57,27 @@ RSpec.describe Boxcars::VectorStore::InMemory::BuildFromArray do
       end
     end
 
-    context 'when documents is nil' do
+    context 'when input_array is nil' do
       let(:input_array) { nil }
 
-      it 'raises ArgumentError for nil documents parameter' do
+      it 'raises ArgumentError for nil input_array parameter' do
         expect { call_command }.to raise_error(
-          Boxcars::ArgumentError, 'documents is nil'
+          Boxcars::ArgumentError, 'input_array is nil'
         )
       end
     end
 
-    context 'when documents has wrong type' do
+    context 'when input_array has wrong type' do
       let(:input_array) { 'not an array' }
 
-      it 'raises ArgumentError for invalid documents parameter' do
+      it 'raises ArgumentError for invalid input_array parameter' do
         expect { call_command }.to raise_error(
-          Boxcars::ArgumentError, 'documents must be an array'
+          Boxcars::ArgumentError, 'input_array must be an array'
         )
       end
     end
 
-    context 'when documents has wrong keys' do
+    context 'when input_array has wrong keys' do
       let(:input_array) do
         [
           { data: "hello", metadata: { a: 1 } },
@@ -87,9 +87,9 @@ RSpec.describe Boxcars::VectorStore::InMemory::BuildFromArray do
         ]
       end
 
-      it 'raises ArgumentError for invalid documents parameter' do
+      it 'raises ArgumentError for invalid input_array parameter' do
         expect { call_command }.to raise_error(
-          Boxcars::ArgumentError, 'items in documents needs to have content and metadata'
+          Boxcars::ArgumentError, 'items in input_array needs to have content and metadata'
         )
       end
     end

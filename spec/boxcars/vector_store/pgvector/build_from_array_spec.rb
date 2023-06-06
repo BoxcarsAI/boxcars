@@ -52,40 +52,74 @@ RSpec.describe Boxcars::VectorStore::Pgvector::BuildFromArray do
   end
 
   before do
-    allow(Boxcars::VectorStore::EmbedViaOpenAI).to receive(:call).and_return(embeddings)
     allow(Boxcars::VectorStore::Pgvector::SaveToDatabase).to receive(:call).and_return(documents)
   end
 
   describe '#call' do
     context 'with valid parameters' do
       it 'returns in_memory type' do
-        expect(result[:type]).to eq(:pgvector)
+        VCR.use_cassette("vector_store/pgvector/build_from_array_1") do
+          expect(result[:type]).to eq(:pgvector)
+        end
       end
 
       it 'returns same number of data as document size' do
-        expect(result[:vector_store].size).to eq(input_array.size)
+        VCR.use_cassette("vector_store/pgvector/build_from_array_2") do
+          expect(result[:vector_store].size).to eq(input_array.size)
+        end
       end
 
       it 'adds memory vectors to memory_vectors array' do
-        result[:vector_store].each_with_index do |memory_vector, index|
-          expect(memory_vector.content).to eq(input_array[index][:content])
+        VCR.use_cassette("vector_store/pgvector/build_from_array_3") do
+          result[:vector_store].each_with_index do |memory_vector, index|
+            expect(memory_vector.content).to eq(input_array[index][:content])
+          end
         end
       end
 
       it 'merges metadata' do
-        result[:vector_store].each_with_index do |memory_vector, index|
-          check = input_array[index][:metadata].keys.all? { |k| memory_vector.metadata.key?(k) }
-          expect(check).to be_truthy
+        VCR.use_cassette("vector_store/pgvector/build_from_array_4") do
+          result[:vector_store].each_with_index do |memory_vector, index|
+            check = input_array[index][:metadata].keys.all? { |k| memory_vector.metadata.key?(k) }
+            expect(check).to be_truthy
+          end
         end
       end
     end
 
-    context 'when documents is nil' do
+    context 'when input_array is nil' do
       let(:input_array) { nil }
 
       it 'raises ArgumentError for nil input_array parameter' do
         expect { call_command }.to raise_error(
           Boxcars::ArgumentError, 'input_array is nil'
+        )
+      end
+    end
+
+    context 'when input_array has wrong type' do
+      let(:input_array) { 'not an array' }
+
+      it 'raises ArgumentError for invalid input_array parameter' do
+        expect { call_command }.to raise_error(
+          Boxcars::ArgumentError, 'input_array must be an array'
+        )
+      end
+    end
+
+    context 'when input_array has wrong keys' do
+      let(:input_array) do
+        [
+          { data: "hello", metadata: { a: 1 } },
+          { data: "hi", metadata: { a: 1 } },
+          { data: "bye", metadata: { a: 1 } },
+          { data: "what's this", metadata: { a: 1 } }
+        ]
+      end
+
+      it 'raises ArgumentError for invalid input_array parameter' do
+        expect { call_command }.to raise_error(
+          Boxcars::ArgumentError, 'items in input_array needs to have content and metadata'
         )
       end
     end

@@ -42,11 +42,9 @@ module Boxcars
 
         # @return [Hash] vector_store: array of hashes with :content, :metadata, and :embedding keys
         def call
-          texts = input_array
-          # TODO: need to refine the input argument for generate_vectors
-          # texts = documents.map { |doc| doc[:content] }
+          texts = input_array.map { |doc| doc[:content] }
           vectors = generate_vectors(texts)
-          add_vectors(vectors, texts)
+          add_vectors(vectors, input_array)
           documents = save_vector_store
 
           {
@@ -63,15 +61,18 @@ module Boxcars
 
         def validate_params(embedding_tool, input_array)
           raise_argument_error('input_array is nil') unless input_array
+          raise_argument_error('input_array must be an array') unless input_array.is_a?(Array)
+          raise_argument_error('items in input_array needs to have content and metadata') unless proper_input_array?(input_array)
           return if %i[openai tensorflow].include?(embedding_tool)
 
           raise_argument_error('embedding_tool is invalid') unless %i[openai tensorflow].include?(embedding_tool)
+        end
 
-          input_array.each do |item|
-            next if item.key?(:content) && item.key?(:metadata)
+        def proper_input_array?(input_array)
+          return false unless
+            input_array.all? { |hash| hash.key?(:content) && hash.key?(:metadata) }
 
-            return raise_argument_error('embedding_tool is invalid')
-          end
+          true
         end
 
         def add_vectors(vectors, texts)
