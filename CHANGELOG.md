@@ -1,5 +1,21 @@
 # Changelog
 
+## [v0.2.14](https://github.com/BoxcarsAI/boxcars/tree/v0.2.14) (2023-06-06)
+
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.2.13...v0.2.14)
+
+**Closed issues:**
+
+- VectorAnswer always return error "Query must a string" [\#90](https://github.com/BoxcarsAI/boxcars/issues/90)
+- Readme vector search example 404 [\#86](https://github.com/BoxcarsAI/boxcars/issues/86)
+- Add Boxcar similar to LLMChain [\#85](https://github.com/BoxcarsAI/boxcars/issues/85)
+
+**Merged pull requests:**
+
+- Chore/refactored vector stores [\#92](https://github.com/BoxcarsAI/boxcars/pull/92) ([jaigouk](https://github.com/jaigouk))
+- Fix the issue of calling the wrong method in vector\_answer.rb. [\#91](https://github.com/BoxcarsAI/boxcars/pull/91) ([xleotranx](https://github.com/xleotranx))
+- issue\_83 Fix readme 404 [\#87](https://github.com/BoxcarsAI/boxcars/pull/87) ([beouk](https://github.com/beouk))
+
 ## [v0.2.13](https://github.com/BoxcarsAI/boxcars/tree/v0.2.13) (2023-05-24)
 
 [Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.2.12...v0.2.13)
