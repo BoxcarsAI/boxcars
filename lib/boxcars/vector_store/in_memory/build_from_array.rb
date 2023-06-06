@@ -25,9 +25,7 @@ module Boxcars
 
         # @return [Hash] vector_store: array of Inventor::VectorStore::Document
         def call
-          texts = documents
-          # TODO: need to refine the input argument for generate_vectors
-          # texts = documents.map { |doc| doc[:content] }
+          texts = documents.map { |doc| doc[:content] }
           vectors = generate_vectors(texts)
           add_vectors(vectors, documents)
           {
@@ -42,9 +40,19 @@ module Boxcars
 
         def validate_params(embedding_tool, documents)
           raise_argument_error('documents is nil') unless documents
+          raise_argument_error('documents must be an array') unless documents.is_a?(Array)
+          raise_argument_error('items in documents needs to have content and metadata') unless proper_document_array?(documents)
+
           return if %i[openai tensorflow].include?(embedding_tool)
 
           raise_argument_error('embedding_tool is invalid')
+        end
+
+        def proper_document_array?(documents)
+          return false unless
+          documents.all? { |hash| hash.key?(:content) && hash.key?(:metadata) }
+
+          true
         end
 
         # returns array of documents with vectors
