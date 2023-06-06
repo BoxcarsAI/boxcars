@@ -6,6 +6,10 @@ module Boxcars
       class Search
         include VectorStore
 
+        # initialize the vector store InMemory::Search with the following parameters:
+        # @param params [Hash] A Hash containing the initial configuration.
+        # @option params [Hash] :vector_documents The vector documents to search.
+        # @option params [Hash] :vector_store The vector store to search.
         def initialize(params)
           validate_params(params[:vector_documents])
           @vector_documents = params[:vector_documents]

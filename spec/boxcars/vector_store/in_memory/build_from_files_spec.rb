@@ -8,7 +8,7 @@ RSpec.describe Boxcars::VectorStore::InMemory::BuildFromFiles do
   let(:arguments) do
     {
       training_data_path: training_data_path,
-      split_chunk_size: 200,
+      split_chunk_size: 900,
       embedding_tool: embedding_tool
     }
   end
@@ -31,7 +31,7 @@ RSpec.describe Boxcars::VectorStore::InMemory::BuildFromFiles do
   end
 
   it 'returns same number of data as document size' do
-    expect(result[:vector_store].size).to eq(15)
+    expect(result[:vector_store].size).to eq(19)
   end
 
   it 'returns Boxcars::VectorStore::Document' do

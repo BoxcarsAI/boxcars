@@ -5,33 +5,31 @@ require 'hnswlib'
 require 'json'
 
 RSpec.describe Boxcars::VectorStore::Hnswlib::Search do
-  let(:search_result) do
+  subject(:search_result) do
     hnswlib_search.call(
       query_vector: query_vector,
       count: count
     )
   end
-  let(:query_vector) { Array.new(1536) { 0.2 } }
+
+  let(:query_vector) { Array.new(1536) { 0 } }
   let(:hnswlib_search) do
     described_class.new(
       vector_documents: vector_documents
     )
   end
   let(:count) { 2 }
-
   let(:vector_documents) do
     Boxcars::VectorStore::Hnswlib::LoadFromDisk.call(
-      index_file_path: hnswlib_index,
-      json_doc_file_path: json_doc
+      base_dir_path: base_dir_path,
+      index_file_path: index_file_path,
+      json_doc_file_path: json_doc_file_path
     )
   end
 
-  let(:json_doc) { 'spec/fixtures/embeddings/test_doc_text_file.json' }
-  let(:hnswlib_index) { 'spec/fixtures/embeddings/test_hnsw_index.bin' }
-
-  before do
-    allow(Boxcars::VectorStore::EmbedViaOpenAI).to receive(:call).and_return(query_vector)
-  end
+  let(:base_dir_path) { '.' }
+  let(:json_doc_file_path) { './spec/fixtures/embeddings/test_hnsw_index.json' }
+  let(:index_file_path) { './spec/fixtures/embeddings/test_hnsw_index.bin' }
 
   describe '#call' do
     it 'returns an array' do
@@ -49,6 +47,41 @@ RSpec.describe Boxcars::VectorStore::Hnswlib::Search do
     it 'returns results with distances sorted in ascending order' do
       distances = search_result.map { |result| result[:distance] }
       expect(distances).to eq(distances.sort)
+    end
+
+    context 'with multiple calls' do
+      let(:first_search_result) do
+        hnswlib_search.call(
+          query_vector: cost_ratio_response,
+          count: 1
+        ).first[:document].content
+      end
+      let(:second_search_result) do
+        hnswlib_search.call(
+          query_vector: hnaswlib_response,
+          count: 1
+        ).first[:document].content
+      end
+      let(:cost_ratio_response) do
+        JSON.parse(File.read('spec/fixtures/embeddings/query_vector_cost.json'), symbolize_names: true).first[:embedding]
+      end
+      let(:hnaswlib_response) do
+        JSON.parse(File.read('spec/fixtures/embeddings/query_vector_hnswlib.json'), symbolize_names: true).first[:embedding]
+      end
+
+      it 'returns the different results' do
+        expect(first_search_result).not_to eq(second_search_result)
+      end
+
+      it 'returns the correct results for the first query' do
+        expected = first_search_result.include?('Cost Ratio of OpenAI embedding')
+        expect(expected).to be_truthy
+      end
+
+      it 'returns the correct results for the second query' do
+        expected = second_search_result.include?('Can work with custom user defined distances (C++)')
+        expect(expected).to be_truthy
+      end
     end
 
     context 'with wrong query vector' do

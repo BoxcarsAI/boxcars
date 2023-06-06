@@ -3,7 +3,7 @@
 <h4 align="center">
   <a href="https://www.boxcars.ai">Website</a> |
   <a href="https://www.boxcars.ai/blog">Blog</a> |
-  <a href="https://github.com/BoxcarsAI/boxcars/wiki">Documentation</a> 
+  <a href="https://github.com/BoxcarsAI/boxcars/wiki">Documentation</a>
 </h4>
 
 <p align="center">
@@ -57,6 +57,9 @@ require "boxcars"
 Note: if you want to try out the examples below, run this command and then paste in the code segments of interest:
 ```bash
 irb -r dotenv/load -r boxcars
+
+# or if you prefer local repository
+irb -r dotenv/load -r ./lib/boxcars
 ```
 
 ### Direct Boxcar Use
@@ -107,7 +110,7 @@ Produces:
 ```text
 > Entering Zero Shot#run
 What is pi times the square root of the average temperature in Austin TX in January?
-Thought: We need to find the average temperature in Austin TX in January and then multiply it by pi and the square root of the average temperature. We can use a search engine to find the average temperature in Austin TX in January and a calculator to perform the multiplication. 
+Thought: We need to find the average temperature in Austin TX in January and then multiply it by pi and the square root of the average temperature. We can use a search engine to find the average temperature in Austin TX in January and a calculator to perform the multiplication.
 Question: Average temperature in Austin TX in January
 Answer: January Weather in Austin Texas, United States. Daily high temperatures increase by 2°F, from 62°F to 64°F, rarely falling below 45°F or exceeding 76° ...
 Observation: January Weather in Austin Texas, United States. Daily high temperatures increase by 2°F, from 62°F to 64°F, rarely falling below 45°F or exceeding 76° ...

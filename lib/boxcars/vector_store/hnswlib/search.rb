@@ -9,19 +9,35 @@ module Boxcars
       class Search
         include VectorStore
 
+        # initialize the vector store search with the following parameters:
+        # @param params [Hash] A Hash containing the initial configuration.
+        # example:
+        # {
+        #   type: :hnswlib,
+        #   vector_store: [
+        #     Boxcars::VectorStore::Document.new(
+        #       content: "hello",
+        #       embedding: [0.1, 0.2, 0.3],
+        #       metadata: { a: 1 }
+        #     )
+        #   ]
+        # }
         def initialize(params)
-          validate_params(params[:vector_documents])
-          @vector_documents = params[:vector_documents]
-          @search_index = load_index(params[:vector_documents])
+          @vector_store = validate_params(params[:vector_documents])
+          @metadata, @index_file = validate_files(vector_store)
+          @search_index = load_index(metadata, index_file)
         end
 
+        # @param query_vector [Array] The query vector to search for.
+        # @param count [Integer] The number of results to return.
+        # @return [Array] array of hashes with :document and :distance keys
         def call(query_vector:, count: 1)
           search(query_vector, count)
         end
 
         private
 
-        attr_reader :vector_documents, :vector_store, :json_doc, :search_index, :metadata
+        attr_reader :vector_store, :index_file, :search_index, :metadata
 
         def validate_params(vector_documents)
           raise_argument_error('vector_documents is nil') unless vector_documents
@@ -34,27 +50,47 @@ module Boxcars
             raise_arugment_error('vector_store must be an array of Document objects')
           end
 
-          true
+          vector_documents[:vector_store]
         end
 
-        def load_index(vector_documents)
-          @metadata = vector_documents[:vector_store].first.metadata
-          @json_doc = @metadata[:json_doc_file_path]
+        def validate_files(vector_store)
+          metadata = vector_store.first.metadata
+          raise_arugment_error('metadata must be a hash') unless metadata.is_a?(Hash)
+          raise_arugment_error('metadata is empty') if metadata.empty?
 
+          validate_string(metadata[:index_file_path], "index_file_path")
+          validate_string(metadata[:json_doc_file_path], "json_doc_file_path")
+
+          base_dir = metadata[:base_dir_path]
+          index_file_file_path = metadata[:index_file_path]
+          index_file =
+            if !index_file_file_path.to_s.empty? && File.exist?(index_file_file_path)
+              index_file_file_path
+            else
+              File.join(base_dir.to_s, index_file_file_path.to_s)
+            end
+
+          raise_argument_error('index_file does not exist') unless File.exist?(index_file)
+
+          [metadata, index_file]
+        end
+
+        def load_index(metadata, index_file)
           search_index = ::Hnswlib::HierarchicalNSW.new(
             space: metadata[:metric],
             dim: metadata[:dim]
           )
-          search_index.load_index(metadata[:index_file_path])
-          @search_index = search_index
-          @vector_store = vector_documents[:vector_store]
-
+          search_index.load_index(index_file)
           search_index
         end
 
         def search(query_vector, num_neighbors)
           raw_results = search_index.search_knn(query_vector, num_neighbors)
-          raw_results.map { |doc_id, distance| lookup_embedding(doc_id, distance) }.compact
+
+          raw_results.map { |doc_id, distance| lookup_embedding(doc_id, distance) }
+                     .compact
+                     .first(num_neighbors)
+                     .sort_by { |result| result[:distance] }
         rescue StandardError => e
           raise_argument_error("Error searching for #{query_vector}: #{e.message}")
         end

@@ -54,7 +54,7 @@ module Boxcars
 
       file_content = File.read(file_path)
       JSON.parse(file_content, symbolize_names: true)
-    rescue JSON::ParserError => e
+    rescue JSON::ParserError, Errno::ENOENT => e
       raise_argument_error("Error parsing #{file_path}: #{e.message}")
     end
 
@@ -80,6 +80,11 @@ module Boxcars
       end
       docs
     end
+
+    def validate_string(value, name)
+      raise raise_argument_error("#{name} must be a string") unless value.is_a?(String)
+      raise raise_argument_error("#{name} is empty") if value.empty?
+    end
   end
 end
 
@@ -92,7 +97,7 @@ require_relative "vector_store/hnswlib/save_to_hnswlib"
 require_relative "vector_store/hnswlib/build_from_files"
 require_relative "vector_store/hnswlib/search"
 require_relative "vector_store/in_memory/build_from_files"
-require_relative "vector_store/in_memory/build_from_document_array"
+require_relative "vector_store/in_memory/build_from_array"
 require_relative "vector_store/in_memory/search"
 require_relative "vector_store/pgvector/build_from_files"
 require_relative "vector_store/pgvector/build_from_array"

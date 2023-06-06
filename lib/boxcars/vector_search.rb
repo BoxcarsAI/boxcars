@@ -4,6 +4,20 @@
 module Boxcars
   # For Boxcars that use an engine to do their work.
   class VectorSearch
+    # initialize the vector search with the following parameters:
+    # @param params [Hash] A Hash containing the initial configuration.
+    # @option params [Hash] :vector_documents The vector documents to search.
+    # example:
+    # {
+    #   type: :in_memory,
+    #   vector_store: [
+    #     Boxcars::VectorStore::Document.new(
+    #       content: "hello",
+    #       embedding: [0.1, 0.2, 0.3],
+    #       metadata: { a: 1 }
+    #     )
+    #   ]
+    # }
     def initialize(params)
       @vector_documents = params[:vector_documents]
       @embedding_tool = params[:embedding_tool] || :openai
@@ -11,6 +25,20 @@ module Boxcars
       @openai_connection = params[:openai_connection] || default_connection(openai_access_token: params[:openai_access_token])
     end
 
+    # @param query [String] The query to search for.
+    # @param count [Integer] The number of results to return.
+    # @return [Array] array of hashes with :document and :distance keys
+    # @example
+    #   [
+    #     {
+    #       document: Boxcars::VectorStore::Document.new(
+    #         content: "hello",
+    #         embedding: [0.1, 0.2, 0.3],
+    #         metadata: { a: 1 }
+    #       ),
+    #       distance: 0.1
+    #     }
+    #   ]
     def call(query:, count: 1)
       validate_query(query)
       query_vector = convert_query_to_vector(query)

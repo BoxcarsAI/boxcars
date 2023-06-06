@@ -40,10 +40,6 @@ RSpec.describe Boxcars::VectorStore::InMemory::Search do
     ]
   end
 
-  before do
-    allow(Boxcars::VectorStore::EmbedViaOpenAI).to receive(:call).and_return([[1.0, 2.0, 3.0]])
-  end
-
   describe '#call' do
     context 'with valid parameters' do
       it 'returns the most similar document' do

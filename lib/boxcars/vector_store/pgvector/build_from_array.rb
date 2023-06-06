@@ -7,15 +7,24 @@ module Boxcars
       class BuildFromArray
         include VectorStore
 
-        # params =  {
-        #   embedding_tool: embedding_tool,
-        #   input_array: input_array,
-        #   database_url: db_url,
-        #   table_name: table_name,
-        #   embedding_column_name: embedding_column_name,
-        #   content_column_name: content_column_name,
-        #   metadata_column_name: metadata_column_name
-        # }
+        # initialize the vector store with the following parameters:
+        #
+        # @param params [Hash] A Hash containing the initial configuration.
+        #
+        # @option params [Symbol] :embedding_tool The embedding tool to use. Must be provided.
+        # @option params [Array] :input_array The array of inputs to use for the embedding tool. Must be provided.
+        # each hash item should have content and metadata
+        # [
+        #   { content: "hello", metadata: { a: 1 } },
+        #   { content: "hi", metadata: { a: 1 } },
+        #   { content: "bye", metadata: { a: 1 } },
+        #   { content: "what's this", metadata: { a: 1 } }
+        # ]
+        # @option params [String] :database_url The URL of the database where embeddings are stored. Must be provided.
+        # @option params [String] :table_name The name of the database table where embeddings are stored. Must be provided.
+        # @option params [String] :embedding_column_name The name of the database column where embeddings are stored. required.
+        # @option params [String] :content_column_name The name of the database column where content is stored. Must be provided.
+        # @option params [String] :metadata_column_name The name of the database column where metadata is stored. required.
         def initialize(params)
           @embedding_tool = params[:embedding_tool] || :openai
 
@@ -31,10 +40,11 @@ module Boxcars
           @pg_vectors = []
         end
 
+        # @return [Hash] vector_store: array of hashes with :content, :metadata, and :embedding keys
         def call
-          texts = input_array
+          texts = input_array.map { |doc| doc[:content] }
           vectors = generate_vectors(texts)
-          add_vectors(vectors, texts)
+          add_vectors(vectors, input_array)
           documents = save_vector_store
 
           {
@@ -51,15 +61,18 @@ module Boxcars
 
         def validate_params(embedding_tool, input_array)
           raise_argument_error('input_array is nil') unless input_array
+          raise_argument_error('input_array must be an array') unless input_array.is_a?(Array)
+          raise_argument_error('items in input_array needs to have content and metadata') unless proper_input_array?(input_array)
           return if %i[openai tensorflow].include?(embedding_tool)
 
           raise_argument_error('embedding_tool is invalid') unless %i[openai tensorflow].include?(embedding_tool)
+        end
 
-          input_array.each do |item|
-            next if item.key?(:content) && item.key?(:metadata)
+        def proper_input_array?(input_array)
+          return false unless
+            input_array.all? { |hash| hash.key?(:content) && hash.key?(:metadata) }
 
-            return raise_argument_error('embedding_tool is invalid')
-          end
+          true
         end
 
         def add_vectors(vectors, texts)
