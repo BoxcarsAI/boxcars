@@ -45,7 +45,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Tue, 04 Apr 2023 18:23:57 GMT
+      - Wed, 07 Jun 2023 00:06:30 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -61,32 +61,38 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '752'
+      - '1472'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
       - max-age=15724800; includeSubDomains
       X-Ratelimit-Limit-Requests:
       - '3500'
+      X-Ratelimit-Limit-Tokens:
+      - '90000'
       X-Ratelimit-Remaining-Requests:
       - '3499'
+      X-Ratelimit-Remaining-Tokens:
+      - '89079'
       X-Ratelimit-Reset-Requests:
       - 17ms
+      X-Ratelimit-Reset-Tokens:
+      - 613ms
       X-Request-Id:
-      - 8ff6d4a511998f264bf3a305bce1d017
+      - 96b05140438200388b9ddd8bc7a4e1f8
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7b2b95d89cd727d0-SLC
+      - 7d34a63e5b37a6fa-PHX
       Alt-Svc:
-      - h3=":443"; ma=86400, h3-29=":443"; ma=86400
+      - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
-      string: '{"id":"chatcmpl-71fbwrC7NhZQOOo9vQU4zuueOXSaM","object":"chat.completion","created":1680632636,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":374,"completion_tokens":14,"total_tokens":388},"choices":[{"message":{"role":"assistant","content":"ARCode:
+      string: '{"id":"chatcmpl-7OayzptYjpDFLC9tNRykeMhcFxwLq","object":"chat.completion","created":1686096389,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":374,"completion_tokens":14,"total_tokens":388},"choices":[{"message":{"role":"assistant","content":"ARCode:
         `User.where(encrypted_password: ''secret'')`\n\n"},"finish_reason":"stop","index":0}]}
 
         '
-  recorded_at: Tue, 04 Apr 2023 18:23:57 GMT
+  recorded_at: Wed, 07 Jun 2023 00:06:30 GMT
 recorded_with: VCR 6.1.0

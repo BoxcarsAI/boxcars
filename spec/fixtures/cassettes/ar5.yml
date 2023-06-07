@@ -45,7 +45,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Tue, 04 Apr 2023 00:21:28 GMT
+      - Wed, 07 Jun 2023 00:01:20 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -61,36 +61,42 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '2021'
+      - '4719'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
       - max-age=15724800; includeSubDomains
       X-Ratelimit-Limit-Requests:
       - '3500'
+      X-Ratelimit-Limit-Tokens:
+      - '90000'
       X-Ratelimit-Remaining-Requests:
       - '3499'
+      X-Ratelimit-Remaining-Tokens:
+      - '89088'
       X-Ratelimit-Reset-Requests:
       - 17ms
+      X-Ratelimit-Reset-Tokens:
+      - 608ms
       X-Request-Id:
-      - 8e359e87305ce97eae2d9dc3c3e9dbb9
+      - a8fc7b2c0bbc6ba7e02cebdec6a7612f
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7b256427287a27d0-SLC
+      - 7d349e96adf8a726-PHX
       Alt-Svc:
-      - h3=":443"; ma=86400, h3-29=":443"; ma=86400
+      - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
-      string: '{"id":"chatcmpl-71OiMddybC0ykiKLrrcYT6qZT2Or6","object":"chat.completion","created":1680567686,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":366,"completion_tokens":53,"total_tokens":419},"choices":[{"message":{"role":"assistant","content":"ARChanges:
-        `Ticket.where(user_id: john.id, status: ''open'').update_all(user_id: sally.id)`
-        \nARCode: `Ticket.where(user_id: john.id, status: ''open'').update_all(user_id:
+      string: '{"id":"chatcmpl-7Oatvrb3A9JlznQ3P14NqW1Otb92k","object":"chat.completion","created":1686096075,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":366,"completion_tokens":53,"total_tokens":419},"choices":[{"message":{"role":"assistant","content":"ARChanges:
+        `Ticket.where(user_id: john.id, status: \"open\").update_all(user_id: sally.id)`
+        \nARCode: `Ticket.where(user_id: john.id, status: \"open\").update_all(user_id:
         sally.id)`\n"},"finish_reason":"stop","index":0}]}
 
         '
-  recorded_at: Tue, 04 Apr 2023 00:21:28 GMT
+  recorded_at: Wed, 07 Jun 2023 00:01:20 GMT
 - request:
     method: post
     uri: https://api.openai.com/v1/chat/completions
@@ -119,8 +125,8 @@ http_interactions:
         to use the format specified above.\nFinally, try not to use print or puts
         in your code"},{"role":"user","content":"Question: Move John''s open tickets
         to Sally"},{"role":"assistant","content":"ARChanges: `Ticket.where(user_id:
-        john.id, status: ''open'').update_all(user_id: sally.id)` \nARCode: `Ticket.where(user_id:
-        john.id, status: ''open'').update_all(user_id: sally.id)`"},{"role":"user","content":"ARChanges
+        john.id, status: \"open\").update_all(user_id: sally.id)` \nARCode: `Ticket.where(user_id:
+        john.id, status: \"open\").update_all(user_id: sally.id)`"},{"role":"user","content":"ARChanges
         Error: undefined local variable or method `john - please fix \"ARChanges:\"
         to not have this error"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["Answer:"]}'
     headers:
@@ -140,7 +146,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Tue, 04 Apr 2023 00:21:33 GMT
+      - Wed, 07 Jun 2023 00:01:30 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -156,38 +162,44 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '4643'
+      - '9825'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
       - max-age=15724800; includeSubDomains
       X-Ratelimit-Limit-Requests:
       - '3500'
+      X-Ratelimit-Limit-Tokens:
+      - '90000'
       X-Ratelimit-Remaining-Requests:
       - '3499'
+      X-Ratelimit-Remaining-Tokens:
+      - '89014'
       X-Ratelimit-Reset-Requests:
       - 17ms
+      X-Ratelimit-Reset-Tokens:
+      - 656ms
       X-Request-Id:
-      - 2221864d1b6453f43f778a34950b959b
+      - ac953ca9df625446fd52bb69edbf2d7f
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7b256434cf522806-SLC
+      - 7d349eb4cfef1b32-PHX
       Alt-Svc:
-      - h3=":443"; ma=86400, h3-29=":443"; ma=86400
+      - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
-      string: '{"id":"chatcmpl-71OiOmhiTWwarV4MPLi7WT5xbfjxZ","object":"chat.completion","created":1680567688,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":452,"completion_tokens":141,"total_tokens":593},"choices":[{"message":{"role":"assistant","content":"I
+      string: '{"id":"chatcmpl-7Oau0ap1TyWDpg9J4Ai8pm2NP3FNj","object":"chat.completion","created":1686096080,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":452,"completion_tokens":141,"total_tokens":593},"choices":[{"message":{"role":"assistant","content":"I
         apologize for that mistake. I assumed the existence of a variable that was
-        not defined. Here''s the corrected version:\n\nARChanges: `Ticket.where(user_id:
-        User.find_by(name: ''John'').id, status: ''open'').update_all(user_id: User.find_by(name:
-        ''Sally'').id)` \n\nARCode: `Ticket.where(user_id: User.find_by(name: ''John'').id,
-        status: ''open'').update_all(user_id: User.find_by(name: ''Sally'').id)`\n\nThis
-        code will find the user with name ''John'' and the user with name ''Sally'',
-        and update all open tickets that belong to John to belong to Sally instead."},"finish_reason":"stop","index":0}]}
+        not defined. Here''s the updated code:\n\nARChanges: `Ticket.where(user_id:
+        User.find_by(name: \"John\").id, status: \"open\").update_all(user_id: User.find_by(name:
+        \"Sally\").id)` \n\nARCode: `Ticket.where(user_id: User.find_by(name: \"John\").id,
+        status: \"open\").update_all(user_id: User.find_by(name: \"Sally\").id)`\n\nThis
+        code will find the user with name \"John\" and the user with name \"Sally\",
+        and then update all open tickets belonging to John to belong to Sally instead."},"finish_reason":"stop","index":0}]}
 
         '
-  recorded_at: Tue, 04 Apr 2023 00:21:33 GMT
+  recorded_at: Wed, 07 Jun 2023 00:01:30 GMT
 recorded_with: VCR 6.1.0

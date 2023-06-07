@@ -45,7 +45,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Tue, 04 Apr 2023 00:21:34 GMT
+      - Wed, 07 Jun 2023 00:01:32 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -61,32 +61,38 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '909'
+      - '1813'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
       - max-age=15724800; includeSubDomains
       X-Ratelimit-Limit-Requests:
       - '3500'
+      X-Ratelimit-Limit-Tokens:
+      - '90000'
       X-Ratelimit-Remaining-Requests:
       - '3499'
+      X-Ratelimit-Remaining-Tokens:
+      - '89089'
       X-Ratelimit-Reset-Requests:
       - 17ms
+      X-Ratelimit-Reset-Tokens:
+      - 607ms
       X-Request-Id:
-      - 53fb23bf2a71cc3b2119e899d76f6157
+      - e83a7d8ccb5524ae91c9321ff0976b5b
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7b256452ed63a06e-SLC
+      - 7d349ef36fe7a718-PHX
       Alt-Svc:
-      - h3=":443"; ma=86400, h3-29=":443"; ma=86400
+      - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
-      string: '{"id":"chatcmpl-71OiTMsxQEIW8Z0mibomiYn5AFzd9","object":"chat.completion","created":1680567693,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":365,"completion_tokens":21,"total_tokens":386},"choices":[{"message":{"role":"assistant","content":"ARCode:
-        Comment.joins(:user).where(users: {name: ''Sally''}).count\n\n"},"finish_reason":"stop","index":0}]}
+      string: '{"id":"chatcmpl-7OauA5HX55bRUjfF42nFxJtIeA8Kv","object":"chat.completion","created":1686096090,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":365,"completion_tokens":22,"total_tokens":387},"choices":[{"message":{"role":"assistant","content":"ARCode:
+        `Comment.where(user_id: User.find_by(name: ''Sally'').id).count`\n\n"},"finish_reason":"stop","index":0}]}
 
         '
-  recorded_at: Tue, 04 Apr 2023 00:21:34 GMT
+  recorded_at: Wed, 07 Jun 2023 00:01:32 GMT
 recorded_with: VCR 6.1.0

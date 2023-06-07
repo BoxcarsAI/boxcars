@@ -27,8 +27,8 @@ http_interactions:
         and ARCode\nBe careful to not query for attributes that do not exist, and
         to use the format specified above.\nFinally, try not to use print or puts
         in your code"},{"role":"user","content":"Question: tickets asigned to Sally?"},{"role":"assistant","content":"ARChanges:
-        `Ticket.where(user_id: john.id, status: ''open'').update_all(user_id: sally.id)`
-        \nARCode: `Ticket.where(user_id: john.id, status: ''open'').update_all(user_id:
+        `Ticket.where(user_id: john.id, status: \"open\").update_all(user_id: sally.id)`
+        \nARCode: `Ticket.where(user_id: john.id, status: \"open\").update_all(user_id:
         sally.id)`"},{"role":"user","content":"ARChanges Error: undefined local variable
         or method `john - please fix \"ARChanges:\" to not have this error"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["Answer:"]}'
     headers:
@@ -48,7 +48,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Tue, 04 Apr 2023 00:21:37 GMT
+      - Wed, 07 Jun 2023 00:01:39 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -64,35 +64,41 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '2925'
+      - '7485'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
       - max-age=15724800; includeSubDomains
       X-Ratelimit-Limit-Requests:
       - '3500'
+      X-Ratelimit-Limit-Tokens:
+      - '90000'
       X-Ratelimit-Remaining-Requests:
       - '3499'
+      X-Ratelimit-Remaining-Tokens:
+      - '89017'
       X-Ratelimit-Reset-Requests:
       - 17ms
+      X-Ratelimit-Reset-Tokens:
+      - 655ms
       X-Request-Id:
-      - 238425ba31d63e194c499ce8e3e5d08e
+      - 539594859d5f3ff70e04302b16ddc78c
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7b256459bf86a062-SLC
+      - 7d349effaff3a6ee-PHX
       Alt-Svc:
-      - h3=":443"; ma=86400, h3-29=":443"; ma=86400
+      - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
-      string: '{"id":"chatcmpl-71OiUPnhq5QqnmOcurpqmxYavbWhu","object":"chat.completion","created":1680567694,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":451,"completion_tokens":77,"total_tokens":528},"choices":[{"message":{"role":"assistant","content":"I
-        apologize for that mistake. Here''s the updated code:\n\nARChanges: `Ticket.where(user_id:
-        User.find_by(name: ''John'').id, status: ''open'').update_all(user_id: User.find_by(name:
-        ''Sally'').id)`\nARCode: `Ticket.where(user_id: User.find_by(name: ''Sally'').id).pluck(:title)`
-        \n"},"finish_reason":"stop","index":0}]}
+      string: '{"id":"chatcmpl-7OauCyaJkFV3NiomhiTtChLKOJYO5","object":"chat.completion","created":1686096092,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":451,"completion_tokens":78,"total_tokens":529},"choices":[{"message":{"role":"assistant","content":"I
+        apologize for that mistake. Here''s the corrected version:\n\nARChanges: `Ticket.where(user_id:
+        User.find_by(name: \"John\").id, status: \"open\").update_all(user_id: User.find_by(name:
+        \"Sally\").id)` \n\nARCode: `Ticket.where(user_id: User.find_by(name: \"Sally\").id).pluck(:title)`
+        \n\n"},"finish_reason":"stop","index":0}]}
 
         '
-  recorded_at: Tue, 04 Apr 2023 00:21:37 GMT
+  recorded_at: Wed, 07 Jun 2023 00:01:39 GMT
 recorded_with: VCR 6.1.0

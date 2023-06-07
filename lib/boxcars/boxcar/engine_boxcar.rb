@@ -90,7 +90,7 @@ module Boxcars
         answer = get_answer(text)
         if answer.status == :error
           Boxcars.debug "have error, trying again: #{answer.answer}", :red
-          conversation ||= Conversation.new
+          conversation = Conversation.new
           conversation.add_assistant(text)
           conversation.add_user(answer.answer)
         else

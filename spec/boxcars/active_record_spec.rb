@@ -80,7 +80,7 @@ RSpec.describe Boxcars::ActiveRecord do
     it "can return just the code" do
       VCR.use_cassette("ar6") do
         code_results = boxcar3.conduct("count of comments from Sally?").to_h
-        expect(code_results[:code]).to eq("Comment.joins(:user).where(users: {name: 'Sally'}).count")
+        expect(code_results[:code]).to eq("Comment.where(user_id: User.find_by(name: 'Sally').id).count")
       end
     end
 
