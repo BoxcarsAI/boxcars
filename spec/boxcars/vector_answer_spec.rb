@@ -18,5 +18,27 @@ RSpec.describe Boxcars::VectorAnswer do
         expect(vector_answer.run("Will I get a laptop?")).to include("you will be provided with a laptop")
       end
     end
+
+    context 'vector_documents as in_memory vector store' do
+      let(:vector_store_type) { :in_memory }
+      let(:vector_documents) do
+        {
+          type: vector_store_type,
+          vector_store: [
+            Boxcars::VectorStore::Document.new(
+              content: "hello",
+              embedding: [0.1, 0.2, 0.3],
+              metadata: { a: 1 }
+            )
+          ]
+        }
+      end
+
+      it "can answer a question from content" do
+        VCR.use_cassette("vector_answer") do
+          expect(vector_answer.run("Will I get a laptop?")).to include("you will be provided with a laptop")
+        end
+      end
+    end
   end
 end

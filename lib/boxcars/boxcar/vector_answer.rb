@@ -7,16 +7,16 @@ module Boxcars
     # the description of this engine boxcar
     DESC = "useful for when you need to answer questions from vector search results."
 
-    attr_reader :embeddings, :vector_documents, :search_content
+    attr_reader :embedding_tool, :vector_documents, :search_content
 
-    # @param embeddings [Hash] The vector embeddings to use for this boxcar.
+    # @param embedding_tool [Symbol] The vector embedding_tool to use for this boxcar.
     # @param vector_documents [Hash] The vector documents to use for this boxcar.
     # @param engine [Boxcars::Engine] The engine to user for this boxcar. Can be inherited from a train if nil.
     # @param prompt [Boxcars::Prompt] The prompt to use for this boxcar. Defaults to built-in prompt.
     # @param kwargs [Hash] Any other keyword arguments to pass to the parent class.
-    def initialize(embeddings:, vector_documents:, engine: nil, prompt: nil, **kwargs)
+    def initialize(embedding_tool:, vector_documents:, engine: nil, prompt: nil, **kwargs)
       the_prompt = prompt || my_prompt
-      @embeddings = embeddings
+      @embedding_tool = embedding_tool
       @vector_documents = vector_documents
       kwargs[:stop] ||= ["```output"]
       kwargs[:name] ||= "VectorAnswer"
@@ -45,7 +45,7 @@ module Boxcars
     # @params count [Integer] The number of results to return.
     # @return [String] The content of the search results.
     def get_search_content(question, count: 1)
-      search = Boxcars::VectorSearch.new(embeddings: embeddings, vector_documents: vector_documents)
+      search = Boxcars::VectorSearch.new(embedding_tool: embedding_tool, vector_documents: vector_documents)
       results = search.call query: question, count: count
       @search_content = get_results_content(results)
     end

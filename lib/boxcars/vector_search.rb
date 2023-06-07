@@ -6,7 +6,11 @@ module Boxcars
   class VectorSearch
     # initialize the vector search with the following parameters:
     # @param params [Hash] A Hash containing the initial configuration.
-    # @option params [Hash] :vector_documents The vector documents to search.
+    # @option params [Symbol] :embedding_tool The embedding tool to use.  default is :openai
+    # @option params [OpenAI::Client] :openai_connection The openai connection to use.
+    # @options params [String] :openai_access_token The openai access token to use.
+    #                          this will be used if openai_connection is not provided.
+    # @param params [Hash] :vector_documents The vector documents to search.
     # example:
     # {
     #   type: :in_memory,
