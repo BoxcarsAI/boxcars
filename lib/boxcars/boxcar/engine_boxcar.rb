@@ -56,7 +56,7 @@ module Boxcars
     def apply(input_list:, current_conversation: nil)
       response = generate(input_list: input_list, current_conversation: current_conversation)
       response.generations.to_h do |generation|
-        [output_keys.first, generation[0].text]
+        [output_key, generation[0].text]
       end
     end
 
@@ -65,7 +65,7 @@ module Boxcars
     # @param kwargs [Hash] A hash of input values to use for the prompt.
     # @return [String] The output value.
     def predict(current_conversation: nil, **kwargs)
-      prediction = apply(current_conversation: current_conversation, input_list: [kwargs])[output_keys.first]
+      prediction = apply(current_conversation: current_conversation, input_list: [kwargs])[output_key]
       Boxcars.debug(prediction, :white) if Boxcars.configuration.log_generated
       prediction
     end
@@ -90,12 +90,12 @@ module Boxcars
         answer = get_answer(text)
         if answer.status == :error
           Boxcars.debug "have error, trying again: #{answer.answer}", :red
-          conversation = Conversation.new
+          conversation ||= Conversation.new
           conversation.add_assistant(text)
           conversation.add_user(answer.answer)
         else
           Boxcars.debug answer.to_json, :magenta
-          return { output_keys.first => answer }
+          return { output_key => answer }
         end
       end
       Boxcars.error answer.to_json, :red
