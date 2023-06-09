@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.2.15](https://github.com/BoxcarsAI/boxcars/tree/v0.2.15) (2023-06-09)
+
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.2.14...v0.2.15)
+
+**Merged pull requests:**
+
+- make suggested next actions optional [\#94](https://github.com/BoxcarsAI/boxcars/pull/94) ([francis](https://github.com/francis))
+
 ## [v0.2.14](https://github.com/BoxcarsAI/boxcars/tree/v0.2.14) (2023-06-06)
 
 [Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.2.13...v0.2.14)
