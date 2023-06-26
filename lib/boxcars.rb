@@ -107,10 +107,24 @@ module Boxcars
     Boxcars.configuration.logger
   end
 
+  # Keep a running log of log messages
+  def self.log
+    @log ||= []
+    @log
+  end
+
+  # Resets the log and return the old log
+  def self.take_log
+    logs = @log
+    @log = []
+    logs
+  end
+
   # Logging system
   # debug log
   def self.debug(msg, color = nil, **options)
     msg = colorize(msg.to_s, color, **options) if color
+    log << msg
     if logger
       logger.debug(msg)
     else
@@ -121,6 +135,7 @@ module Boxcars
   # info log
   def self.info(msg, color = nil, **options)
     msg = colorize(msg.to_s, color, **options) if color
+    log << msg
     if logger
       logger.info(msg)
     else
@@ -131,6 +146,7 @@ module Boxcars
   # warn log
   def self.warn(msg, color = nil, **options)
     msg = colorize(msg.to_s, color, **options) if color
+    log << msg
     if logger
       logger.warn(msg)
     else
@@ -141,6 +157,7 @@ module Boxcars
   # error log
   def self.error(msg, color = nil, **options)
     msg = colorize(msg.to_s, color, **options) if color
+    log << msg
     if logger
       logger.error(msg)
     else

@@ -63,7 +63,9 @@ module Boxcars
         end
 
         action = match[:action].strip
+        Boxcars.debug("Action: #{action}", :yellow)
         action_input = match[:action_input].strip.delete_prefix('"').delete_suffix('"')
+        Boxcars.debug("Action Input: #{action_input}", :yellow)
         [action, action_input]
       end
     end
