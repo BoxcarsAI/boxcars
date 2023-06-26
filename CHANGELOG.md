@@ -1,5 +1,13 @@
 # Changelog
 
+## [Unreleased](https://github.com/BoxcarsAI/boxcars/tree/HEAD)
+
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.2.16...HEAD)
+
+**Closed issues:**
+
+- Add a running log of prompts for debugging [\#99](https://github.com/BoxcarsAI/boxcars/issues/99)
+
 ## [v0.2.16](https://github.com/BoxcarsAI/boxcars/tree/v0.2.16) (2023-06-26)
 
 [Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.2.15...v0.2.16)
