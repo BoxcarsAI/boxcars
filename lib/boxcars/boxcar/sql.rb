@@ -9,13 +9,13 @@ module Boxcars
     LOCKED_OUT_TABLES = %w[schema_migrations ar_internal_metadata].freeze
     attr_accessor :connection
 
-    # @param connection [ActiveRecord::Connection] The SQL connection to use for this boxcar.
+    # @param connection [SEQUEL Database object] The SQL connection to use for this boxcar.
     # @param tables [Array<String>] The tables to use for this boxcar. Will use all if nil.
     # @param except_tables [Array<String>] The tables to exclude from this boxcar. Will exclude none if nil.
     # @param kwargs [Hash] Any other keyword arguments to pass to the parent class. This can include
     #   :name, :description, :prompt, :top_k, :stop, and :engine
     def initialize(connection: nil, tables: nil, except_tables: nil, **kwargs)
-      @connection = connection || ::ActiveRecord::Base.connection
+      @connection = connection
       check_tables(tables, except_tables)
       kwargs[:name] ||= "Database"
       kwargs[:description] ||= format(SQLDESC, name: name)
@@ -63,7 +63,7 @@ module Boxcars
     end
 
     def dialect
-      connection.class.name.split("::").last.sub("Adapter", "")
+      connection.database_type
     end
 
     def clean_up_output(output)
@@ -79,7 +79,7 @@ module Boxcars
       code = text[/^SQLQuery: (.*)/, 1]
       code = extract_code text.split('SQLQuery:').last.strip
       Boxcars.debug code, :yellow
-      output = clean_up_output(connection.exec_query(code))
+      output = clean_up_output(connection[code].all)
       Result.new(status: :ok, answer: output, explanation: "Answer: #{output.to_json}", code: code)
     rescue StandardError => e
       Result.new(status: :error, answer: nil, explanation: "Error: #{e.message}", code: code)
