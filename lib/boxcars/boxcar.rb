@@ -39,7 +39,7 @@ module Boxcars
     # @param outputs [Array<String>] The output keys.
     # @raise [RuntimeError] If the outputs are not the same.
     def validate_outputs(outputs:)
-      return if outputs.map(&:to_s).sort - ['log'] == output_keys.map(&:to_s).sort
+      return if (outputs - output_keys - ['log']).empty?
 
       raise "Did not get output keys that were expected, got: #{outputs}. Expected: #{output_keys}"
     end
