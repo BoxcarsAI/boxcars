@@ -57,6 +57,7 @@ module Boxcars
 
     # abstract method to get the prompt for this boxcar
     def table_schema(table)
+      raise NotImplementedError
     end
 
     def schema
@@ -65,10 +66,12 @@ module Boxcars
 
     # abstract method to get the prompt for this boxcar
     def dialect
+      raise NotImplementedError
     end
 
     # abstract method to get the output for the last query
     def get_output(code)
+      raise NotImplementedError
     end
 
     def clean_up_output(code)
