@@ -154,7 +154,7 @@ module Boxcars
     def return_stopped_response(early_stopping_method, intermediate_steps, **kwargs)
       case early_stopping_method
       when "force"
-        TrainFinish({ output: "Agent stopped due to max iterations." }, "")
+        TrainFinish.new({ output: "Agent stopped due to max iterations." }, "")
       when "generate"
         thoughts = ""
         intermediate_steps.each do |action, observation|
@@ -167,13 +167,13 @@ module Boxcars
         full_output = predict(**full_inputs)
         parsed_output = extract_boxcar_and_input(full_output)
         if parsed_output.nil?
-          TrainFinish({ output: full_output }, full_output)
+          TrainFinish.new({ output: full_output }, full_output)
         else
           boxcar, boxcar_input = parsed_output
           if boxcar == finish_boxcar_name
-            TrainFinish({ output: boxcar_input }, full_output)
+            TrainFinish.new({ output: boxcar_input }, full_output)
           else
-            TrainFinish({ output: full_output }, full_output)
+            TrainFinish.new({ output: full_output }, full_output)
           end
         end
       else
