@@ -1,5 +1,23 @@
 # Changelog
 
+## [v0.2.16](https://github.com/BoxcarsAI/boxcars/tree/v0.2.16) (2023-06-26)
+
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.2.15...v0.2.16)
+
+**Implemented enhancements:**
+
+- Support Sequel connection type [\#22](https://github.com/BoxcarsAI/boxcars/issues/22)
+
+**Closed issues:**
+
+- Using the SQL model This model's maximum context length is 4097 tokens [\#88](https://github.com/BoxcarsAI/boxcars/issues/88)
+
+**Merged pull requests:**
+
+- Add running logs [\#100](https://github.com/BoxcarsAI/boxcars/pull/100) ([francis](https://github.com/francis))
+- create new Sequel boxcar, and refactor Active Record SQL boxcar [\#98](https://github.com/BoxcarsAI/boxcars/pull/98) ([francis](https://github.com/francis))
+- Support for Sequel SQL connection types [\#97](https://github.com/BoxcarsAI/boxcars/pull/97) ([eltoob](https://github.com/eltoob))
+
 ## [v0.2.15](https://github.com/BoxcarsAI/boxcars/tree/v0.2.15) (2023-06-09)
 
 [Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.2.14...v0.2.15)
