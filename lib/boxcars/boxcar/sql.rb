@@ -53,7 +53,7 @@ module Boxcars
 
     def table_schema(table)
       ["CREATE TABLE #{table} (",
-       connection&.columns(table)&.map { |c| " #{c.name} #{c.sql_type} #{c.null ? "NULL" : "NOT NULL"}" }&.join(",\n"),
+       connection&.schema(table)&.map { |c| " #{c[0]} #{c[1][:type]} #{c[1][:allow_null] ? "NULL" : "NOT NULL"}" }&.join(",\n"),
        ");"].join("\n")
     end
 
