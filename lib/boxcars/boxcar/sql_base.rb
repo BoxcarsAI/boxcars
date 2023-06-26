@@ -3,13 +3,15 @@
 # Boxcars is a framework for running a series of tools to get an answer to a question.
 module Boxcars
   # A Boxcar that interprets a prompt and executes SQL code to get answers
-  class SQL < EngineBoxcar
+  # Use one of the subclasses for ActiveRecord or Sequel
+  # @abstract
+  class SQLBase < EngineBoxcar
     # the description of this engine boxcar
     SQLDESC = "useful for when you need to query a database for %<name>s."
     LOCKED_OUT_TABLES = %w[schema_migrations ar_internal_metadata].freeze
-    attr_accessor :connection
+    attr_accessor :connection, :the_tables
 
-    # @param connection [SEQUEL Database object] The SQL connection to use for this boxcar.
+    # @param connection [ActiveRecord::Connection] or [Sequel Object] The SQL connection to use for this boxcar.
     # @param tables [Array<String>] The tables to use for this boxcar. Will use all if nil.
     # @param except_tables [Array<String>] The tables to exclude from this boxcar. Will exclude none if nil.
     # @param kwargs [Hash] Any other keyword arguments to pass to the parent class. This can include
@@ -33,40 +35,44 @@ module Boxcars
     private
 
     def check_tables(rtables, exceptions)
+      requested_tables = nil
       if rtables.is_a?(Array) && tables.length.positive?
-        @requested_tables = rtables
+        requested_tables = rtables
         all_tables = tables
         rtables.each do |t|
-          raise ArgumentError, "table #{t} needs to be an Active Record model" unless all_tables.include?(t)
+          raise ArgumentError, "table #{t} not found in database" unless all_tables.include?(t)
         end
       elsif rtables
         raise ArgumentError, "tables needs to be an array of Strings"
       else
-        @requested_tables = tables
+        requested_tables = tables.to_a
       end
-      @except_models = LOCKED_OUT_TABLES + exceptions.to_a
+      except_tables = LOCKED_OUT_TABLES + exceptions.to_a
+      @the_tables = requested_tables - except_tables
     end
 
     def tables
       connection&.tables
     end
 
+    # abstract method to get the prompt for this boxcar
     def table_schema(table)
-      ["CREATE TABLE #{table} (",
-       connection&.schema(table)&.map { |c| " #{c[0]} #{c[1][:type]} #{c[1][:allow_null] ? "NULL" : "NOT NULL"}" }&.join(",\n"),
-       ");"].join("\n")
     end
 
     def schema
-      wanted_tables = @requested_tables - @except_models
-      wanted_tables.map(&method(:table_schema)).join("\n")
+      the_tables.map(&method(:table_schema)).join("\n")
     end
 
+    # abstract method to get the prompt for this boxcar
     def dialect
-      connection.database_type
     end
 
-    def clean_up_output(output)
+    # abstract method to get the output for the last query
+    def get_output(code)
+    end
+
+    def clean_up_output(code)
+      output = get_output(code)
       output = output.as_json if output.is_a?(::ActiveRecord::Result)
       output = 0 if output.is_a?(Array) && output.empty?
       output = output.first if output.is_a?(Array) && output.length == 1
@@ -79,7 +85,7 @@ module Boxcars
       code = text[/^SQLQuery: (.*)/, 1]
       code = extract_code text.split('SQLQuery:').last.strip
       Boxcars.debug code, :yellow
-      output = clean_up_output(connection[code].all)
+      output = clean_up_output(code)
       Result.new(status: :ok, answer: output, explanation: "Answer: #{output.to_json}", code: code)
     rescue StandardError => e
       Result.new(status: :error, answer: nil, explanation: "Error: #{e.message}", code: code)
