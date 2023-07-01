@@ -1,12 +1,17 @@
 # Changelog
 
-## [Unreleased](https://github.com/BoxcarsAI/boxcars/tree/HEAD)
+## [v0.3.1](https://github.com/BoxcarsAI/boxcars/tree/v0.3.1) (2023-07-01)
 
-[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.2.16...HEAD)
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.2.16...v0.3.1)
 
 **Closed issues:**
 
 - Add a running log of prompts for debugging [\#99](https://github.com/BoxcarsAI/boxcars/issues/99)
+- Anyway to create conversation? [\#73](https://github.com/BoxcarsAI/boxcars/issues/73)
+
+**Merged pull requests:**
+
+- now, when you call run on a train multiple times, it remembers the ru… [\#101](https://github.com/BoxcarsAI/boxcars/pull/101) ([francis](https://github.com/francis))
 
 ## [v0.2.16](https://github.com/BoxcarsAI/boxcars/tree/v0.2.16) (2023-06-26)
 
