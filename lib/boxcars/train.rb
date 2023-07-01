@@ -16,7 +16,8 @@ module Boxcars
       @boxcars = boxcars
       @name_to_boxcar_map = boxcars.to_h { |boxcar| [boxcar.name, boxcar] }
       @return_values = [:output]
-      @return_intermediate_steps = kwargs.delete(:return_intermediate_steps) || false
+      @return_intermediate_steps = kwargs.fetch(:return_intermediate_steps, true)
+      kwargs.delete(:return_intermediate_steps)
       @max_iterations = kwargs.delete(:max_iterations) || 25
       @early_stopping_method = kwargs.delete(:early_stopping_method) || "force"
       kwargs[:stop] ||= ["\n#{observation_prefix}"]
@@ -33,14 +34,16 @@ module Boxcars
     # build the scratchpad for the engine
     # @param intermediate_steps [Array] The intermediate steps to build the scratchpad from.
     # @return [String] The scratchpad.
+    # rubocop:disable Lint/RedundantStringCoercion
     def construct_scratchpad(intermediate_steps)
       thoughts = ""
       intermediate_steps.each do |action, observation|
         thoughts += action.is_a?(String) ? action : " #{action.log}"
-        thoughts += "\n#{observation_prefix}#{observation}\n#{engine_prefix}"
+        thoughts += "\n#{observation_prefix}#{observation.to_s}\n#{engine_prefix}"
       end
       thoughts
     end
+    # rubocop:enable Lint/RedundantStringCoercion
 
     # determine the next action
     # @param full_inputs [Hash] The inputs to the engine.
@@ -51,7 +54,7 @@ module Boxcars
       loop do
         full_inputs[:agent_scratchpad] += full_output
         output = predict(**full_inputs)
-        full_output += output
+        full_output += output.to_s
         parsed_output = extract_boxcar_and_input(full_output)
         break unless parsed_output.nil?
       end
@@ -95,7 +98,7 @@ module Boxcars
 
     # the output keys
     def output_keys
-      return return_values + ["intermediate_steps"] if return_intermediate_steps
+      return return_values + [:intermediate_steps] if return_intermediate_steps
 
       return_values
     end
@@ -116,7 +119,7 @@ module Boxcars
     def pre_return(output, intermediate_steps)
       Boxcars.debug output.log, :yellow, style: :bold
       final_output = output.return_values
-      final_output["intermediate_steps"] = intermediate_steps if return_intermediate_steps
+      final_output[:intermediate_steps] = intermediate_steps if return_intermediate_steps
       final_output
     end
 
@@ -194,22 +197,24 @@ module Boxcars
 
         if (boxcar = name_to_boxcar_map[output.boxcar])
           begin
-            observation = boxcar.run(output.boxcar_input)
+            observation = Observation.ok(boxcar.run(output.boxcar_input))
             return_direct = boxcar.return_direct
           rescue Boxcars::ConfigurationError, Boxcars::SecurityError => e
             raise e
           rescue StandardError => e
             Boxcars.error "Error in #{boxcar.name} boxcar#call: #{e}\nbt:#{caller[0..5].join("\n   ")}", :red
-            observation = "Error - #{e}, correct and try again."
+            observation = Observation.err("Error - #{e}, correct and try again.")
           end
         elsif output.boxcar == :error
           observation = output.log
           return_direct = false
         else
-          observation = "#{output.boxcar} is not a valid boxcar, try another one."
+          observation = Observation.err("Error - #{output.boxcar} is not a valid action, try again.")
           return_direct = false
         end
-        Boxcars.debug "Observation: #{observation}", :green
+        # rubocop:disable Lint/RedundantStringCoercion
+        Boxcars.debug "Observation: #{observation.to_s}", :green
+        # rubocop:enable Lint/RedundantStringCoercion
         intermediate_steps.append([output, observation])
         if return_direct
           output = TrainFinish.new({ return_values[0] => observation }, "")

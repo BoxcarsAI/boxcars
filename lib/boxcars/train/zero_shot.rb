@@ -18,7 +18,7 @@ module Boxcars
       @engine_prefix = 'Thought:'
       @wants_next_actions = kwargs.fetch(:wants_next_actions, false)
       prompt ||= my_prompt
-      super(engine: engine, boxcars: boxcars, prompt: prompt, name: name, description: description)
+      super(engine: engine, boxcars: boxcars, prompt: prompt, name: name, description: description, **kwargs)
     end
 
     # @return Hash The additional variables for this boxcar.
@@ -85,7 +85,11 @@ module Boxcars
            "%<next_actions>s\n",
            "Remember to start a line with \"Final Answer:\" to give me the final answer.\n",
            "Also make sure to specify a question for the Action Input.\n",
+           "Finally, if you can deduct the answer from the question or observation, you can ",
+           "start with \"Final Answer:\" and give me the answer.\n",
            "Begin!"),
+      # insert thoughts here from previous runs
+      hist,
       user("Question: %<input>s"),
       assi("Thought: %<agent_scratchpad>s")
     ].freeze

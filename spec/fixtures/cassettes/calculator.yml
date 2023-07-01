@@ -8,10 +8,10 @@ http_interactions:
       string: '{"messages":[{"role":"system","content":"You can do basic math, but
         for any hard calculations that a human could not do in their head, use the
         following approach instead. Return code written in the Ruby programming language
-        that prints the results. If anyone gives you a hard math problem, just use
-        the following format and we’ll take care of the rest:\n${{Question with hard
-        calculation.}}\nreply only with the following format:\n```ruby\n${{only Ruby
-        code that prints the answer}}\n```\n```output\n${{Output of your code}}\n```\n\nOtherwise,
+        that prints the results to the console. If anyone gives you a hard math problem,
+        just use the following format and we’ll take care of the rest:\n${{Question
+        with hard calculation.}}\nreply only with the following format:\n```ruby\n${{only
+        Ruby code that prints the answer}}\n```\n```output\n${{Output of your code}}\n```\n\nOtherwise,
         you should use this simpler format:\n${{Question without hard calculation}}\nAnswer:
         ${{Answer}}\n\nDo not give an explanation of the answer and make sure your
         answer starts with either ''Answer:'' or ''```ruby''."},{"role":"system","content":"here
@@ -36,7 +36,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 10 May 2023 23:14:00 GMT
+      - Sat, 01 Jul 2023 01:35:13 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -48,11 +48,11 @@ http_interactions:
       Cache-Control:
       - no-cache, must-revalidate
       Openai-Model:
-      - gpt-3.5-turbo-0301
+      - gpt-3.5-turbo-0613
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '1794'
+      - '1056'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -64,26 +64,150 @@ http_interactions:
       X-Ratelimit-Remaining-Requests:
       - '3499'
       X-Ratelimit-Remaining-Tokens:
-      - '89233'
+      - '89229'
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Ratelimit-Reset-Tokens:
-      - 511ms
+      - 514ms
       X-Request-Id:
-      - ea04c2906f972d7c41e9478856c4a38a
+      - 62197cdb1643c7d3afb50ab9fca1e811
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7c55e035de1827d0-SLC
+      - 7dfae92a599a1b32-PHX
       Alt-Svc:
-      - h3=":443"; ma=86400, h3-29=":443"; ma=86400
+      - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
-      string: '{"id":"chatcmpl-7EnINGVkWxNr4I3XxxM2PZSKoBOAK","object":"chat.completion","created":1683760439,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":285,"completion_tokens":26,"total_tokens":311},"choices":[{"message":{"role":"assistant","content":"```ruby\nputs
-        ((2.173 ** 22.1) / 27.2).round(5)\n```\n"},"finish_reason":"stop","index":0}]}
-
-        '
-  recorded_at: Wed, 10 May 2023 23:14:00 GMT
+      string: |
+        {
+          "id": "chatcmpl-7XJo0kNTfyDAlTCRbrOr5AtR7K1ro",
+          "object": "chat.completion",
+          "created": 1688175312,
+          "model": "gpt-3.5-turbo-0613",
+          "choices": [
+            {
+              "index": 0,
+              "message": {
+                "role": "assistant",
+                "content": "```ruby\nresult = (2.173 ** 22.1) / 27.2\nresult.round(5)\n```\n"
+              },
+              "finish_reason": "stop"
+            }
+          ],
+          "usage": {
+            "prompt_tokens": 283,
+            "completion_tokens": 28,
+            "total_tokens": 311
+          }
+        }
+  recorded_at: Sat, 01 Jul 2023 01:35:13 GMT
+- request:
+    method: post
+    uri: https://api.openai.com/v1/chat/completions
+    body:
+      encoding: UTF-8
+      string: '{"messages":[{"role":"system","content":"You can do basic math, but
+        for any hard calculations that a human could not do in their head, use the
+        following approach instead. Return code written in the Ruby programming language
+        that prints the results to the console. If anyone gives you a hard math problem,
+        just use the following format and we’ll take care of the rest:\n${{Question
+        with hard calculation.}}\nreply only with the following format:\n```ruby\n${{only
+        Ruby code that prints the answer}}\n```\n```output\n${{Output of your code}}\n```\n\nOtherwise,
+        you should use this simpler format:\n${{Question without hard calculation}}\nAnswer:
+        ${{Answer}}\n\nDo not give an explanation of the answer and make sure your
+        answer starts with either ''Answer:'' or ''```ruby''."},{"role":"system","content":"here
+        is a hard example:\nthe user asks: What is 37593 * 67?\nyour answer: ```ruby\nputs(37593
+        * 67)\n```\n```output\n2518731\n```\nAnswer: 2518731"},{"role":"system","content":"basic
+        example:\nuser asks: What is 2518731 + 0?\nyou answer: Answer: 2518731"},{"role":"system","content":"Begin."},{"role":"user","content":"what
+        is 2.173 to the power of 22.1 then diveded by 27.2 to 5 significant digits?"},{"role":"assistant","content":"```ruby\nresult
+        = (2.173 ** 22.1) / 27.2\nresult.round(5)\n```"},{"role":"user","content":"The
+        code you gave me did not print a result"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["```output"]}'
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer <openai_access_token>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Sat, 01 Jul 2023 01:35:15 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - no-cache, must-revalidate
+      Openai-Model:
+      - gpt-3.5-turbo-0613
+      Openai-Organization:
+      - user-ri9zw9ahumb1bo9vs73mudbi
+      Openai-Processing-Ms:
+      - '1849'
+      Openai-Version:
+      - '2020-10-01'
+      Strict-Transport-Security:
+      - max-age=15724800; includeSubDomains
+      X-Ratelimit-Limit-Requests:
+      - '3500'
+      X-Ratelimit-Limit-Tokens:
+      - '90000'
+      X-Ratelimit-Remaining-Requests:
+      - '3499'
+      X-Ratelimit-Remaining-Tokens:
+      - '89202'
+      X-Ratelimit-Reset-Requests:
+      - 17ms
+      X-Ratelimit-Reset-Tokens:
+      - 532ms
+      X-Request-Id:
+      - 4abf3639fb8691be930474ac4c223535
+      Cf-Cache-Status:
+      - DYNAMIC
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 7dfae93eda99a702-PHX
+      Alt-Svc:
+      - h3=":443"; ma=86400
+    body:
+      encoding: ASCII-8BIT
+      string: |
+        {
+          "id": "chatcmpl-7XJo2uoOTA6d2dW1sQKtvQQiyUd3h",
+          "object": "chat.completion",
+          "created": 1688175314,
+          "model": "gpt-3.5-turbo-0613",
+          "choices": [
+            {
+              "index": 0,
+              "message": {
+                "role": "assistant",
+                "content": "Apologies for the oversight. Here's the corrected code:\n\n```ruby\nresult = (2.173 ** 22.1) / 27.2\nputs result.round(5)\n```\n\n"
+              },
+              "finish_reason": "stop"
+            }
+          ],
+          "usage": {
+            "prompt_tokens": 328,
+            "completion_tokens": 41,
+            "total_tokens": 369
+          }
+        }
+  recorded_at: Sat, 01 Jul 2023 01:35:15 GMT
 recorded_with: VCR 6.1.0

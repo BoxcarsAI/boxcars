@@ -45,7 +45,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 07 Jun 2023 00:01:32 GMT
+      - Sat, 01 Jul 2023 01:19:22 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -57,11 +57,11 @@ http_interactions:
       Cache-Control:
       - no-cache, must-revalidate
       Openai-Model:
-      - gpt-3.5-turbo-0301
+      - gpt-3.5-turbo-0613
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '1813'
+      - '817'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -79,20 +79,38 @@ http_interactions:
       X-Ratelimit-Reset-Tokens:
       - 607ms
       X-Request-Id:
-      - e83a7d8ccb5524ae91c9321ff0976b5b
+      - 90108144682959a33ba910c22c85125e
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7d349ef36fe7a718-PHX
+      - 7dfad2004ee41b19-PHX
       Alt-Svc:
       - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
-      string: '{"id":"chatcmpl-7OauA5HX55bRUjfF42nFxJtIeA8Kv","object":"chat.completion","created":1686096090,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":365,"completion_tokens":22,"total_tokens":387},"choices":[{"message":{"role":"assistant","content":"ARCode:
-        `Comment.where(user_id: User.find_by(name: ''Sally'').id).count`\n\n"},"finish_reason":"stop","index":0}]}
-
-        '
-  recorded_at: Wed, 07 Jun 2023 00:01:32 GMT
+      string: |
+        {
+          "id": "chatcmpl-7XJYgutgQHfdAtXG7I7UV3AsKRRNf",
+          "object": "chat.completion",
+          "created": 1688174362,
+          "model": "gpt-3.5-turbo-0613",
+          "choices": [
+            {
+              "index": 0,
+              "message": {
+                "role": "assistant",
+                "content": "ARCode: Comment.where(user_id: User.find_by(name: 'Sally').id).count"
+              },
+              "finish_reason": "stop"
+            }
+          ],
+          "usage": {
+            "prompt_tokens": 362,
+            "completion_tokens": 20,
+            "total_tokens": 382
+          }
+        }
+  recorded_at: Sat, 01 Jul 2023 01:19:22 GMT
 recorded_with: VCR 6.1.0

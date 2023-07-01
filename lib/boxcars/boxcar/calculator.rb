@@ -43,7 +43,7 @@ module Boxcars
     CTEMPLATE = [
       syst("You can do basic math, but for any hard calculations that a human could not do ",
            "in their head, use the following approach instead. ",
-           "Return code written in the Ruby programming language that prints the results. ",
+           "Return code written in the Ruby programming language that prints the results to the console. ",
            "If anyone gives you a hard math problem, just ",
            "use the following format and we’ll take care of the rest:\n",
            "${{Question with hard calculation.}}\n",

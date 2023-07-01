@@ -63,7 +63,11 @@ module Boxcars
     # @return [String] The answer to the question.
     def run(*args, **kwargs)
       rv = conduct(*args, **kwargs)
-      rv.is_a?(Result) ? rv.to_answer : rv
+      rv = rv[:answer] if rv.is_a?(Hash) && rv.key?(:answer)
+      return rv.answer if rv.is_a?(Result)
+      return rv[output_keys[0]] if rv.is_a?(Hash)
+
+      rv
     end
 
     # Get an extended answer from the boxcar.
@@ -74,6 +78,7 @@ module Boxcars
     def conduct(*args, **kwargs)
       Boxcars.info "> Entering #{name}#run", :gray, style: :bold
       rv = depart(*args, **kwargs)
+      remember_history(rv)
       Boxcars.info "< Exiting #{name}#run", :gray, style: :bold
       rv
     end
@@ -94,7 +99,47 @@ module Boxcars
       [:user, strs.join]
     end
 
+    # history entries
+    def self.hist
+      [:history, ""]
+    end
+
+    # save this boxcar to a file
+    def save(path:)
+      File.write(path, YAML.dump(self))
+    end
+
+    # load this boxcar from a file
+    # rubocop:disable Security/YAMLLoad
+    def load(path:)
+      YAML.load(File.read(path))
+    end
+    # rubocop:enable Security/YAMLLoad
+
     private
+
+    # remember the history of this boxcar. Take the current intermediate steps and
+    # create a history that can be used on the next run.
+    # @param current_results [Array<Hash>] The current results.
+    def remember_history(current_results)
+      return unless current_results[:intermediate_steps] && is_a?(Train)
+
+      # insert conversation history into the prompt
+      history = []
+      history << Boxcar.user("Question: #{current_results[:input]}")
+      current_results[:intermediate_steps].each do |action, obs|
+        if action.is_a?(TrainAction)
+          obs = Observation.new(status: :ok, note: obs) if obs.is_a?(String)
+          next if obs.status != :ok
+
+          history << Boxcar.assi("Thought: #{action.log}\n", "Observation: #{obs.note}")
+        else
+          Boxcars.error "Unknown action: #{action}", :red
+        end
+      end
+      history << Boxcar.assi("Thought: I know the final answer\nFinal Answer: #{current_results[:output]}")
+      prompt.add_history(history)
+    end
 
     # Get an answer from the boxcar.
     def run_boxcar(inputs:, return_only_outputs: false)
@@ -117,12 +162,10 @@ module Boxcars
       if kwargs.empty?
         raise Boxcars::ArgumentError, "run supports only one positional argument." if args.length != 1
 
-        return run_boxcar(inputs: args[0])[output_keys.first]
+        return run_boxcar(inputs: args[0])
       end
-      if args.empty?
-        ans = run_boxcar(inputs: kwargs)
-        return ans[output_keys.first]
-      end
+
+      return run_boxcar(inputs: kwargs) if args.empty?
 
       raise Boxcars::ArgumentError, "run supported with either positional or keyword arguments but not both. Got args" \
                                     ": #{args} and kwargs: #{kwargs}."
@@ -148,6 +191,7 @@ module Boxcars
   end
 end
 
+require "boxcars/observation"
 require "boxcars/result"
 require "boxcars/boxcar/engine_boxcar"
 require "boxcars/boxcar/calculator"

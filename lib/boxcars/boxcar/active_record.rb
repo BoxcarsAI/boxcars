@@ -147,7 +147,7 @@ module Boxcars
     end
 
     def change_count(changes_code)
-      return 0 unless changes_code
+      return 0 unless changes_code && changes_code != "None"
 
       rollback_after_running do
         Boxcars.debug "computing change count with: #{changes_code}", :yellow
@@ -200,7 +200,8 @@ module Boxcars
     def error_message(err, stage)
       msg = err.message
       msg = ::Regexp.last_match(1) if msg =~ /^(.+)' for #<Boxcars::ActiveRecord/
-      "#{stage} Error: #{msg} - please fix \"#{stage}:\" to not have this error"
+      msg.gsub!(/Boxcars::ActiveRecord::/, '')
+      "For the value you gave for #{stage}, fix this error: #{msg}"
     end
 
     def get_active_record_answer(text)
