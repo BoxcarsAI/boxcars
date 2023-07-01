@@ -18,7 +18,7 @@ module Boxcars
     def to_h
       {
         note: note,
-        status: status,
+        status: status
       }.merge(added_context).compact
     end
 

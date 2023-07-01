@@ -34,6 +34,7 @@ module Boxcars
     # build the scratchpad for the engine
     # @param intermediate_steps [Array] The intermediate steps to build the scratchpad from.
     # @return [String] The scratchpad.
+    # rubocop:disable Lint/RedundantStringCoercion
     def construct_scratchpad(intermediate_steps)
       thoughts = ""
       intermediate_steps.each do |action, observation|
@@ -42,6 +43,7 @@ module Boxcars
       end
       thoughts
     end
+    # rubocop:enable Lint/RedundantStringCoercion
 
     # determine the next action
     # @param full_inputs [Hash] The inputs to the engine.
@@ -210,7 +212,9 @@ module Boxcars
           observation = Observation.err("Error - #{output.boxcar} is not a valid action, try again.")
           return_direct = false
         end
+        # rubocop:disable Lint/RedundantStringCoercion
         Boxcars.debug "Observation: #{observation.to_s}", :green
+        # rubocop:enable Lint/RedundantStringCoercion
         intermediate_steps.append([output, observation])
         if return_direct
           output = TrainFinish.new({ return_values[0] => observation }, "")

@@ -85,7 +85,8 @@ module Boxcars
            "%<next_actions>s\n",
            "Remember to start a line with \"Final Answer:\" to give me the final answer.\n",
            "Also make sure to specify a question for the Action Input.\n",
-           "Finally, if you can deduct the answer from the question or observation, you can start with \"Final Answer:\" and give me the answer.\n",
+           "Finally, if you can deduct the answer from the question or observation, you can ",
+           "start with \"Final Answer:\" and give me the answer.\n",
            "Begin!"),
       # insert thoughts here from previous runs
       hist,

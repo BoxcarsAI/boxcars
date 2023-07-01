@@ -118,7 +118,7 @@ module Boxcars
 
     private
 
-    # remember the history of this boxcar. Take the current intermediate steps and 
+    # remember the history of this boxcar. Take the current intermediate steps and
     # create a history that can be used on the next run.
     # @param current_results [Array<Hash>] The current results.
     def remember_history(current_results)
