@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    boxcars (0.2.16)
+    boxcars (0.3.1)
       google_search_results (~> 2.2)
       gpt4all (~> 0.0.4)
       hnswlib (~> 0.8)
@@ -55,7 +55,7 @@ GEM
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
     dotenv (2.8.1)
-    faraday (2.7.4)
+    faraday (2.7.9)
       faraday-net_http (>= 2.0, < 3.1)
       ruby2_keywords (>= 0.0.4)
     faraday-http-cache (2.5.0)
