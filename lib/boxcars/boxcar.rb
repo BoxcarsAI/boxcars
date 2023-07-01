@@ -129,6 +129,7 @@ module Boxcars
       history << Boxcar.user("Question: #{current_results[:input]}")
       current_results[:intermediate_steps].each do |action, obs|
         if action.is_a?(TrainAction)
+          obs = Observation.new(status: :ok, note: obs) if obs.is_a?(String)
           next if obs.status != :ok
 
           history << Boxcar.assi("Thought: #{action.log}\n", "Observation: #{obs.note}")
