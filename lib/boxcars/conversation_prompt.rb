@@ -36,5 +36,16 @@ module Boxcars
       new_prompt.conversation.add_conversation(conversation)
       new_prompt
     end
+
+    # add conversation history to the prompt
+    # @param history [Hash] The history to add to the prompt.
+    def add_history(history)
+      conversation.add_history(Conversation.new(lines: history))
+    end
+
+    # print the prompt
+    def to_s
+      conversation.to_s
+    end
   end
 end

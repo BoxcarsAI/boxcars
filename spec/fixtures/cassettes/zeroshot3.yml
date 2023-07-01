@@ -10,12 +10,13 @@ http_interactions:
         for when you need to answer questions about math\nUse the following format:\nQuestion:
         the input question you must answer\nThought: you should always think about
         what to do\nAction: the action to take, should be one from this list: [Calculator]\nAction
-        Input: the input to the action\nObservation: the result of the action\n...
+        Input: an input question to the action\nObservation: the result of the action\n...
         (this Thought/Action/Action Input/Observation sequence can repeat N times)\nThought:
         I know the final answer\nFinal Answer: the final answer to the original input
-        question\nNext Actions: Up to 3 logical suggested next questions for the user
-        to ask after getting this answer.\nRemember to start a line with \"Final Answer:\"
-        to give me the final answer.\nBegin!"},{"role":"user","content":"Question:
+        question\n\nRemember to start a line with \"Final Answer:\" to give me the
+        final answer.\nAlso make sure to specify a question for the Action Input.\nFinally,
+        if you can deduct the answer from the question, you can start with \"Final
+        Answer:\" and give me the answer.\nBegin!"},{"role":"user","content":"Question:
         what is pi squared to 7 digits?"},{"role":"assistant","content":"Thought:
         "}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["\nObservation:
         "]}'
@@ -36,7 +37,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Thu, 30 Mar 2023 20:07:24 GMT
+      - Sat, 01 Jul 2023 00:02:26 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -48,39 +49,62 @@ http_interactions:
       Cache-Control:
       - no-cache, must-revalidate
       Openai-Model:
-      - gpt-3.5-turbo-0301
+      - gpt-3.5-turbo-0613
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '1246'
+      - '1582'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
       - max-age=15724800; includeSubDomains
       X-Ratelimit-Limit-Requests:
       - '3500'
+      X-Ratelimit-Limit-Tokens:
+      - '90000'
       X-Ratelimit-Remaining-Requests:
       - '3499'
+      X-Ratelimit-Remaining-Tokens:
+      - '89256'
       X-Ratelimit-Reset-Requests:
       - 17ms
+      X-Ratelimit-Reset-Tokens:
+      - 496ms
       X-Request-Id:
-      - abd507c065047c55c05fd1a1ac0ab323
+      - 90a3b36ca7a4ecdde3439a1a178820e9
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7b02fa811f1e27d4-SLC
+      - 7dfa61478dc0a720-PHX
       Alt-Svc:
-      - h3=":443"; ma=86400, h3-29=":443"; ma=86400
+      - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
-      string: '{"id":"chatcmpl-6zsqJZyVEqJMHfENwpIbaZtsnSUXi","object":"chat.completion","created":1680206843,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":200,"completion_tokens":29,"total_tokens":229},"choices":[{"message":{"role":"assistant","content":"I
-        should use a calculator to find the value of pi squared to 7 digits. \n\nAction:
-        Calculator \n\nAction Input: pi^2 \n"},"finish_reason":"stop","index":0}]}
-
-        '
-  recorded_at: Thu, 30 Mar 2023 20:07:24 GMT
+      string: |
+        {
+          "id": "chatcmpl-7XIMDd965oUC8TxS36rJoYXUX2RK3",
+          "object": "chat.completion",
+          "created": 1688169745,
+          "model": "gpt-3.5-turbo-0613",
+          "choices": [
+            {
+              "index": 0,
+              "message": {
+                "role": "assistant",
+                "content": "I can use the calculator to calculate pi squared to 7 digits.\nAction: Calculator\nAction Input: Calculate pi squared"
+              },
+              "finish_reason": "stop"
+            }
+          ],
+          "usage": {
+            "prompt_tokens": 215,
+            "completion_tokens": 24,
+            "total_tokens": 239
+          }
+        }
+  recorded_at: Sat, 01 Jul 2023 00:02:26 GMT
 - request:
     method: post
     uri: https://api.openai.com/v1/chat/completions
@@ -98,7 +122,8 @@ http_interactions:
         answer starts with either ''Answer:'' or ''```ruby''."},{"role":"system","content":"here
         is a hard example:\nthe user asks: What is 37593 * 67?\nyour answer: ```ruby\nputs(37593
         * 67)\n```\n```output\n2518731\n```\nAnswer: 2518731"},{"role":"system","content":"basic
-        example:\nuser asks: What is 2518731 + 0?\nyou answer: Answer: 2518731"},{"role":"system","content":"Begin."},{"role":"user","content":"pi^2"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["```output"]}'
+        example:\nuser asks: What is 2518731 + 0?\nyou answer: Answer: 2518731"},{"role":"system","content":"Begin."},{"role":"user","content":"Calculate
+        pi squared"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["```output"]}'
     headers:
       Content-Type:
       - application/json
@@ -116,7 +141,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Thu, 30 Mar 2023 20:07:25 GMT
+      - Sat, 01 Jul 2023 00:02:27 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -128,37 +153,62 @@ http_interactions:
       Cache-Control:
       - no-cache, must-revalidate
       Openai-Model:
-      - gpt-3.5-turbo-0301
+      - gpt-3.5-turbo-0613
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '831'
+      - '519'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
       - max-age=15724800; includeSubDomains
       X-Ratelimit-Limit-Requests:
       - '3500'
+      X-Ratelimit-Limit-Tokens:
+      - '90000'
       X-Ratelimit-Remaining-Requests:
       - '3499'
+      X-Ratelimit-Remaining-Tokens:
+      - '89248'
       X-Ratelimit-Reset-Requests:
       - 17ms
+      X-Ratelimit-Reset-Tokens:
+      - 501ms
       X-Request-Id:
-      - bd0f96937d5f43960d56f5eabba35e6d
+      - 563594f16e6f375331f03ec4f68fc178
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7b02fa89d94927dc-SLC
+      - 7dfa61549840a70c-PHX
       Alt-Svc:
-      - h3=":443"; ma=86400, h3-29=":443"; ma=86400
+      - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
-      string: '{"id":"chatcmpl-6zsqKejkMaRHHo26Yf9SLKK4waK0y","object":"chat.completion","created":1680206844,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":259,"completion_tokens":12,"total_tokens":271},"choices":[{"message":{"role":"assistant","content":"```ruby\nputs(Math::PI**2)\n```\n"},"finish_reason":"stop","index":0}]}
-
-        '
-  recorded_at: Thu, 30 Mar 2023 20:07:25 GMT
+      string: |
+        {
+          "id": "chatcmpl-7XIMESyBVNWwJLaJspbOFojxRQkwk",
+          "object": "chat.completion",
+          "created": 1688169746,
+          "model": "gpt-3.5-turbo-0613",
+          "choices": [
+            {
+              "index": 0,
+              "message": {
+                "role": "assistant",
+                "content": "```ruby\nputs(Math::PI**2)\n```\n"
+              },
+              "finish_reason": "stop"
+            }
+          ],
+          "usage": {
+            "prompt_tokens": 254,
+            "completion_tokens": 12,
+            "total_tokens": 266
+          }
+        }
+  recorded_at: Sat, 01 Jul 2023 00:02:27 GMT
 - request:
     method: post
     uri: https://api.openai.com/v1/chat/completions
@@ -169,15 +219,16 @@ http_interactions:
         for when you need to answer questions about math\nUse the following format:\nQuestion:
         the input question you must answer\nThought: you should always think about
         what to do\nAction: the action to take, should be one from this list: [Calculator]\nAction
-        Input: the input to the action\nObservation: the result of the action\n...
+        Input: an input question to the action\nObservation: the result of the action\n...
         (this Thought/Action/Action Input/Observation sequence can repeat N times)\nThought:
         I know the final answer\nFinal Answer: the final answer to the original input
-        question\nNext Actions: Up to 3 logical suggested next questions for the user
-        to ask after getting this answer.\nRemember to start a line with \"Final Answer:\"
-        to give me the final answer.\nBegin!"},{"role":"user","content":"Question:
+        question\n\nRemember to start a line with \"Final Answer:\" to give me the
+        final answer.\nAlso make sure to specify a question for the Action Input.\nFinally,
+        if you can deduct the answer from the question, you can start with \"Final
+        Answer:\" and give me the answer.\nBegin!"},{"role":"user","content":"Question:
         what is pi squared to 7 digits?"},{"role":"assistant","content":"Thought:  I
-        should use a calculator to find the value of pi squared to 7 digits. \n\nAction:
-        Calculator \n\nAction Input: pi^2 \n\nObservation: 9.869604401089358\nThought:"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["\nObservation:
+        can use the calculator to calculate pi squared to 7 digits.\nAction: Calculator\nAction
+        Input: Calculate pi squared\nObservation: Answer: 9.869604401089358\nThought:"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["\nObservation:
         "]}'
     headers:
       Content-Type:
@@ -196,7 +247,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Thu, 30 Mar 2023 20:07:28 GMT
+      - Sat, 01 Jul 2023 00:02:28 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -208,39 +259,60 @@ http_interactions:
       Cache-Control:
       - no-cache, must-revalidate
       Openai-Model:
-      - gpt-3.5-turbo-0301
+      - gpt-3.5-turbo-0613
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '2512'
+      - '647'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
       - max-age=15724800; includeSubDomains
       X-Ratelimit-Limit-Requests:
       - '3500'
+      X-Ratelimit-Limit-Tokens:
+      - '90000'
       X-Ratelimit-Remaining-Requests:
       - '3499'
+      X-Ratelimit-Remaining-Tokens:
+      - '89215'
       X-Ratelimit-Reset-Requests:
       - 17ms
+      X-Ratelimit-Reset-Tokens:
+      - 523ms
       X-Request-Id:
-      - d6f4a0aec6913b0c34e45d3a344d63dc
+      - a0bc6c7f0cbced6c656af0e98eb9363b
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7b02fa9339dc27c8-SLC
+      - 7dfa615b29d6a700-PHX
       Alt-Svc:
-      - h3=":443"; ma=86400, h3-29=":443"; ma=86400
+      - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
-      string: '{"id":"chatcmpl-6zsqMK7tPQdUBZV8tWg6zQwFx53mi","object":"chat.completion","created":1680206846,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":243,"completion_tokens":78,"total_tokens":321},"choices":[{"message":{"role":"assistant","content":"I
-        have the value of pi squared to 7 digits. \n\nFinal Answer: pi squared to
-        7 digits is 9.8696044. \n\nNext Actions: \n1. What is the value of pi to 7
-        digits? \n2. What is the value of pi cubed to 7 digits? \n3. What is the value
-        of e to 7 digits?"},"finish_reason":"stop","index":0}]}
-
-        '
-  recorded_at: Thu, 30 Mar 2023 20:07:28 GMT
+      string: |
+        {
+          "id": "chatcmpl-7XIMFXIpXrMCRUJ9SL6H7sXyQZ8o5",
+          "object": "chat.completion",
+          "created": 1688169747,
+          "model": "gpt-3.5-turbo-0613",
+          "choices": [
+            {
+              "index": 0,
+              "message": {
+                "role": "assistant",
+                "content": "Final Answer: Pi squared to 7 digits is approximately 9.8696044."
+              },
+              "finish_reason": "stop"
+            }
+          ],
+          "usage": {
+            "prompt_tokens": 256,
+            "completion_tokens": 18,
+            "total_tokens": 274
+          }
+        }
+  recorded_at: Sat, 01 Jul 2023 00:02:28 GMT
 recorded_with: VCR 6.1.0

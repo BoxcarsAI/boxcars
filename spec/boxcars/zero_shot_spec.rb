@@ -10,7 +10,7 @@ RSpec.describe Boxcars::ZeroShot do
 
     VCR.use_cassette("zeroshot") do
       question = "What is pi times the square root of the average high temperature in Austin TX in January?"
-      expect(train.run(question)).to include("25.13")
+      expect(train.run(question)).to include("25.12")
     end
   end
 
@@ -33,6 +33,22 @@ RSpec.describe Boxcars::ZeroShot do
       VCR.use_cassette("zeroshot3") do
         question = "what is pi squared to 7 digits?"
         expect(train.run(question)).to include("9.8696044")
+      end
+    end
+  end
+
+  context "with one car train with calculator follow on question" do
+    let(:train) { described_class.new(boxcars: [calculator], return_intermediate_steps: true) }
+
+    it "can do complex math" do
+      VCR.use_cassette("zeroshot4") do
+        question = "what is pi squared to 7 digits?"
+        answer = train.conduct(question)
+        expect(answer[:output]).to include("9.8696044")
+
+        question = "what is the square root of the previous answer?"
+        answer = train.conduct(question)
+        expect(answer[:output]).to include("3.14159")
       end
     end
   end

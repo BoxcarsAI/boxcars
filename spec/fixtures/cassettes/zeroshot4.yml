@@ -6,22 +6,19 @@ http_interactions:
     body:
       encoding: UTF-8
       string: '{"messages":[{"role":"system","content":"Answer the following questions
-        as best you can. You have access to the following actions:\nhelpdesk: useful
-        for when you need to query a database for an application named .\nCalculator:
-        useful for when you need to answer questions about math\nSearch: useful for
-        when you need to answer questions about current events.You should ask targeted
-        questions\nUse the following format:\nQuestion: the input question you must
-        answer\nThought: you should always think about what to do\nAction: the action
-        to take, should be one from this list: [helpdesk, Calculator, Search]\nAction
+        as best you can. You have access to the following actions:\nCalculator: useful
+        for when you need to answer questions about math\nUse the following format:\nQuestion:
+        the input question you must answer\nThought: you should always think about
+        what to do\nAction: the action to take, should be one from this list: [Calculator]\nAction
         Input: an input question to the action\nObservation: the result of the action\n...
         (this Thought/Action/Action Input/Observation sequence can repeat N times)\nThought:
         I know the final answer\nFinal Answer: the final answer to the original input
         question\n\nRemember to start a line with \"Final Answer:\" to give me the
         final answer.\nAlso make sure to specify a question for the Action Input.\nFinally,
-        if you can deduct the answer from the question or observation, you can start
-        with \"Final Answer:\" and give me the answer.\nBegin!"},{"role":"user","content":"Question:
-        The number of comments from John for open tickets multiplied by pi to 5 decimal
-        places."},{"role":"assistant","content":"Thought: "}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["\nObservation:
+        if you can deduct the answer from the question, you can start with \"Final
+        Answer:\" and give me the answer.\nBegin!"},{"role":"user","content":"Question:
+        what is pi squared to 7 digits?"},{"role":"assistant","content":"Thought:
+        "}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["\nObservation:
         "]}'
     headers:
       Content-Type:
@@ -40,7 +37,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Sat, 01 Jul 2023 00:17:01 GMT
+      - Fri, 30 Jun 2023 23:59:54 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -56,7 +53,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '2048'
+      - '1257'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -68,270 +65,46 @@ http_interactions:
       X-Ratelimit-Remaining-Requests:
       - '3499'
       X-Ratelimit-Remaining-Tokens:
-      - '89185'
+      - '89256'
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Ratelimit-Reset-Tokens:
-      - 542ms
+      - 496ms
       X-Request-Id:
-      - 7541849dbe503eea5e42eb1e840e3748
+      - d3ee254924111f837b295d6bb3764281
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7dfa76a5bdd6a718-PHX
+      - 7dfa5d92682c1b19-PHX
       Alt-Svc:
       - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
       string: |
         {
-          "id": "chatcmpl-7XIaKpZeWuNKJvlg3jqMzfeCDCQcC",
+          "id": "chatcmpl-7XIJlT0inTcGGOYXPEH8QpQkhyIKv",
           "object": "chat.completion",
-          "created": 1688170620,
+          "created": 1688169593,
           "model": "gpt-3.5-turbo-0613",
           "choices": [
             {
               "index": 0,
               "message": {
                 "role": "assistant",
-                "content": "I need to query the database to find the number of comments from John for open tickets. Then I can multiply that number by pi to 5 decimal places.\nAction: helpdesk\nAction Input: Find the number of comments from John for open tickets."
+                "content": "I can use the calculator to find the value of pi squared to 7 digits.\nAction: Calculator\nAction Input: Calculate pi squared"
               },
               "finish_reason": "stop"
             }
           ],
           "usage": {
-            "prompt_tokens": 267,
-            "completion_tokens": 51,
-            "total_tokens": 318
+            "prompt_tokens": 215,
+            "completion_tokens": 27,
+            "total_tokens": 242
           }
         }
-  recorded_at: Sat, 01 Jul 2023 00:17:01 GMT
-- request:
-    method: post
-    uri: https://api.openai.com/v1/chat/completions
-    body:
-      encoding: UTF-8
-      string: '{"messages":[{"role":"system","content":"You are a Ruby on Rails Active
-        Record code generator"},{"role":"system","content":"Given an input question,
-        first create a syntactically correct Rails Active Record code to run, then
-        look at the results of the code and return the answer. Unless the user specifies
-        in her question a specific number of examples she wishes to obtain, limit
-        your code to at most 5 results.\nNever query for all the columns from a specific
-        model, only ask for the relevant attributes given the question.\nAlso, pay
-        attention to which attribute is in which model.\n\nUse the following format:\nQuestion:
-        ${{Question here}}\nARChanges: ${{Active Record code to compute the number
-        of records going to change}} - Only add this line if the ARCode on the next
-        line will make data changes.\nARCode: ${{Active Record code to run}} - make
-        sure you use valid code\nAnswer: ${{Final answer here}}\n\nOnly use the following
-        Active Record models: [Comment(id: integer, content: text, user_id: integer,
-        ticket_id: integer, created_at: datetime, updated_at: datetime), Ticket(id:
-        integer, title: string, user_id: integer, status: integer, body: text, created_at:
-        datetime, updated_at: datetime), User(id: integer, name: string, created_at:
-        datetime, updated_at: datetime)]\nPay attention to use only the attribute
-        names that you can see in the model description.\nDo not make up variable
-        or attribute names, and do not share variables between the code in ARChanges
-        and ARCode\nBe careful to not query for attributes that do not exist, and
-        to use the format specified above.\nFinally, try not to use print or puts
-        in your code"},{"role":"user","content":"Question: Find the number of comments
-        from John for open tickets."}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["Answer:"]}'
-    headers:
-      Content-Type:
-      - application/json
-      Authorization:
-      - Bearer <openai_access_token>
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      Accept:
-      - "*/*"
-      User-Agent:
-      - Ruby
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Date:
-      - Sat, 01 Jul 2023 00:17:03 GMT
-      Content-Type:
-      - application/json
-      Transfer-Encoding:
-      - chunked
-      Connection:
-      - keep-alive
-      Access-Control-Allow-Origin:
-      - "*"
-      Cache-Control:
-      - no-cache, must-revalidate
-      Openai-Model:
-      - gpt-3.5-turbo-0613
-      Openai-Organization:
-      - user-ri9zw9ahumb1bo9vs73mudbi
-      Openai-Processing-Ms:
-      - '1495'
-      Openai-Version:
-      - '2020-10-01'
-      Strict-Transport-Security:
-      - max-age=15724800; includeSubDomains
-      X-Ratelimit-Limit-Requests:
-      - '3500'
-      X-Ratelimit-Limit-Tokens:
-      - '90000'
-      X-Ratelimit-Remaining-Requests:
-      - '3499'
-      X-Ratelimit-Remaining-Tokens:
-      - '89082'
-      X-Ratelimit-Reset-Requests:
-      - 17ms
-      X-Ratelimit-Reset-Tokens:
-      - 612ms
-      X-Request-Id:
-      - 375dff11b709b4f3305c455280dd0fc0
-      Cf-Cache-Status:
-      - DYNAMIC
-      Server:
-      - cloudflare
-      Cf-Ray:
-      - 7dfa76b35db1a6fc-PHX
-      Alt-Svc:
-      - h3=":443"; ma=86400
-    body:
-      encoding: ASCII-8BIT
-      string: |
-        {
-          "id": "chatcmpl-7XIaMNE4izuC8HeIvUqZ7y8O2v6y1",
-          "object": "chat.completion",
-          "created": 1688170622,
-          "model": "gpt-3.5-turbo-0613",
-          "choices": [
-            {
-              "index": 0,
-              "message": {
-                "role": "assistant",
-                "content": "ARChanges: None\nARCode: Comment.joins(:user, :ticket).where(users: {name: 'John'}, tickets: {status: 'open'}).count\n"
-              },
-              "finish_reason": "stop"
-            }
-          ],
-          "usage": {
-            "prompt_tokens": 367,
-            "completion_tokens": 36,
-            "total_tokens": 403
-          }
-        }
-  recorded_at: Sat, 01 Jul 2023 00:17:03 GMT
-- request:
-    method: post
-    uri: https://api.openai.com/v1/chat/completions
-    body:
-      encoding: UTF-8
-      string: '{"messages":[{"role":"system","content":"Answer the following questions
-        as best you can. You have access to the following actions:\nhelpdesk: useful
-        for when you need to query a database for an application named .\nCalculator:
-        useful for when you need to answer questions about math\nSearch: useful for
-        when you need to answer questions about current events.You should ask targeted
-        questions\nUse the following format:\nQuestion: the input question you must
-        answer\nThought: you should always think about what to do\nAction: the action
-        to take, should be one from this list: [helpdesk, Calculator, Search]\nAction
-        Input: an input question to the action\nObservation: the result of the action\n...
-        (this Thought/Action/Action Input/Observation sequence can repeat N times)\nThought:
-        I know the final answer\nFinal Answer: the final answer to the original input
-        question\n\nRemember to start a line with \"Final Answer:\" to give me the
-        final answer.\nAlso make sure to specify a question for the Action Input.\nFinally,
-        if you can deduct the answer from the question or observation, you can start
-        with \"Final Answer:\" and give me the answer.\nBegin!"},{"role":"user","content":"Question:
-        The number of comments from John for open tickets multiplied by pi to 5 decimal
-        places."},{"role":"assistant","content":"Thought:  I need to query the database
-        to find the number of comments from John for open tickets. Then I can multiply
-        that number by pi to 5 decimal places.\nAction: helpdesk\nAction Input: Find
-        the number of comments from John for open tickets.\nObservation: Answer: 2\nThought:"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["\nObservation:
-        "]}'
-    headers:
-      Content-Type:
-      - application/json
-      Authorization:
-      - Bearer <openai_access_token>
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      Accept:
-      - "*/*"
-      User-Agent:
-      - Ruby
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Date:
-      - Sat, 01 Jul 2023 00:17:05 GMT
-      Content-Type:
-      - application/json
-      Transfer-Encoding:
-      - chunked
-      Connection:
-      - keep-alive
-      Access-Control-Allow-Origin:
-      - "*"
-      Cache-Control:
-      - no-cache, must-revalidate
-      Openai-Model:
-      - gpt-3.5-turbo-0613
-      Openai-Organization:
-      - user-ri9zw9ahumb1bo9vs73mudbi
-      Openai-Processing-Ms:
-      - '1574'
-      Openai-Version:
-      - '2020-10-01'
-      Strict-Transport-Security:
-      - max-age=15724800; includeSubDomains
-      X-Ratelimit-Limit-Requests:
-      - '3500'
-      X-Ratelimit-Limit-Tokens:
-      - '90000'
-      X-Ratelimit-Remaining-Requests:
-      - '3499'
-      X-Ratelimit-Remaining-Tokens:
-      - '89119'
-      X-Ratelimit-Reset-Requests:
-      - 17ms
-      X-Ratelimit-Reset-Tokens:
-      - 586ms
-      X-Request-Id:
-      - c781b1ce878427b9c879f4e9c271a231
-      Cf-Cache-Status:
-      - DYNAMIC
-      Server:
-      - cloudflare
-      Cf-Ray:
-      - 7dfa76bd894aa70e-PHX
-      Alt-Svc:
-      - h3=":443"; ma=86400
-    body:
-      encoding: ASCII-8BIT
-      string: |
-        {
-          "id": "chatcmpl-7XIaOjiyWy8oK8zwqsQkEFdPlEH1I",
-          "object": "chat.completion",
-          "created": 1688170624,
-          "model": "gpt-3.5-turbo-0613",
-          "choices": [
-            {
-              "index": 0,
-              "message": {
-                "role": "assistant",
-                "content": "Now I need to multiply the number of comments (2) by pi to 5 decimal places.\nAction: Calculator\nAction Input: 2 * pi"
-              },
-              "finish_reason": "stop"
-            }
-          ],
-          "usage": {
-            "prompt_tokens": 328,
-            "completion_tokens": 31,
-            "total_tokens": 359
-          }
-        }
-  recorded_at: Sat, 01 Jul 2023 00:17:05 GMT
+  recorded_at: Fri, 30 Jun 2023 23:59:54 GMT
 - request:
     method: post
     uri: https://api.openai.com/v1/chat/completions
@@ -349,8 +122,8 @@ http_interactions:
         answer starts with either ''Answer:'' or ''```ruby''."},{"role":"system","content":"here
         is a hard example:\nthe user asks: What is 37593 * 67?\nyour answer: ```ruby\nputs(37593
         * 67)\n```\n```output\n2518731\n```\nAnswer: 2518731"},{"role":"system","content":"basic
-        example:\nuser asks: What is 2518731 + 0?\nyou answer: Answer: 2518731"},{"role":"system","content":"Begin."},{"role":"user","content":"2
-        * pi"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["```output"]}'
+        example:\nuser asks: What is 2518731 + 0?\nyou answer: Answer: 2518731"},{"role":"system","content":"Begin."},{"role":"user","content":"Calculate
+        pi squared"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["```output"]}'
     headers:
       Content-Type:
       - application/json
@@ -368,7 +141,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Sat, 01 Jul 2023 00:17:06 GMT
+      - Fri, 30 Jun 2023 23:59:55 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -384,7 +157,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '851'
+      - '538'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -396,73 +169,66 @@ http_interactions:
       X-Ratelimit-Remaining-Requests:
       - '3499'
       X-Ratelimit-Remaining-Tokens:
-      - '89251'
+      - '89248'
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Ratelimit-Reset-Tokens:
-      - 498ms
+      - 501ms
       X-Request-Id:
-      - 9929718bba5f8f68cd06e8b1ac316428
+      - eea5cc9b4dfa8d3b2e2d7a24c2145887
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7dfa76c8fcd9a71b-PHX
+      - 7dfa5d9ca9fca720-PHX
       Alt-Svc:
       - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
       string: |
         {
-          "id": "chatcmpl-7XIaPHSyzY2CwdNynsieOllZqZbW3",
+          "id": "chatcmpl-7XIJmI8BvTHLBqBcVAKs8YXIu3mdG",
           "object": "chat.completion",
-          "created": 1688170625,
+          "created": 1688169594,
           "model": "gpt-3.5-turbo-0613",
           "choices": [
             {
               "index": 0,
               "message": {
                 "role": "assistant",
-                "content": "```ruby\nputs(2 * Math::PI)\n```\n"
+                "content": "```ruby\nputs Math::PI**2\n```\n"
               },
               "finish_reason": "stop"
             }
           ],
           "usage": {
             "prompt_tokens": 254,
-            "completion_tokens": 13,
-            "total_tokens": 267
+            "completion_tokens": 12,
+            "total_tokens": 266
           }
         }
-  recorded_at: Sat, 01 Jul 2023 00:17:06 GMT
+  recorded_at: Fri, 30 Jun 2023 23:59:55 GMT
 - request:
     method: post
     uri: https://api.openai.com/v1/chat/completions
     body:
       encoding: UTF-8
       string: '{"messages":[{"role":"system","content":"Answer the following questions
-        as best you can. You have access to the following actions:\nhelpdesk: useful
-        for when you need to query a database for an application named .\nCalculator:
-        useful for when you need to answer questions about math\nSearch: useful for
-        when you need to answer questions about current events.You should ask targeted
-        questions\nUse the following format:\nQuestion: the input question you must
-        answer\nThought: you should always think about what to do\nAction: the action
-        to take, should be one from this list: [helpdesk, Calculator, Search]\nAction
+        as best you can. You have access to the following actions:\nCalculator: useful
+        for when you need to answer questions about math\nUse the following format:\nQuestion:
+        the input question you must answer\nThought: you should always think about
+        what to do\nAction: the action to take, should be one from this list: [Calculator]\nAction
         Input: an input question to the action\nObservation: the result of the action\n...
         (this Thought/Action/Action Input/Observation sequence can repeat N times)\nThought:
         I know the final answer\nFinal Answer: the final answer to the original input
         question\n\nRemember to start a line with \"Final Answer:\" to give me the
         final answer.\nAlso make sure to specify a question for the Action Input.\nFinally,
-        if you can deduct the answer from the question or observation, you can start
-        with \"Final Answer:\" and give me the answer.\nBegin!"},{"role":"user","content":"Question:
-        The number of comments from John for open tickets multiplied by pi to 5 decimal
-        places."},{"role":"assistant","content":"Thought:  I need to query the database
-        to find the number of comments from John for open tickets. Then I can multiply
-        that number by pi to 5 decimal places.\nAction: helpdesk\nAction Input: Find
-        the number of comments from John for open tickets.\nObservation: Answer: 2\nThought:
-        Now I need to multiply the number of comments (2) by pi to 5 decimal places.\nAction:
-        Calculator\nAction Input: 2 * pi\nObservation: Answer: 6.283185307179586\nThought:"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["\nObservation:
+        if you can deduct the answer from the question, you can start with \"Final
+        Answer:\" and give me the answer.\nBegin!"},{"role":"user","content":"Question:
+        what is pi squared to 7 digits?"},{"role":"assistant","content":"Thought:  I
+        can use the calculator to find the value of pi squared to 7 digits.\nAction:
+        Calculator\nAction Input: Calculate pi squared\nObservation: Answer: 9.869604401089358\nThought:"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["\nObservation:
         "]}'
     headers:
       Content-Type:
@@ -481,7 +247,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Sat, 01 Jul 2023 00:17:07 GMT
+      - Fri, 30 Jun 2023 23:59:56 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -497,7 +263,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '933'
+      - '1023'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -509,44 +275,368 @@ http_interactions:
       X-Ratelimit-Remaining-Requests:
       - '3499'
       X-Ratelimit-Remaining-Tokens:
-      - '89077'
+      - '89212'
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Ratelimit-Reset-Tokens:
-      - 614ms
+      - 524ms
       X-Request-Id:
-      - c5276af4585d7d21837cb3667774a104
+      - 2c307f445501ec65aa02ef4e5e9388e5
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7dfa76d04ae2a720-PHX
+      - 7dfa5da38984a724-PHX
       Alt-Svc:
       - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
       string: |
         {
-          "id": "chatcmpl-7XIaQj1onmXE0FFlaMzZ0EvUHrIhI",
+          "id": "chatcmpl-7XIJnShZcACwskdv8pENkyaiNZOjp",
           "object": "chat.completion",
-          "created": 1688170626,
+          "created": 1688169595,
           "model": "gpt-3.5-turbo-0613",
           "choices": [
             {
               "index": 0,
               "message": {
                 "role": "assistant",
-                "content": "Final Answer: The number of comments from John for open tickets multiplied by pi to 5 decimal places is 6.28319."
+                "content": "Final Answer: Pi squared to 7 digits is approximately 9.8696044."
               },
               "finish_reason": "stop"
             }
           ],
           "usage": {
-            "prompt_tokens": 376,
-            "completion_tokens": 27,
-            "total_tokens": 403
+            "prompt_tokens": 259,
+            "completion_tokens": 18,
+            "total_tokens": 277
           }
         }
-  recorded_at: Sat, 01 Jul 2023 00:17:07 GMT
+  recorded_at: Fri, 30 Jun 2023 23:59:56 GMT
+- request:
+    method: post
+    uri: https://api.openai.com/v1/chat/completions
+    body:
+      encoding: UTF-8
+      string: '{"messages":[{"role":"system","content":"Answer the following questions
+        as best you can. You have access to the following actions:\nCalculator: useful
+        for when you need to answer questions about math\nUse the following format:\nQuestion:
+        the input question you must answer\nThought: you should always think about
+        what to do\nAction: the action to take, should be one from this list: [Calculator]\nAction
+        Input: an input question to the action\nObservation: the result of the action\n...
+        (this Thought/Action/Action Input/Observation sequence can repeat N times)\nThought:
+        I know the final answer\nFinal Answer: the final answer to the original input
+        question\n\nRemember to start a line with \"Final Answer:\" to give me the
+        final answer.\nAlso make sure to specify a question for the Action Input.\nFinally,
+        if you can deduct the answer from the question, you can start with \"Final
+        Answer:\" and give me the answer.\nBegin!"},{"role":"user","content":"Question:
+        what is pi squared to 7 digits?"},{"role":"assistant","content":"Thought:
+        I can use the calculator to find the value of pi squared to 7 digits.\nAction:
+        Calculator\nAction Input: Calculate pi squared\nObservation: Answer: 9.869604401089358"},{"role":"assistant","content":"Thought:
+        I know the final answer\nFinal Answer: Pi squared to 7 digits is approximately
+        9.8696044."},{"role":"user","content":"Question: what is the square root of
+        the previous answer?"},{"role":"assistant","content":"Thought: "}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["\nObservation:
+        "]}'
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer <openai_access_token>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Sat, 01 Jul 2023 00:00:09 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - no-cache, must-revalidate
+      Openai-Model:
+      - gpt-3.5-turbo-0613
+      Openai-Organization:
+      - user-ri9zw9ahumb1bo9vs73mudbi
+      Openai-Processing-Ms:
+      - '12437'
+      Openai-Version:
+      - '2020-10-01'
+      Strict-Transport-Security:
+      - max-age=15724800; includeSubDomains
+      X-Ratelimit-Limit-Requests:
+      - '3500'
+      X-Ratelimit-Limit-Tokens:
+      - '90000'
+      X-Ratelimit-Remaining-Requests:
+      - '3499'
+      X-Ratelimit-Remaining-Tokens:
+      - '89172'
+      X-Ratelimit-Reset-Requests:
+      - 17ms
+      X-Ratelimit-Reset-Tokens:
+      - 552ms
+      X-Request-Id:
+      - 1eee376e996780f0f61ec1f81a7a9fe0
+      Cf-Cache-Status:
+      - DYNAMIC
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 7dfa5dab4cf6a712-PHX
+      Alt-Svc:
+      - h3=":443"; ma=86400
+    body:
+      encoding: ASCII-8BIT
+      string: |
+        {
+          "id": "chatcmpl-7XIK0jt8W8K6RL7goQVZ34MzYSqEl",
+          "object": "chat.completion",
+          "created": 1688169608,
+          "model": "gpt-3.5-turbo-0613",
+          "choices": [
+            {
+              "index": 0,
+              "message": {
+                "role": "assistant",
+                "content": "I can use the calculator to find the square root of the previous answer.\nAction: Calculator\nAction Input: Calculate the square root of 9.8696044"
+              },
+              "finish_reason": "stop"
+            }
+          ],
+          "usage": {
+            "prompt_tokens": 308,
+            "completion_tokens": 33,
+            "total_tokens": 341
+          }
+        }
+  recorded_at: Sat, 01 Jul 2023 00:00:09 GMT
+- request:
+    method: post
+    uri: https://api.openai.com/v1/chat/completions
+    body:
+      encoding: UTF-8
+      string: '{"messages":[{"role":"system","content":"You can do basic math, but
+        for any hard calculations that a human could not do in their head, use the
+        following approach instead. Return code written in the Ruby programming language
+        that prints the results. If anyone gives you a hard math problem, just use
+        the following format and we’ll take care of the rest:\n${{Question with hard
+        calculation.}}\nreply only with the following format:\n```ruby\n${{only Ruby
+        code that prints the answer}}\n```\n```output\n${{Output of your code}}\n```\n\nOtherwise,
+        you should use this simpler format:\n${{Question without hard calculation}}\nAnswer:
+        ${{Answer}}\n\nDo not give an explanation of the answer and make sure your
+        answer starts with either ''Answer:'' or ''```ruby''."},{"role":"system","content":"here
+        is a hard example:\nthe user asks: What is 37593 * 67?\nyour answer: ```ruby\nputs(37593
+        * 67)\n```\n```output\n2518731\n```\nAnswer: 2518731"},{"role":"system","content":"basic
+        example:\nuser asks: What is 2518731 + 0?\nyou answer: Answer: 2518731"},{"role":"system","content":"Begin."},{"role":"user","content":"Calculate
+        the square root of 9.8696044"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["```output"]}'
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer <openai_access_token>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Sat, 01 Jul 2023 00:00:10 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - no-cache, must-revalidate
+      Openai-Model:
+      - gpt-3.5-turbo-0613
+      Openai-Organization:
+      - user-ri9zw9ahumb1bo9vs73mudbi
+      Openai-Processing-Ms:
+      - '950'
+      Openai-Version:
+      - '2020-10-01'
+      Strict-Transport-Security:
+      - max-age=15724800; includeSubDomains
+      X-Ratelimit-Limit-Requests:
+      - '3500'
+      X-Ratelimit-Limit-Tokens:
+      - '90000'
+      X-Ratelimit-Remaining-Requests:
+      - '3499'
+      X-Ratelimit-Remaining-Tokens:
+      - '89244'
+      X-Ratelimit-Reset-Requests:
+      - 17ms
+      X-Ratelimit-Reset-Tokens:
+      - 504ms
+      X-Request-Id:
+      - 9acc6ea47c272f62a5be1b64e98bc3ef
+      Cf-Cache-Status:
+      - DYNAMIC
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 7dfa5dfc2b4ea702-PHX
+      Alt-Svc:
+      - h3=":443"; ma=86400
+    body:
+      encoding: ASCII-8BIT
+      string: |
+        {
+          "id": "chatcmpl-7XIK2uKfCiIyNQsTMBXBA06pH3FqS",
+          "object": "chat.completion",
+          "created": 1688169610,
+          "model": "gpt-3.5-turbo-0613",
+          "choices": [
+            {
+              "index": 0,
+              "message": {
+                "role": "assistant",
+                "content": "```ruby\nputs Math.sqrt(9.8696044)\n```\n"
+              },
+              "finish_reason": "stop"
+            }
+          ],
+          "usage": {
+            "prompt_tokens": 262,
+            "completion_tokens": 15,
+            "total_tokens": 277
+          }
+        }
+  recorded_at: Sat, 01 Jul 2023 00:00:10 GMT
+- request:
+    method: post
+    uri: https://api.openai.com/v1/chat/completions
+    body:
+      encoding: UTF-8
+      string: '{"messages":[{"role":"system","content":"Answer the following questions
+        as best you can. You have access to the following actions:\nCalculator: useful
+        for when you need to answer questions about math\nUse the following format:\nQuestion:
+        the input question you must answer\nThought: you should always think about
+        what to do\nAction: the action to take, should be one from this list: [Calculator]\nAction
+        Input: an input question to the action\nObservation: the result of the action\n...
+        (this Thought/Action/Action Input/Observation sequence can repeat N times)\nThought:
+        I know the final answer\nFinal Answer: the final answer to the original input
+        question\n\nRemember to start a line with \"Final Answer:\" to give me the
+        final answer.\nAlso make sure to specify a question for the Action Input.\nFinally,
+        if you can deduct the answer from the question, you can start with \"Final
+        Answer:\" and give me the answer.\nBegin!"},{"role":"user","content":"Question:
+        what is pi squared to 7 digits?"},{"role":"assistant","content":"Thought:
+        I can use the calculator to find the value of pi squared to 7 digits.\nAction:
+        Calculator\nAction Input: Calculate pi squared\nObservation: Answer: 9.869604401089358"},{"role":"assistant","content":"Thought:
+        I know the final answer\nFinal Answer: Pi squared to 7 digits is approximately
+        9.8696044."},{"role":"user","content":"Question: what is the square root of
+        the previous answer?"},{"role":"assistant","content":"Thought:  I can use
+        the calculator to find the square root of the previous answer.\nAction: Calculator\nAction
+        Input: Calculate the square root of 9.8696044\nObservation: Answer: 3.1415926534164162\nThought:"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["\nObservation:
+        "]}'
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer <openai_access_token>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Sat, 01 Jul 2023 00:00:11 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - no-cache, must-revalidate
+      Openai-Model:
+      - gpt-3.5-turbo-0613
+      Openai-Organization:
+      - user-ri9zw9ahumb1bo9vs73mudbi
+      Openai-Processing-Ms:
+      - '830'
+      Openai-Version:
+      - '2020-10-01'
+      Strict-Transport-Security:
+      - max-age=15724800; includeSubDomains
+      X-Ratelimit-Limit-Requests:
+      - '3500'
+      X-Ratelimit-Limit-Tokens:
+      - '90000'
+      X-Ratelimit-Remaining-Requests:
+      - '3499'
+      X-Ratelimit-Remaining-Tokens:
+      - '89122'
+      X-Ratelimit-Reset-Requests:
+      - 17ms
+      X-Ratelimit-Reset-Tokens:
+      - 584ms
+      X-Request-Id:
+      - f489ee0ef4c71b3685df213e74e60b88
+      Cf-Cache-Status:
+      - DYNAMIC
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 7dfa5e04aa6a1b4b-PHX
+      Alt-Svc:
+      - h3=":443"; ma=86400
+    body:
+      encoding: ASCII-8BIT
+      string: |
+        {
+          "id": "chatcmpl-7XIK360e2EzIMpjxpcYkyXn9Z1JVE",
+          "object": "chat.completion",
+          "created": 1688169611,
+          "model": "gpt-3.5-turbo-0613",
+          "choices": [
+            {
+              "index": 0,
+              "message": {
+                "role": "assistant",
+                "content": "I know the final answer\nFinal Answer: The square root of 9.8696044 is approximately 3.1415927."
+              },
+              "finish_reason": "stop"
+            }
+          ],
+          "usage": {
+            "prompt_tokens": 359,
+            "completion_tokens": 28,
+            "total_tokens": 387
+          }
+        }
+  recorded_at: Sat, 01 Jul 2023 00:00:11 GMT
 recorded_with: VCR 6.1.0

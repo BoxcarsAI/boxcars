@@ -8,7 +8,7 @@ module Boxcars
     def call(code:)
       Boxcars.debug "RubyREPL: #{code}", :yellow
 
-      # wrap the code in an excption block so we can catch errors
+      # wrap the code in an exception block so we can catch errors
       wrapped = "begin\n#{code}\nrescue Exception => e\n  puts 'Error: ' + e.message\nend"
       output = ""
       IO.popen("ruby", "r+") do |io|
@@ -19,6 +19,8 @@ module Boxcars
       if output =~ /^Error: /
         Boxcars.debug output, :red
         Result.from_error(output, code: code)
+      elsif output.blank?
+        Result.from_error("The code you gave me did not print a result", code: code)
       else
         output = ::Regexp.last_match(1) if output =~ /^\s*Answer:\s*(.*)$/m
         Boxcars.debug "Answer: #{output}", :yellow, style: :bold

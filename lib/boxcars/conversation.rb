@@ -5,7 +5,7 @@ module Boxcars
   class Conversation
     attr_reader :lines, :show_roles
 
-    PEOPLE = %i[system user assistant].freeze
+    PEOPLE = %i[system user assistant history].freeze
 
     def initialize(lines: [], show_roles: false)
       @lines = lines
@@ -64,6 +64,20 @@ module Boxcars
       @lines += conversation.lines
     end
 
+    # insert converation above history line
+    # @param conversation [Conversation] The conversation to add
+    def add_history(conversation)
+      @lines = @lines.dup
+      # find the history line
+      hi = lines.rindex { |ln| ln[0] == :history }
+      # insert the conversation above the history line
+      @lines.insert(hi, *conversation.lines)
+    end
+
+    def no_history
+      @lines.reject { |ln| ln[0] == :history }
+    end
+
     # return just the messages for the conversation
     def message_text
       lines.map(&:last).join("\n")
@@ -73,7 +87,7 @@ module Boxcars
     # @param inputs [Hash] The inputs to use for the prompt.
     # @return [Hash] The formatted prompt { messages: ...}
     def as_messages(inputs = nil)
-      { messages: lines.map { |ln| { role: ln.first, content: ln.last % inputs } } }
+      { messages: no_history.map { |ln| { role: ln.first, content: ln.last % inputs } } }
     rescue ::KeyError => e
       first_line = e.message.to_s.split("\n").first
       Boxcars.error "Missing prompt input key: #{first_line}"
@@ -85,9 +99,9 @@ module Boxcars
     # @return [Hash] The formatted prompt { prompt: "..."}
     def as_prompt(inputs = nil)
       if show_roles
-        lines.map { |ln| format("#{ln.first}: #{ln.last}", inputs) }.join("\n\n")
+        no_history.map { |ln| format("#{ln.first}: #{ln.last}", inputs) }.compact.join("\n\n")
       else
-        lines.map { |ln| format(ln.last, inputs) }.join("\n\n")
+        no_history.map { |ln| format(ln.last, inputs) }.compact.join("\n\n")
       end
     rescue ::KeyError => e
       first_line = e.message.to_s.split("\n").first

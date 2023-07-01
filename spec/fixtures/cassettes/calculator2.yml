@@ -8,10 +8,10 @@ http_interactions:
       string: '{"messages":[{"role":"system","content":"You can do basic math, but
         for any hard calculations that a human could not do in their head, use the
         following approach instead. Return code written in the Ruby programming language
-        that prints the results. If anyone gives you a hard math problem, just use
-        the following format and we’ll take care of the rest:\n${{Question with hard
-        calculation.}}\nreply only with the following format:\n```ruby\n${{only Ruby
-        code that prints the answer}}\n```\n```output\n${{Output of your code}}\n```\n\nOtherwise,
+        that prints the results to the console. If anyone gives you a hard math problem,
+        just use the following format and we’ll take care of the rest:\n${{Question
+        with hard calculation.}}\nreply only with the following format:\n```ruby\n${{only
+        Ruby code that prints the answer}}\n```\n```output\n${{Output of your code}}\n```\n\nOtherwise,
         you should use this simpler format:\n${{Question without hard calculation}}\nAnswer:
         ${{Answer}}\n\nDo not give an explanation of the answer and make sure your
         answer starts with either ''Answer:'' or ''```ruby''."},{"role":"system","content":"here
@@ -36,7 +36,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 10 May 2023 23:14:08 GMT
+      - Sat, 01 Jul 2023 01:35:52 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -48,11 +48,11 @@ http_interactions:
       Cache-Control:
       - no-cache, must-revalidate
       Openai-Model:
-      - gpt-3.5-turbo-0301
+      - gpt-3.5-turbo-0613
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '630'
+      - '684'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -64,26 +64,44 @@ http_interactions:
       X-Ratelimit-Remaining-Requests:
       - '3499'
       X-Ratelimit-Remaining-Tokens:
-      - '89248'
+      - '89245'
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Ratelimit-Reset-Tokens:
-      - 500ms
+      - 503ms
       X-Request-Id:
-      - 6e1ce71eb329860c35b5510bf9e37824
+      - 241087d565c6804b6d69b82e20863042
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7c55e06e5ac51f39-DEN
+      - 7dfaea287c4ea6fa-PHX
       Alt-Svc:
-      - h3=":443"; ma=86400, h3-29=":443"; ma=86400
+      - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
-      string: '{"id":"chatcmpl-7EnIWKVN6IBs9K2UDr6TiPsPFTMji","object":"chat.completion","created":1683760448,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":264,"completion_tokens":4,"total_tokens":268},"choices":[{"message":{"role":"assistant","content":"Answer:
-        3"},"finish_reason":"stop","index":0}]}
-
-        '
-  recorded_at: Wed, 10 May 2023 23:14:08 GMT
+      string: |
+        {
+          "id": "chatcmpl-7XJodYC3I9i1SbWSm7SzvmEvMrQ2b",
+          "object": "chat.completion",
+          "created": 1688175351,
+          "model": "gpt-3.5-turbo-0613",
+          "choices": [
+            {
+              "index": 0,
+              "message": {
+                "role": "assistant",
+                "content": "Answer: 3"
+              },
+              "finish_reason": "stop"
+            }
+          ],
+          "usage": {
+            "prompt_tokens": 262,
+            "completion_tokens": 4,
+            "total_tokens": 266
+          }
+        }
+  recorded_at: Sat, 01 Jul 2023 01:35:52 GMT
 recorded_with: VCR 6.1.0
