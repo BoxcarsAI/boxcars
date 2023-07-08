@@ -14,8 +14,6 @@ module Boxcars
     # @param prompt [Boxcars::Prompt] The prompt to use. Defaults to the built-in prompt.
     # @param kwargs [Hash] Additional arguments to pass to the train. wants_next_actions: true
     def initialize(boxcars:, engine: nil, name: 'Zero Shot', description: 'Zero Shot Train', prompt: nil, **kwargs)
-      @observation_prefix = 'Observation: '
-      @engine_prefix = 'Thought:'
       @wants_next_actions = kwargs.fetch(:wants_next_actions, false)
       prompt ||= my_prompt
       super(engine: engine, boxcars: boxcars, prompt: prompt, name: name, description: description, **kwargs)
@@ -31,6 +29,8 @@ module Boxcars
     # @return [Array<Boxcars::Boxcar, String>] The boxcar and input.
     def extract_boxcar_and_input(text)
       get_action_and_input(engine_output: text)
+    rescue StandardError => e
+      [:error, e.message]
     end
 
     private
@@ -93,22 +93,6 @@ module Boxcars
       user("Question: %<input>s"),
       assi("Thought: %<agent_scratchpad>s")
     ].freeze
-
-    def boxcar_names
-      @boxcar_names ||= "[#{boxcars.map(&:name).join(', ')}]"
-    end
-
-    def boxcar_descriptions
-      @boxcar_descriptions ||= boxcars.map { |boxcar| "#{boxcar.name}: #{boxcar.description}" }.join("\n")
-    end
-
-    def next_actions
-      if wants_next_actions
-        "Next Actions: Up to 3 logical suggested next questions for the user to ask after getting this answer.\n"
-      else
-        ""
-      end
-    end
 
     # The prompt to use for the train.
     def my_prompt

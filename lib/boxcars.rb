@@ -22,6 +22,9 @@ module Boxcars
   # Error class for all Boxcars key errors.
   class KeyError < Error; end
 
+  # Error class for all Boxcars XML errors.
+  class XmlError < Error; end
+
   # Configuration contains gem settings
   class Configuration
     attr_writer :openai_access_token, :serpapi_api_key
@@ -179,6 +182,7 @@ module Boxcars
 end
 
 require "boxcars/version"
+require "boxcars/x_node"
 require "boxcars/prompt"
 require "boxcars/conversation_prompt"
 require "boxcars/conversation"
