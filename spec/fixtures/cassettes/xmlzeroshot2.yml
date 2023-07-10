@@ -51,7 +51,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Sun, 09 Jul 2023 23:59:12 GMT
+      - Mon, 10 Jul 2023 05:55:26 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -67,7 +67,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '748'
+      - '1643'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -85,40 +85,40 @@ http_interactions:
       X-Ratelimit-Reset-Tokens:
       - 652ms
       X-Request-Id:
-      - cef526129b62dc27ecb39702c6a967f9
+      - '0709094c95358d06bc142dd43fe77096'
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7e4484ef2df9a708-PHX
+      - 7e468ebbab93a71b-PHX
       Alt-Svc:
       - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
       string: |
         {
-          "id": "chatcmpl-7aYb1ImENE43cLNOwd1j1soYaFUlB",
+          "id": "chatcmpl-7ae9kjPK8dCo2xFo6DkdMRXyGXsDE",
           "object": "chat.completion",
-          "created": 1688947151,
+          "created": 1688968524,
           "model": "gpt-3.5-turbo-0613",
           "choices": [
             {
               "index": 0,
               "message": {
                 "role": "assistant",
-                "content": "To answer this question, I need to find the number of comments from John for open tickets and then multiply it by pi to 5 decimal places.</thought>\n<action>helpdesk</action>\n<action_input>What is the number of comments from John for open tickets?</action_input>"
+                "content": "To answer this question, we need to find the number of comments from John for open tickets and then multiply it by pi to 5 decimal places. We can use the helpdesk tool to query the database for this information.</thought>\n<action>helpdesk</action>\n<action_input>What is the number of comments from John for open tickets?</action_input>"
               },
               "finish_reason": "stop"
             }
           ],
           "usage": {
             "prompt_tokens": 447,
-            "completion_tokens": 59,
-            "total_tokens": 506
+            "completion_tokens": 74,
+            "total_tokens": 521
           }
         }
-  recorded_at: Sun, 09 Jul 2023 23:59:12 GMT
+  recorded_at: Mon, 10 Jul 2023 05:55:26 GMT
 - request:
     method: post
     uri: https://api.openai.com/v1/chat/completions
@@ -164,7 +164,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Sun, 09 Jul 2023 23:59:13 GMT
+      - Mon, 10 Jul 2023 05:55:27 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -180,7 +180,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '575'
+      - '759'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -198,29 +198,29 @@ http_interactions:
       X-Ratelimit-Reset-Tokens:
       - 612ms
       X-Request-Id:
-      - '09910465b19e3305a7d46267b668fabb'
+      - 12d78fce76ea0f000466cf218b077589
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7e4484f6ada4a70c-PHX
+      - 7e468ec92c71a712-PHX
       Alt-Svc:
       - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
       string: |
         {
-          "id": "chatcmpl-7aYb2HB8Jpqa4BNRQXP9f1Iz0SMfk",
+          "id": "chatcmpl-7ae9mrvaL1U17uckqVc3BGHur1mwE",
           "object": "chat.completion",
-          "created": 1688947152,
+          "created": 1688968526,
           "model": "gpt-3.5-turbo-0613",
           "choices": [
             {
               "index": 0,
               "message": {
                 "role": "assistant",
-                "content": "ARChanges: None\nARCode: Comment.joins(:ticket, :user).where(users: {name: 'John'}, tickets: {status: 'open'}).count\n"
+                "content": "ARChanges: None\nARCode: Comment.joins(:user, :ticket).where(users: {name: 'John'}, tickets: {status: 'open'}).count\n"
               },
               "finish_reason": "stop"
             }
@@ -231,7 +231,7 @@ http_interactions:
             "total_tokens": 404
           }
         }
-  recorded_at: Sun, 09 Jul 2023 23:59:13 GMT
+  recorded_at: Mon, 10 Jul 2023 05:55:27 GMT
 - request:
     method: post
     uri: https://api.openai.com/v1/chat/completions
@@ -266,8 +266,9 @@ http_interactions:
         and give me the answer.\n\u003c/training\u003e"},{"role":"user","content":"\u003cquestion\u003eThe
         number of comments from John for open tickets multiplied by pi to 5 decimal
         places.\u003c/question\u003e"},{"role":"assistant","content":"\u003cthought\u003e
-        To answer this question, I need to find the number of comments from John for
-        open tickets and then multiply it by pi to 5 decimal places.\u003c/thought\u003e\n\u003caction\u003ehelpdesk\u003c/action\u003e\n\u003caction_input\u003eWhat
+        To answer this question, we need to find the number of comments from John
+        for open tickets and then multiply it by pi to 5 decimal places. We can use
+        the helpdesk tool to query the database for this information.\u003c/thought\u003e\n\u003caction\u003ehelpdesk\u003c/action\u003e\n\u003caction_input\u003eWhat
         is the number of comments from John for open tickets?\u003c/action_input\u003e\n\u003cobservation\u003e2\u003c/observation\u003e\n\u003cthought\u003e"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["\n\u003cobservation\u003e"]}'
     headers:
       Content-Type:
@@ -286,7 +287,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Sun, 09 Jul 2023 23:59:14 GMT
+      - Mon, 10 Jul 2023 05:55:29 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -302,7 +303,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '695'
+      - '1250'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -314,46 +315,46 @@ http_interactions:
       X-Ratelimit-Remaining-Requests:
       - '3499'
       X-Ratelimit-Remaining-Tokens:
-      - '88945'
+      - '88927'
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Ratelimit-Reset-Tokens:
-      - 702ms
+      - 714ms
       X-Request-Id:
-      - b5263b4c52e64d81d0e4a7b5f2bb285e
+      - 1518ce732e75cb27efd40fd66bdf456d
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7e4484fd2cfd1b00-PHX
+      - 7e468ed24e57a6ee-PHX
       Alt-Svc:
       - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
       string: |
         {
-          "id": "chatcmpl-7aYb3vbx1annHTyDIOgc42EjZdGPm",
+          "id": "chatcmpl-7ae9n7zyueFMZf4nBWhZLe4hilDUh",
           "object": "chat.completion",
-          "created": 1688947153,
+          "created": 1688968527,
           "model": "gpt-3.5-turbo-0613",
           "choices": [
             {
               "index": 0,
               "message": {
                 "role": "assistant",
-                "content": "Now that I know the number of comments from John for open tickets is 2, I can proceed to the next step.</thought>\n<action>Calculator</action>\n<action_input>2 * pi</action_input>"
+                "content": "Now that we know the number of comments from John for open tickets is 2, we can proceed to calculate the final answer.</thought>\n<action>Calculator</action>\n<action_input>2 * pi to 5 decimal places</action_input>"
               },
               "finish_reason": "stop"
             }
           ],
           "usage": {
-            "prompt_tokens": 516,
-            "completion_tokens": 45,
-            "total_tokens": 561
+            "prompt_tokens": 531,
+            "completion_tokens": 51,
+            "total_tokens": 582
           }
         }
-  recorded_at: Sun, 09 Jul 2023 23:59:14 GMT
+  recorded_at: Mon, 10 Jul 2023 05:55:29 GMT
 - request:
     method: post
     uri: https://api.openai.com/v1/chat/completions
@@ -372,7 +373,7 @@ http_interactions:
         is a hard example:\nthe user asks: What is 37593 * 67?\nyour answer: ```ruby\nputs(37593
         * 67)\n```\n```output\n2518731\n```\nAnswer: 2518731"},{"role":"system","content":"basic
         example:\nuser asks: What is 2518731 + 0?\nyou answer: Answer: 2518731"},{"role":"system","content":"Begin."},{"role":"user","content":"2
-        * pi"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["```output"]}'
+        * pi to 5 decimal places"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["```output"]}'
     headers:
       Content-Type:
       - application/json
@@ -390,7 +391,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Sun, 09 Jul 2023 23:59:15 GMT
+      - Mon, 10 Jul 2023 05:55:30 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -406,7 +407,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '269'
+      - '673'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -418,46 +419,46 @@ http_interactions:
       X-Ratelimit-Remaining-Requests:
       - '3499'
       X-Ratelimit-Remaining-Tokens:
-      - '89248'
+      - '89242'
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Ratelimit-Reset-Tokens:
-      - 501ms
+      - 504ms
       X-Request-Id:
-      - 122d2e48e7ffd33e83f7d83f992b3ca1
+      - 8a2891408a6cc362fe9432ace3d45dad
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7e4485050ecb1b32-PHX
+      - 7e468edb6cfa1b0a-PHX
       Alt-Svc:
       - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
       string: |
         {
-          "id": "chatcmpl-7aYb5Qt0hcwrDzfaR7D6DuR9XWlft",
+          "id": "chatcmpl-7ae9pGRbosWtEAj71hvjkCClPWXbG",
           "object": "chat.completion",
-          "created": 1688947155,
+          "created": 1688968529,
           "model": "gpt-3.5-turbo-0613",
           "choices": [
             {
               "index": 0,
               "message": {
                 "role": "assistant",
-                "content": "```ruby\nputs(2 * Math::PI)\n```\n"
+                "content": "```ruby\nresult = (2 * Math::PI).round(5)\nputs result\n```\n"
               },
               "finish_reason": "stop"
             }
           ],
           "usage": {
-            "prompt_tokens": 257,
-            "completion_tokens": 13,
-            "total_tokens": 270
+            "prompt_tokens": 262,
+            "completion_tokens": 21,
+            "total_tokens": 283
           }
         }
-  recorded_at: Sun, 09 Jul 2023 23:59:15 GMT
+  recorded_at: Mon, 10 Jul 2023 05:55:30 GMT
 - request:
     method: post
     uri: https://api.openai.com/v1/chat/completions
@@ -492,12 +493,13 @@ http_interactions:
         and give me the answer.\n\u003c/training\u003e"},{"role":"user","content":"\u003cquestion\u003eThe
         number of comments from John for open tickets multiplied by pi to 5 decimal
         places.\u003c/question\u003e"},{"role":"assistant","content":"\u003cthought\u003e
-        To answer this question, I need to find the number of comments from John for
-        open tickets and then multiply it by pi to 5 decimal places.\u003c/thought\u003e\n\u003caction\u003ehelpdesk\u003c/action\u003e\n\u003caction_input\u003eWhat
+        To answer this question, we need to find the number of comments from John
+        for open tickets and then multiply it by pi to 5 decimal places. We can use
+        the helpdesk tool to query the database for this information.\u003c/thought\u003e\n\u003caction\u003ehelpdesk\u003c/action\u003e\n\u003caction_input\u003eWhat
         is the number of comments from John for open tickets?\u003c/action_input\u003e\n\u003cobservation\u003e2\u003c/observation\u003e\n\u003cthought\u003e
-        Now that I know the number of comments from John for open tickets is 2, I
-        can proceed to the next step.\u003c/thought\u003e\n\u003caction\u003eCalculator\u003c/action\u003e\n\u003caction_input\u003e2
-        * pi\u003c/action_input\u003e\n\u003cobservation\u003e6.283185307179586\u003c/observation\u003e\n\u003cthought\u003e"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["\n\u003cobservation\u003e"]}'
+        Now that we know the number of comments from John for open tickets is 2, we
+        can proceed to calculate the final answer.\u003c/thought\u003e\n\u003caction\u003eCalculator\u003c/action\u003e\n\u003caction_input\u003e2
+        * pi to 5 decimal places\u003c/action_input\u003e\n\u003cobservation\u003e6.28319\u003c/observation\u003e\n\u003cthought\u003e"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["\n\u003cobservation\u003e"]}'
     headers:
       Content-Type:
       - application/json
@@ -515,7 +517,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Sun, 09 Jul 2023 23:59:16 GMT
+      - Mon, 10 Jul 2023 05:55:32 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -531,7 +533,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '631'
+      - '341'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -543,46 +545,46 @@ http_interactions:
       X-Ratelimit-Remaining-Requests:
       - '3499'
       X-Ratelimit-Remaining-Tokens:
-      - '88888'
+      - '88863'
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Ratelimit-Reset-Tokens:
-      - 741ms
+      - 758ms
       X-Request-Id:
-      - 85afc8a32b66ae478848c765d9c8d0d0
+      - 7c2114ea73171d85dbe35632835af290
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7e44850babeca724-PHX
+      - 7e468ee2d90fa720-PHX
       Alt-Svc:
       - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
       string: |
         {
-          "id": "chatcmpl-7aYb6sF3reAyFNPTuLOCjF0y6iiZs",
+          "id": "chatcmpl-7ae9rkEAWuevdmV7T83xrEXelh71Y",
           "object": "chat.completion",
-          "created": 1688947156,
+          "created": 1688968531,
           "model": "gpt-3.5-turbo-0613",
           "choices": [
             {
               "index": 0,
               "message": {
                 "role": "assistant",
-                "content": "Now that I have the result of multiplying the number of comments from John for open tickets by pi to 5 decimal places (6.283185307179586), I can provide the final answer.</thought>\n<final_answer>6.28319</final_answer>"
+                "content": "I have calculated the final answer to be 6.28319."
               },
               "finish_reason": "stop"
             }
           ],
           "usage": {
-            "prompt_tokens": 577,
-            "completion_tokens": 54,
-            "total_tokens": 631
+            "prompt_tokens": 595,
+            "completion_tokens": 14,
+            "total_tokens": 609
           }
         }
-  recorded_at: Sun, 09 Jul 2023 23:59:16 GMT
+  recorded_at: Mon, 10 Jul 2023 05:55:32 GMT
 - request:
     method: post
     uri: https://api.openai.com/v1/chat/completions
@@ -617,29 +619,15 @@ http_interactions:
         and give me the answer.\n\u003c/training\u003e"},{"role":"user","content":"\u003cquestion\u003eThe
         number of comments from John for open tickets multiplied by pi to 5 decimal
         places.\u003c/question\u003e"},{"role":"assistant","content":"\u003cthought\u003e
-        To answer this question, I need to find the number of comments from John for
-        open tickets and then multiply it by pi to 5 decimal places.\u003c/thought\u003e\n\u003caction\u003ehelpdesk\u003c/action\u003e\n\u003caction_input\u003eWhat
-        is the number of comments from John for open tickets?\u003c/action_input\u003e\n\u003cobservation\u003eTo
-        answer this question, I need to find the number of comments from John for
-        open tickets and then multiply it by pi to 5 decimal places.\u003c/thought\u003e\n\u003caction\u003ehelpdesk\u003c/action\u003e\n\u003caction_input\u003eWhat
-        is the number of comments from John for open tickets?\u003c/action_input\u003e\u003c/observation\u003e\n\u003cthought\u003e
-        ARChanges: None\nARCode: Comment.joins(:ticket, :user).where(users: {name:
-        ''John''}, tickets: {status: ''open''}).count\n\n\u003cobservation\u003eARChanges:
-        None\nARCode: Comment.joins(:ticket, :user).where(users: {name: ''John''},
-        tickets: {status: ''open''}).count\n\u003c/observation\u003e\n\u003cthought\u003e
-        Now that I know the number of comments from John for open tickets is 2, I
-        can proceed to the next step.\u003c/thought\u003e\n\u003caction\u003eCalculator\u003c/action\u003e\n\u003caction_input\u003e2
-        * pi\u003c/action_input\u003e\n\u003cobservation\u003eNow that I know the
-        number of comments from John for open tickets is 2, I can proceed to the next
-        step.\u003c/thought\u003e\n\u003caction\u003eCalculator\u003c/action\u003e\n\u003caction_input\u003e2
-        * pi\u003c/action_input\u003e\u003c/observation\u003e\n\u003cthought\u003e
-        ```ruby\nputs(2 * Math::PI)\n```\n\n\u003cobservation\u003e```ruby\nputs(2
-        * Math::PI)\n```\n\u003c/observation\u003e\n\u003cthought\u003e Now that I
-        have the result of multiplying the number of comments from John for open tickets
-        by pi to 5 decimal places (6.283185307179586), I can provide the final answer.\u003c/thought\u003e\n\u003cfinal_answer\u003e6.28319\u003c/final_answer\u003e\n\u003cobservation\u003eNow
-        that I have the result of multiplying the number of comments from John for
-        open tickets by pi to 5 decimal places (6.283185307179586), I can provide
-        the final answer.\u003c/thought\u003e\n\u003cfinal_answer\u003e6.28319\u003c/final_answer\u003e\u003c/observation\u003e\n\u003cthought\u003e"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["\n\u003cobservation\u003e"]}'
+        To answer this question, we need to find the number of comments from John
+        for open tickets and then multiply it by pi to 5 decimal places. We can use
+        the helpdesk tool to query the database for this information.\u003c/thought\u003e\n\u003caction\u003ehelpdesk\u003c/action\u003e\n\u003caction_input\u003eWhat
+        is the number of comments from John for open tickets?\u003c/action_input\u003e\n\u003cobservation\u003e2\u003c/observation\u003e\n\u003cthought\u003e
+        Now that we know the number of comments from John for open tickets is 2, we
+        can proceed to calculate the final answer.\u003c/thought\u003e\n\u003caction\u003eCalculator\u003c/action\u003e\n\u003caction_input\u003e2
+        * pi to 5 decimal places\u003c/action_input\u003e\n\u003cobservation\u003e6.28319\u003c/observation\u003e\n\u003cthought\u003e
+        I have calculated the final answer to be 6.28319.\n\u003cobservation\u003eI
+        have calculated the final answer to be 6.28319.\u003c/observation\u003e\n\u003cthought\u003e"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["\n\u003cobservation\u003e"]}'
     headers:
       Content-Type:
       - application/json
@@ -657,7 +645,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Mon, 10 Jul 2023 05:43:32 GMT
+      - Mon, 10 Jul 2023 05:55:33 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -673,7 +661,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '416'
+      - '303'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -685,28 +673,28 @@ http_interactions:
       X-Ratelimit-Remaining-Requests:
       - '3499'
       X-Ratelimit-Remaining-Tokens:
-      - '88572'
+      - '88828'
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Ratelimit-Reset-Tokens:
-      - 952ms
+      - 780ms
       X-Request-Id:
-      - 0a4d07d4a86a296ffa834eb3895872d7
+      - 2334a2754308a740c34430aca1f0a17f
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7e467d55cb10a706-PHX
+      - 7e468eefac14a700-PHX
       Alt-Svc:
       - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
       string: |
         {
-          "id": "chatcmpl-7adyFer9UGpL5WHr6AYLWN60KSxzF",
+          "id": "chatcmpl-7ae9sb2PHn6orJUNzBwtljQfSuj9B",
           "object": "chat.completion",
-          "created": 1688967811,
+          "created": 1688968532,
           "model": "gpt-3.5-turbo-0613",
           "choices": [
             {
@@ -719,10 +707,10 @@ http_interactions:
             }
           ],
           "usage": {
-            "prompt_tokens": 902,
+            "prompt_tokens": 630,
             "completion_tokens": 12,
-            "total_tokens": 914
+            "total_tokens": 642
           }
         }
-  recorded_at: Mon, 10 Jul 2023 05:43:32 GMT
+  recorded_at: Mon, 10 Jul 2023 05:55:33 GMT
 recorded_with: VCR 6.1.0

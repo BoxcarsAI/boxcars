@@ -41,7 +41,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Sun, 09 Jul 2023 23:41:12 GMT
+      - Mon, 10 Jul 2023 05:55:37 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -57,7 +57,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '551'
+      - '1026'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -75,40 +75,40 @@ http_interactions:
       X-Ratelimit-Reset-Tokens:
       - 554ms
       X-Request-Id:
-      - a7d84c12de4792faea466bbd7c87e694
+      - 5c7917a4831d402582cf373d0c4a84cc
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7e446a95ee54a708-PHX
+      - 7e468f07ace7a718-PHX
       Alt-Svc:
       - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
       string: |
         {
-          "id": "chatcmpl-7aYJcnQ9JDfXmzuuV6ud90EcYbGeQ",
+          "id": "chatcmpl-7ae9wWqVoIiLRb2EqEPo8FfmxE91c",
           "object": "chat.completion",
-          "created": 1688946072,
+          "created": 1688968536,
           "model": "gpt-3.5-turbo-0613",
           "choices": [
             {
               "index": 0,
               "message": {
                 "role": "assistant",
-                "content": "To find pi squared to 7 digits, I can use the calculator tool.</thought>\n<action>Calculator</action>\n<action_input>question=pi^2</action_input>"
+                "content": "To find the value of pi squared to 7 digits, I can use the calculator tool.</thought>\n<action>Calculator</action>\n<action_input>question=pi^2</action_input>"
               },
               "finish_reason": "stop"
             }
           ],
           "usage": {
             "prompt_tokens": 304,
-            "completion_tokens": 38,
-            "total_tokens": 342
+            "completion_tokens": 41,
+            "total_tokens": 345
           }
         }
-  recorded_at: Sun, 09 Jul 2023 23:41:12 GMT
+  recorded_at: Mon, 10 Jul 2023 05:55:37 GMT
 - request:
     method: post
     uri: https://api.openai.com/v1/chat/completions
@@ -144,7 +144,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Sun, 09 Jul 2023 23:41:13 GMT
+      - Mon, 10 Jul 2023 05:55:38 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -160,7 +160,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '251'
+      - '506'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -178,40 +178,40 @@ http_interactions:
       X-Ratelimit-Reset-Tokens:
       - 502ms
       X-Request-Id:
-      - 5c0e6ff446484234b3cc6f1838627a63
+      - 61cb355ae6360904abf8d240eb488009
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7e446a9c5feda70c-PHX
+      - 7e468f1009c41b28-PHX
       Alt-Svc:
       - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
       string: |
         {
-          "id": "chatcmpl-7aYJdkVKf0KwJ1spkyDDY4xQDrPk3",
+          "id": "chatcmpl-7ae9xsM2p9EdsJjbEszjwA1GTPcWr",
           "object": "chat.completion",
-          "created": 1688946073,
+          "created": 1688968537,
           "model": "gpt-3.5-turbo-0613",
           "choices": [
             {
               "index": 0,
               "message": {
                 "role": "assistant",
-                "content": "```ruby\nputs(Math::PI ** 2)\n```\n"
+                "content": "```ruby\npi = Math::PI\npi_squared = pi**2\nputs pi_squared\n```\n"
               },
               "finish_reason": "stop"
             }
           ],
           "usage": {
             "prompt_tokens": 259,
-            "completion_tokens": 13,
-            "total_tokens": 272
+            "completion_tokens": 22,
+            "total_tokens": 281
           }
         }
-  recorded_at: Sun, 09 Jul 2023 23:41:13 GMT
+  recorded_at: Mon, 10 Jul 2023 05:55:38 GMT
 - request:
     method: post
     uri: https://api.openai.com/v1/chat/completions
@@ -236,7 +236,7 @@ http_interactions:
         deduct the answer from the question or observation, you can jump to final_answer
         and give me the answer.\n\u003c/training\u003e"},{"role":"user","content":"\u003cquestion\u003ewhat
         is pi squared to 7 digits?\u003c/question\u003e"},{"role":"assistant","content":"\u003cthought\u003e
-        To find pi squared to 7 digits, I can use the calculator tool.\u003c/thought\u003e\n\u003caction\u003eCalculator\u003c/action\u003e\n\u003caction_input\u003equestion=pi^2\u003c/action_input\u003e\n\u003cobservation\u003e9.869604401089358\u003c/observation\u003e\n\u003cthought\u003e"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["\n\u003cobservation\u003e"]}'
+        To find the value of pi squared to 7 digits, I can use the calculator tool.\u003c/thought\u003e\n\u003caction\u003eCalculator\u003c/action\u003e\n\u003caction_input\u003equestion=pi^2\u003c/action_input\u003e\n\u003cobservation\u003e9.869604401089358\u003c/observation\u003e\n\u003cthought\u003e"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["\n\u003cobservation\u003e"]}'
     headers:
       Content-Type:
       - application/json
@@ -254,7 +254,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Sun, 09 Jul 2023 23:41:14 GMT
+      - Mon, 10 Jul 2023 05:55:39 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -270,7 +270,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '488'
+      - '655'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -282,46 +282,46 @@ http_interactions:
       X-Ratelimit-Remaining-Requests:
       - '3499'
       X-Ratelimit-Remaining-Tokens:
-      - '89118'
+      - '89115'
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Ratelimit-Reset-Tokens:
-      - 588ms
+      - 590ms
       X-Request-Id:
-      - 4fd4bbd2679dd7d385a1eb8515f7de16
+      - 0475b91b5bda9364dc9b024164ced781
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7e446aa298e8a6f0-PHX
+      - 7e468f160ab81b50-PHX
       Alt-Svc:
       - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
       string: |
         {
-          "id": "chatcmpl-7aYJepCs5gz7tDogWmzQLr03uV5nY",
+          "id": "chatcmpl-7ae9yh1NM3b8D4h7uGlc8eP6xiCLK",
           "object": "chat.completion",
-          "created": 1688946074,
+          "created": 1688968538,
           "model": "gpt-3.5-turbo-0613",
           "choices": [
             {
               "index": 0,
               "message": {
                 "role": "assistant",
-                "content": "The value of pi squared to 7 digits is approximately 9.8696044.</thought>\n<final_answer>9.8696044</final_answer>"
+                "content": "The value of pi squared to 7 digits is 9.8696044.</thought>\n<final_answer>9.8696044</final_answer>"
               },
               "finish_reason": "stop"
             }
           ],
           "usage": {
-            "prompt_tokens": 358,
-            "completion_tokens": 33,
-            "total_tokens": 391
+            "prompt_tokens": 361,
+            "completion_tokens": 32,
+            "total_tokens": 393
           }
         }
-  recorded_at: Sun, 09 Jul 2023 23:41:14 GMT
+  recorded_at: Mon, 10 Jul 2023 05:55:39 GMT
 - request:
     method: post
     uri: https://api.openai.com/v1/chat/completions
@@ -346,7 +346,7 @@ http_interactions:
         deduct the answer from the question or observation, you can jump to final_answer
         and give me the answer.\n\u003c/training\u003e"},{"role":"user","content":"\u003cquestion\u003ewhat
         is pi squared to 7 digits?\u003c/question\u003e"},{"role":"assistant","content":"\u003cthought\u003eTo
-        find pi squared to 7 digits, I can use the calculator tool.\u003c/thought\u003e\n\u003caction\u003eCalculator\u003c/action\u003e\n\u003caction_input\u003equestion=pi^2\u003c/action_input\u003e\n\u003cobservation\u003e9.869604401089358\u003c/observation\u003e"},{"role":"assistant","content":"\u003cthought\u003eI
+        find the value of pi squared to 7 digits, I can use the calculator tool.\u003c/thought\u003e\n\u003caction\u003eCalculator\u003c/action\u003e\n\u003caction_input\u003equestion=pi^2\u003c/action_input\u003e\n\u003cobservation\u003e9.869604401089358\u003c/observation\u003e"},{"role":"assistant","content":"\u003cthought\u003eI
         know the final answer\n\u003cfinal_answer\u003e9.8696044\u003c/final_answer\u003e\n\u003c/thought\u003e"},{"role":"user","content":"\u003cquestion\u003ewhat
         is the square root of the previous answer?\u003c/question\u003e"},{"role":"assistant","content":"\u003cthought\u003e"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["\n\u003cobservation\u003e"]}'
     headers:
@@ -366,7 +366,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Sun, 09 Jul 2023 23:41:15 GMT
+      - Mon, 10 Jul 2023 05:55:41 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -382,7 +382,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '650'
+      - '1650'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -394,28 +394,28 @@ http_interactions:
       X-Ratelimit-Remaining-Requests:
       - '3499'
       X-Ratelimit-Remaining-Tokens:
-      - '89077'
+      - '89074'
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Ratelimit-Reset-Tokens:
-      - 614ms
+      - 616ms
       X-Request-Id:
-      - 2a5de89ebc12171530125c8f6e062692
+      - aaa67e3e31d2add65379621853b4c85a
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7e446aa70d47a6fd-PHX
+      - 7e468f1cdbffa6fc-PHX
       Alt-Svc:
       - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
       string: |
         {
-          "id": "chatcmpl-7aYJecDhZ97ktrH4JImfiqOFdI6nH",
+          "id": "chatcmpl-7aeA0Zp5vnCovWzPQii2PPHKSgvEe",
           "object": "chat.completion",
-          "created": 1688946074,
+          "created": 1688968540,
           "model": "gpt-3.5-turbo-0613",
           "choices": [
             {
@@ -428,12 +428,12 @@ http_interactions:
             }
           ],
           "usage": {
-            "prompt_tokens": 408,
+            "prompt_tokens": 411,
             "completion_tokens": 43,
-            "total_tokens": 451
+            "total_tokens": 454
           }
         }
-  recorded_at: Sun, 09 Jul 2023 23:41:15 GMT
+  recorded_at: Mon, 10 Jul 2023 05:55:41 GMT
 - request:
     method: post
     uri: https://api.openai.com/v1/chat/completions
@@ -469,7 +469,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Sun, 09 Jul 2023 23:41:15 GMT
+      - Mon, 10 Jul 2023 05:55:42 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -485,7 +485,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '232'
+      - '409'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -497,28 +497,28 @@ http_interactions:
       X-Ratelimit-Remaining-Requests:
       - '3499'
       X-Ratelimit-Remaining-Tokens:
-      - '89242'
+      - '89243'
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Ratelimit-Reset-Tokens:
       - 504ms
       X-Request-Id:
-      - c9b11abd5a52f0e0c51ceacd136be323
+      - 878411b91b4c5a81476514b92a4c08f6
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7e446aacac061b0a-PHX
+      - 7e468f2aee711b23-PHX
       Alt-Svc:
       - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
       string: |
         {
-          "id": "chatcmpl-7aYJfCGRAJ2jlde3BTz5tzizZ5JYx",
+          "id": "chatcmpl-7aeA2fPPQLquaVsgsvT2wYAY09fnA",
           "object": "chat.completion",
-          "created": 1688946075,
+          "created": 1688968542,
           "model": "gpt-3.5-turbo-0613",
           "choices": [
             {
@@ -536,7 +536,7 @@ http_interactions:
             "total_tokens": 279
           }
         }
-  recorded_at: Sun, 09 Jul 2023 23:41:15 GMT
+  recorded_at: Mon, 10 Jul 2023 05:55:42 GMT
 - request:
     method: post
     uri: https://api.openai.com/v1/chat/completions
@@ -561,7 +561,7 @@ http_interactions:
         deduct the answer from the question or observation, you can jump to final_answer
         and give me the answer.\n\u003c/training\u003e"},{"role":"user","content":"\u003cquestion\u003ewhat
         is pi squared to 7 digits?\u003c/question\u003e"},{"role":"assistant","content":"\u003cthought\u003eTo
-        find pi squared to 7 digits, I can use the calculator tool.\u003c/thought\u003e\n\u003caction\u003eCalculator\u003c/action\u003e\n\u003caction_input\u003equestion=pi^2\u003c/action_input\u003e\n\u003cobservation\u003e9.869604401089358\u003c/observation\u003e"},{"role":"assistant","content":"\u003cthought\u003eI
+        find the value of pi squared to 7 digits, I can use the calculator tool.\u003c/thought\u003e\n\u003caction\u003eCalculator\u003c/action\u003e\n\u003caction_input\u003equestion=pi^2\u003c/action_input\u003e\n\u003cobservation\u003e9.869604401089358\u003c/observation\u003e"},{"role":"assistant","content":"\u003cthought\u003eI
         know the final answer\n\u003cfinal_answer\u003e9.8696044\u003c/final_answer\u003e\n\u003c/thought\u003e"},{"role":"user","content":"\u003cquestion\u003ewhat
         is the square root of the previous answer?\u003c/question\u003e"},{"role":"assistant","content":"\u003cthought\u003e
         To find the square root of the previous answer, I can use the calculator tool.\u003c/thought\u003e\n\u003caction\u003eCalculator\u003c/action\u003e\n\u003caction_input\u003equestion=sqrt(9.8696044)\u003c/action_input\u003e\n\u003cobservation\u003e3.1415926534164162\u003c/observation\u003e\n\u003cthought\u003e"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["\n\u003cobservation\u003e"]}'
@@ -582,7 +582,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Sun, 09 Jul 2023 23:41:16 GMT
+      - Mon, 10 Jul 2023 05:55:43 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -598,7 +598,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '401'
+      - '625'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -610,28 +610,28 @@ http_interactions:
       X-Ratelimit-Remaining-Requests:
       - '3499'
       X-Ratelimit-Remaining-Tokens:
-      - '89022'
+      - '89017'
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Ratelimit-Reset-Tokens:
-      - 652ms
+      - 654ms
       X-Request-Id:
-      - 2c8f3d62b2ae4d6c8ddae2e605675fd3
+      - f0382c8f2a7cc13d0d11822b7ff3cff0
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7e446aafeb641b37-PHX
+      - 7e468f312803a726-PHX
       Alt-Svc:
       - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
       string: |
         {
-          "id": "chatcmpl-7aYJgRm2VLJBoFKcIyiBYKJVSfiY3",
+          "id": "chatcmpl-7aeA3UlgCTQTjxutlsRCJSPKjsUWn",
           "object": "chat.completion",
-          "created": 1688946076,
+          "created": 1688968543,
           "model": "gpt-3.5-turbo-0613",
           "choices": [
             {
@@ -644,10 +644,10 @@ http_interactions:
             }
           ],
           "usage": {
-            "prompt_tokens": 468,
+            "prompt_tokens": 471,
             "completion_tokens": 22,
-            "total_tokens": 490
+            "total_tokens": 493
           }
         }
-  recorded_at: Sun, 09 Jul 2023 23:41:16 GMT
+  recorded_at: Mon, 10 Jul 2023 05:55:43 GMT
 recorded_with: VCR 6.1.0
