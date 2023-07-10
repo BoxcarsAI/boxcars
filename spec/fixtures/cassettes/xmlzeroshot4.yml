@@ -7,17 +7,19 @@ http_interactions:
       encoding: UTF-8
       string: '{"messages":[{"role":"system","content":"\u003ctraining\u003eAnswer
         the following questions as best you can. You have access to the following
-        actions:\nCalculator: useful for when you need to answer questions about math\nUse
+        tools for actions:\n\u003cboxcars\u003e\n\u003ctool\u003e\n  \u003ctool name=\"Calculator\"
+        version=\"0.1\" description=\"useful for when you need to answer questions
+        about math\"\u003e\n  \u003cparams\u003e\n    \u003cparam name=\"question\"
+        data-type=\"String\" required=\"true\" description=\"question\" /\u003e\n  \u003c/params\u003e\n\u003c/tool\u003e\n\u003c/boxcars\u003eUse
         the following format making sure all open tags have closing tags:\n \u003cquestion\u003ethe
         input question you must answer\u003c/question\u003e\n \u003cthought\u003eyou
         should always think about what to do\u003c/thought\u003e\n \u003caction\u003ethe
-        action to take, from this action list:\n  Calculator\n  \u003caction_input\u003ean
-        input question to the action\u003c/action_input\u003e\n  \u003cobservation\u003ethe
-        result of the action\u003c/observation\u003e\n ... (this Thought/Action/Action
-        Input/Observation sequence can repeat N times)\n \u003cthought\u003eI know
-        the final answer\n  \u003cfinal_answer\u003ethe final answer to the original
-        input question\u003c/final_answer\u003e\n \u003c/thought\u003e\n-- FORMAT
-        END -\nYour answer should always have begin and end tags for each element.\nAlso
+        action to take, from this action list above\u003c/action\u003e\n \u003caction_input\u003einput
+        to the action\u003c/action_input\u003e\n \u003cobservation\u003ethe result
+        of the action\u003c/observation\u003e\n ... (this Thought/Action/Action Input/Observation
+        sequence can repeat N times)\n \u003cthought\u003eI know the final answer\u003c/thought\u003e\n
+        \u003cfinal_answer\u003ethe final answer to the original input question\u003c/final_answer\u003e\n--
+        FORMAT END -\nYour answer should always have begin and end tags for each element.\nAlso
         make sure to specify a question for the action_input.\nFinally, if you can
         deduct the answer from the question or observation, you can jump to final_answer
         and give me the answer.\n\u003c/training\u003e"},{"role":"user","content":"\u003cquestion\u003ewhat
@@ -39,7 +41,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Sat, 08 Jul 2023 01:11:36 GMT
+      - Sun, 09 Jul 2023 23:41:12 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -55,7 +57,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '1056'
+      - '551'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -67,46 +69,46 @@ http_interactions:
       X-Ratelimit-Remaining-Requests:
       - '3499'
       X-Ratelimit-Remaining-Tokens:
-      - '89214'
+      - '89167'
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Ratelimit-Reset-Tokens:
-      - 524ms
+      - 554ms
       X-Request-Id:
-      - fd0350707dcf7d21944900b50191da23
+      - a7d84c12de4792faea466bbd7c87e694
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7e34743ddff3a708-PHX
+      - 7e446a95ee54a708-PHX
       Alt-Svc:
       - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
       string: |
         {
-          "id": "chatcmpl-7ZqlzYVtFpszsKQUQn0eOWbEJp95B",
+          "id": "chatcmpl-7aYJcnQ9JDfXmzuuV6ud90EcYbGeQ",
           "object": "chat.completion",
-          "created": 1688778695,
+          "created": 1688946072,
           "model": "gpt-3.5-turbo-0613",
           "choices": [
             {
               "index": 0,
               "message": {
                 "role": "assistant",
-                "content": "To find pi squared to 7 digits, I can use the Calculator action.</thought>\n<action>Calculator</action>\n<action_input>What is the value of pi squared?</action_input>"
+                "content": "To find pi squared to 7 digits, I can use the calculator tool.</thought>\n<action>Calculator</action>\n<action_input>question=pi^2</action_input>"
               },
               "finish_reason": "stop"
             }
           ],
           "usage": {
-            "prompt_tokens": 251,
-            "completion_tokens": 40,
-            "total_tokens": 291
+            "prompt_tokens": 304,
+            "completion_tokens": 38,
+            "total_tokens": 342
           }
         }
-  recorded_at: Sat, 08 Jul 2023 01:11:36 GMT
+  recorded_at: Sun, 09 Jul 2023 23:41:12 GMT
 - request:
     method: post
     uri: https://api.openai.com/v1/chat/completions
@@ -124,8 +126,7 @@ http_interactions:
         answer starts with either ''Answer:'' or ''```ruby''."},{"role":"system","content":"here
         is a hard example:\nthe user asks: What is 37593 * 67?\nyour answer: ```ruby\nputs(37593
         * 67)\n```\n```output\n2518731\n```\nAnswer: 2518731"},{"role":"system","content":"basic
-        example:\nuser asks: What is 2518731 + 0?\nyou answer: Answer: 2518731"},{"role":"system","content":"Begin."},{"role":"user","content":"What
-        is the value of pi squared?"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["```output"]}'
+        example:\nuser asks: What is 2518731 + 0?\nyou answer: Answer: 2518731"},{"role":"system","content":"Begin."},{"role":"user","content":"question=pi^2"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["```output"]}'
     headers:
       Content-Type:
       - application/json
@@ -143,7 +144,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Sat, 08 Jul 2023 01:11:38 GMT
+      - Sun, 09 Jul 2023 23:41:13 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -159,7 +160,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '410'
+      - '251'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -171,46 +172,46 @@ http_interactions:
       X-Ratelimit-Remaining-Requests:
       - '3499'
       X-Ratelimit-Remaining-Tokens:
-      - '89241'
+      - '89245'
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Ratelimit-Reset-Tokens:
-      - 506ms
+      - 502ms
       X-Request-Id:
-      - 19ccde98dc7da0d6a6ec3cc054badca1
+      - 5c0e6ff446484234b3cc6f1838627a63
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7e34744c8e28a702-PHX
+      - 7e446a9c5feda70c-PHX
       Alt-Svc:
       - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
       string: |
         {
-          "id": "chatcmpl-7Zqm1MxwOFeEznEJAhPDy8fk4zW3b",
+          "id": "chatcmpl-7aYJdkVKf0KwJ1spkyDDY4xQDrPk3",
           "object": "chat.completion",
-          "created": 1688778697,
+          "created": 1688946073,
           "model": "gpt-3.5-turbo-0613",
           "choices": [
             {
               "index": 0,
               "message": {
                 "role": "assistant",
-                "content": "```ruby\nputs(Math::PI**2)\n```\n"
+                "content": "```ruby\nputs(Math::PI ** 2)\n```\n"
               },
               "finish_reason": "stop"
             }
           ],
           "usage": {
-            "prompt_tokens": 262,
-            "completion_tokens": 12,
-            "total_tokens": 274
+            "prompt_tokens": 259,
+            "completion_tokens": 13,
+            "total_tokens": 272
           }
         }
-  recorded_at: Sat, 08 Jul 2023 01:11:38 GMT
+  recorded_at: Sun, 09 Jul 2023 23:41:13 GMT
 - request:
     method: post
     uri: https://api.openai.com/v1/chat/completions
@@ -218,23 +219,24 @@ http_interactions:
       encoding: UTF-8
       string: '{"messages":[{"role":"system","content":"\u003ctraining\u003eAnswer
         the following questions as best you can. You have access to the following
-        actions:\nCalculator: useful for when you need to answer questions about math\nUse
+        tools for actions:\n\u003cboxcars\u003e\n\u003ctool\u003e\n  \u003ctool name=\"Calculator\"
+        version=\"0.1\" description=\"useful for when you need to answer questions
+        about math\"\u003e\n  \u003cparams\u003e\n    \u003cparam name=\"question\"
+        data-type=\"String\" required=\"true\" description=\"question\" /\u003e\n  \u003c/params\u003e\n\u003c/tool\u003e\n\u003c/boxcars\u003eUse
         the following format making sure all open tags have closing tags:\n \u003cquestion\u003ethe
         input question you must answer\u003c/question\u003e\n \u003cthought\u003eyou
         should always think about what to do\u003c/thought\u003e\n \u003caction\u003ethe
-        action to take, from this action list:\n  Calculator\n  \u003caction_input\u003ean
-        input question to the action\u003c/action_input\u003e\n  \u003cobservation\u003ethe
-        result of the action\u003c/observation\u003e\n ... (this Thought/Action/Action
-        Input/Observation sequence can repeat N times)\n \u003cthought\u003eI know
-        the final answer\n  \u003cfinal_answer\u003ethe final answer to the original
-        input question\u003c/final_answer\u003e\n \u003c/thought\u003e\n-- FORMAT
-        END -\nYour answer should always have begin and end tags for each element.\nAlso
+        action to take, from this action list above\u003c/action\u003e\n \u003caction_input\u003einput
+        to the action\u003c/action_input\u003e\n \u003cobservation\u003ethe result
+        of the action\u003c/observation\u003e\n ... (this Thought/Action/Action Input/Observation
+        sequence can repeat N times)\n \u003cthought\u003eI know the final answer\u003c/thought\u003e\n
+        \u003cfinal_answer\u003ethe final answer to the original input question\u003c/final_answer\u003e\n--
+        FORMAT END -\nYour answer should always have begin and end tags for each element.\nAlso
         make sure to specify a question for the action_input.\nFinally, if you can
         deduct the answer from the question or observation, you can jump to final_answer
         and give me the answer.\n\u003c/training\u003e"},{"role":"user","content":"\u003cquestion\u003ewhat
         is pi squared to 7 digits?\u003c/question\u003e"},{"role":"assistant","content":"\u003cthought\u003e
-        To find pi squared to 7 digits, I can use the Calculator action.\u003c/thought\u003e\n\u003caction\u003eCalculator\u003c/action\u003e\n\u003caction_input\u003eWhat
-        is the value of pi squared?\u003c/action_input\u003e\n\u003cobservation\u003e9.869604401089358\u003c/observation\u003e\n\u003cthought\u003e"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["\n\u003cobservation\u003e"]}'
+        To find pi squared to 7 digits, I can use the calculator tool.\u003c/thought\u003e\n\u003caction\u003eCalculator\u003c/action\u003e\n\u003caction_input\u003equestion=pi^2\u003c/action_input\u003e\n\u003cobservation\u003e9.869604401089358\u003c/observation\u003e\n\u003cthought\u003e"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["\n\u003cobservation\u003e"]}'
     headers:
       Content-Type:
       - application/json
@@ -252,7 +254,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Sat, 08 Jul 2023 01:11:39 GMT
+      - Sun, 09 Jul 2023 23:41:14 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -268,7 +270,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '669'
+      - '488'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -280,46 +282,46 @@ http_interactions:
       X-Ratelimit-Remaining-Requests:
       - '3499'
       X-Ratelimit-Remaining-Tokens:
-      - '89158'
+      - '89118'
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Ratelimit-Reset-Tokens:
-      - 560ms
+      - 588ms
       X-Request-Id:
-      - 05cd6b18a4cb26c3b5246ef899dce278
+      - 4fd4bbd2679dd7d385a1eb8515f7de16
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7e3474515e551b0a-PHX
+      - 7e446aa298e8a6f0-PHX
       Alt-Svc:
       - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
       string: |
         {
-          "id": "chatcmpl-7Zqm2EZeSFKPjyKRthLrO1LNILalh",
+          "id": "chatcmpl-7aYJepCs5gz7tDogWmzQLr03uV5nY",
           "object": "chat.completion",
-          "created": 1688778698,
+          "created": 1688946074,
           "model": "gpt-3.5-turbo-0613",
           "choices": [
             {
               "index": 0,
               "message": {
                 "role": "assistant",
-                "content": "I know the final answer.</thought>\n<final_answer>9.8696044</final_answer>"
+                "content": "The value of pi squared to 7 digits is approximately 9.8696044.</thought>\n<final_answer>9.8696044</final_answer>"
               },
               "finish_reason": "stop"
             }
           ],
           "usage": {
-            "prompt_tokens": 307,
-            "completion_tokens": 21,
-            "total_tokens": 328
+            "prompt_tokens": 358,
+            "completion_tokens": 33,
+            "total_tokens": 391
           }
         }
-  recorded_at: Sat, 08 Jul 2023 01:11:39 GMT
+  recorded_at: Sun, 09 Jul 2023 23:41:14 GMT
 - request:
     method: post
     uri: https://api.openai.com/v1/chat/completions
@@ -327,23 +329,24 @@ http_interactions:
       encoding: UTF-8
       string: '{"messages":[{"role":"system","content":"\u003ctraining\u003eAnswer
         the following questions as best you can. You have access to the following
-        actions:\nCalculator: useful for when you need to answer questions about math\nUse
+        tools for actions:\n\u003cboxcars\u003e\n\u003ctool\u003e\n  \u003ctool name=\"Calculator\"
+        version=\"0.1\" description=\"useful for when you need to answer questions
+        about math\"\u003e\n  \u003cparams\u003e\n    \u003cparam name=\"question\"
+        data-type=\"String\" required=\"true\" description=\"question\" /\u003e\n  \u003c/params\u003e\n\u003c/tool\u003e\n\u003c/boxcars\u003eUse
         the following format making sure all open tags have closing tags:\n \u003cquestion\u003ethe
         input question you must answer\u003c/question\u003e\n \u003cthought\u003eyou
         should always think about what to do\u003c/thought\u003e\n \u003caction\u003ethe
-        action to take, from this action list:\n  Calculator\n  \u003caction_input\u003ean
-        input question to the action\u003c/action_input\u003e\n  \u003cobservation\u003ethe
-        result of the action\u003c/observation\u003e\n ... (this Thought/Action/Action
-        Input/Observation sequence can repeat N times)\n \u003cthought\u003eI know
-        the final answer\n  \u003cfinal_answer\u003ethe final answer to the original
-        input question\u003c/final_answer\u003e\n \u003c/thought\u003e\n-- FORMAT
-        END -\nYour answer should always have begin and end tags for each element.\nAlso
+        action to take, from this action list above\u003c/action\u003e\n \u003caction_input\u003einput
+        to the action\u003c/action_input\u003e\n \u003cobservation\u003ethe result
+        of the action\u003c/observation\u003e\n ... (this Thought/Action/Action Input/Observation
+        sequence can repeat N times)\n \u003cthought\u003eI know the final answer\u003c/thought\u003e\n
+        \u003cfinal_answer\u003ethe final answer to the original input question\u003c/final_answer\u003e\n--
+        FORMAT END -\nYour answer should always have begin and end tags for each element.\nAlso
         make sure to specify a question for the action_input.\nFinally, if you can
         deduct the answer from the question or observation, you can jump to final_answer
         and give me the answer.\n\u003c/training\u003e"},{"role":"user","content":"\u003cquestion\u003ewhat
         is pi squared to 7 digits?\u003c/question\u003e"},{"role":"assistant","content":"\u003cthought\u003eTo
-        find pi squared to 7 digits, I can use the Calculator action.\u003c/thought\u003e\n\u003caction\u003eCalculator\u003c/action\u003e\n\u003caction_input\u003eWhat
-        is the value of pi squared?\u003c/action_input\u003e\n\u003cobservation\u003e9.869604401089358\u003c/observation\u003e"},{"role":"assistant","content":"\u003cthought\u003eI
+        find pi squared to 7 digits, I can use the calculator tool.\u003c/thought\u003e\n\u003caction\u003eCalculator\u003c/action\u003e\n\u003caction_input\u003equestion=pi^2\u003c/action_input\u003e\n\u003cobservation\u003e9.869604401089358\u003c/observation\u003e"},{"role":"assistant","content":"\u003cthought\u003eI
         know the final answer\n\u003cfinal_answer\u003e9.8696044\u003c/final_answer\u003e\n\u003c/thought\u003e"},{"role":"user","content":"\u003cquestion\u003ewhat
         is the square root of the previous answer?\u003c/question\u003e"},{"role":"assistant","content":"\u003cthought\u003e"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["\n\u003cobservation\u003e"]}'
     headers:
@@ -363,7 +366,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Sat, 08 Jul 2023 01:11:45 GMT
+      - Sun, 09 Jul 2023 23:41:15 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -379,7 +382,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '1886'
+      - '650'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -391,46 +394,46 @@ http_interactions:
       X-Ratelimit-Remaining-Requests:
       - '3499'
       X-Ratelimit-Remaining-Tokens:
-      - '89119'
+      - '89077'
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Ratelimit-Reset-Tokens:
-      - 587ms
+      - 614ms
       X-Request-Id:
-      - 8d117ad2d787f57b3b71c01319720d6b
+      - 2a5de89ebc12171530125c8f6e062692
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7e34746d3e04a6fc-PHX
+      - 7e446aa70d47a6fd-PHX
       Alt-Svc:
       - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
       string: |
         {
-          "id": "chatcmpl-7Zqm7Ciq9RiXsnoKenZlbGbyOtdAD",
+          "id": "chatcmpl-7aYJecDhZ97ktrH4JImfiqOFdI6nH",
           "object": "chat.completion",
-          "created": 1688778703,
+          "created": 1688946074,
           "model": "gpt-3.5-turbo-0613",
           "choices": [
             {
               "index": 0,
               "message": {
                 "role": "assistant",
-                "content": "To find the square root of the previous answer, I can use the Calculator action.</thought>\n<action>Calculator</action>\n<action_input>What is the square root of 9.8696044?</action_input>"
+                "content": "To find the square root of the previous answer, I can use the calculator tool.</thought>\n<action>Calculator</action>\n<action_input>question=sqrt(9.8696044)</action_input>"
               },
               "finish_reason": "stop"
             }
           ],
           "usage": {
-            "prompt_tokens": 357,
-            "completion_tokens": 46,
-            "total_tokens": 403
+            "prompt_tokens": 408,
+            "completion_tokens": 43,
+            "total_tokens": 451
           }
         }
-  recorded_at: Sat, 08 Jul 2023 01:11:45 GMT
+  recorded_at: Sun, 09 Jul 2023 23:41:15 GMT
 - request:
     method: post
     uri: https://api.openai.com/v1/chat/completions
@@ -448,8 +451,7 @@ http_interactions:
         answer starts with either ''Answer:'' or ''```ruby''."},{"role":"system","content":"here
         is a hard example:\nthe user asks: What is 37593 * 67?\nyour answer: ```ruby\nputs(37593
         * 67)\n```\n```output\n2518731\n```\nAnswer: 2518731"},{"role":"system","content":"basic
-        example:\nuser asks: What is 2518731 + 0?\nyou answer: Answer: 2518731"},{"role":"system","content":"Begin."},{"role":"user","content":"What
-        is the square root of 9.8696044?"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["```output"]}'
+        example:\nuser asks: What is 2518731 + 0?\nyou answer: Answer: 2518731"},{"role":"system","content":"Begin."},{"role":"user","content":"question=sqrt(9.8696044)"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["```output"]}'
     headers:
       Content-Type:
       - application/json
@@ -467,7 +469,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Sat, 08 Jul 2023 01:13:08 GMT
+      - Sun, 09 Jul 2023 23:41:15 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -483,7 +485,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '480'
+      - '232'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -495,28 +497,28 @@ http_interactions:
       X-Ratelimit-Remaining-Requests:
       - '3499'
       X-Ratelimit-Remaining-Tokens:
-      - '89239'
+      - '89242'
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Ratelimit-Reset-Tokens:
-      - 506ms
+      - 504ms
       X-Request-Id:
-      - 6b9aec4df6363c83ea4d8569306495b6
+      - c9b11abd5a52f0e0c51ceacd136be323
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7e34767f9e851b19-PHX
+      - 7e446aacac061b0a-PHX
       Alt-Svc:
       - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
       string: |
         {
-          "id": "chatcmpl-7ZqnTum9lc8Aw6LY5ojGOZnAGN0SG",
+          "id": "chatcmpl-7aYJfCGRAJ2jlde3BTz5tzizZ5JYx",
           "object": "chat.completion",
-          "created": 1688778787,
+          "created": 1688946075,
           "model": "gpt-3.5-turbo-0613",
           "choices": [
             {
@@ -529,12 +531,12 @@ http_interactions:
             }
           ],
           "usage": {
-            "prompt_tokens": 267,
+            "prompt_tokens": 264,
             "completion_tokens": 15,
-            "total_tokens": 282
+            "total_tokens": 279
           }
         }
-  recorded_at: Sat, 08 Jul 2023 01:13:08 GMT
+  recorded_at: Sun, 09 Jul 2023 23:41:15 GMT
 - request:
     method: post
     uri: https://api.openai.com/v1/chat/completions
@@ -542,27 +544,27 @@ http_interactions:
       encoding: UTF-8
       string: '{"messages":[{"role":"system","content":"\u003ctraining\u003eAnswer
         the following questions as best you can. You have access to the following
-        actions:\nCalculator: useful for when you need to answer questions about math\nUse
+        tools for actions:\n\u003cboxcars\u003e\n\u003ctool\u003e\n  \u003ctool name=\"Calculator\"
+        version=\"0.1\" description=\"useful for when you need to answer questions
+        about math\"\u003e\n  \u003cparams\u003e\n    \u003cparam name=\"question\"
+        data-type=\"String\" required=\"true\" description=\"question\" /\u003e\n  \u003c/params\u003e\n\u003c/tool\u003e\n\u003c/boxcars\u003eUse
         the following format making sure all open tags have closing tags:\n \u003cquestion\u003ethe
         input question you must answer\u003c/question\u003e\n \u003cthought\u003eyou
         should always think about what to do\u003c/thought\u003e\n \u003caction\u003ethe
-        action to take, from this action list:\n  Calculator\n  \u003caction_input\u003ean
-        input question to the action\u003c/action_input\u003e\n  \u003cobservation\u003ethe
-        result of the action\u003c/observation\u003e\n ... (this Thought/Action/Action
-        Input/Observation sequence can repeat N times)\n \u003cthought\u003eI know
-        the final answer\n  \u003cfinal_answer\u003ethe final answer to the original
-        input question\u003c/final_answer\u003e\n \u003c/thought\u003e\n-- FORMAT
-        END -\nYour answer should always have begin and end tags for each element.\nAlso
+        action to take, from this action list above\u003c/action\u003e\n \u003caction_input\u003einput
+        to the action\u003c/action_input\u003e\n \u003cobservation\u003ethe result
+        of the action\u003c/observation\u003e\n ... (this Thought/Action/Action Input/Observation
+        sequence can repeat N times)\n \u003cthought\u003eI know the final answer\u003c/thought\u003e\n
+        \u003cfinal_answer\u003ethe final answer to the original input question\u003c/final_answer\u003e\n--
+        FORMAT END -\nYour answer should always have begin and end tags for each element.\nAlso
         make sure to specify a question for the action_input.\nFinally, if you can
         deduct the answer from the question or observation, you can jump to final_answer
         and give me the answer.\n\u003c/training\u003e"},{"role":"user","content":"\u003cquestion\u003ewhat
         is pi squared to 7 digits?\u003c/question\u003e"},{"role":"assistant","content":"\u003cthought\u003eTo
-        find pi squared to 7 digits, I can use the Calculator action.\u003c/thought\u003e\n\u003caction\u003eCalculator\u003c/action\u003e\n\u003caction_input\u003eWhat
-        is the value of pi squared?\u003c/action_input\u003e\n\u003cobservation\u003e9.869604401089358\u003c/observation\u003e"},{"role":"assistant","content":"\u003cthought\u003eI
+        find pi squared to 7 digits, I can use the calculator tool.\u003c/thought\u003e\n\u003caction\u003eCalculator\u003c/action\u003e\n\u003caction_input\u003equestion=pi^2\u003c/action_input\u003e\n\u003cobservation\u003e9.869604401089358\u003c/observation\u003e"},{"role":"assistant","content":"\u003cthought\u003eI
         know the final answer\n\u003cfinal_answer\u003e9.8696044\u003c/final_answer\u003e\n\u003c/thought\u003e"},{"role":"user","content":"\u003cquestion\u003ewhat
         is the square root of the previous answer?\u003c/question\u003e"},{"role":"assistant","content":"\u003cthought\u003e
-        To find the square root of the previous answer, I can use the Calculator action.\u003c/thought\u003e\n\u003caction\u003eCalculator\u003c/action\u003e\n\u003caction_input\u003eWhat
-        is the square root of 9.8696044?\u003c/action_input\u003e\n\u003cobservation\u003e3.1415926534164162\u003c/observation\u003e\n\u003cthought\u003e"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["\n\u003cobservation\u003e"]}'
+        To find the square root of the previous answer, I can use the calculator tool.\u003c/thought\u003e\n\u003caction\u003eCalculator\u003c/action\u003e\n\u003caction_input\u003equestion=sqrt(9.8696044)\u003c/action_input\u003e\n\u003cobservation\u003e3.1415926534164162\u003c/observation\u003e\n\u003cthought\u003e"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["\n\u003cobservation\u003e"]}'
     headers:
       Content-Type:
       - application/json
@@ -580,7 +582,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Sat, 08 Jul 2023 01:13:09 GMT
+      - Sun, 09 Jul 2023 23:41:16 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -596,7 +598,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '694'
+      - '401'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -608,28 +610,28 @@ http_interactions:
       X-Ratelimit-Remaining-Requests:
       - '3499'
       X-Ratelimit-Remaining-Tokens:
-      - '89058'
+      - '89022'
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Ratelimit-Reset-Tokens:
-      - 628ms
+      - 652ms
       X-Request-Id:
-      - 17385feb2cde8daab2facf421c8aac4e
+      - 2c8f3d62b2ae4d6c8ddae2e605675fd3
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7e347684d808a726-PHX
+      - 7e446aafeb641b37-PHX
       Alt-Svc:
       - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
       string: |
         {
-          "id": "chatcmpl-7ZqnUqXmdooiKOnGREloca5OWP26d",
+          "id": "chatcmpl-7aYJgRm2VLJBoFKcIyiBYKJVSfiY3",
           "object": "chat.completion",
-          "created": 1688778788,
+          "created": 1688946076,
           "model": "gpt-3.5-turbo-0613",
           "choices": [
             {
@@ -642,10 +644,10 @@ http_interactions:
             }
           ],
           "usage": {
-            "prompt_tokens": 420,
+            "prompt_tokens": 468,
             "completion_tokens": 22,
-            "total_tokens": 442
+            "total_tokens": 490
           }
         }
-  recorded_at: Sat, 08 Jul 2023 01:13:09 GMT
+  recorded_at: Sun, 09 Jul 2023 23:41:16 GMT
 recorded_with: VCR 6.1.0

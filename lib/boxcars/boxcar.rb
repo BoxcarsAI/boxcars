@@ -17,12 +17,12 @@ module Boxcars
 
     # Input keys this chain expects.
     def input_keys
-      raise NotImplementedError
+      [:question]
     end
 
     # Output keys this chain expects.
     def output_keys
-      raise NotImplementedError
+      [:answer]
     end
 
     # Check that all inputs are present.
@@ -115,6 +115,20 @@ module Boxcars
       YAML.load(File.read(path))
     end
     # rubocop:enable Security/YAMLLoad
+
+    def schema
+      params = input_keys.map do |key|
+        "<param name=\"#{key}\" data-type=\"String\" required=\"true\" description=\"#{key}\" />"
+      end.join("\n")
+      <<~SCHEMA.freeze
+        <tool>
+          <tool name="#{name}" version="0.1" description="#{description}">
+          <params>
+            #{params}
+          </params>
+        </tool>
+      SCHEMA
+    end
 
     private
 

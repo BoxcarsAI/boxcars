@@ -99,9 +99,7 @@ module Boxcars
     # the input keys
     # @return [Array<Symbol>] The input keys.
     def input_keys
-      list = prompt.input_variables
-      list.delete(:agent_scratchpad)
-      list
+      prompt.input_variables - [:agent_scratchpad]
     end
 
     # the output keys

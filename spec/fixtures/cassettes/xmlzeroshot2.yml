@@ -7,22 +7,31 @@ http_interactions:
       encoding: UTF-8
       string: '{"messages":[{"role":"system","content":"\u003ctraining\u003eAnswer
         the following questions as best you can. You have access to the following
-        actions:\nhelpdesk: useful for when you need to query a database for an application
-        named .\nCalculator: useful for when you need to answer questions about math\nSearch:
-        useful for when you need to answer questions about current events.You should
-        ask targeted questions\nUse the following format: \u003cformat\u003e\n \u003cquestion\u003ethe
+        tools for actions:\n\u003cboxcars\u003e\n\u003ctool\u003e\n  \u003ctool name=\"helpdesk\"
+        version=\"0.1\" description=\"useful for when you need to query a database
+        for an application named .\"\u003e\n  \u003cparams\u003e\n    \u003cparam
+        name=\"question\" data-type=\"String\" required=\"true\" description=\"question\"
+        /\u003e\n  \u003c/params\u003e\n\u003c/tool\u003e\n\n\u003ctool\u003e\n  \u003ctool
+        name=\"Calculator\" version=\"0.1\" description=\"useful for when you need
+        to answer questions about math\"\u003e\n  \u003cparams\u003e\n    \u003cparam
+        name=\"question\" data-type=\"String\" required=\"true\" description=\"question\"
+        /\u003e\n  \u003c/params\u003e\n\u003c/tool\u003e\n\n\u003ctool\u003e\n  \u003ctool
+        name=\"Search\" version=\"0.1\" description=\"useful for when you need to
+        answer questions about current events.You should ask targeted questions\"\u003e\n  \u003cparams\u003e\n    \u003cparam
+        name=\"question\" data-type=\"String\" required=\"true\" description=\"question\"
+        /\u003e\n  \u003c/params\u003e\n\u003c/tool\u003e\n\u003c/boxcars\u003eUse
+        the following format making sure all open tags have closing tags:\n \u003cquestion\u003ethe
         input question you must answer\u003c/question\u003e\n \u003cthought\u003eyou
         should always think about what to do\u003c/thought\u003e\n \u003caction\u003ethe
-        action to take, from this action list\n  [helpdesk, Calculator, Search]\n  \u003caction_input\u003ean
-        input question to the action\u003c/action_input\u003e\n  \u003cobservation\u003ethe
-        result of the action\u003c/observation\u003e\n ... (this Thought/Action/Action
-        Input/Observation sequence can repeat N times)\n \u003cthought\u003eI know
-        the final answer\n  \u003cfinal_answer\u003ethe final answer to the original
-        input question\u003c/final_answer\u003e\n \u003c/thought\u003e\n\u003c/format\u003e\nYour
-        answer should always have begin and end tags for each element.\nAlso make
-        sure to specify a question for the action_input.\nFinally, if you can deduct
-        the answer from the question or observation, you can jump to final_answer
-        and give me the answer.\n\u003c/training"},{"role":"user","content":"\u003cquestion\u003eThe
+        action to take, from this action list above\u003c/action\u003e\n \u003caction_input\u003einput
+        to the action\u003c/action_input\u003e\n \u003cobservation\u003ethe result
+        of the action\u003c/observation\u003e\n ... (this Thought/Action/Action Input/Observation
+        sequence can repeat N times)\n \u003cthought\u003eI know the final answer\u003c/thought\u003e\n
+        \u003cfinal_answer\u003ethe final answer to the original input question\u003c/final_answer\u003e\n--
+        FORMAT END -\nYour answer should always have begin and end tags for each element.\nAlso
+        make sure to specify a question for the action_input.\nFinally, if you can
+        deduct the answer from the question or observation, you can jump to final_answer
+        and give me the answer.\n\u003c/training\u003e"},{"role":"user","content":"\u003cquestion\u003eThe
         number of comments from John for open tickets multiplied by pi to 5 decimal
         places.\u003c/question\u003e"},{"role":"assistant","content":"\u003cthought\u003e"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["\n\u003cobservation\u003e"]}'
     headers:
@@ -42,7 +51,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Fri, 07 Jul 2023 22:30:46 GMT
+      - Sun, 09 Jul 2023 23:59:12 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -58,7 +67,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '1364'
+      - '748'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -70,46 +79,46 @@ http_interactions:
       X-Ratelimit-Remaining-Requests:
       - '3499'
       X-Ratelimit-Remaining-Tokens:
-      - '89158'
+      - '89022'
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Ratelimit-Reset-Tokens:
-      - 561ms
+      - 652ms
       X-Request-Id:
-      - 33bbe6bd57de27120fa5072ccaa4b360
+      - cef526129b62dc27ecb39702c6a967f9
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7e3388a55f72a700-PHX
+      - 7e4484ef2df9a708-PHX
       Alt-Svc:
       - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
       string: |
         {
-          "id": "chatcmpl-7ZoGLlwLnJJ5ynzF42syUidOn5O7q",
+          "id": "chatcmpl-7aYb1ImENE43cLNOwd1j1soYaFUlB",
           "object": "chat.completion",
-          "created": 1688769045,
+          "created": 1688947151,
           "model": "gpt-3.5-turbo-0613",
           "choices": [
             {
               "index": 0,
               "message": {
                 "role": "assistant",
-                "content": "I need to find the number of comments from John for open tickets and then multiply it by pi to 5 decimal places.</thought>\n<action>helpdesk</action>\n<action_input>What is the number of comments from John for open tickets?</action_input>"
+                "content": "To answer this question, I need to find the number of comments from John for open tickets and then multiply it by pi to 5 decimal places.</thought>\n<action>helpdesk</action>\n<action_input>What is the number of comments from John for open tickets?</action_input>"
               },
               "finish_reason": "stop"
             }
           ],
           "usage": {
-            "prompt_tokens": 294,
-            "completion_tokens": 54,
-            "total_tokens": 348
+            "prompt_tokens": 447,
+            "completion_tokens": 59,
+            "total_tokens": 506
           }
         }
-  recorded_at: Fri, 07 Jul 2023 22:30:46 GMT
+  recorded_at: Sun, 09 Jul 2023 23:59:12 GMT
 - request:
     method: post
     uri: https://api.openai.com/v1/chat/completions
@@ -155,7 +164,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Fri, 07 Jul 2023 22:30:48 GMT
+      - Sun, 09 Jul 2023 23:59:13 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -171,7 +180,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '1142'
+      - '575'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -189,29 +198,29 @@ http_interactions:
       X-Ratelimit-Reset-Tokens:
       - 612ms
       X-Request-Id:
-      - c001c7e8e2691324b577d78d2287ee46
+      - '09910465b19e3305a7d46267b668fabb'
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7e3388aeb822a720-PHX
+      - 7e4484f6ada4a70c-PHX
       Alt-Svc:
       - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
       string: |
         {
-          "id": "chatcmpl-7ZoGMjU88Gw9HIlNvlEJv8Y8EJO38",
+          "id": "chatcmpl-7aYb2HB8Jpqa4BNRQXP9f1Iz0SMfk",
           "object": "chat.completion",
-          "created": 1688769046,
+          "created": 1688947152,
           "model": "gpt-3.5-turbo-0613",
           "choices": [
             {
               "index": 0,
               "message": {
                 "role": "assistant",
-                "content": "ARChanges: None\nARCode: Comment.joins(:user, :ticket).where(users: {name: 'John'}, tickets: {status: 'open'}).count\n"
+                "content": "ARChanges: None\nARCode: Comment.joins(:ticket, :user).where(users: {name: 'John'}, tickets: {status: 'open'}).count\n"
               },
               "finish_reason": "stop"
             }
@@ -222,7 +231,7 @@ http_interactions:
             "total_tokens": 404
           }
         }
-  recorded_at: Fri, 07 Jul 2023 22:30:47 GMT
+  recorded_at: Sun, 09 Jul 2023 23:59:13 GMT
 - request:
     method: post
     uri: https://api.openai.com/v1/chat/completions
@@ -230,26 +239,35 @@ http_interactions:
       encoding: UTF-8
       string: '{"messages":[{"role":"system","content":"\u003ctraining\u003eAnswer
         the following questions as best you can. You have access to the following
-        actions:\nhelpdesk: useful for when you need to query a database for an application
-        named .\nCalculator: useful for when you need to answer questions about math\nSearch:
-        useful for when you need to answer questions about current events.You should
-        ask targeted questions\nUse the following format: \u003cformat\u003e\n \u003cquestion\u003ethe
+        tools for actions:\n\u003cboxcars\u003e\n\u003ctool\u003e\n  \u003ctool name=\"helpdesk\"
+        version=\"0.1\" description=\"useful for when you need to query a database
+        for an application named .\"\u003e\n  \u003cparams\u003e\n    \u003cparam
+        name=\"question\" data-type=\"String\" required=\"true\" description=\"question\"
+        /\u003e\n  \u003c/params\u003e\n\u003c/tool\u003e\n\n\u003ctool\u003e\n  \u003ctool
+        name=\"Calculator\" version=\"0.1\" description=\"useful for when you need
+        to answer questions about math\"\u003e\n  \u003cparams\u003e\n    \u003cparam
+        name=\"question\" data-type=\"String\" required=\"true\" description=\"question\"
+        /\u003e\n  \u003c/params\u003e\n\u003c/tool\u003e\n\n\u003ctool\u003e\n  \u003ctool
+        name=\"Search\" version=\"0.1\" description=\"useful for when you need to
+        answer questions about current events.You should ask targeted questions\"\u003e\n  \u003cparams\u003e\n    \u003cparam
+        name=\"question\" data-type=\"String\" required=\"true\" description=\"question\"
+        /\u003e\n  \u003c/params\u003e\n\u003c/tool\u003e\n\u003c/boxcars\u003eUse
+        the following format making sure all open tags have closing tags:\n \u003cquestion\u003ethe
         input question you must answer\u003c/question\u003e\n \u003cthought\u003eyou
         should always think about what to do\u003c/thought\u003e\n \u003caction\u003ethe
-        action to take, from this action list\n  [helpdesk, Calculator, Search]\n  \u003caction_input\u003ean
-        input question to the action\u003c/action_input\u003e\n  \u003cobservation\u003ethe
-        result of the action\u003c/observation\u003e\n ... (this Thought/Action/Action
-        Input/Observation sequence can repeat N times)\n \u003cthought\u003eI know
-        the final answer\n  \u003cfinal_answer\u003ethe final answer to the original
-        input question\u003c/final_answer\u003e\n \u003c/thought\u003e\n\u003c/format\u003e\nYour
-        answer should always have begin and end tags for each element.\nAlso make
-        sure to specify a question for the action_input.\nFinally, if you can deduct
-        the answer from the question or observation, you can jump to final_answer
-        and give me the answer.\n\u003c/training"},{"role":"user","content":"\u003cquestion\u003eThe
+        action to take, from this action list above\u003c/action\u003e\n \u003caction_input\u003einput
+        to the action\u003c/action_input\u003e\n \u003cobservation\u003ethe result
+        of the action\u003c/observation\u003e\n ... (this Thought/Action/Action Input/Observation
+        sequence can repeat N times)\n \u003cthought\u003eI know the final answer\u003c/thought\u003e\n
+        \u003cfinal_answer\u003ethe final answer to the original input question\u003c/final_answer\u003e\n--
+        FORMAT END -\nYour answer should always have begin and end tags for each element.\nAlso
+        make sure to specify a question for the action_input.\nFinally, if you can
+        deduct the answer from the question or observation, you can jump to final_answer
+        and give me the answer.\n\u003c/training\u003e"},{"role":"user","content":"\u003cquestion\u003eThe
         number of comments from John for open tickets multiplied by pi to 5 decimal
         places.\u003c/question\u003e"},{"role":"assistant","content":"\u003cthought\u003e
-        I need to find the number of comments from John for open tickets and then
-        multiply it by pi to 5 decimal places.\u003c/thought\u003e\n\u003caction\u003ehelpdesk\u003c/action\u003e\n\u003caction_input\u003eWhat
+        To answer this question, I need to find the number of comments from John for
+        open tickets and then multiply it by pi to 5 decimal places.\u003c/thought\u003e\n\u003caction\u003ehelpdesk\u003c/action\u003e\n\u003caction_input\u003eWhat
         is the number of comments from John for open tickets?\u003c/action_input\u003e\n\u003cobservation\u003e2\u003c/observation\u003e\n\u003cthought\u003e"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["\n\u003cobservation\u003e"]}'
     headers:
       Content-Type:
@@ -268,7 +286,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Fri, 07 Jul 2023 22:31:01 GMT
+      - Sun, 09 Jul 2023 23:59:14 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -284,7 +302,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '1502'
+      - '695'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -296,46 +314,46 @@ http_interactions:
       X-Ratelimit-Remaining-Requests:
       - '3499'
       X-Ratelimit-Remaining-Tokens:
-      - '89089'
+      - '88945'
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Ratelimit-Reset-Tokens:
-      - 607ms
+      - 702ms
       X-Request-Id:
-      - c703c0f10d5cbacfe25d5f9054ce1b3f
+      - b5263b4c52e64d81d0e4a7b5f2bb285e
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7e338902b8cfa71a-PHX
+      - 7e4484fd2cfd1b00-PHX
       Alt-Svc:
       - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
       string: |
         {
-          "id": "chatcmpl-7ZoGa9SDRg3je1XsNmVNqHTxMlavD",
+          "id": "chatcmpl-7aYb3vbx1annHTyDIOgc42EjZdGPm",
           "object": "chat.completion",
-          "created": 1688769060,
+          "created": 1688947153,
           "model": "gpt-3.5-turbo-0613",
           "choices": [
             {
               "index": 0,
               "message": {
                 "role": "assistant",
-                "content": "I have found that the number of comments from John for open tickets is 2. Now I need to multiply it by pi to 5 decimal places.</thought>\n<action>Calculator</action>\n<action_input>What is the value of pi to 5 decimal places?</action_input>"
+                "content": "Now that I know the number of comments from John for open tickets is 2, I can proceed to the next step.</thought>\n<action>Calculator</action>\n<action_input>2 * pi</action_input>"
               },
               "finish_reason": "stop"
             }
           ],
           "usage": {
-            "prompt_tokens": 358,
-            "completion_tokens": 59,
-            "total_tokens": 417
+            "prompt_tokens": 516,
+            "completion_tokens": 45,
+            "total_tokens": 561
           }
         }
-  recorded_at: Fri, 07 Jul 2023 22:31:01 GMT
+  recorded_at: Sun, 09 Jul 2023 23:59:14 GMT
 - request:
     method: post
     uri: https://api.openai.com/v1/chat/completions
@@ -353,8 +371,8 @@ http_interactions:
         answer starts with either ''Answer:'' or ''```ruby''."},{"role":"system","content":"here
         is a hard example:\nthe user asks: What is 37593 * 67?\nyour answer: ```ruby\nputs(37593
         * 67)\n```\n```output\n2518731\n```\nAnswer: 2518731"},{"role":"system","content":"basic
-        example:\nuser asks: What is 2518731 + 0?\nyou answer: Answer: 2518731"},{"role":"system","content":"Begin."},{"role":"user","content":"What
-        is the value of pi to 5 decimal places?"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["```output"]}'
+        example:\nuser asks: What is 2518731 + 0?\nyou answer: Answer: 2518731"},{"role":"system","content":"Begin."},{"role":"user","content":"2
+        * pi"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["```output"]}'
     headers:
       Content-Type:
       - application/json
@@ -372,7 +390,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Fri, 07 Jul 2023 22:31:02 GMT
+      - Sun, 09 Jul 2023 23:59:15 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -388,7 +406,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '440'
+      - '269'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -400,46 +418,46 @@ http_interactions:
       X-Ratelimit-Remaining-Requests:
       - '3499'
       X-Ratelimit-Remaining-Tokens:
-      - '89238'
+      - '89248'
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Ratelimit-Reset-Tokens:
-      - 508ms
+      - 501ms
       X-Request-Id:
-      - 547de2f4e2985276019e3959ede18cf0
+      - 122d2e48e7ffd33e83f7d83f992b3ca1
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7e33890db9ada6fc-PHX
+      - 7e4485050ecb1b32-PHX
       Alt-Svc:
       - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
       string: |
         {
-          "id": "chatcmpl-7ZoGcB57tHUe1J5VzPfX3QWVcm0lM",
+          "id": "chatcmpl-7aYb5Qt0hcwrDzfaR7D6DuR9XWlft",
           "object": "chat.completion",
-          "created": 1688769062,
+          "created": 1688947155,
           "model": "gpt-3.5-turbo-0613",
           "choices": [
             {
               "index": 0,
               "message": {
                 "role": "assistant",
-                "content": "```ruby\nputs Math::PI.round(5)\n```\n"
+                "content": "```ruby\nputs(2 * Math::PI)\n```\n"
               },
               "finish_reason": "stop"
             }
           ],
           "usage": {
-            "prompt_tokens": 266,
+            "prompt_tokens": 257,
             "completion_tokens": 13,
-            "total_tokens": 279
+            "total_tokens": 270
           }
         }
-  recorded_at: Fri, 07 Jul 2023 22:31:02 GMT
+  recorded_at: Sun, 09 Jul 2023 23:59:15 GMT
 - request:
     method: post
     uri: https://api.openai.com/v1/chat/completions
@@ -447,30 +465,39 @@ http_interactions:
       encoding: UTF-8
       string: '{"messages":[{"role":"system","content":"\u003ctraining\u003eAnswer
         the following questions as best you can. You have access to the following
-        actions:\nhelpdesk: useful for when you need to query a database for an application
-        named .\nCalculator: useful for when you need to answer questions about math\nSearch:
-        useful for when you need to answer questions about current events.You should
-        ask targeted questions\nUse the following format: \u003cformat\u003e\n \u003cquestion\u003ethe
+        tools for actions:\n\u003cboxcars\u003e\n\u003ctool\u003e\n  \u003ctool name=\"helpdesk\"
+        version=\"0.1\" description=\"useful for when you need to query a database
+        for an application named .\"\u003e\n  \u003cparams\u003e\n    \u003cparam
+        name=\"question\" data-type=\"String\" required=\"true\" description=\"question\"
+        /\u003e\n  \u003c/params\u003e\n\u003c/tool\u003e\n\n\u003ctool\u003e\n  \u003ctool
+        name=\"Calculator\" version=\"0.1\" description=\"useful for when you need
+        to answer questions about math\"\u003e\n  \u003cparams\u003e\n    \u003cparam
+        name=\"question\" data-type=\"String\" required=\"true\" description=\"question\"
+        /\u003e\n  \u003c/params\u003e\n\u003c/tool\u003e\n\n\u003ctool\u003e\n  \u003ctool
+        name=\"Search\" version=\"0.1\" description=\"useful for when you need to
+        answer questions about current events.You should ask targeted questions\"\u003e\n  \u003cparams\u003e\n    \u003cparam
+        name=\"question\" data-type=\"String\" required=\"true\" description=\"question\"
+        /\u003e\n  \u003c/params\u003e\n\u003c/tool\u003e\n\u003c/boxcars\u003eUse
+        the following format making sure all open tags have closing tags:\n \u003cquestion\u003ethe
         input question you must answer\u003c/question\u003e\n \u003cthought\u003eyou
         should always think about what to do\u003c/thought\u003e\n \u003caction\u003ethe
-        action to take, from this action list\n  [helpdesk, Calculator, Search]\n  \u003caction_input\u003ean
-        input question to the action\u003c/action_input\u003e\n  \u003cobservation\u003ethe
-        result of the action\u003c/observation\u003e\n ... (this Thought/Action/Action
-        Input/Observation sequence can repeat N times)\n \u003cthought\u003eI know
-        the final answer\n  \u003cfinal_answer\u003ethe final answer to the original
-        input question\u003c/final_answer\u003e\n \u003c/thought\u003e\n\u003c/format\u003e\nYour
-        answer should always have begin and end tags for each element.\nAlso make
-        sure to specify a question for the action_input.\nFinally, if you can deduct
-        the answer from the question or observation, you can jump to final_answer
-        and give me the answer.\n\u003c/training"},{"role":"user","content":"\u003cquestion\u003eThe
+        action to take, from this action list above\u003c/action\u003e\n \u003caction_input\u003einput
+        to the action\u003c/action_input\u003e\n \u003cobservation\u003ethe result
+        of the action\u003c/observation\u003e\n ... (this Thought/Action/Action Input/Observation
+        sequence can repeat N times)\n \u003cthought\u003eI know the final answer\u003c/thought\u003e\n
+        \u003cfinal_answer\u003ethe final answer to the original input question\u003c/final_answer\u003e\n--
+        FORMAT END -\nYour answer should always have begin and end tags for each element.\nAlso
+        make sure to specify a question for the action_input.\nFinally, if you can
+        deduct the answer from the question or observation, you can jump to final_answer
+        and give me the answer.\n\u003c/training\u003e"},{"role":"user","content":"\u003cquestion\u003eThe
         number of comments from John for open tickets multiplied by pi to 5 decimal
         places.\u003c/question\u003e"},{"role":"assistant","content":"\u003cthought\u003e
-        I need to find the number of comments from John for open tickets and then
-        multiply it by pi to 5 decimal places.\u003c/thought\u003e\n\u003caction\u003ehelpdesk\u003c/action\u003e\n\u003caction_input\u003eWhat
+        To answer this question, I need to find the number of comments from John for
+        open tickets and then multiply it by pi to 5 decimal places.\u003c/thought\u003e\n\u003caction\u003ehelpdesk\u003c/action\u003e\n\u003caction_input\u003eWhat
         is the number of comments from John for open tickets?\u003c/action_input\u003e\n\u003cobservation\u003e2\u003c/observation\u003e\n\u003cthought\u003e
-        I have found that the number of comments from John for open tickets is 2.
-        Now I need to multiply it by pi to 5 decimal places.\u003c/thought\u003e\n\u003caction\u003eCalculator\u003c/action\u003e\n\u003caction_input\u003eWhat
-        is the value of pi to 5 decimal places?\u003c/action_input\u003e\n\u003cobservation\u003e3.14159\u003c/observation\u003e\n\u003cthought\u003e"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["\n\u003cobservation\u003e"]}'
+        Now that I know the number of comments from John for open tickets is 2, I
+        can proceed to the next step.\u003c/thought\u003e\n\u003caction\u003eCalculator\u003c/action\u003e\n\u003caction_input\u003e2
+        * pi\u003c/action_input\u003e\n\u003cobservation\u003e6.283185307179586\u003c/observation\u003e\n\u003cthought\u003e"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["\n\u003cobservation\u003e"]}'
     headers:
       Content-Type:
       - application/json
@@ -488,7 +515,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Fri, 07 Jul 2023 22:31:21 GMT
+      - Sun, 09 Jul 2023 23:59:16 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -504,7 +531,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '622'
+      - '631'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -516,549 +543,44 @@ http_interactions:
       X-Ratelimit-Remaining-Requests:
       - '3499'
       X-Ratelimit-Remaining-Tokens:
-      - '89017'
+      - '88888'
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Ratelimit-Reset-Tokens:
-      - 654ms
+      - 741ms
       X-Request-Id:
-      - d151780d50f2f01d2db6577625692afd
+      - 85afc8a32b66ae478848c765d9c8d0d0
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7e33897fef64a6f1-PHX
+      - 7e44850babeca724-PHX
       Alt-Svc:
       - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
       string: |
         {
-          "id": "chatcmpl-7ZoGuUoue4VMMUp7CiLFpiGuNASnu",
+          "id": "chatcmpl-7aYb6sF3reAyFNPTuLOCjF0y6iiZs",
           "object": "chat.completion",
-          "created": 1688769080,
+          "created": 1688947156,
           "model": "gpt-3.5-turbo-0613",
           "choices": [
             {
               "index": 0,
               "message": {
                 "role": "assistant",
-                "content": "I know the final answer.</thought>\n<final_answer>6.28318</final_answer>"
+                "content": "Now that I have the result of multiplying the number of comments from John for open tickets by pi to 5 decimal places (6.283185307179586), I can provide the final answer.</thought>\n<final_answer>6.28319</final_answer>"
               },
               "finish_reason": "stop"
             }
           ],
           "usage": {
-            "prompt_tokens": 430,
-            "completion_tokens": 20,
-            "total_tokens": 450
-          }
-        }
-  recorded_at: Fri, 07 Jul 2023 22:31:21 GMT
-- request:
-    method: post
-    uri: https://api.openai.com/v1/chat/completions
-    body:
-      encoding: UTF-8
-      string: '{"messages":[{"role":"system","content":"\u003ctraining\u003eAnswer
-        the following questions as best you can. You have access to the following
-        actions:\nhelpdesk: useful for when you need to query a database for an application
-        named .\nCalculator: useful for when you need to answer questions about math\nSearch:
-        useful for when you need to answer questions about current events.You should
-        ask targeted questions\nUse the following format: \u003cformat\u003e\n \u003cquestion\u003ethe
-        input question you must answer\u003c/question\u003e\n \u003cthought\u003eyou
-        should always think about what to do\u003c/thought\u003e\n \u003caction\u003ethe
-        action to take, from this action list\n  [helpdesk, Calculator, Search]\n  \u003caction_input\u003ean
-        input question to the action\u003c/action_input\u003e\n  \u003cobservation\u003ethe
-        result of the action\u003c/observation\u003e\n ... (this Thought/Action/Action
-        Input/Observation sequence can repeat N times)\n \u003cthought\u003eI know
-        the final answer\n  \u003cfinal_answer\u003ethe final answer to the original
-        input question\u003c/final_answer\u003e\n \u003c/thought\u003e\n\u003c/format\u003e\nYour
-        answer should always have begin and end tags for each element.\nAlso make
-        sure to specify a question for the action_input.\nFinally, if you can deduct
-        the answer from the question or observation, you can jump to final_answer
-        and give me the answer.\n\u003c/training"},{"role":"user","content":"\u003cquestion\u003eThe
-        number of comments from John for open tickets multiplied by pi to 5 decimal
-        places.\u003c/question\u003e"},{"role":"assistant","content":"\u003cthought\u003e
-        I need to find the number of comments from John for open tickets and then
-        multiply it by pi to 5 decimal places.\u003c/thought\u003e\n\u003caction\u003ehelpdesk\u003c/action\u003e\n\u003caction_input\u003eWhat
-        is the number of comments from John for open tickets?\u003c/action_input\u003e\n\u003cobservation\u003e2\u003c/observation\u003e\n\u003cthought\u003e
-        I have found that the number of comments from John for open tickets is 2.
-        Now I need to multiply it by pi to 5 decimal places.\u003c/thought\u003e\n\u003caction\u003eCalculator\u003c/action\u003e\n\u003caction_input\u003eWhat
-        is the value of pi to 5 decimal places?\u003c/action_input\u003e\n\u003cobservation\u003e3.14159\u003c/observation\u003e\n\u003cthought\u003e
-        I know the final answer.\u003c/thought\u003e\n\u003cfinal_answer\u003e6.28318\u003c/final_answer\u003e\n\u003cobservation\u003eError
-        - 6.28318 is not a valid action, try again.\u003c/observation\u003e\n\u003cthought\u003e"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["\n\u003cobservation\u003e"]}'
-    headers:
-      Content-Type:
-      - application/json
-      Authorization:
-      - Bearer <openai_access_token>
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      Accept:
-      - "*/*"
-      User-Agent:
-      - Ruby
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Date:
-      - Fri, 07 Jul 2023 22:32:58 GMT
-      Content-Type:
-      - application/json
-      Transfer-Encoding:
-      - chunked
-      Connection:
-      - keep-alive
-      Access-Control-Allow-Origin:
-      - "*"
-      Cache-Control:
-      - no-cache, must-revalidate
-      Openai-Model:
-      - gpt-3.5-turbo-0613
-      Openai-Organization:
-      - user-ri9zw9ahumb1bo9vs73mudbi
-      Openai-Processing-Ms:
-      - '1368'
-      Openai-Version:
-      - '2020-10-01'
-      Strict-Transport-Security:
-      - max-age=15724800; includeSubDomains
-      X-Ratelimit-Limit-Requests:
-      - '3500'
-      X-Ratelimit-Limit-Tokens:
-      - '90000'
-      X-Ratelimit-Remaining-Requests:
-      - '3499'
-      X-Ratelimit-Remaining-Tokens:
-      - '88978'
-      X-Ratelimit-Reset-Requests:
-      - 17ms
-      X-Ratelimit-Reset-Tokens:
-      - 681ms
-      X-Request-Id:
-      - dc0dac01caca935725d5eefc71744ef6
-      Cf-Cache-Status:
-      - DYNAMIC
-      Server:
-      - cloudflare
-      Cf-Ray:
-      - 7e338bdedd60a706-PHX
-      Alt-Svc:
-      - h3=":443"; ma=86400
-    body:
-      encoding: ASCII-8BIT
-      string: |
-        {
-          "id": "chatcmpl-7ZoITbxA1qjefP3k6Z4UaRyaXfeU8",
-          "object": "chat.completion",
-          "created": 1688769177,
-          "model": "gpt-3.5-turbo-0613",
-          "choices": [
-            {
-              "index": 0,
-              "message": {
-                "role": "assistant",
-                "content": "I made an error in my previous response. I apologize for the confusion. Let me correct it.\n</thought>\n<final_answer>The number of comments from John for open tickets multiplied by pi to 5 decimal places is approximately 6.28318.</final_answer>"
-              },
-              "finish_reason": "stop"
-            }
-          ],
-          "usage": {
-            "prompt_tokens": 473,
+            "prompt_tokens": 577,
             "completion_tokens": 54,
-            "total_tokens": 527
+            "total_tokens": 631
           }
         }
-  recorded_at: Fri, 07 Jul 2023 22:32:58 GMT
-- request:
-    method: post
-    uri: https://api.openai.com/v1/chat/completions
-    body:
-      encoding: UTF-8
-      string: '{"messages":[{"role":"system","content":"\u003ctraining\u003eAnswer
-        the following questions as best you can. You have access to the following
-        actions:\nhelpdesk: useful for when you need to query a database for an application
-        named .\nCalculator: useful for when you need to answer questions about math\nSearch:
-        useful for when you need to answer questions about current events.You should
-        ask targeted questions\nUse the following format: \u003cformat\u003e\n \u003cquestion\u003ethe
-        input question you must answer\u003c/question\u003e\n \u003cthought\u003eyou
-        should always think about what to do\u003c/thought\u003e\n \u003caction\u003ethe
-        action to take, from this action list\n  [helpdesk, Calculator, Search]\n  \u003caction_input\u003ean
-        input question to the action\u003c/action_input\u003e\n  \u003cobservation\u003ethe
-        result of the action\u003c/observation\u003e\n ... (this Thought/Action/Action
-        Input/Observation sequence can repeat N times)\n \u003cthought\u003eI know
-        the final answer\n  \u003cfinal_answer\u003ethe final answer to the original
-        input question\u003c/final_answer\u003e\n \u003c/thought\u003e\n\u003c/format\u003e\nYour
-        answer should always have begin and end tags for each element.\nAlso make
-        sure to specify a question for the action_input.\nFinally, if you can deduct
-        the answer from the question or observation, you can jump to final_answer
-        and give me the answer.\n\u003c/training"},{"role":"user","content":"\u003cquestion\u003eThe
-        number of comments from John for open tickets multiplied by pi to 5 decimal
-        places.\u003c/question\u003e"},{"role":"assistant","content":"\u003cthought\u003e
-        I need to find the number of comments from John for open tickets and then
-        multiply it by pi to 5 decimal places.\u003c/thought\u003e\n\u003caction\u003ehelpdesk\u003c/action\u003e\n\u003caction_input\u003eWhat
-        is the number of comments from John for open tickets?\u003c/action_input\u003e\n\u003cobservation\u003e2\u003c/observation\u003e\n\u003cthought\u003e
-        I have found that the number of comments from John for open tickets is 2.
-        Now I need to multiply it by pi to 5 decimal places.\u003c/thought\u003e\n\u003caction\u003eCalculator\u003c/action\u003e\n\u003caction_input\u003eWhat
-        is the value of pi to 5 decimal places?\u003c/action_input\u003e\n\u003cobservation\u003e3.14159\u003c/observation\u003e\n\u003cthought\u003e
-        I know the final answer.\u003c/thought\u003e\n\u003cfinal_answer\u003e6.28318\u003c/final_answer\u003e\n\u003cobservation\u003eError
-        - 6.28318 is not a valid action, try again.\u003c/observation\u003e\n\u003cthought\u003e
-        I made an error in my previous response. I apologize for the confusion. Let
-        me correct it.\n\u003c/thought\u003e\n\u003cfinal_answer\u003eThe number of
-        comments from John for open tickets multiplied by pi to 5 decimal places is
-        approximately 6.28318.\u003c/final_answer\u003e\n\u003cobservation\u003eError
-        - The number of comments from John for open tickets multiplied by pi to 5
-        decimal places is approximately 6.28318. is not a valid action, try again.\u003c/observation\u003e\n\u003cthought\u003e"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["\n\u003cobservation\u003e"]}'
-    headers:
-      Content-Type:
-      - application/json
-      Authorization:
-      - Bearer <openai_access_token>
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      Accept:
-      - "*/*"
-      User-Agent:
-      - Ruby
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Date:
-      - Fri, 07 Jul 2023 22:36:14 GMT
-      Content-Type:
-      - application/json
-      Transfer-Encoding:
-      - chunked
-      Connection:
-      - keep-alive
-      Access-Control-Allow-Origin:
-      - "*"
-      Cache-Control:
-      - no-cache, must-revalidate
-      Openai-Model:
-      - gpt-3.5-turbo-0613
-      Openai-Organization:
-      - user-ri9zw9ahumb1bo9vs73mudbi
-      Openai-Processing-Ms:
-      - '2264'
-      Openai-Version:
-      - '2020-10-01'
-      Strict-Transport-Security:
-      - max-age=15724800; includeSubDomains
-      X-Ratelimit-Limit-Requests:
-      - '3500'
-      X-Ratelimit-Limit-Tokens:
-      - '90000'
-      X-Ratelimit-Remaining-Requests:
-      - '3499'
-      X-Ratelimit-Remaining-Tokens:
-      - '88869'
-      X-Ratelimit-Reset-Requests:
-      - 17ms
-      X-Ratelimit-Reset-Tokens:
-      - 754ms
-      X-Request-Id:
-      - 4a8aa2eccbc1d6b267301015aebcd2a4
-      Cf-Cache-Status:
-      - DYNAMIC
-      Server:
-      - cloudflare
-      Cf-Ray:
-      - 7e33909ced54a6f6-PHX
-      Alt-Svc:
-      - h3=":443"; ma=86400
-    body:
-      encoding: ASCII-8BIT
-      string: |
-        {
-          "id": "chatcmpl-7ZoLb5qKm271K6vjQZ070PmznBNeR",
-          "object": "chat.completion",
-          "created": 1688769371,
-          "model": "gpt-3.5-turbo-0613",
-          "choices": [
-            {
-              "index": 0,
-              "message": {
-                "role": "assistant",
-                "content": "I apologize for the confusion. Let me correct my response.\nThe number of comments from John for open tickets multiplied by pi to 5 decimal places is approximately 6.28318."
-              },
-              "finish_reason": "stop"
-            }
-          ],
-          "usage": {
-            "prompt_tokens": 570,
-            "completion_tokens": 37,
-            "total_tokens": 607
-          }
-        }
-  recorded_at: Fri, 07 Jul 2023 22:36:13 GMT
-- request:
-    method: post
-    uri: https://api.openai.com/v1/chat/completions
-    body:
-      encoding: UTF-8
-      string: '{"messages":[{"role":"system","content":"\u003ctraining\u003eAnswer
-        the following questions as best you can. You have access to the following
-        actions:\nhelpdesk: useful for when you need to query a database for an application
-        named .\nCalculator: useful for when you need to answer questions about math\nSearch:
-        useful for when you need to answer questions about current events.You should
-        ask targeted questions\nUse the following format: \u003cformat\u003e\n \u003cquestion\u003ethe
-        input question you must answer\u003c/question\u003e\n \u003cthought\u003eyou
-        should always think about what to do\u003c/thought\u003e\n \u003caction\u003ethe
-        action to take, from this action list\n  [helpdesk, Calculator, Search]\n  \u003caction_input\u003ean
-        input question to the action\u003c/action_input\u003e\n  \u003cobservation\u003ethe
-        result of the action\u003c/observation\u003e\n ... (this Thought/Action/Action
-        Input/Observation sequence can repeat N times)\n \u003cthought\u003eI know
-        the final answer\n  \u003cfinal_answer\u003ethe final answer to the original
-        input question\u003c/final_answer\u003e\n \u003c/thought\u003e\n\u003c/format\u003e\nYour
-        answer should always have begin and end tags for each element.\nAlso make
-        sure to specify a question for the action_input.\nFinally, if you can deduct
-        the answer from the question or observation, you can jump to final_answer
-        and give me the answer.\n\u003c/training"},{"role":"user","content":"\u003cquestion\u003eThe
-        number of comments from John for open tickets multiplied by pi to 5 decimal
-        places.\u003c/question\u003e"},{"role":"assistant","content":"\u003cthought\u003e
-        I need to find the number of comments from John for open tickets and then
-        multiply it by pi to 5 decimal places.\u003c/thought\u003e\n\u003caction\u003ehelpdesk\u003c/action\u003e\n\u003caction_input\u003eWhat
-        is the number of comments from John for open tickets?\u003c/action_input\u003e\n\u003cobservation\u003e2\u003c/observation\u003e\n\u003cthought\u003e
-        I have found that the number of comments from John for open tickets is 2.
-        Now I need to multiply it by pi to 5 decimal places.\u003c/thought\u003e\n\u003caction\u003eCalculator\u003c/action\u003e\n\u003caction_input\u003eWhat
-        is the value of pi to 5 decimal places?\u003c/action_input\u003e\n\u003cobservation\u003e3.14159\u003c/observation\u003e\n\u003cthought\u003e
-        I know the final answer.\u003c/thought\u003e\n\u003cfinal_answer\u003e6.28318\u003c/final_answer\u003e\n\u003cobservation\u003eError
-        - 6.28318 is not a valid action, try again.\u003c/observation\u003e\n\u003cthought\u003e
-        I made an error in my previous response. I apologize for the confusion. Let
-        me correct it.\n\u003c/thought\u003e\n\u003cfinal_answer\u003eThe number of
-        comments from John for open tickets multiplied by pi to 5 decimal places is
-        approximately 6.28318.\u003c/final_answer\u003e\n\u003cobservation\u003eError
-        - The number of comments from John for open tickets multiplied by pi to 5
-        decimal places is approximately 6.28318. is not a valid action, try again.\u003c/observation\u003e\n\u003cthought\u003e
-        I apologize for the confusion. Let me correct my response.\nThe number of
-        comments from John for open tickets multiplied by pi to 5 decimal places is
-        approximately 6.28318.\n\u003cobservation\u003eI apologize for the confusion.
-        Let me correct my response.\nThe number of comments from John for open tickets
-        multiplied by pi to 5 decimal places is approximately 6.28318.\u003c/observation\u003e\n\u003cthought\u003e"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["\n\u003cobservation\u003e"]}'
-    headers:
-      Content-Type:
-      - application/json
-      Authorization:
-      - Bearer <openai_access_token>
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      Accept:
-      - "*/*"
-      User-Agent:
-      - Ruby
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Date:
-      - Fri, 07 Jul 2023 22:42:55 GMT
-      Content-Type:
-      - application/json
-      Transfer-Encoding:
-      - chunked
-      Connection:
-      - keep-alive
-      Access-Control-Allow-Origin:
-      - "*"
-      Cache-Control:
-      - no-cache, must-revalidate
-      Openai-Model:
-      - gpt-3.5-turbo-0613
-      Openai-Organization:
-      - user-ri9zw9ahumb1bo9vs73mudbi
-      Openai-Processing-Ms:
-      - '952'
-      Openai-Version:
-      - '2020-10-01'
-      Strict-Transport-Security:
-      - max-age=15724800; includeSubDomains
-      X-Ratelimit-Limit-Requests:
-      - '3500'
-      X-Ratelimit-Limit-Tokens:
-      - '90000'
-      X-Ratelimit-Remaining-Requests:
-      - '3499'
-      X-Ratelimit-Remaining-Tokens:
-      - '88774'
-      X-Ratelimit-Reset-Requests:
-      - 17ms
-      X-Ratelimit-Reset-Tokens:
-      - 817ms
-      X-Request-Id:
-      - 6cc79a9496ef2c03f3a97745d7d2ac4d
-      Cf-Cache-Status:
-      - DYNAMIC
-      Server:
-      - cloudflare
-      Cf-Ray:
-      - 7e339a70a9c3df08-PHX
-      Alt-Svc:
-      - h3=":443"; ma=86400
-    body:
-      encoding: ASCII-8BIT
-      string: |
-        {
-          "id": "chatcmpl-7ZoS6wBplI3g1xWHPYD4IfpWCf4Lw",
-          "object": "chat.completion",
-          "created": 1688769774,
-          "model": "gpt-3.5-turbo-0613",
-          "choices": [
-            {
-              "index": 0,
-              "message": {
-                "role": "assistant",
-                "content": "I apologize for the confusion. Let me correct my response.\nThe number of comments from John for open tickets multiplied by pi to 5 decimal places is approximately 6.28318."
-              },
-              "finish_reason": "stop"
-            }
-          ],
-          "usage": {
-            "prompt_tokens": 651,
-            "completion_tokens": 37,
-            "total_tokens": 688
-          }
-        }
-  recorded_at: Fri, 07 Jul 2023 22:42:55 GMT
-- request:
-    method: post
-    uri: https://api.openai.com/v1/chat/completions
-    body:
-      encoding: UTF-8
-      string: '{"messages":[{"role":"system","content":"\u003ctraining\u003eAnswer
-        the following questions as best you can. You have access to the following
-        actions:\nhelpdesk: useful for when you need to query a database for an application
-        named .\nCalculator: useful for when you need to answer questions about math\nSearch:
-        useful for when you need to answer questions about current events.You should
-        ask targeted questions\nUse the following format: \u003cformat\u003e\n \u003cquestion\u003ethe
-        input question you must answer\u003c/question\u003e\n \u003cthought\u003eyou
-        should always think about what to do\u003c/thought\u003e\n \u003caction\u003ethe
-        action to take, from this action list\n  [helpdesk, Calculator, Search]\n  \u003caction_input\u003ean
-        input question to the action\u003c/action_input\u003e\n  \u003cobservation\u003ethe
-        result of the action\u003c/observation\u003e\n ... (this Thought/Action/Action
-        Input/Observation sequence can repeat N times)\n \u003cthought\u003eI know
-        the final answer\n  \u003cfinal_answer\u003ethe final answer to the original
-        input question\u003c/final_answer\u003e\n \u003c/thought\u003e\n\u003c/format\u003e\nYour
-        answer should always have begin and end tags for each element.\nAlso make
-        sure to specify a question for the action_input.\nFinally, if you can deduct
-        the answer from the question or observation, you can jump to final_answer
-        and give me the answer.\n\u003c/training"},{"role":"user","content":"\u003cquestion\u003eThe
-        number of comments from John for open tickets multiplied by pi to 5 decimal
-        places.\u003c/question\u003e"},{"role":"assistant","content":"\u003cthought\u003e
-        I need to find the number of comments from John for open tickets and then
-        multiply it by pi to 5 decimal places.\u003c/thought\u003e\n\u003caction\u003ehelpdesk\u003c/action\u003e\n\u003caction_input\u003eWhat
-        is the number of comments from John for open tickets?\u003c/action_input\u003e\n\u003cobservation\u003e2\u003c/observation\u003e\n\u003cthought\u003e
-        I have found that the number of comments from John for open tickets is 2.
-        Now I need to multiply it by pi to 5 decimal places.\u003c/thought\u003e\n\u003caction\u003eCalculator\u003c/action\u003e\n\u003caction_input\u003eWhat
-        is the value of pi to 5 decimal places?\u003c/action_input\u003e\n\u003cobservation\u003e3.14159\u003c/observation\u003e\n\u003cthought\u003e
-        I know the final answer.\u003c/thought\u003e\n\u003cfinal_answer\u003e6.28318\u003c/final_answer\u003e\n\u003cobservation\u003eError
-        - 6.28318 is not a valid action, try again.\u003c/observation\u003e\n\u003cthought\u003e
-        I made an error in my previous response. I apologize for the confusion. Let
-        me correct it.\n\u003c/thought\u003e\n\u003cfinal_answer\u003eThe number of
-        comments from John for open tickets multiplied by pi to 5 decimal places is
-        approximately 6.28318.\u003c/final_answer\u003e\n\u003cobservation\u003eError
-        - The number of comments from John for open tickets multiplied by pi to 5
-        decimal places is approximately 6.28318. is not a valid action, try again.\u003c/observation\u003e\n\u003cthought\u003e
-        I apologize for the confusion. Let me correct my response.\nThe number of
-        comments from John for open tickets multiplied by pi to 5 decimal places is
-        approximately 6.28318.\n\u003cobservation\u003eI apologize for the confusion.
-        Let me correct my response.\nThe number of comments from John for open tickets
-        multiplied by pi to 5 decimal places is approximately 6.28318.\u003c/observation\u003e\n\u003cthought\u003e
-        I apologize for the confusion. Let me correct my response.\nThe number of
-        comments from John for open tickets multiplied by pi to 5 decimal places is
-        approximately 6.28318.\n\u003cobservation\u003eI apologize for the confusion.
-        Let me correct my response.\nThe number of comments from John for open tickets
-        multiplied by pi to 5 decimal places is approximately 6.28318.\u003c/observation\u003e\n\u003cthought\u003e"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["\n\u003cobservation\u003e"]}'
-    headers:
-      Content-Type:
-      - application/json
-      Authorization:
-      - Bearer <openai_access_token>
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      Accept:
-      - "*/*"
-      User-Agent:
-      - Ruby
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Date:
-      - Fri, 07 Jul 2023 22:42:59 GMT
-      Content-Type:
-      - application/json
-      Transfer-Encoding:
-      - chunked
-      Connection:
-      - keep-alive
-      Access-Control-Allow-Origin:
-      - "*"
-      Cache-Control:
-      - no-cache, must-revalidate
-      Openai-Model:
-      - gpt-3.5-turbo-0613
-      Openai-Organization:
-      - user-ri9zw9ahumb1bo9vs73mudbi
-      Openai-Processing-Ms:
-      - '1029'
-      Openai-Version:
-      - '2020-10-01'
-      Strict-Transport-Security:
-      - max-age=15724800; includeSubDomains
-      X-Ratelimit-Limit-Requests:
-      - '3500'
-      X-Ratelimit-Limit-Tokens:
-      - '90000'
-      X-Ratelimit-Remaining-Requests:
-      - '3499'
-      X-Ratelimit-Remaining-Tokens:
-      - '88678'
-      X-Ratelimit-Reset-Requests:
-      - 17ms
-      X-Ratelimit-Reset-Tokens:
-      - 880ms
-      X-Request-Id:
-      - 022d3a7d780a0e788098327eae454246
-      Cf-Cache-Status:
-      - DYNAMIC
-      Server:
-      - cloudflare
-      Cf-Ray:
-      - 7e339a8c5b441b14-PHX
-      Alt-Svc:
-      - h3=":443"; ma=86400
-    body:
-      encoding: ASCII-8BIT
-      string: |
-        {
-          "id": "chatcmpl-7ZoSAmCYCDdKGOYJSOhSmA3fI34be",
-          "object": "chat.completion",
-          "created": 1688769778,
-          "model": "gpt-3.5-turbo-0613",
-          "choices": [
-            {
-              "index": 0,
-              "message": {
-                "role": "assistant",
-                "content": "I apologize for the confusion. Let me correct my response.\n\nThe number of comments from John for open tickets multiplied by pi to 5 decimal places is approximately 6.28318."
-              },
-              "finish_reason": "stop"
-            }
-          ],
-          "usage": {
-            "prompt_tokens": 732,
-            "completion_tokens": 37,
-            "total_tokens": 769
-          }
-        }
-  recorded_at: Fri, 07 Jul 2023 22:42:59 GMT
+  recorded_at: Sun, 09 Jul 2023 23:59:16 GMT
 recorded_with: VCR 6.1.0

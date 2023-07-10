@@ -28,9 +28,15 @@ module Boxcars
       tag.to_s.sub("<", "</") if tag.to_s[0] == "<"
     end
 
+    # the xml to describe the boxcars
+    def boxcars_xml
+      schema = boxcars.map(&:schema).join("\n")
+      "<boxcars>\n#{schema}</boxcars>"
+    end
+
     # @return Hash The additional variables for this boxcar.
     def prediction_additional(_inputs)
-      { boxcar_names: boxcar_names, boxcar_descriptions: boxcar_descriptions, next_actions: next_actions }.merge super
+      { boxcars_xml: boxcars_xml, next_actions: next_actions }.merge super
     end
 
     def build_output(text)
