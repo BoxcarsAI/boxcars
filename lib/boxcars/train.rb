@@ -22,7 +22,7 @@ module Boxcars
       @max_iterations = kwargs.delete(:max_iterations) || 25
       @early_stopping_method = kwargs.delete(:early_stopping_method) || "force"
       init_prefixes
-      kwargs[:stop] ||= ["\n#{observation_prefix}"]
+      kwargs[:stop] = ["\n#{observation_prefix}"] unless kwargs.key?(:stop)
 
       super(prompt: prompt, engine: engine, **kwargs)
     end
@@ -48,7 +48,7 @@ module Boxcars
       thoughts = ""
       intermediate_steps.each do |action, observation|
         thoughts += action.is_a?(String) ? action : " #{action.log}"
-        thoughts += "\n#{observation_text(observation)}\n#{engine_prefix}"
+        thoughts += "\n#{observation_text(observation)}\n#{engine_prefix(false)}"
       end
       thoughts
     end
@@ -133,7 +133,7 @@ module Boxcars
     # @param return_direct [Boolean] Whether to return directly.
     # @return [String] The prefix.
     def engine_prefix(return_direct)
-      return_direct ? "" : engine_prefix
+      return_direct ? "" : @engine_prefix
     end
 
     # validate the prompt

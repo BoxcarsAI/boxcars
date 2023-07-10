@@ -48,7 +48,10 @@ module Boxcars
     end
 
     def xtext(path)
-      xpath(path)&.text&.gsub(/[[:space:]]+/, " ")&.strip
+      rv = xpath(path)&.text&.gsub(/[[:space:]]+/, " ")&.strip
+      return nil if rv.empty?
+
+      rv
     end
 
     def stext

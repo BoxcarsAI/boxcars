@@ -22,6 +22,7 @@ module Boxcars
       @final_answer_prefix ||= "<final_answer>"
       @answer_prefix ||= "<answer>"
       @question_prefix ||= "<question>"
+      @output_prefix ||= "<output>"
     end
 
     def close_tag(tag)
@@ -41,7 +42,7 @@ module Boxcars
 
     def build_output(text)
       if text =~ /#{close_tag(thought_prefix)}/
-        "<data>#{thought_prefix}#{text}</data>"
+        "<data>#{engine_prefix(false)}#{text}</data>"
       else
         "<data>#{text}</data>"
       end
@@ -60,7 +61,7 @@ module Boxcars
     private
 
     def parse_output(engine_output)
-      doc = Nokogiri::XML("<data><thought>#{engine_output}\n</data>")
+      doc = Nokogiri::XML("<data>#{engine_prefix}#{engine_output}\n</data>")
       keys = doc.element_children.first.element_children.map(&:name).map(&:to_sym)
       keys.to_h do |key|
         [key, doc.at_xpath("//#{key}")&.text]
