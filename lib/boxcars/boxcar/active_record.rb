@@ -147,7 +147,7 @@ module Boxcars
     end
 
     def change_count(changes_code)
-      return 0 unless changes_code && changes_code != "None"
+      return 0 if changes_code.nil? || changes_code.empty? || changes_code =~ %r{^(None|N/A)$}i
 
       rollback_after_running do
         Boxcars.debug "computing change count with: #{changes_code}", :yellow

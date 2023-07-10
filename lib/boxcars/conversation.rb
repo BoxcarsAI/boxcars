@@ -64,12 +64,15 @@ module Boxcars
       @lines += conversation.lines
     end
 
-    # insert converation above history line
+    # insert converation above history line if it is present
     # @param conversation [Conversation] The conversation to add
     def add_history(conversation)
-      @lines = @lines.dup
       # find the history line
       hi = lines.rindex { |ln| ln[0] == :history }
+      return unless hi
+
+      @lines = @lines.dup
+
       # insert the conversation above the history line
       @lines.insert(hi, *conversation.lines)
     end

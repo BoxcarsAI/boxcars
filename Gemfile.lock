@@ -1,10 +1,11 @@
 PATH
   remote: .
   specs:
-    boxcars (0.3.1)
+    boxcars (0.3.2)
       google_search_results (~> 2.2)
       gpt4all (~> 0.0.4)
       hnswlib (~> 0.8)
+      nokogiri (~> 1.15)
       pgvector (~> 0.2)
       ruby-openai (~> 4.1)
 
@@ -103,6 +104,14 @@ GEM
     netrc (0.11.0)
     nio4r (2.5.9)
     nio4r (2.5.9-java)
+    nokogiri (1.15.2-arm64-darwin)
+      racc (~> 1.4)
+    nokogiri (1.15.2-java)
+      racc (~> 1.4)
+    nokogiri (1.15.2-x86_64-darwin)
+      racc (~> 1.4)
+    nokogiri (1.15.2-x86_64-linux)
+      racc (~> 1.4)
     octokit (4.25.1)
       faraday (>= 1, < 3)
       sawyer (~> 0.9)
@@ -120,6 +129,8 @@ GEM
       protocol-hpack (~> 1.4)
       protocol-http (~> 0.18)
     public_suffix (5.0.1)
+    racc (1.7.1)
+    racc (1.7.1-java)
     rainbow (3.1.1)
     rake (13.0.6)
     regexp_parser (2.8.0)

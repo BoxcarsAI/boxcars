@@ -4,7 +4,8 @@ module Boxcars
   # @abstract
   class Train < EngineBoxcar
     attr_reader :boxcars, :return_values, :return_intermediate_steps,
-                :max_iterations, :early_stopping_method, :name_to_boxcar_map
+                :max_iterations, :early_stopping_method, :name_to_boxcar_map,
+                :observation_prefix, :thought_prefix, :final_answer_prefix, :answer_prefix, :question_prefix, :engine_prefix
 
     # A Train will use a engine to run a series of boxcars.
     # @param boxcars [Array<Boxcars::Boxcar>] The boxcars to run.
@@ -20,12 +21,21 @@ module Boxcars
       kwargs.delete(:return_intermediate_steps)
       @max_iterations = kwargs.delete(:max_iterations) || 25
       @early_stopping_method = kwargs.delete(:early_stopping_method) || "force"
-      kwargs[:stop] ||= ["\n#{observation_prefix}"]
+      init_prefixes
+      kwargs[:stop] = ["\n#{observation_prefix}"] unless kwargs.key?(:stop)
 
       super(prompt: prompt, engine: engine, **kwargs)
     end
 
-    # Extract the boxcar name and input from the text.
+    def init_prefixes
+      @thought_prefix ||= "Thought: "
+      @observation_prefix ||= "Observation: "
+      @final_answer_prefix ||= "Final Answer: "
+      @answer_prefix ||= "Answer:"
+      @question_prefix ||= "Question: "
+    end
+
+    # Callback to process the action/action input of a train.
     # @param text [String] The text to extract from.
     def extract_boxcar_and_input(text)
       Result.new(status: :ok, answer: text, explanation: engine_output)
@@ -34,16 +44,14 @@ module Boxcars
     # build the scratchpad for the engine
     # @param intermediate_steps [Array] The intermediate steps to build the scratchpad from.
     # @return [String] The scratchpad.
-    # rubocop:disable Lint/RedundantStringCoercion
     def construct_scratchpad(intermediate_steps)
       thoughts = ""
       intermediate_steps.each do |action, observation|
         thoughts += action.is_a?(String) ? action : " #{action.log}"
-        thoughts += "\n#{observation_prefix}#{observation.to_s}\n#{engine_prefix}"
+        thoughts += "\n#{observation_text(observation)}\n#{engine_prefix}"
       end
       thoughts
     end
-    # rubocop:enable Lint/RedundantStringCoercion
 
     # determine the next action
     # @param full_inputs [Hash] The inputs to the engine.
@@ -91,9 +99,7 @@ module Boxcars
     # the input keys
     # @return [Array<Symbol>] The input keys.
     def input_keys
-      list = prompt.input_variables
-      list.delete(:agent_scratchpad)
-      list
+      prompt.input_variables - [:agent_scratchpad]
     end
 
     # the output keys
@@ -121,13 +127,6 @@ module Boxcars
       final_output = output.return_values
       final_output[:intermediate_steps] = intermediate_steps if return_intermediate_steps
       final_output
-    end
-
-    # the prefix for the engine
-    # @param return_direct [Boolean] Whether to return directly.
-    # @return [String] The prefix.
-    def engine_prefix(return_direct)
-      return_direct ? "" : engine_prefix
     end
 
     # validate the prompt
@@ -162,7 +161,7 @@ module Boxcars
         thoughts = ""
         intermediate_steps.each do |action, observation|
           thoughts += action.log
-          thoughts += "\n#{observation_prefix}#{observation}\n#{engine_prefix}"
+          thoughts += "\n#{observation_text(observation)}\n#{engine_prefix}"
         end
         thoughts += "\n\nI now need to return a final answer based on the previous steps:"
         new_inputs = { agent_scratchpad: thoughts, stop: _stop }
@@ -173,6 +172,7 @@ module Boxcars
           TrainFinish.new({ output: full_output }, full_output)
         else
           boxcar, boxcar_input = parsed_output
+          Boxcars.debug "Got boxcar #{boxcar} and input #{boxcar_input}"
           if boxcar == finish_boxcar_name
             TrainFinish.new({ output: boxcar_input }, full_output)
           else
@@ -225,9 +225,46 @@ module Boxcars
       output = return_stopped_response(early_stopping_method, intermediate_steps, **inputs)
       pre_return(output, intermediate_steps)
     end
+
+    def key_and_value_text(key, value)
+      value = value.to_s
+      if key =~ /^<(?<tag_name>[[:word:]]+)>$/
+        # we need a close tag too
+        "#{key}#{value}</#{Regexp.last_match[:tag_name]}>"
+      else
+        "#{key}#{value}"
+      end
+    end
+
+    # this is for the scratchpad
+    def observation_text(observation)
+      key_and_value_text(observation_prefix, observation)
+    end
+
+    def question_text(question)
+      key_and_value_text(question_prefix, question)
+    end
+
+    def boxcar_names
+      @boxcar_names ||= boxcars.map(&:name).join(', ')
+    end
+
+    def boxcar_descriptions
+      @boxcar_descriptions ||= boxcars.map { |boxcar| "#{boxcar.name}: #{boxcar.description}" }.join("\n")
+    end
+
+    def next_actions
+      if wants_next_actions
+        "Next Actions: Up to 3 logical suggested next questions for the user to ask after getting this answer.\n"
+      else
+        ""
+      end
+    end
   end
 end
 
 require "boxcars/train/train_action"
 require "boxcars/train/train_finish"
 require "boxcars/train/zero_shot"
+require "boxcars/train/xml_train"
+require "boxcars/train/xml_zero_shot"

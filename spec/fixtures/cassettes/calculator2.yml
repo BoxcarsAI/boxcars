@@ -36,7 +36,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Sat, 01 Jul 2023 01:35:52 GMT
+      - Mon, 10 Jul 2023 00:00:05 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -52,7 +52,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '684'
+      - '136'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -64,28 +64,28 @@ http_interactions:
       X-Ratelimit-Remaining-Requests:
       - '3499'
       X-Ratelimit-Remaining-Tokens:
-      - '89245'
+      - '89244'
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Ratelimit-Reset-Tokens:
       - 503ms
       X-Request-Id:
-      - 241087d565c6804b6d69b82e20863042
+      - 59976a825e3a6f9eecba29890280e7a5
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7dfaea287c4ea6fa-PHX
+      - 7e4486422965a71b-PHX
       Alt-Svc:
       - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
       string: |
         {
-          "id": "chatcmpl-7XJodYC3I9i1SbWSm7SzvmEvMrQ2b",
+          "id": "chatcmpl-7aYbtAFsNlXgSSwKcbOF1n7ZsqFfG",
           "object": "chat.completion",
-          "created": 1688175351,
+          "created": 1688947205,
           "model": "gpt-3.5-turbo-0613",
           "choices": [
             {
@@ -103,5 +103,5 @@ http_interactions:
             "total_tokens": 266
           }
         }
-  recorded_at: Sat, 01 Jul 2023 01:35:52 GMT
+  recorded_at: Mon, 10 Jul 2023 00:00:05 GMT
 recorded_with: VCR 6.1.0

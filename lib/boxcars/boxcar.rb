@@ -17,12 +17,12 @@ module Boxcars
 
     # Input keys this chain expects.
     def input_keys
-      raise NotImplementedError
+      [:question]
     end
 
     # Output keys this chain expects.
     def output_keys
-      raise NotImplementedError
+      [:answer]
     end
 
     # Check that all inputs are present.
@@ -116,6 +116,20 @@ module Boxcars
     end
     # rubocop:enable Security/YAMLLoad
 
+    def schema
+      params = input_keys.map do |key|
+        "<param name=\"#{key}\" data-type=\"String\" required=\"true\" description=\"#{key}\" />"
+      end.join("\n")
+      <<~SCHEMA.freeze
+        <tool>
+          <tool name="#{name}" version="0.1" description="#{description}">
+          <params>
+            #{params}
+          </params>
+        </tool>
+      SCHEMA
+    end
+
     private
 
     # remember the history of this boxcar. Take the current intermediate steps and
@@ -126,18 +140,21 @@ module Boxcars
 
       # insert conversation history into the prompt
       history = []
-      history << Boxcar.user("Question: #{current_results[:input]}")
+      history << Boxcar.user(key_and_value_text(question_prefix, current_results[:input]))
       current_results[:intermediate_steps].each do |action, obs|
         if action.is_a?(TrainAction)
           obs = Observation.new(status: :ok, note: obs) if obs.is_a?(String)
           next if obs.status != :ok
 
-          history << Boxcar.assi("Thought: #{action.log}\n", "Observation: #{obs.note}")
+          history << Boxcar.assi("#{thought_prefix}#{action.log}", "\n",
+                                 key_and_value_text(observation_prefix, obs.note))
         else
           Boxcars.error "Unknown action: #{action}", :red
         end
       end
-      history << Boxcar.assi("Thought: I know the final answer\nFinal Answer: #{current_results[:output]}")
+      final_answer = key_and_value_text(final_answer_prefix, current_results[:output])
+      history << Boxcar.assi(
+        key_and_value_text(thought_prefix, "I know the final answer\n#{final_answer}\n"))
       prompt.add_history(history)
     end
 
@@ -196,6 +213,7 @@ require "boxcars/result"
 require "boxcars/boxcar/engine_boxcar"
 require "boxcars/boxcar/calculator"
 require "boxcars/boxcar/google_search"
+require "boxcars/boxcar/url_text"
 require "boxcars/boxcar/wikipedia_search"
 require "boxcars/boxcar/sql_base"
 require "boxcars/boxcar/sql_active_record"
