@@ -42,7 +42,7 @@ module Boxcars
 
     def build_output(text)
       if text =~ /#{close_tag(thought_prefix)}/
-        "<data>#{engine_prefix(false)}#{text}</data>"
+        "<data>#{engine_prefix}#{text}</data>"
       else
         "<data>#{text}</data>"
       end
