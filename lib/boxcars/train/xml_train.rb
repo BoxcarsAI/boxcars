@@ -13,6 +13,7 @@ module Boxcars
     # @param kwargs [Hash] Additional arguments including: name, description, top_k, return_direct, and stop
     # @abstract
     def initialize(boxcars:, prompt:, engine: nil, **kwargs)
+      @using_xml = true
       super
     end
 
@@ -41,7 +42,9 @@ module Boxcars
     end
 
     def build_output(text)
-      if text =~ /#{close_tag(thought_prefix)}/
+      if text.end_with?("</usetool>")
+        "<data>#{engine_prefix}#{text}</output></data>"
+      elsif text =~ /#{close_tag(thought_prefix)}/
         "<data>#{engine_prefix}#{text}</data>"
       else
         "<data>#{text}</data>"

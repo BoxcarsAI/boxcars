@@ -3,7 +3,7 @@
 module Boxcars
   # used by Boxcars to return structured result and additional context
   class Result
-    attr_reader :status, :answer, :explanation, :suggestions, :added_context
+    attr_accessor :status, :answer, :explanation, :suggestions, :added_context
 
     # @param status [Symbol] :ok or :error
     # @param answer [String] The answer to the question

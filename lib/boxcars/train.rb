@@ -3,7 +3,7 @@
 module Boxcars
   # @abstract
   class Train < EngineBoxcar
-    attr_reader :boxcars, :return_values, :return_intermediate_steps,
+    attr_reader :boxcars, :return_values, :return_intermediate_steps, :using_xml,
                 :max_iterations, :early_stopping_method, :name_to_boxcar_map,
                 :observation_prefix, :thought_prefix, :final_answer_prefix, :answer_prefix, :question_prefix, :engine_prefix
 
@@ -184,6 +184,18 @@ module Boxcars
       end
     end
 
+    def get_boxcar_result(boxcar, boxcar_input)
+      boxcar_result = boxcar.run(boxcar_input)
+      return boxcar_result unless using_xml
+
+      if boxcar_result.is_a?(Result)
+        boxcar_result.answer = boxcar_result.answer.encode(xml: :text)
+      else
+        boxcar_result = boxcar_result.encode(xml: :text)
+      end
+      boxcar_result
+    end
+
     # execute the train train
     # @param inputs [Hash] The inputs.
     # @return [Hash] The output.
@@ -197,7 +209,7 @@ module Boxcars
 
         if (boxcar = name_to_boxcar_map[output.boxcar])
           begin
-            observation = Observation.ok(boxcar.run(output.boxcar_input))
+            observation = Observation.ok(get_boxcar_result(boxcar, output.boxcar_input))
             return_direct = boxcar.return_direct
           rescue Boxcars::ConfigurationError, Boxcars::SecurityError => e
             raise e
@@ -212,9 +224,7 @@ module Boxcars
           observation = Observation.err("Error - #{output.boxcar} is not a valid action, try again.")
           return_direct = false
         end
-        # rubocop:disable Lint/RedundantStringCoercion
-        Boxcars.debug "Observation: #{observation.to_s}", :green
-        # rubocop:enable Lint/RedundantStringCoercion
+        Boxcars.debug "Observation: #{observation}", :green
         intermediate_steps.append([output, observation])
         if return_direct
           output = TrainFinish.new({ return_values[0] => observation }, "")

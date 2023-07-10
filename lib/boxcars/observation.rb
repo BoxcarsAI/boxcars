@@ -29,7 +29,12 @@ module Boxcars
 
     # @return [String] An explanation of the result
     def to_s
-      note
+      note.to_s
+    end
+
+    # @return [String] An explanation of the result
+    def to_text
+      to_s
     end
 
     # create a new Observaton from a text string with a status of :ok

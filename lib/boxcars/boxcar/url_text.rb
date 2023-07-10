@@ -18,10 +18,19 @@ module Boxcars
     # @return [String] The text for the url.
     def run(url)
       url = URI.parse(url)
-      get_answer(url)
+      do_encoding(get_answer(url))
     end
 
     private
+
+    def do_encoding(answer)
+      if answer.is_a?(Result)
+        answer.explanation = answer.explanation.encode(xml: :text)
+        answer
+      else
+        answer.encode(xml: :text)
+      end
+    end
 
     def html_to_text(url, response)
       Nokogiri::HTML(response.body).css(%w[h1 h2 h3 h4 h5 h6 p a].join(",")).map do |e|

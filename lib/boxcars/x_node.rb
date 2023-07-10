@@ -10,7 +10,6 @@ module Boxcars
       @node = node
       @valid_names = []
       @children = {}
-      # @attributes = node.attributes.transform_values(&:value)
       @attributes = node.attributes.values.to_h { |a| [a.name.to_sym, a.value] }
 
       node.children.each do |child|
@@ -30,8 +29,13 @@ module Boxcars
 
     def self.from_xml(xml)
       doc = Nokogiri::XML.parse(xml)
-      raise XmlError, "XML is not valid: #{doc.errors.map { |e| "#{e.line}:#{e.column} #{e.message}" }}" if doc.errors.any?
-
+      if doc.errors.any?
+        Boxcars.debug("XML: #{xml}", :yellow)
+        # rubocop:disable Lint/Debugger
+        debugger if ENV.fetch("DEBUG_XML", false)
+        # rubocop:enable Lint/Debugger
+        raise XmlError, "XML is not valid: #{doc.errors.map { |e| "#{e.line}:#{e.column} #{e.message}" }}"
+      end
       XNode.new(doc.root)
     end
 
