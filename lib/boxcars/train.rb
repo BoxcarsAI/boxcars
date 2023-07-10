@@ -5,7 +5,7 @@ module Boxcars
   class Train < EngineBoxcar
     attr_reader :boxcars, :return_values, :return_intermediate_steps,
                 :max_iterations, :early_stopping_method, :name_to_boxcar_map,
-                :observation_prefix, :thought_prefix, :final_answer_prefix, :answer_prefix, :question_prefix
+                :observation_prefix, :thought_prefix, :final_answer_prefix, :answer_prefix, :question_prefix, :engine_prefix
 
     # A Train will use a engine to run a series of boxcars.
     # @param boxcars [Array<Boxcars::Boxcar>] The boxcars to run.
@@ -48,7 +48,7 @@ module Boxcars
       thoughts = ""
       intermediate_steps.each do |action, observation|
         thoughts += action.is_a?(String) ? action : " #{action.log}"
-        thoughts += "\n#{observation_text(observation)}\n#{engine_prefix(false)}"
+        thoughts += "\n#{observation_text(observation)}\n#{engine_prefix}"
       end
       thoughts
     end
@@ -127,13 +127,6 @@ module Boxcars
       final_output = output.return_values
       final_output[:intermediate_steps] = intermediate_steps if return_intermediate_steps
       final_output
-    end
-
-    # the prefix for the engine
-    # @param return_direct [Boolean] Whether to return directly.
-    # @return [String] The prefix.
-    def engine_prefix(return_direct)
-      return_direct ? "" : @engine_prefix
     end
 
     # validate the prompt

@@ -6,7 +6,7 @@ require "nokogiri"
 module Boxcars
   # A Train using the zero-shot react method and only XML in the prompt.
   class XMLZeroShot < XMLTrain
-    attr_reader :boxcars, :engine_prefix
+    attr_reader :boxcars
     attr_accessor :wants_next_actions
 
     # @param boxcars [Array<Boxcars::Boxcar>] The boxcars to run.
