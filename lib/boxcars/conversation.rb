@@ -90,7 +90,7 @@ module Boxcars
     # @param inputs [Hash] The inputs to use for the prompt.
     # @return [Hash] The formatted prompt { messages: ...}
     def as_messages(inputs = nil)
-      { messages: no_history.map { |ln| { role: ln.first, content: ln.last % inputs } } }
+      { messages: no_history.map { |ln| { role: ln.first, content: cformat(ln.last, inputs) } } }
     rescue ::KeyError => e
       first_line = e.message.to_s.split("\n").first
       Boxcars.error "Missing prompt input key: #{first_line}"
@@ -102,14 +102,20 @@ module Boxcars
     # @return [Hash] The formatted prompt { prompt: "..."}
     def as_prompt(inputs = nil)
       if show_roles
-        no_history.map { |ln| format("#{ln.first}: #{ln.last}", inputs) }.compact.join("\n\n")
+        no_history.map { |ln| cformat("#{ln.first}: #{ln.last}", inputs) }.compact.join("\n\n")
       else
-        no_history.map { |ln| format(ln.last, inputs) }.compact.join("\n\n")
+        no_history.map { |ln| cformat(ln.last, inputs) }.compact.join("\n\n")
       end
     rescue ::KeyError => e
       first_line = e.message.to_s.split("\n").first
       Boxcars.error "Missing prompt input key: #{first_line}"
       raise KeyError, "Prompt format error: #{first_line}"
+    end
+
+    # special format that replaces lone percent signs with double percent signs
+    def cformat(*args)
+      args[0].gsub!(/%(?!<)/, '%%') if args.length > 1
+      format(*args)
     end
   end
 end
