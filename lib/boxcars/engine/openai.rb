@@ -59,7 +59,7 @@ module Boxcars
         prompt = prompt.first if prompt.is_a?(Array)
         params = prompt.as_messages(inputs).merge(params)
         if Boxcars.configuration.log_prompts
-          Boxcars.debug(params[:messages].map { |p| ">>>>>> Role: #{p[:role]} <<<<<<\n#{p[:content]}" }.join("\n"), :cyan)
+          Boxcars.debug(params[:messages].last(2).map { |p| ">>>>>> Role: #{p[:role]} <<<<<<\n#{p[:content]}" }.join("\n"), :cyan)
         end
         clnt.chat(parameters: params)
       else
