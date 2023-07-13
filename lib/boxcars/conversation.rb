@@ -114,7 +114,7 @@ module Boxcars
 
     # special format that replaces lone percent signs with double percent signs
     def cformat(*args)
-      args[0].gsub!(/%(?!<)/, '%%') if args.length > 1
+      args[0] = args[0].dup.gsub(/%(?!<)/, '%%') if args.length > 1
       format(*args)
     end
   end
