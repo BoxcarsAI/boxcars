@@ -214,7 +214,7 @@ module Boxcars
           rescue Boxcars::ConfigurationError, Boxcars::SecurityError => e
             raise e
           rescue StandardError => e
-            Boxcars.error "Error in #{boxcar.name} boxcar#call: #{e}\nbt:#{caller[0..5].join("\n   ")}", :red
+            Boxcars.error "Error in #{boxcar.name} train#call: #{e}\nbt:#{caller[0..5].join("\n   ")}", :red
             observation = Observation.err("Error - #{e}, correct and try again.")
           end
         elsif output.boxcar == :error

@@ -165,7 +165,7 @@ module Boxcars
       begin
         output = call(inputs: inputs)
       rescue StandardError => e
-        Boxcars.error "Error in #{name} boxcar#call: #{e}", :red
+        Boxcars.error "Error in #{name} boxcar#call: #{e}\nbt:#{caller[0..5].join("\n   ")}", :red
         raise e
       end
       validate_outputs(outputs: output.keys)
