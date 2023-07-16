@@ -43,6 +43,7 @@ RSpec.configure do |c|
     allow(ENV).to receive(:fetch).with("LOG_PROMPTS", false).and_return(log_prompts)
     allow(ENV).to receive(:fetch).with("LOG_GEN", false).and_return(log_generated)
     allow(ENV).to receive(:fetch).with('http_proxy', nil).and_return(http_p)
+    allow(ENV).to receive(:fetch).with('DEBUG_XML', false).and_return(false)
   end
 end
 
