@@ -3,16 +3,18 @@
 module Boxcars
   # @abstract
   class Boxcar
-    attr_reader :name, :description, :return_direct
+    attr_reader :name, :description, :return_direct, :parameters
 
     # A Boxcar is a container for a single tool to run.
     # @param name [String] The name of the boxcar. Defaults to classname.
     # @param description [String] A description of the boxcar.
     # @param return_direct [Boolean] If true, return the output of this boxcar directly, without merging it with the inputs.
-    def initialize(description:, name: nil, return_direct: false)
+    # @param parameters [Hash] The parameters for this boxcar.
+    def initialize(description:, name: nil, return_direct: false, parameters: nil)
       @name = name || self.class.name
       @description = description || @name
       @return_direct = return_direct
+      @parameters = parameters || { question: { type: :string, description: "the input question", required: true } }
     end
 
     # Input keys this chain expects.
@@ -117,12 +119,11 @@ module Boxcars
     # rubocop:enable Security/YAMLLoad
 
     def schema
-      params = input_keys.map do |key|
-        "<param name=\"#{key}\" data-type=\"String\" required=\"true\" description=\"#{key}\" />"
+      params = parameters.map do |name, info|
+        "<param name=#{name.to_s.inspect} data-type=#{info[:type].to_s.inspect} required=\"#{(info[:required] == true)}\" description=#{info[:description].inspect} />"
       end.join("\n")
       <<~SCHEMA.freeze
-        <tool>
-          <tool name="#{name}" version="0.1" description="#{description}">
+        <tool name="#{name}" description="#{description}">
           <params>
             #{params}
           </params>
@@ -212,6 +213,7 @@ require "boxcars/observation"
 require "boxcars/result"
 require "boxcars/boxcar/engine_boxcar"
 require "boxcars/boxcar/calculator"
+require "boxcars/boxcar/ruby_calculator"
 require "boxcars/boxcar/google_search"
 require "boxcars/boxcar/url_text"
 require "boxcars/boxcar/wikipedia_search"
