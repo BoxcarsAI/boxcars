@@ -17,6 +17,7 @@ VCR.configure do |c|
   c.default_cassette_options = { record: ENV["NO_VCR"] == "true" ? :all : :new_episodes,
                                  match_requests_on: [:method, :uri, VCRMultipartMatcher.new] }
   c.filter_sensitive_data("<SERPAPI_API_KEY>") { Boxcars.configuration.serpapi_api_key }
+  c.filter_sensitive_data("<ANTHROPIC_API_KEY>") { Boxcars.configuration.anthropic_api_key }
   c.filter_sensitive_data("<openai_access_token>") { Boxcars.configuration.openai_access_token }
   c.filter_sensitive_data("<OPENAI_ORGANIZATION_ID>") { Boxcars.configuration.organization_id }
 end
@@ -35,11 +36,13 @@ RSpec.configure do |c|
   c.before do |example|
     otoken = example.metadata[:skip_tokens] ? nil : ENV.fetch("OPENAI_ACCESS_TOKEN", "abcdef")
     stoken = example.metadata[:skip_tokens] ? nil : ENV.fetch("SERPAPI_API_KEY", "abcdefg")
+    atoken = example.metadata[:skip_tokens] ? nil : ENV.fetch("ANTHROPIC_API_KEY", "abcdefgh")
     log_prompts = ENV.fetch("LOG_PROMPTS", false)
     log_generated = ENV.fetch("LOG_GEN", false)
     http_p = ENV.fetch('http_proxy', nil)
     allow(ENV).to receive(:fetch).with("OPENAI_ACCESS_TOKEN", nil).and_return(otoken)
     allow(ENV).to receive(:fetch).with("SERPAPI_API_KEY", nil).and_return(stoken)
+    allow(ENV).to receive(:fetch).with("ANTHROPIC_API_KEY", nil).and_return(atoken)
     allow(ENV).to receive(:fetch).with("LOG_PROMPTS", false).and_return(log_prompts)
     allow(ENV).to receive(:fetch).with("LOG_GEN", false).and_return(log_generated)
     allow(ENV).to receive(:fetch).with('http_proxy', nil).and_return(http_p)

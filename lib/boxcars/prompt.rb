@@ -19,9 +19,11 @@ module Boxcars
     # compute the prompt parameters with input substitutions (used for chatGPT)
     # @param inputs [Hash] The inputs to use for the prompt.
     # @return [Hash] The formatted prompt { messages: ...}
-    def as_prompt(inputs)
+    # rubocop:disable Lint/UnusedMethodArgument
+    def as_prompt(inputs: nil, prefixes: nil, show_roles: nil)
       { prompt: format(inputs) }
     end
+    # rubocop:enable Lint/UnusedMethodArgument
 
     # compute the prompt parameters with input substitutions
     # @param inputs [Hash] The inputs to use for the prompt.
@@ -37,6 +39,9 @@ module Boxcars
       new_prompt = dup
       new_prompt.template += "\n\n#{conversation.message_text}"
       new_prompt
+    end
+
+    def default_prefixes
     end
 
     private

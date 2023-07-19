@@ -24,8 +24,8 @@ module Boxcars
     # prompt for non chatGPT params
     # @param inputs [Hash] The inputs to use for the prompt.
     # @return [Hash] The formatted prompt.
-    def as_prompt(inputs)
-      { prompt: conversation.as_prompt(inputs) }
+    def as_prompt(inputs:, prefixes: default_prefixes, show_roles: false)
+      { prompt: conversation.as_prompt(inputs: inputs, prefixes: prefixes, show_roles: show_roles) }
     end
 
     # tack on the ongoing conversation if present to the prompt
@@ -46,6 +46,10 @@ module Boxcars
     # print the prompt
     def to_s
       conversation.to_s
+    end
+
+    def default_prefixes
+      conversation.default_prefixes
     end
   end
 end

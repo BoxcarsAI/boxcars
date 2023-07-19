@@ -1,7 +1,8 @@
 PATH
   remote: .
   specs:
-    boxcars (0.3.5)
+    boxcars (0.4.0)
+      anthropic (~> 0.1)
       google_search_results (~> 2.2)
       gpt4all (~> 0.0.4)
       hnswlib (~> 0.8)
@@ -24,6 +25,9 @@ GEM
       tzinfo (~> 2.0)
     addressable (2.8.4)
       public_suffix (>= 2.0.2, < 6.0)
+    anthropic (0.1.0)
+      faraday (~> 2)
+      json (~> 2)
     ast (2.4.2)
     async (1.31.0)
       console (~> 1.10)

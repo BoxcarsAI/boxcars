@@ -2,15 +2,14 @@
 
 RSpec.describe Boxcars::ConversationPrompt do
   let(:convo) { Boxcars::Conversation.new(lines: [[:user, "hi %<you>s!"]]) }
-  let(:convo_with_roles) { Boxcars::Conversation.new(lines: [[:user, "hi %<you>s!"]], show_roles: true) }
 
   context "with a conversation" do
     it "can use as text prompt" do
-      expect(described_class.new(conversation: convo).as_prompt({ you: :bob })).to eq({ prompt: "hi bob!" })
+      expect(described_class.new(conversation: convo).as_prompt(inputs: { you: :bob })).to eq({ prompt: "hi bob!" })
     end
 
     it "can use as text prompt with roles" do
-      expect(described_class.new(conversation: convo_with_roles).as_prompt({ you: :bob })).to eq({ prompt: "user: hi bob!" })
+      expect(described_class.new(conversation: convo).as_prompt(inputs: { you: :bob }, show_roles: true)).to eq({ prompt: "User: hi bob!" })
     end
 
     it "can use as chatGPT messases" do

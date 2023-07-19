@@ -39,11 +39,11 @@ RSpec.describe Boxcars::Conversation do
     end
 
     it "can make a prompt with role" do
-      expect(described_class.new(lines: [[:user, "foo"]], show_roles: true).as_prompt).to eq("user: foo")
+      expect(described_class.new(lines: [[:user, "foo"]]).as_prompt(show_roles: true)).to eq("User: foo")
     end
 
     it "can make a converstation" do
-      expect(described_class.new(lines: [[:user, "foo"]], show_roles: true).as_messages).to eq({ messages: [{ role: :user, content: "foo" }] })
+      expect(described_class.new(lines: [[:user, "foo"]]).as_messages).to eq({ messages: [{ role: :user, content: "foo" }] })
     end
   end
 end

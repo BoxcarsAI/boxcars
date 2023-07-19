@@ -47,6 +47,11 @@ module Boxcars
       key_lookup(:serpapi_api_key, kwargs)
     end
 
+    # @return [String] The Anthropic API key either from arg or env.
+    def anthropic_api_key(**kwargs)
+      key_lookup(:anthropic_api_key, kwargs)
+    end
+
     private
 
     def check_key(key, val)

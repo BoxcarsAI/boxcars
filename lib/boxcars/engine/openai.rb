@@ -63,7 +63,7 @@ module Boxcars
         end
         clnt.chat(parameters: params)
       else
-        params = prompt.as_prompt(inputs).merge(params)
+        params = prompt.as_prompt(inputs: inputs).merge(params)
         Boxcars.debug("Prompt after formatting:\n#{params[:prompt]}", :cyan) if Boxcars.configuration.log_prompts
         clnt.completions(parameters: params)
       end

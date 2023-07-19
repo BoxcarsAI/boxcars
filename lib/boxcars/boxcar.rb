@@ -120,7 +120,8 @@ module Boxcars
 
     def schema
       params = parameters.map do |name, info|
-        "<param name=#{name.to_s.inspect} data-type=#{info[:type].to_s.inspect} required=\"#{(info[:required] == true)}\" description=#{info[:description].inspect} />"
+        "<param name=#{name.to_s.inspect} data-type=#{info[:type].to_s.inspect} required=\"#{info[:required] == true}\" " \
+          "description=#{info[:description].inspect} />"
       end.join("\n")
       <<~SCHEMA.freeze
         <tool name="#{name}" description="#{description}">
