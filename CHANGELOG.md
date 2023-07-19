@@ -1,5 +1,37 @@
 # Changelog
 
+## [v0.4.0](https://github.com/BoxcarsAI/boxcars/tree/v0.4.0) (2023-07-19)
+
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.3.5...v0.4.0)
+
+**Closed issues:**
+
+- Add Anthropic Engine [\#103](https://github.com/BoxcarsAI/boxcars/issues/103)
+
+**Merged pull requests:**
+
+- Add Anthropic Engine - closes \#103 [\#104](https://github.com/BoxcarsAI/boxcars/pull/104) ([francis](https://github.com/francis))
+
+## [v0.3.5](https://github.com/BoxcarsAI/boxcars/tree/v0.3.5) (2023-07-13)
+
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.3.4...v0.3.5)
+
+## [v0.3.4](https://github.com/BoxcarsAI/boxcars/tree/v0.3.4) (2023-07-11)
+
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.3.3...v0.3.4)
+
+## [v0.3.3](https://github.com/BoxcarsAI/boxcars/tree/v0.3.3) (2023-07-10)
+
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.3.2...v0.3.3)
+
+## [v0.3.2](https://github.com/BoxcarsAI/boxcars/tree/v0.3.2) (2023-07-10)
+
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.3.1...v0.3.2)
+
+**Merged pull requests:**
+
+- add XML Train and XML Zero Shot [\#102](https://github.com/BoxcarsAI/boxcars/pull/102) ([francis](https://github.com/francis))
+
 ## [v0.3.1](https://github.com/BoxcarsAI/boxcars/tree/v0.3.1) (2023-07-01)
 
 [Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.2.16...v0.3.1)
