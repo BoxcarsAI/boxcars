@@ -29,7 +29,7 @@ GEM
       faraday (>= 1)
       faraday-multipart (>= 1)
     ast (2.4.2)
-    async (2.6.2)
+    async (1.31.0)
       console (~> 1.10)
       fiber-annotation
       io-event (~> 1.1)
