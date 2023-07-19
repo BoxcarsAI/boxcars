@@ -3,14 +3,13 @@
 module Boxcars
   # used to keep track of the conversation
   class Conversation
-    attr_reader :lines, :show_roles
+    attr_reader :lines
 
     PEOPLE = %i[system user assistant history].freeze
 
-    def initialize(lines: [], show_roles: false)
+    def initialize(lines: [])
       @lines = lines
       check_lines(@lines)
-      @show_roles = show_roles
     end
 
     # check the lines
@@ -100,9 +99,10 @@ module Boxcars
     # compute the prompt parameters with input substitutions
     # @param inputs [Hash] The inputs to use for the prompt.
     # @return [Hash] The formatted prompt { prompt: "..."}
-    def as_prompt(inputs = nil)
+    def as_prompt(inputs: nil, prefixes: default_prefixes, show_roles: false)
       if show_roles
-        no_history.map { |ln| cformat("#{ln.first}: #{ln.last}", inputs) }.compact.join("\n\n")
+        lines = no_history.map { |ln| [prefixes[ln[0]], ln[1]] }
+        lines.map { |ln| cformat("#{ln.first}#{ln.last}", inputs) }.compact.join("\n\n")
       else
         no_history.map { |ln| cformat(ln.last, inputs) }.compact.join("\n\n")
       end
@@ -116,6 +116,10 @@ module Boxcars
     def cformat(*args)
       args[0] = args[0].dup.gsub(/%(?!<)/, '%%') if args.length > 1
       format(*args)
+    end
+
+    def default_prefixes
+      { system: 'System: ', user: 'User: ', assistant: 'Assistant: ', history: :history }
     end
   end
 end

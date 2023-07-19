@@ -51,4 +51,33 @@ RSpec.describe Boxcars::XMLZeroShot do
       end
     end
   end
+
+  context "with one car train with calculator and anthropic" do
+    let(:engine) { Boxcars::Anthropic.new }
+    let(:train) { described_class.new(engine: engine, boxcars: [calculator]) }
+
+    it "can do complex math" do
+      VCR.use_cassette("xmlzeroshot5") do
+        question = "what is pi squared to 7 digits?"
+        expect(train.run(question)).to include("9.8696044")
+      end
+    end
+  end
+
+  context "with one car train with calculator follow on question with anthropic" do
+    let(:engine) { Boxcars::Anthropic.new }
+    let(:train) { described_class.new(boxcars: [calculator], engine: engine, return_intermediate_steps: true) }
+
+    it "can do complex math" do
+      VCR.use_cassette("xmlzeroshot6") do
+        question = "what is pi squared to 7 digits?"
+        answer = train.conduct(question)
+        expect(answer[:output]).to include("9.8696044")
+
+        question = "what is the square root of the previous answer?"
+        answer = train.conduct(question)
+        expect(answer[:output]).to include("3.14159")
+      end
+    end
+  end
 end

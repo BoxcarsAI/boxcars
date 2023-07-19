@@ -31,12 +31,13 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   # runtime dependencies
+  spec.add_dependency "anthropic", "~> 0.1"
   spec.add_dependency "google_search_results", "~> 2.2"
   spec.add_dependency "gpt4all", "~> 0.0.4"
   spec.add_dependency "hnswlib", "~> 0.8"
   spec.add_dependency "nokogiri", "~> 1.15"
   spec.add_dependency "pgvector", "~> 0.2"
-  spec.add_dependency "ruby-openai", "~> 4.1"
+  spec.add_dependency "ruby-openai", "~> 4.2"
 
   # For more information and examples about making a new gem, checkout our
   # guide at: https://bundler.io/guides/creating_gem.html

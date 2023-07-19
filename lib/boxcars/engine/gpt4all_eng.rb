@@ -34,7 +34,7 @@ module Boxcars
       gpt4all = Gpt4all::ConversationalAI.new
       gpt4all.prepare_resources(force_download: false)
       gpt4all.start_bot
-      input_text = prompt.as_prompt(inputs)[:prompt]
+      input_text = prompt.as_prompt(inputs: inputs)[:prompt]
       Boxcars.debug("Prompt after formatting:\n#{input_text}", :cyan) if Boxcars.configuration.log_prompts
       gpt4all.prompt(input_text)
     rescue StandardError => e

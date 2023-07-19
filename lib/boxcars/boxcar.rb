@@ -112,15 +112,14 @@ module Boxcars
     end
 
     # load this boxcar from a file
-    # rubocop:disable Security/YAMLLoad
     def load(path:)
-      YAML.load(File.read(path))
+      YAML.load_file(path)
     end
-    # rubocop:enable Security/YAMLLoad
 
     def schema
       params = parameters.map do |name, info|
-        "<param name=#{name.to_s.inspect} data-type=#{info[:type].to_s.inspect} required=\"#{(info[:required] == true)}\" description=#{info[:description].inspect} />"
+        "<param name=#{name.to_s.inspect} data-type=#{info[:type].to_s.inspect} required=\"#{info[:required] == true}\" " \
+          "description=#{info[:description].inspect} />"
       end.join("\n")
       <<~SCHEMA.freeze
         <tool name="#{name}" description="#{description}">

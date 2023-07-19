@@ -1,0 +1,48 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://api.anthropic.com/v1/complete
+    body:
+      encoding: UTF-8
+      string: '{"prompt":"\n\nHuman: write a haiku about love\n\nAssistant:","model":"claude-2","max_tokens_to_sample":8096,"temperature":0.2}'
+    headers:
+      Content-Type:
+      - application/json
+      X-Api-Key:
+      - "<ANTHROPIC_API_KEY>"
+      Anthropic-Version:
+      - '2023-06-01'
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      Request-Id:
+      - c93499f3dae002ca1e1d3c8aa889543395a68411160a542d029846256426c4ad
+      X-Cloud-Trace-Context:
+      - 902ca2d44a2f0c60c859f3c82ef46d52
+      Date:
+      - Tue, 18 Jul 2023 22:46:06 GMT
+      Server:
+      - Google Frontend
+      Content-Length:
+      - '269'
+      Via:
+      - 1.1 google
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+    body:
+      encoding: UTF-8
+      string: '{"completion":" Here is a haiku about love:\n\nTwo hearts together
+        \nJoy and sorrow intertwined\nLove endures all things","stop_reason":"stop_sequence","model":"claude-2.0","stop":"\n\nHuman:","log_id":"c93499f3dae002ca1e1d3c8aa889543395a68411160a542d029846256426c4ad"}'
+  recorded_at: Tue, 18 Jul 2023 22:46:06 GMT
+recorded_with: VCR 6.1.0

@@ -5,7 +5,7 @@ RSpec.describe Boxcars::Prompt do
 
   context "with a prompt" do
     it "can use as text prompt" do
-      expect(described_class.new(**template).as_prompt({ you: :bob })).to eq({ prompt: "hi bob!" })
+      expect(described_class.new(**template).as_prompt(inputs: { you: :bob })).to eq({ prompt: "hi bob!" })
     end
 
     it "can use as chatGPT messases" do
