@@ -34,7 +34,6 @@ RSpec.describe Boxcars::VectorStore::Hnswlib::LoadFromDisk do
 
     it 'returns vector_store if files exist' do
       json_content = JSON.parse(File.read(json_doc_file_path), symbolize_names: true)
-      # require 'debug'; debugger
       expect(save_to_hnswlib[:vector_store].size).to eq(json_content.size)
     end
 
