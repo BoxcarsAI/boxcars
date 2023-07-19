@@ -200,7 +200,7 @@ module Boxcars
     def error_message(err, stage)
       msg = err.message
       msg = ::Regexp.last_match(1) if msg =~ /^(.+)' for #<Boxcars::ActiveRecord/
-      msg.gsub!(/Boxcars::ActiveRecord::/, '')
+      msg.gsub!("Boxcars::ActiveRecord::", '')
       "For the value you gave for #{stage}, fix this error: #{msg}"
     end
 

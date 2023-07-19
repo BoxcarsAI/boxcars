@@ -112,11 +112,9 @@ module Boxcars
     end
 
     # load this boxcar from a file
-    # rubocop:disable Security/YAMLLoad
     def load(path:)
-      YAML.load(File.read(path))
+      YAML.load_file(path)
     end
-    # rubocop:enable Security/YAMLLoad
 
     def schema
       params = parameters.map do |name, info|

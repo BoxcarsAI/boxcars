@@ -13,7 +13,7 @@ gem "rake", "~> 13.0"
 
 gem "sqlite3", "~> 1.6"
 
-gem "async",  "~>1.31.0"
+gem "async", "~>1.31.0"
 
 gem "activerecord", "~> 7.0"
 
