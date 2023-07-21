@@ -44,7 +44,7 @@ module Boxcars
     end
 
     def conversation_model?(model)
-      ["gpt-3.5-turbo", "gpt-4"].include?(model)
+      ["gpt-3.5-turbo", "gpt-4", "gpt-3.5-turbo-16k"].include?(model)
     end
 
     # Get an answer from the engine.
