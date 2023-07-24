@@ -45,7 +45,7 @@ module Boxcars
     # @param intermediate_steps [Array] The intermediate steps to build the scratchpad from.
     # @return [String] The scratchpad.
     def construct_scratchpad(intermediate_steps)
-      thoughts = ""
+      thoughts = engine_prefix.to_s
       intermediate_steps.each do |action, observation|
         thoughts += action.is_a?(String) ? action : " #{action.log}"
         thoughts += "\n#{observation_text(observation)}\n#{engine_prefix}"

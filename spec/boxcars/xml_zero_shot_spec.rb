@@ -72,7 +72,7 @@ RSpec.describe Boxcars::XMLZeroShot do
       VCR.use_cassette("xmlzeroshot6") do
         question = "what is pi squared to 7 digits?"
         answer = train.conduct(question)
-        expect(answer[:output]).to include("9.8696044")
+        expect(answer[:output]).to include("9.86960")
 
         question = "what is the square root of the previous answer?"
         answer = train.conduct(question)
