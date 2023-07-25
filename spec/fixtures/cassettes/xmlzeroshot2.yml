@@ -7,33 +7,33 @@ http_interactions:
       encoding: UTF-8
       string: '{"messages":[{"role":"system","content":"\u003ctraining\u003eAnswer
         the following questions as best you can. You have access to the following
-        tools for actions:\n\u003cboxcars\u003e\n\u003ctool\u003e\n  \u003ctool name=\"helpdesk\"
-        version=\"0.1\" description=\"useful for when you need to query a database
-        for an application named .\"\u003e\n  \u003cparams\u003e\n    \u003cparam
-        name=\"question\" data-type=\"String\" required=\"true\" description=\"question\"
-        /\u003e\n  \u003c/params\u003e\n\u003c/tool\u003e\n\n\u003ctool\u003e\n  \u003ctool
-        name=\"Calculator\" version=\"0.1\" description=\"useful for when you need
-        to answer questions about math\"\u003e\n  \u003cparams\u003e\n    \u003cparam
-        name=\"question\" data-type=\"String\" required=\"true\" description=\"question\"
-        /\u003e\n  \u003c/params\u003e\n\u003c/tool\u003e\n\n\u003ctool\u003e\n  \u003ctool
-        name=\"Search\" version=\"0.1\" description=\"useful for when you need to
-        answer questions about current events.You should ask targeted questions\"\u003e\n  \u003cparams\u003e\n    \u003cparam
-        name=\"question\" data-type=\"String\" required=\"true\" description=\"question\"
-        /\u003e\n  \u003c/params\u003e\n\u003c/tool\u003e\n\u003c/boxcars\u003eUse
+        tools for actions:\n\u003cboxcars\u003e\n\u003ctool name=\"helpdesk\" description=\"useful
+        for when you need to query a database for an application named .\"\u003e\n  \u003cparams\u003e\n    \u003cparam
+        name=\"question\" data-type=\"string\" required=\"true\" description=\"the
+        input question\" /\u003e\n  \u003c/params\u003e\n\u003c/tool\u003e\n\n\u003ctool
+        name=\"Calculator\" description=\"useful for when you need to answer questions
+        about math\"\u003e\n  \u003cparams\u003e\n    \u003cparam name=\"question\"
+        data-type=\"string\" required=\"true\" description=\"the input question\"
+        /\u003e\n  \u003c/params\u003e\n\u003c/tool\u003e\n\n\u003ctool name=\"Search\"
+        description=\"useful for when you need to answer questions about current events.You
+        should ask targeted questions\"\u003e\n  \u003cparams\u003e\n    \u003cparam
+        name=\"question\" data-type=\"string\" required=\"true\" description=\"the
+        input question\" /\u003e\n  \u003c/params\u003e\n\u003c/tool\u003e\n\u003c/boxcars\u003eUse
         the following format making sure all open tags have closing tags:\n \u003cquestion\u003ethe
         input question you must answer\u003c/question\u003e\n \u003cthought\u003eyou
         should always think about what to do\u003c/thought\u003e\n \u003caction\u003ethe
         action to take, from this action list above\u003c/action\u003e\n \u003caction_input\u003einput
         to the action\u003c/action_input\u003e\n \u003cobservation\u003ethe result
-        of the action\u003c/observation\u003e\n ... (this Thought/Action/Action Input/Observation
-        sequence can repeat N times)\n \u003cthought\u003eI know the final answer\u003c/thought\u003e\n
-        \u003cfinal_answer\u003ethe final answer to the original input question\u003c/final_answer\u003e\n--
-        FORMAT END -\nYour answer should always have begin and end tags for each element.\nAlso
-        make sure to specify a question for the action_input.\nFinally, if you can
-        deduct the answer from the question or observation, you can jump to final_answer
+        of the action\u003c/observation\u003e\n ... (this thought/action/action_input/observation
+        sequence repeats until you know the final answer) ...\n \u003cthought\u003eI
+        know the final answer\u003c/thought\u003e\n \u003cfinal_answer\u003ethe final
+        answer to the original input question\u003c/final_answer\u003e\n-- FORMAT
+        END -\nYour answer should always have begin and end tags for each element.\nAlso
+        make sure to specify arguments for the action_input.\nFinally, if you can
+        deduct the answer from the question or observations, you can jump to final_answer
         and give me the answer.\n\u003c/training\u003e"},{"role":"user","content":"\u003cquestion\u003eThe
         number of comments from John for open tickets multiplied by pi to 5 decimal
-        places.\u003c/question\u003e"},{"role":"assistant","content":"\u003cthought\u003e"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["\n\u003cobservation\u003e"]}'
+        places.\u003c/question\u003e"},{"role":"assistant","content":""}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["\n\u003cobservation\u003e"]}'
     headers:
       Content-Type:
       - application/json
@@ -51,7 +51,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Mon, 10 Jul 2023 05:55:26 GMT
+      - Tue, 25 Jul 2023 13:25:50 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -67,7 +67,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '1643'
+      - '2362'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -79,46 +79,46 @@ http_interactions:
       X-Ratelimit-Remaining-Requests:
       - '3499'
       X-Ratelimit-Remaining-Tokens:
-      - '89022'
+      - '89026'
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Ratelimit-Reset-Tokens:
-      - 652ms
+      - 648ms
       X-Request-Id:
-      - '0709094c95358d06bc142dd43fe77096'
+      - c606b931455e04b380cbff9abcd8a336
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7e468ebbab93a71b-PHX
+      - 7ec4bb21de581b4b-PHX
       Alt-Svc:
       - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
       string: |
         {
-          "id": "chatcmpl-7ae9kjPK8dCo2xFo6DkdMRXyGXsDE",
+          "id": "chatcmpl-7gCKqUCCClbteKQI3LmikCq5tv7RU",
           "object": "chat.completion",
-          "created": 1688968524,
+          "created": 1690291548,
           "model": "gpt-3.5-turbo-0613",
           "choices": [
             {
               "index": 0,
               "message": {
                 "role": "assistant",
-                "content": "To answer this question, we need to find the number of comments from John for open tickets and then multiply it by pi to 5 decimal places. We can use the helpdesk tool to query the database for this information.</thought>\n<action>helpdesk</action>\n<action_input>What is the number of comments from John for open tickets?</action_input>"
+                "content": "<thought>I need to find the number of comments from John for open tickets.</thought>\n<action>helpdesk</action>\n<action_input>SELECT COUNT(comment) FROM tickets WHERE status = 'open' AND commenter = 'John'</action_input>"
               },
               "finish_reason": "stop"
             }
           ],
           "usage": {
-            "prompt_tokens": 447,
-            "completion_tokens": 74,
-            "total_tokens": 521
+            "prompt_tokens": 420,
+            "completion_tokens": 51,
+            "total_tokens": 471
           }
         }
-  recorded_at: Mon, 10 Jul 2023 05:55:26 GMT
+  recorded_at: Tue, 25 Jul 2023 13:25:50 GMT
 - request:
     method: post
     uri: https://api.openai.com/v1/chat/completions
@@ -145,8 +145,8 @@ http_interactions:
         or attribute names, and do not share variables between the code in ARChanges
         and ARCode\nBe careful to not query for attributes that do not exist, and
         to use the format specified above.\nFinally, try not to use print or puts
-        in your code"},{"role":"user","content":"Question: What is the number of comments
-        from John for open tickets?"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["Answer:"]}'
+        in your code"},{"role":"user","content":"Question: SELECT COUNT(comment) FROM
+        tickets WHERE status = ''open'' AND commenter = ''John''"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["Answer:"]}'
     headers:
       Content-Type:
       - application/json
@@ -164,7 +164,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Mon, 10 Jul 2023 05:55:27 GMT
+      - Tue, 25 Jul 2023 13:25:52 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -180,7 +180,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '759'
+      - '1385'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -192,46 +192,46 @@ http_interactions:
       X-Ratelimit-Remaining-Requests:
       - '3499'
       X-Ratelimit-Remaining-Tokens:
-      - '89082'
+      - '89076'
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Ratelimit-Reset-Tokens:
-      - 612ms
+      - 616ms
       X-Request-Id:
-      - 12d78fce76ea0f000466cf218b077589
+      - 545a52349ed2f3ba0675589839bd4dc7
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7e468ec92c71a712-PHX
+      - 7ec4bb31fe461b4b-PHX
       Alt-Svc:
       - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
       string: |
         {
-          "id": "chatcmpl-7ae9mrvaL1U17uckqVc3BGHur1mwE",
+          "id": "chatcmpl-7gCKtAI93wTsaRZ28Q8k2zlOunPVp",
           "object": "chat.completion",
-          "created": 1688968526,
+          "created": 1690291551,
           "model": "gpt-3.5-turbo-0613",
           "choices": [
             {
               "index": 0,
               "message": {
                 "role": "assistant",
-                "content": "ARChanges: None\nARCode: Comment.joins(:user, :ticket).where(users: {name: 'John'}, tickets: {status: 'open'}).count\n"
+                "content": "ARCode: Ticket.joins(:comments).where(status: 'open', comments: {user_id: User.find_by(name: 'John').id}).count"
               },
               "finish_reason": "stop"
             }
           ],
           "usage": {
-            "prompt_tokens": 368,
-            "completion_tokens": 36,
-            "total_tokens": 404
+            "prompt_tokens": 374,
+            "completion_tokens": 32,
+            "total_tokens": 406
           }
         }
-  recorded_at: Mon, 10 Jul 2023 05:55:27 GMT
+  recorded_at: Tue, 25 Jul 2023 13:25:52 GMT
 - request:
     method: post
     uri: https://api.openai.com/v1/chat/completions
@@ -239,37 +239,35 @@ http_interactions:
       encoding: UTF-8
       string: '{"messages":[{"role":"system","content":"\u003ctraining\u003eAnswer
         the following questions as best you can. You have access to the following
-        tools for actions:\n\u003cboxcars\u003e\n\u003ctool\u003e\n  \u003ctool name=\"helpdesk\"
-        version=\"0.1\" description=\"useful for when you need to query a database
-        for an application named .\"\u003e\n  \u003cparams\u003e\n    \u003cparam
-        name=\"question\" data-type=\"String\" required=\"true\" description=\"question\"
-        /\u003e\n  \u003c/params\u003e\n\u003c/tool\u003e\n\n\u003ctool\u003e\n  \u003ctool
-        name=\"Calculator\" version=\"0.1\" description=\"useful for when you need
-        to answer questions about math\"\u003e\n  \u003cparams\u003e\n    \u003cparam
-        name=\"question\" data-type=\"String\" required=\"true\" description=\"question\"
-        /\u003e\n  \u003c/params\u003e\n\u003c/tool\u003e\n\n\u003ctool\u003e\n  \u003ctool
-        name=\"Search\" version=\"0.1\" description=\"useful for when you need to
-        answer questions about current events.You should ask targeted questions\"\u003e\n  \u003cparams\u003e\n    \u003cparam
-        name=\"question\" data-type=\"String\" required=\"true\" description=\"question\"
-        /\u003e\n  \u003c/params\u003e\n\u003c/tool\u003e\n\u003c/boxcars\u003eUse
+        tools for actions:\n\u003cboxcars\u003e\n\u003ctool name=\"helpdesk\" description=\"useful
+        for when you need to query a database for an application named .\"\u003e\n  \u003cparams\u003e\n    \u003cparam
+        name=\"question\" data-type=\"string\" required=\"true\" description=\"the
+        input question\" /\u003e\n  \u003c/params\u003e\n\u003c/tool\u003e\n\n\u003ctool
+        name=\"Calculator\" description=\"useful for when you need to answer questions
+        about math\"\u003e\n  \u003cparams\u003e\n    \u003cparam name=\"question\"
+        data-type=\"string\" required=\"true\" description=\"the input question\"
+        /\u003e\n  \u003c/params\u003e\n\u003c/tool\u003e\n\n\u003ctool name=\"Search\"
+        description=\"useful for when you need to answer questions about current events.You
+        should ask targeted questions\"\u003e\n  \u003cparams\u003e\n    \u003cparam
+        name=\"question\" data-type=\"string\" required=\"true\" description=\"the
+        input question\" /\u003e\n  \u003c/params\u003e\n\u003c/tool\u003e\n\u003c/boxcars\u003eUse
         the following format making sure all open tags have closing tags:\n \u003cquestion\u003ethe
         input question you must answer\u003c/question\u003e\n \u003cthought\u003eyou
         should always think about what to do\u003c/thought\u003e\n \u003caction\u003ethe
         action to take, from this action list above\u003c/action\u003e\n \u003caction_input\u003einput
         to the action\u003c/action_input\u003e\n \u003cobservation\u003ethe result
-        of the action\u003c/observation\u003e\n ... (this Thought/Action/Action Input/Observation
-        sequence can repeat N times)\n \u003cthought\u003eI know the final answer\u003c/thought\u003e\n
-        \u003cfinal_answer\u003ethe final answer to the original input question\u003c/final_answer\u003e\n--
-        FORMAT END -\nYour answer should always have begin and end tags for each element.\nAlso
-        make sure to specify a question for the action_input.\nFinally, if you can
-        deduct the answer from the question or observation, you can jump to final_answer
+        of the action\u003c/observation\u003e\n ... (this thought/action/action_input/observation
+        sequence repeats until you know the final answer) ...\n \u003cthought\u003eI
+        know the final answer\u003c/thought\u003e\n \u003cfinal_answer\u003ethe final
+        answer to the original input question\u003c/final_answer\u003e\n-- FORMAT
+        END -\nYour answer should always have begin and end tags for each element.\nAlso
+        make sure to specify arguments for the action_input.\nFinally, if you can
+        deduct the answer from the question or observations, you can jump to final_answer
         and give me the answer.\n\u003c/training\u003e"},{"role":"user","content":"\u003cquestion\u003eThe
         number of comments from John for open tickets multiplied by pi to 5 decimal
-        places.\u003c/question\u003e"},{"role":"assistant","content":"\u003cthought\u003e
-        To answer this question, we need to find the number of comments from John
-        for open tickets and then multiply it by pi to 5 decimal places. We can use
-        the helpdesk tool to query the database for this information.\u003c/thought\u003e\n\u003caction\u003ehelpdesk\u003c/action\u003e\n\u003caction_input\u003eWhat
-        is the number of comments from John for open tickets?\u003c/action_input\u003e\n\u003cobservation\u003e2\u003c/observation\u003e\n\u003cthought\u003e"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["\n\u003cobservation\u003e"]}'
+        places.\u003c/question\u003e"},{"role":"assistant","content":" \u003cthought\u003eI
+        need to find the number of comments from John for open tickets.\u003c/thought\u003e\n\u003caction\u003ehelpdesk\u003c/action\u003e\n\u003caction_input\u003eSELECT
+        COUNT(comment) FROM tickets WHERE status = ''open'' AND commenter = ''John''\u003c/action_input\u003e\n\u003cobservation\u003e2\u003c/observation\u003e\n"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["\n\u003cobservation\u003e"]}'
     headers:
       Content-Type:
       - application/json
@@ -287,7 +285,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Mon, 10 Jul 2023 05:55:29 GMT
+      - Tue, 25 Jul 2023 13:25:54 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -303,7 +301,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '1250'
+      - '1550'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -315,46 +313,46 @@ http_interactions:
       X-Ratelimit-Remaining-Requests:
       - '3499'
       X-Ratelimit-Remaining-Tokens:
-      - '88927'
+      - '88965'
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Ratelimit-Reset-Tokens:
-      - 714ms
+      - 690ms
       X-Request-Id:
-      - 1518ce732e75cb27efd40fd66bdf456d
+      - 6e85be08d23eb3d23585034ab712dbb7
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7e468ed24e57a6ee-PHX
+      - 7ec4bb3b8a71a6fd-PHX
       Alt-Svc:
       - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
       string: |
         {
-          "id": "chatcmpl-7ae9n7zyueFMZf4nBWhZLe4hilDUh",
+          "id": "chatcmpl-7gCKuun31tOfC2G7rqoLbcw4wojP8",
           "object": "chat.completion",
-          "created": 1688968527,
+          "created": 1690291552,
           "model": "gpt-3.5-turbo-0613",
           "choices": [
             {
               "index": 0,
               "message": {
                 "role": "assistant",
-                "content": "Now that we know the number of comments from John for open tickets is 2, we can proceed to calculate the final answer.</thought>\n<action>Calculator</action>\n<action_input>2 * pi to 5 decimal places</action_input>"
+                "content": "<thought>I have found that John has made 2 comments for open tickets.</thought>\n<action>Calculator</action>\n<action_input>2 * 3.14159</action_input>"
               },
               "finish_reason": "stop"
             }
           ],
           "usage": {
-            "prompt_tokens": 531,
-            "completion_tokens": 51,
-            "total_tokens": 582
+            "prompt_tokens": 478,
+            "completion_tokens": 40,
+            "total_tokens": 518
           }
         }
-  recorded_at: Mon, 10 Jul 2023 05:55:29 GMT
+  recorded_at: Tue, 25 Jul 2023 13:25:54 GMT
 - request:
     method: post
     uri: https://api.openai.com/v1/chat/completions
@@ -373,7 +371,7 @@ http_interactions:
         is a hard example:\nthe user asks: What is 37593 * 67?\nyour answer: ```ruby\nputs(37593
         * 67)\n```\n```output\n2518731\n```\nAnswer: 2518731"},{"role":"system","content":"basic
         example:\nuser asks: What is 2518731 + 0?\nyou answer: Answer: 2518731"},{"role":"system","content":"Begin."},{"role":"user","content":"2
-        * pi to 5 decimal places"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["```output"]}'
+        * 3.14159"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["```output"]}'
     headers:
       Content-Type:
       - application/json
@@ -391,7 +389,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Mon, 10 Jul 2023 05:55:30 GMT
+      - Tue, 25 Jul 2023 13:25:55 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -407,7 +405,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '673'
+      - '1221'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -419,46 +417,46 @@ http_interactions:
       X-Ratelimit-Remaining-Requests:
       - '3499'
       X-Ratelimit-Remaining-Tokens:
-      - '89242'
+      - '89247'
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Ratelimit-Reset-Tokens:
-      - 504ms
+      - 502ms
       X-Request-Id:
-      - 8a2891408a6cc362fe9432ace3d45dad
+      - 543d6a5aeff203028503962a3592d7c1
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7e468edb6cfa1b0a-PHX
+      - 7ec4bb461ec1a724-PHX
       Alt-Svc:
       - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
       string: |
         {
-          "id": "chatcmpl-7ae9pGRbosWtEAj71hvjkCClPWXbG",
+          "id": "chatcmpl-7gCKwApczyu7Vx4uNKRgV03YqGHJQ",
           "object": "chat.completion",
-          "created": 1688968529,
+          "created": 1690291554,
           "model": "gpt-3.5-turbo-0613",
           "choices": [
             {
               "index": 0,
               "message": {
                 "role": "assistant",
-                "content": "```ruby\nresult = (2 * Math::PI).round(5)\nputs result\n```\n"
+                "content": "```ruby\nputs(2 * 3.14159)\n```\n"
               },
               "finish_reason": "stop"
             }
           ],
           "usage": {
-            "prompt_tokens": 262,
-            "completion_tokens": 21,
-            "total_tokens": 283
+            "prompt_tokens": 261,
+            "completion_tokens": 15,
+            "total_tokens": 276
           }
         }
-  recorded_at: Mon, 10 Jul 2023 05:55:30 GMT
+  recorded_at: Tue, 25 Jul 2023 13:25:55 GMT
 - request:
     method: post
     uri: https://api.openai.com/v1/chat/completions
@@ -466,40 +464,37 @@ http_interactions:
       encoding: UTF-8
       string: '{"messages":[{"role":"system","content":"\u003ctraining\u003eAnswer
         the following questions as best you can. You have access to the following
-        tools for actions:\n\u003cboxcars\u003e\n\u003ctool\u003e\n  \u003ctool name=\"helpdesk\"
-        version=\"0.1\" description=\"useful for when you need to query a database
-        for an application named .\"\u003e\n  \u003cparams\u003e\n    \u003cparam
-        name=\"question\" data-type=\"String\" required=\"true\" description=\"question\"
-        /\u003e\n  \u003c/params\u003e\n\u003c/tool\u003e\n\n\u003ctool\u003e\n  \u003ctool
-        name=\"Calculator\" version=\"0.1\" description=\"useful for when you need
-        to answer questions about math\"\u003e\n  \u003cparams\u003e\n    \u003cparam
-        name=\"question\" data-type=\"String\" required=\"true\" description=\"question\"
-        /\u003e\n  \u003c/params\u003e\n\u003c/tool\u003e\n\n\u003ctool\u003e\n  \u003ctool
-        name=\"Search\" version=\"0.1\" description=\"useful for when you need to
-        answer questions about current events.You should ask targeted questions\"\u003e\n  \u003cparams\u003e\n    \u003cparam
-        name=\"question\" data-type=\"String\" required=\"true\" description=\"question\"
-        /\u003e\n  \u003c/params\u003e\n\u003c/tool\u003e\n\u003c/boxcars\u003eUse
+        tools for actions:\n\u003cboxcars\u003e\n\u003ctool name=\"helpdesk\" description=\"useful
+        for when you need to query a database for an application named .\"\u003e\n  \u003cparams\u003e\n    \u003cparam
+        name=\"question\" data-type=\"string\" required=\"true\" description=\"the
+        input question\" /\u003e\n  \u003c/params\u003e\n\u003c/tool\u003e\n\n\u003ctool
+        name=\"Calculator\" description=\"useful for when you need to answer questions
+        about math\"\u003e\n  \u003cparams\u003e\n    \u003cparam name=\"question\"
+        data-type=\"string\" required=\"true\" description=\"the input question\"
+        /\u003e\n  \u003c/params\u003e\n\u003c/tool\u003e\n\n\u003ctool name=\"Search\"
+        description=\"useful for when you need to answer questions about current events.You
+        should ask targeted questions\"\u003e\n  \u003cparams\u003e\n    \u003cparam
+        name=\"question\" data-type=\"string\" required=\"true\" description=\"the
+        input question\" /\u003e\n  \u003c/params\u003e\n\u003c/tool\u003e\n\u003c/boxcars\u003eUse
         the following format making sure all open tags have closing tags:\n \u003cquestion\u003ethe
         input question you must answer\u003c/question\u003e\n \u003cthought\u003eyou
         should always think about what to do\u003c/thought\u003e\n \u003caction\u003ethe
         action to take, from this action list above\u003c/action\u003e\n \u003caction_input\u003einput
         to the action\u003c/action_input\u003e\n \u003cobservation\u003ethe result
-        of the action\u003c/observation\u003e\n ... (this Thought/Action/Action Input/Observation
-        sequence can repeat N times)\n \u003cthought\u003eI know the final answer\u003c/thought\u003e\n
-        \u003cfinal_answer\u003ethe final answer to the original input question\u003c/final_answer\u003e\n--
-        FORMAT END -\nYour answer should always have begin and end tags for each element.\nAlso
-        make sure to specify a question for the action_input.\nFinally, if you can
-        deduct the answer from the question or observation, you can jump to final_answer
+        of the action\u003c/observation\u003e\n ... (this thought/action/action_input/observation
+        sequence repeats until you know the final answer) ...\n \u003cthought\u003eI
+        know the final answer\u003c/thought\u003e\n \u003cfinal_answer\u003ethe final
+        answer to the original input question\u003c/final_answer\u003e\n-- FORMAT
+        END -\nYour answer should always have begin and end tags for each element.\nAlso
+        make sure to specify arguments for the action_input.\nFinally, if you can
+        deduct the answer from the question or observations, you can jump to final_answer
         and give me the answer.\n\u003c/training\u003e"},{"role":"user","content":"\u003cquestion\u003eThe
         number of comments from John for open tickets multiplied by pi to 5 decimal
-        places.\u003c/question\u003e"},{"role":"assistant","content":"\u003cthought\u003e
-        To answer this question, we need to find the number of comments from John
-        for open tickets and then multiply it by pi to 5 decimal places. We can use
-        the helpdesk tool to query the database for this information.\u003c/thought\u003e\n\u003caction\u003ehelpdesk\u003c/action\u003e\n\u003caction_input\u003eWhat
-        is the number of comments from John for open tickets?\u003c/action_input\u003e\n\u003cobservation\u003e2\u003c/observation\u003e\n\u003cthought\u003e
-        Now that we know the number of comments from John for open tickets is 2, we
-        can proceed to calculate the final answer.\u003c/thought\u003e\n\u003caction\u003eCalculator\u003c/action\u003e\n\u003caction_input\u003e2
-        * pi to 5 decimal places\u003c/action_input\u003e\n\u003cobservation\u003e6.28319\u003c/observation\u003e\n\u003cthought\u003e"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["\n\u003cobservation\u003e"]}'
+        places.\u003c/question\u003e"},{"role":"assistant","content":" \u003cthought\u003eI
+        need to find the number of comments from John for open tickets.\u003c/thought\u003e\n\u003caction\u003ehelpdesk\u003c/action\u003e\n\u003caction_input\u003eSELECT
+        COUNT(comment) FROM tickets WHERE status = ''open'' AND commenter = ''John''\u003c/action_input\u003e\n\u003cobservation\u003e2\u003c/observation\u003e\n
+        \u003cthought\u003eI have found that John has made 2 comments for open tickets.\u003c/thought\u003e\n\u003caction\u003eCalculator\u003c/action\u003e\n\u003caction_input\u003e2
+        * 3.14159\u003c/action_input\u003e\n\u003cobservation\u003e6.28318\u003c/observation\u003e\n"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["\n\u003cobservation\u003e"]}'
     headers:
       Content-Type:
       - application/json
@@ -517,7 +512,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Mon, 10 Jul 2023 05:55:32 GMT
+      - Tue, 25 Jul 2023 13:25:57 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -533,7 +528,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '341'
+      - '1427'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -545,172 +540,44 @@ http_interactions:
       X-Ratelimit-Remaining-Requests:
       - '3499'
       X-Ratelimit-Remaining-Tokens:
-      - '88863'
+      - '88918'
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Ratelimit-Reset-Tokens:
-      - 758ms
+      - 720ms
       X-Request-Id:
-      - 7c2114ea73171d85dbe35632835af290
+      - 9cbcf6a8a75a11bc3592919a0932d5dc
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7e468ee2d90fa720-PHX
+      - 7ec4bb4f9a74a721-PHX
       Alt-Svc:
       - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
       string: |
         {
-          "id": "chatcmpl-7ae9rkEAWuevdmV7T83xrEXelh71Y",
+          "id": "chatcmpl-7gCKxLMP17kWclGwPyxcDuBnGimnz",
           "object": "chat.completion",
-          "created": 1688968531,
+          "created": 1690291555,
           "model": "gpt-3.5-turbo-0613",
           "choices": [
             {
               "index": 0,
               "message": {
                 "role": "assistant",
-                "content": "I have calculated the final answer to be 6.28319."
+                "content": "<thought>The number of comments from John for open tickets multiplied by pi to 5 decimal places is 6.28318.</thought>\n<final_answer>6.28318</final_answer>"
               },
               "finish_reason": "stop"
             }
           ],
           "usage": {
-            "prompt_tokens": 595,
-            "completion_tokens": 14,
-            "total_tokens": 609
+            "prompt_tokens": 528,
+            "completion_tokens": 40,
+            "total_tokens": 568
           }
         }
-  recorded_at: Mon, 10 Jul 2023 05:55:32 GMT
-- request:
-    method: post
-    uri: https://api.openai.com/v1/chat/completions
-    body:
-      encoding: UTF-8
-      string: '{"messages":[{"role":"system","content":"\u003ctraining\u003eAnswer
-        the following questions as best you can. You have access to the following
-        tools for actions:\n\u003cboxcars\u003e\n\u003ctool\u003e\n  \u003ctool name=\"helpdesk\"
-        version=\"0.1\" description=\"useful for when you need to query a database
-        for an application named .\"\u003e\n  \u003cparams\u003e\n    \u003cparam
-        name=\"question\" data-type=\"String\" required=\"true\" description=\"question\"
-        /\u003e\n  \u003c/params\u003e\n\u003c/tool\u003e\n\n\u003ctool\u003e\n  \u003ctool
-        name=\"Calculator\" version=\"0.1\" description=\"useful for when you need
-        to answer questions about math\"\u003e\n  \u003cparams\u003e\n    \u003cparam
-        name=\"question\" data-type=\"String\" required=\"true\" description=\"question\"
-        /\u003e\n  \u003c/params\u003e\n\u003c/tool\u003e\n\n\u003ctool\u003e\n  \u003ctool
-        name=\"Search\" version=\"0.1\" description=\"useful for when you need to
-        answer questions about current events.You should ask targeted questions\"\u003e\n  \u003cparams\u003e\n    \u003cparam
-        name=\"question\" data-type=\"String\" required=\"true\" description=\"question\"
-        /\u003e\n  \u003c/params\u003e\n\u003c/tool\u003e\n\u003c/boxcars\u003eUse
-        the following format making sure all open tags have closing tags:\n \u003cquestion\u003ethe
-        input question you must answer\u003c/question\u003e\n \u003cthought\u003eyou
-        should always think about what to do\u003c/thought\u003e\n \u003caction\u003ethe
-        action to take, from this action list above\u003c/action\u003e\n \u003caction_input\u003einput
-        to the action\u003c/action_input\u003e\n \u003cobservation\u003ethe result
-        of the action\u003c/observation\u003e\n ... (this Thought/Action/Action Input/Observation
-        sequence can repeat N times)\n \u003cthought\u003eI know the final answer\u003c/thought\u003e\n
-        \u003cfinal_answer\u003ethe final answer to the original input question\u003c/final_answer\u003e\n--
-        FORMAT END -\nYour answer should always have begin and end tags for each element.\nAlso
-        make sure to specify a question for the action_input.\nFinally, if you can
-        deduct the answer from the question or observation, you can jump to final_answer
-        and give me the answer.\n\u003c/training\u003e"},{"role":"user","content":"\u003cquestion\u003eThe
-        number of comments from John for open tickets multiplied by pi to 5 decimal
-        places.\u003c/question\u003e"},{"role":"assistant","content":"\u003cthought\u003e
-        To answer this question, we need to find the number of comments from John
-        for open tickets and then multiply it by pi to 5 decimal places. We can use
-        the helpdesk tool to query the database for this information.\u003c/thought\u003e\n\u003caction\u003ehelpdesk\u003c/action\u003e\n\u003caction_input\u003eWhat
-        is the number of comments from John for open tickets?\u003c/action_input\u003e\n\u003cobservation\u003e2\u003c/observation\u003e\n\u003cthought\u003e
-        Now that we know the number of comments from John for open tickets is 2, we
-        can proceed to calculate the final answer.\u003c/thought\u003e\n\u003caction\u003eCalculator\u003c/action\u003e\n\u003caction_input\u003e2
-        * pi to 5 decimal places\u003c/action_input\u003e\n\u003cobservation\u003e6.28319\u003c/observation\u003e\n\u003cthought\u003e
-        I have calculated the final answer to be 6.28319.\n\u003cobservation\u003eI
-        have calculated the final answer to be 6.28319.\u003c/observation\u003e\n\u003cthought\u003e"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["\n\u003cobservation\u003e"]}'
-    headers:
-      Content-Type:
-      - application/json
-      Authorization:
-      - Bearer <openai_access_token>
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      Accept:
-      - "*/*"
-      User-Agent:
-      - Ruby
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Date:
-      - Mon, 10 Jul 2023 05:55:33 GMT
-      Content-Type:
-      - application/json
-      Transfer-Encoding:
-      - chunked
-      Connection:
-      - keep-alive
-      Access-Control-Allow-Origin:
-      - "*"
-      Cache-Control:
-      - no-cache, must-revalidate
-      Openai-Model:
-      - gpt-3.5-turbo-0613
-      Openai-Organization:
-      - user-ri9zw9ahumb1bo9vs73mudbi
-      Openai-Processing-Ms:
-      - '303'
-      Openai-Version:
-      - '2020-10-01'
-      Strict-Transport-Security:
-      - max-age=15724800; includeSubDomains
-      X-Ratelimit-Limit-Requests:
-      - '3500'
-      X-Ratelimit-Limit-Tokens:
-      - '90000'
-      X-Ratelimit-Remaining-Requests:
-      - '3499'
-      X-Ratelimit-Remaining-Tokens:
-      - '88828'
-      X-Ratelimit-Reset-Requests:
-      - 17ms
-      X-Ratelimit-Reset-Tokens:
-      - 780ms
-      X-Request-Id:
-      - 2334a2754308a740c34430aca1f0a17f
-      Cf-Cache-Status:
-      - DYNAMIC
-      Server:
-      - cloudflare
-      Cf-Ray:
-      - 7e468eefac14a700-PHX
-      Alt-Svc:
-      - h3=":443"; ma=86400
-    body:
-      encoding: ASCII-8BIT
-      string: |
-        {
-          "id": "chatcmpl-7ae9sb2PHn6orJUNzBwtljQfSuj9B",
-          "object": "chat.completion",
-          "created": 1688968532,
-          "model": "gpt-3.5-turbo-0613",
-          "choices": [
-            {
-              "index": 0,
-              "message": {
-                "role": "assistant",
-                "content": "<final_answer>6.28319</final_answer>"
-              },
-              "finish_reason": "stop"
-            }
-          ],
-          "usage": {
-            "prompt_tokens": 630,
-            "completion_tokens": 12,
-            "total_tokens": 642
-          }
-        }
-  recorded_at: Mon, 10 Jul 2023 05:55:33 GMT
+  recorded_at: Tue, 25 Jul 2023 13:25:57 GMT
 recorded_with: VCR 6.1.0

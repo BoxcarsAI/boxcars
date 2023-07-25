@@ -16,7 +16,7 @@ module Boxcars
     # @param prompt [Boxcars::Prompt] The prompt to use. Defaults to the built-in prompt.
     # @param kwargs [Hash] Additional arguments to pass to the train. wants_next_actions: true
     def initialize(boxcars:, engine: nil, name: 'Zero Shot XML', description: 'Zero Shot Train wiht XML', prompt: nil, **kwargs)
-      @engine_prefix = '<thought>'
+      @engine_prefix = ''
       @wants_next_actions = kwargs.fetch(:wants_next_actions, false)
       prompt ||= my_prompt
       super(engine: engine, boxcars: boxcars, prompt: prompt, name: name, description: description, **kwargs)
@@ -33,18 +33,18 @@ module Boxcars
            " <action>the action to take, from this action list above</action>\n",
            " <action_input>input to the action</action_input>\n",
            " <observation>the result of the action</observation>\n",
-           " ... (this Thought/Action/Action Input/Observation sequence can repeat N times)\n",
+           " ... (this thought/action/action_input/observation sequence repeats until you know the final answer) ...\n",
            " <thought>I know the final answer</thought>\n",
            " <final_answer>the final answer to the original input question</final_answer>\n",
            "-- FORMAT END -\n",
            "Your answer should always have begin and end tags for each element.\n",
-           "Also make sure to specify a question for the action_input.\n",
-           "Finally, if you can deduct the answer from the question or observation, you can ",
+           "Also make sure to specify arguments for the action_input.\n",
+           "Finally, if you can deduct the answer from the question or observations, you can ",
            "jump to final_answer and give me the answer.\n",
            "</training>"),
       hist, # insert thoughts here from previous runs
       user("<question>%<input>s</question>"),
-      assi("<thought>%<agent_scratchpad>s")
+      assi("%<agent_scratchpad>s")
     ].freeze
 
     # The prompt to use for the train.
