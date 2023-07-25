@@ -189,8 +189,8 @@ module Boxcars
       return boxcar_result unless using_xml
 
       if boxcar_result.is_a?(Result)
-        boxcar_result.answer = boxcar_result.answer.encode(xml: :text)
-      else
+        boxcar_result.answer = boxcar_result.answer.encode(xml: :text) if boxcar_result.answer.is_a?(String)
+      elsif boxcar_result.is_a?(String)
         boxcar_result = boxcar_result.encode(xml: :text)
       end
       boxcar_result

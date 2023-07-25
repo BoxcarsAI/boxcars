@@ -42,7 +42,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Mon, 24 Jul 2023 22:59:33 GMT
+      - Tue, 25 Jul 2023 13:17:34 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -58,7 +58,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '1497'
+      - '1832'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -76,22 +76,22 @@ http_interactions:
       X-Ratelimit-Reset-Tokens:
       - 555ms
       X-Request-Id:
-      - 0afb65a9930f083a95307649491e19ad
+      - dfe9c41b78c5d7099002ea8ce45fb8da
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7ebfc62f7f1aa6f4-PHX
+      - 7ec4af044e95a712-PHX
       Alt-Svc:
       - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
       string: |
         {
-          "id": "chatcmpl-7fyoWqqGUbaBLiXIdtuIf3Tx78rqo",
+          "id": "chatcmpl-7gCCqvpwsOmO4izwPuiTmRwD9DwGB",
           "object": "chat.completion",
-          "created": 1690239572,
+          "created": 1690291052,
           "model": "gpt-3.5-turbo-0613",
           "choices": [
             {
@@ -109,7 +109,7 @@ http_interactions:
             "total_tokens": 335
           }
         }
-  recorded_at: Mon, 24 Jul 2023 22:59:33 GMT
+  recorded_at: Tue, 25 Jul 2023 13:17:34 GMT
 - request:
     method: post
     uri: https://api.openai.com/v1/chat/completions
@@ -145,7 +145,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Mon, 24 Jul 2023 22:59:38 GMT
+      - Tue, 25 Jul 2023 13:17:34 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -161,7 +161,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '661'
+      - '588'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -179,22 +179,22 @@ http_interactions:
       X-Ratelimit-Reset-Tokens:
       - 502ms
       X-Request-Id:
-      - fddf153340388f937e66ae5ee8984e5e
+      - e9743a1ff33a18b52aad57e7b14008b9
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7ebfc6526b05a6f7-PHX
+      - 7ec4af114a74a6ea-PHX
       Alt-Svc:
       - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
       string: |
         {
-          "id": "chatcmpl-7fyocAI9VOCQWLB3Ny1FRtXwMcFWY",
+          "id": "chatcmpl-7gCCslCqGMnO5fjdAWwMzKhS5hLR0",
           "object": "chat.completion",
-          "created": 1690239578,
+          "created": 1690291054,
           "model": "gpt-3.5-turbo-0613",
           "choices": [
             {
@@ -212,7 +212,7 @@ http_interactions:
             "total_tokens": 271
           }
         }
-  recorded_at: Mon, 24 Jul 2023 22:59:38 GMT
+  recorded_at: Tue, 25 Jul 2023 13:17:34 GMT
 - request:
     method: post
     uri: https://api.openai.com/v1/chat/completions
@@ -257,7 +257,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Mon, 24 Jul 2023 22:59:40 GMT
+      - Tue, 25 Jul 2023 13:17:36 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -273,7 +273,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '1350'
+      - '1432'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -291,40 +291,40 @@ http_interactions:
       X-Ratelimit-Reset-Tokens:
       - 590ms
       X-Request-Id:
-      - db19d2cf12a8508e004a64a8742b071c
+      - cc3a0bfb1410d906d01bcb6bde19133a
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7ebfc6588e22a6f4-PHX
+      - 7ec4af16cf82a715-PHX
       Alt-Svc:
       - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
       string: |
         {
-          "id": "chatcmpl-7fyodY03xrn6yjVHJQi0zmfsKq9Kh",
+          "id": "chatcmpl-7gCCtPRbjgrkMYV7ENd6YS3w3AxiG",
           "object": "chat.completion",
-          "created": 1690239579,
+          "created": 1690291055,
           "model": "gpt-3.5-turbo-0613",
           "choices": [
             {
               "index": 0,
               "message": {
                 "role": "assistant",
-                "content": "<thought>I have found the value of pi squared to 7 digits: 9.8696044</thought>\n<final_answer>9.8696044</final_answer>"
+                "content": "<thought>I have found the value of pi squared to 7 digits, which is approximately 9.8696044.</thought>\n<final_answer>9.8696044</final_answer>"
               },
               "finish_reason": "stop"
             }
           ],
           "usage": {
             "prompt_tokens": 348,
-            "completion_tokens": 37,
-            "total_tokens": 385
+            "completion_tokens": 40,
+            "total_tokens": 388
           }
         }
-  recorded_at: Mon, 24 Jul 2023 22:59:40 GMT
+  recorded_at: Tue, 25 Jul 2023 13:17:36 GMT
 - request:
     method: post
     uri: https://api.openai.com/v1/chat/completions
@@ -370,7 +370,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Mon, 24 Jul 2023 22:59:47 GMT
+      - Tue, 25 Jul 2023 13:17:38 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -386,7 +386,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '1813'
+      - '2022'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -404,22 +404,22 @@ http_interactions:
       X-Ratelimit-Reset-Tokens:
       - 618ms
       X-Request-Id:
-      - 243bd4dfa88909def6907ac35ba00d84
+      - 856bbcf1308e878d3d5f88d0ab46f500
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7ebfc67f7ed4a6f0-PHX
+      - 7ec4af20a814a726-PHX
       Alt-Svc:
       - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
       string: |
         {
-          "id": "chatcmpl-7fyojoDtNiPlTnEdtPAnIh1yiZBtW",
+          "id": "chatcmpl-7gCCuY5UFoE17sCH1A8giK35oqEOO",
           "object": "chat.completion",
-          "created": 1690239585,
+          "created": 1690291056,
           "model": "gpt-3.5-turbo-0613",
           "choices": [
             {
@@ -437,7 +437,7 @@ http_interactions:
             "total_tokens": 445
           }
         }
-  recorded_at: Mon, 24 Jul 2023 22:59:47 GMT
+  recorded_at: Tue, 25 Jul 2023 13:17:38 GMT
 - request:
     method: post
     uri: https://api.openai.com/v1/chat/completions
@@ -473,7 +473,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Mon, 24 Jul 2023 22:59:49 GMT
+      - Tue, 25 Jul 2023 13:17:39 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -489,7 +489,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '742'
+      - '689'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -507,22 +507,22 @@ http_interactions:
       X-Ratelimit-Reset-Tokens:
       - 504ms
       X-Request-Id:
-      - 580d20305c44ba40b5f9e4bbcaac372a
+      - 3b1df7fc0c7927895923c3a88675c5c8
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7ebfc6948f131b00-PHX
+      - 7ec4af2e3acaa6fa-PHX
       Alt-Svc:
       - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
       string: |
         {
-          "id": "chatcmpl-7fyombTLlGWyeBv0uTnHrobiXpGba",
+          "id": "chatcmpl-7gCCwhAAaEzVbdWjezS4arCfsQyvE",
           "object": "chat.completion",
-          "created": 1690239588,
+          "created": 1690291058,
           "model": "gpt-3.5-turbo-0613",
           "choices": [
             {
@@ -540,7 +540,7 @@ http_interactions:
             "total_tokens": 279
           }
         }
-  recorded_at: Mon, 24 Jul 2023 22:59:49 GMT
+  recorded_at: Tue, 25 Jul 2023 13:17:39 GMT
 - request:
     method: post
     uri: https://api.openai.com/v1/chat/completions
@@ -588,7 +588,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Mon, 24 Jul 2023 22:59:50 GMT
+      - Tue, 25 Jul 2023 13:17:41 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -604,7 +604,7 @@ http_interactions:
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '985'
+      - '969'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -622,22 +622,22 @@ http_interactions:
       X-Ratelimit-Reset-Tokens:
       - 656ms
       X-Request-Id:
-      - bbf42e22f410040d0765f7400ca95554
+      - ab11ed2e145659ecfc3f685a17ff42b6
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7ebfc69b18b81b0f-PHX
+      - 7ec4af344b9aa70f-PHX
       Alt-Svc:
       - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
       string: |
         {
-          "id": "chatcmpl-7fyonMzJsXUH1aepO78xSpbRHJUa2",
+          "id": "chatcmpl-7gCCyPgsT5ut3NhJ3NYq3po40B9gF",
           "object": "chat.completion",
-          "created": 1690239589,
+          "created": 1690291060,
           "model": "gpt-3.5-turbo-0613",
           "choices": [
             {
@@ -655,5 +655,5 @@ http_interactions:
             "total_tokens": 483
           }
         }
-  recorded_at: Mon, 24 Jul 2023 22:59:50 GMT
+  recorded_at: Tue, 25 Jul 2023 13:17:40 GMT
 recorded_with: VCR 6.1.0
