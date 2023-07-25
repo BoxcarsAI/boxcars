@@ -1,5 +1,14 @@
 # Changelog
 
+## [v0.4.1](https://github.com/BoxcarsAI/boxcars/tree/v0.4.1) (2023-07-25)
+
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.4.0...v0.4.1)
+
+**Merged pull requests:**
+
+- Do not use the engine\_prefix to start the LLM prompt for the XML Train [\#106](https://github.com/BoxcarsAI/boxcars/pull/106) ([francis](https://github.com/francis))
+- Adding 16k context [\#105](https://github.com/BoxcarsAI/boxcars/pull/105) ([eltoob](https://github.com/eltoob))
+
 ## [v0.4.0](https://github.com/BoxcarsAI/boxcars/tree/v0.4.0) (2023-07-19)
 
 [Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.3.5...v0.4.0)
