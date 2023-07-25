@@ -24,7 +24,7 @@ http_interactions:
         make sure to specify arguments for the action_input.\nFinally, if you can
         deduct the answer from the question or observations, you can jump to final_answer
         and give me the answer.\n\u003c/training\u003e"},{"role":"user","content":"\u003cquestion\u003ewhat
-        is pi squared to 7 digits?\u003c/question\u003e"},{"role":"assistant","content":""}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["\n\u003cobservation\u003e"]}'
+        is pi squared to 7 digits?\u003c/question\u003e"},{"role":"assistant","content":""}],"model":"gpt-3.5-turbo-16k","temperature":0.2,"max_tokens":2048,"stop":["\n\u003cobservation\u003e"]}'
     headers:
       Content-Type:
       - application/json
@@ -42,7 +42,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Tue, 25 Jul 2023 13:17:34 GMT
+      - Tue, 25 Jul 2023 13:32:18 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -54,11 +54,11 @@ http_interactions:
       Cache-Control:
       - no-cache, must-revalidate
       Openai-Model:
-      - gpt-3.5-turbo-0613
+      - gpt-3.5-turbo-16k-0613
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '1832'
+      - '806'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -66,33 +66,33 @@ http_interactions:
       X-Ratelimit-Limit-Requests:
       - '3500'
       X-Ratelimit-Limit-Tokens:
-      - '90000'
+      - '180000'
       X-Ratelimit-Remaining-Requests:
       - '3499'
       X-Ratelimit-Remaining-Tokens:
-      - '89167'
+      - '177630'
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Ratelimit-Reset-Tokens:
-      - 555ms
+      - 789ms
       X-Request-Id:
-      - dfe9c41b78c5d7099002ea8ce45fb8da
+      - a1c3c61b7392d9ec60337ef666479a4c
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7ec4af044e95a712-PHX
+      - 7ec4c49f4c1aa700-PHX
       Alt-Svc:
       - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
       string: |
         {
-          "id": "chatcmpl-7gCCqvpwsOmO4izwPuiTmRwD9DwGB",
+          "id": "chatcmpl-7gCR7u8cBPHomQxzZTHdiFrrGSzTs",
           "object": "chat.completion",
-          "created": 1690291052,
-          "model": "gpt-3.5-turbo-0613",
+          "created": 1690291937,
+          "model": "gpt-3.5-turbo-16k-0613",
           "choices": [
             {
               "index": 0,
@@ -109,7 +109,7 @@ http_interactions:
             "total_tokens": 335
           }
         }
-  recorded_at: Tue, 25 Jul 2023 13:17:34 GMT
+  recorded_at: Tue, 25 Jul 2023 13:32:17 GMT
 - request:
     method: post
     uri: https://api.openai.com/v1/chat/completions
@@ -127,7 +127,7 @@ http_interactions:
         answer starts with either ''Answer:'' or ''```ruby''."},{"role":"system","content":"here
         is a hard example:\nthe user asks: What is 37593 * 67?\nyour answer: ```ruby\nputs(37593
         * 67)\n```\n```output\n2518731\n```\nAnswer: 2518731"},{"role":"system","content":"basic
-        example:\nuser asks: What is 2518731 + 0?\nyou answer: Answer: 2518731"},{"role":"system","content":"Begin."},{"role":"user","content":"question=pi^2"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["```output"]}'
+        example:\nuser asks: What is 2518731 + 0?\nyou answer: Answer: 2518731"},{"role":"system","content":"Begin."},{"role":"user","content":"question=pi^2"}],"model":"gpt-3.5-turbo-16k","temperature":0.2,"max_tokens":2048,"stop":["```output"]}'
     headers:
       Content-Type:
       - application/json
@@ -145,7 +145,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Tue, 25 Jul 2023 13:17:34 GMT
+      - Tue, 25 Jul 2023 13:32:18 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -157,11 +157,11 @@ http_interactions:
       Cache-Control:
       - no-cache, must-revalidate
       Openai-Model:
-      - gpt-3.5-turbo-0613
+      - gpt-3.5-turbo-16k-0613
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '588'
+      - '402'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -169,33 +169,33 @@ http_interactions:
       X-Ratelimit-Limit-Requests:
       - '3500'
       X-Ratelimit-Limit-Tokens:
-      - '90000'
+      - '180000'
       X-Ratelimit-Remaining-Requests:
       - '3499'
       X-Ratelimit-Remaining-Tokens:
-      - '89245'
+      - '177710'
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Ratelimit-Reset-Tokens:
-      - 502ms
+      - 763ms
       X-Request-Id:
-      - e9743a1ff33a18b52aad57e7b14008b9
+      - 87c243cd1e2d3d5167fb8623d92ddca3
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7ec4af114a74a6ea-PHX
+      - 7ec4c4a54ceba6f1-PHX
       Alt-Svc:
       - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
       string: |
         {
-          "id": "chatcmpl-7gCCslCqGMnO5fjdAWwMzKhS5hLR0",
+          "id": "chatcmpl-7gCR8c3k447S36U917QtKTjS28WId",
           "object": "chat.completion",
-          "created": 1690291054,
-          "model": "gpt-3.5-turbo-0613",
+          "created": 1690291938,
+          "model": "gpt-3.5-turbo-16k-0613",
           "choices": [
             {
               "index": 0,
@@ -212,7 +212,7 @@ http_interactions:
             "total_tokens": 271
           }
         }
-  recorded_at: Tue, 25 Jul 2023 13:17:34 GMT
+  recorded_at: Tue, 25 Jul 2023 13:32:18 GMT
 - request:
     method: post
     uri: https://api.openai.com/v1/chat/completions
@@ -239,7 +239,7 @@ http_interactions:
         and give me the answer.\n\u003c/training\u003e"},{"role":"user","content":"\u003cquestion\u003ewhat
         is pi squared to 7 digits?\u003c/question\u003e"},{"role":"assistant","content":"
         \u003cthought\u003eI can use the calculator tool to find the value of pi squared
-        to 7 digits.\u003c/thought\u003e\n\u003caction\u003eCalculator\u003c/action\u003e\n\u003caction_input\u003equestion=pi^2\u003c/action_input\u003e\n\u003cobservation\u003e9.869604401089358\u003c/observation\u003e\n"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["\n\u003cobservation\u003e"]}'
+        to 7 digits.\u003c/thought\u003e\n\u003caction\u003eCalculator\u003c/action\u003e\n\u003caction_input\u003equestion=pi^2\u003c/action_input\u003e\n\u003cobservation\u003e9.869604401089358\u003c/observation\u003e\n"}],"model":"gpt-3.5-turbo-16k","temperature":0.2,"max_tokens":2048,"stop":["\n\u003cobservation\u003e"]}'
     headers:
       Content-Type:
       - application/json
@@ -257,7 +257,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Tue, 25 Jul 2023 13:17:36 GMT
+      - Tue, 25 Jul 2023 13:32:20 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -269,11 +269,11 @@ http_interactions:
       Cache-Control:
       - no-cache, must-revalidate
       Openai-Model:
-      - gpt-3.5-turbo-0613
+      - gpt-3.5-turbo-16k-0613
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '1432'
+      - '1081'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -281,50 +281,50 @@ http_interactions:
       X-Ratelimit-Limit-Requests:
       - '3500'
       X-Ratelimit-Limit-Tokens:
-      - '90000'
+      - '180000'
       X-Ratelimit-Remaining-Requests:
       - '3499'
       X-Ratelimit-Remaining-Tokens:
-      - '89115'
+      - '177314'
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Ratelimit-Reset-Tokens:
-      - 590ms
+      - 895ms
       X-Request-Id:
-      - cc3a0bfb1410d906d01bcb6bde19133a
+      - dbca462db4a2ac2434e34810e749f738
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7ec4af16cf82a715-PHX
+      - 7ec4c4aaab0fa70e-PHX
       Alt-Svc:
       - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
       string: |
         {
-          "id": "chatcmpl-7gCCtPRbjgrkMYV7ENd6YS3w3AxiG",
+          "id": "chatcmpl-7gCR9jbb0kB0yOiYjrnFWaHJAxNlH",
           "object": "chat.completion",
-          "created": 1690291055,
-          "model": "gpt-3.5-turbo-0613",
+          "created": 1690291939,
+          "model": "gpt-3.5-turbo-16k-0613",
           "choices": [
             {
               "index": 0,
               "message": {
                 "role": "assistant",
-                "content": "<thought>I have found the value of pi squared to 7 digits, which is approximately 9.8696044.</thought>\n<final_answer>9.8696044</final_answer>"
+                "content": "<thought>I have found the value of pi squared to 7 digits: 9.8696044</thought>\n<final_answer>9.8696044</final_answer>"
               },
               "finish_reason": "stop"
             }
           ],
           "usage": {
             "prompt_tokens": 348,
-            "completion_tokens": 40,
-            "total_tokens": 388
+            "completion_tokens": 37,
+            "total_tokens": 385
           }
         }
-  recorded_at: Tue, 25 Jul 2023 13:17:36 GMT
+  recorded_at: Tue, 25 Jul 2023 13:32:20 GMT
 - request:
     method: post
     uri: https://api.openai.com/v1/chat/completions
@@ -352,7 +352,7 @@ http_interactions:
         is pi squared to 7 digits?\u003c/question\u003e"},{"role":"assistant","content":"\u003cthought\u003e\u003cthought\u003eI
         can use the calculator tool to find the value of pi squared to 7 digits.\u003c/thought\u003e\n\u003caction\u003eCalculator\u003c/action\u003e\n\u003caction_input\u003equestion=pi^2\u003c/action_input\u003e\n\u003cobservation\u003e9.869604401089358\u003c/observation\u003e"},{"role":"assistant","content":"\u003cthought\u003eI
         know the final answer\n\u003cfinal_answer\u003e9.8696044\u003c/final_answer\u003e\n\u003c/thought\u003e"},{"role":"user","content":"\u003cquestion\u003ewhat
-        is the square root of the previous answer?\u003c/question\u003e"},{"role":"assistant","content":""}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["\n\u003cobservation\u003e"]}'
+        is the square root of the previous answer?\u003c/question\u003e"},{"role":"assistant","content":""}],"model":"gpt-3.5-turbo-16k","temperature":0.2,"max_tokens":2048,"stop":["\n\u003cobservation\u003e"]}'
     headers:
       Content-Type:
       - application/json
@@ -370,7 +370,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Tue, 25 Jul 2023 13:17:38 GMT
+      - Tue, 25 Jul 2023 13:32:21 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -382,11 +382,11 @@ http_interactions:
       Cache-Control:
       - no-cache, must-revalidate
       Openai-Model:
-      - gpt-3.5-turbo-0613
+      - gpt-3.5-turbo-16k-0613
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '2022'
+      - '875'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -394,33 +394,33 @@ http_interactions:
       X-Ratelimit-Limit-Requests:
       - '3500'
       X-Ratelimit-Limit-Tokens:
-      - '90000'
+      - '180000'
       X-Ratelimit-Remaining-Requests:
       - '3499'
       X-Ratelimit-Remaining-Tokens:
-      - '89071'
+      - '177536'
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Ratelimit-Reset-Tokens:
-      - 618ms
+      - 821ms
       X-Request-Id:
-      - 856bbcf1308e878d3d5f88d0ab46f500
+      - 2b366ae772e8f4fae551983d8d437212
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7ec4af20a814a726-PHX
+      - 7ec4c4b249e51b37-PHX
       Alt-Svc:
       - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
       string: |
         {
-          "id": "chatcmpl-7gCCuY5UFoE17sCH1A8giK35oqEOO",
+          "id": "chatcmpl-7gCRArhAPShtbUjW7V94uML3tuMFH",
           "object": "chat.completion",
-          "created": 1690291056,
-          "model": "gpt-3.5-turbo-0613",
+          "created": 1690291940,
+          "model": "gpt-3.5-turbo-16k-0613",
           "choices": [
             {
               "index": 0,
@@ -437,7 +437,7 @@ http_interactions:
             "total_tokens": 445
           }
         }
-  recorded_at: Tue, 25 Jul 2023 13:17:38 GMT
+  recorded_at: Tue, 25 Jul 2023 13:32:21 GMT
 - request:
     method: post
     uri: https://api.openai.com/v1/chat/completions
@@ -455,7 +455,7 @@ http_interactions:
         answer starts with either ''Answer:'' or ''```ruby''."},{"role":"system","content":"here
         is a hard example:\nthe user asks: What is 37593 * 67?\nyour answer: ```ruby\nputs(37593
         * 67)\n```\n```output\n2518731\n```\nAnswer: 2518731"},{"role":"system","content":"basic
-        example:\nuser asks: What is 2518731 + 0?\nyou answer: Answer: 2518731"},{"role":"system","content":"Begin."},{"role":"user","content":"question=sqrt(9.8696044)"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["```output"]}'
+        example:\nuser asks: What is 2518731 + 0?\nyou answer: Answer: 2518731"},{"role":"system","content":"Begin."},{"role":"user","content":"question=sqrt(9.8696044)"}],"model":"gpt-3.5-turbo-16k","temperature":0.2,"max_tokens":2048,"stop":["```output"]}'
     headers:
       Content-Type:
       - application/json
@@ -473,7 +473,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Tue, 25 Jul 2023 13:17:39 GMT
+      - Tue, 25 Jul 2023 13:32:21 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -485,11 +485,11 @@ http_interactions:
       Cache-Control:
       - no-cache, must-revalidate
       Openai-Model:
-      - gpt-3.5-turbo-0613
+      - gpt-3.5-turbo-16k-0613
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '689'
+      - '626'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -497,33 +497,33 @@ http_interactions:
       X-Ratelimit-Limit-Requests:
       - '3500'
       X-Ratelimit-Limit-Tokens:
-      - '90000'
+      - '180000'
       X-Ratelimit-Remaining-Requests:
       - '3499'
       X-Ratelimit-Remaining-Tokens:
-      - '89242'
+      - '177707'
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Ratelimit-Reset-Tokens:
-      - 504ms
+      - 764ms
       X-Request-Id:
-      - 3b1df7fc0c7927895923c3a88675c5c8
+      - df816d5405fd2cc53962bc56b4fbb4f2
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7ec4af2e3acaa6fa-PHX
+      - 7ec4c4b8af35a6fa-PHX
       Alt-Svc:
       - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
       string: |
         {
-          "id": "chatcmpl-7gCCwhAAaEzVbdWjezS4arCfsQyvE",
+          "id": "chatcmpl-7gCRBWWU2t38pALk35uYqEIonotHy",
           "object": "chat.completion",
-          "created": 1690291058,
-          "model": "gpt-3.5-turbo-0613",
+          "created": 1690291941,
+          "model": "gpt-3.5-turbo-16k-0613",
           "choices": [
             {
               "index": 0,
@@ -540,7 +540,7 @@ http_interactions:
             "total_tokens": 279
           }
         }
-  recorded_at: Tue, 25 Jul 2023 13:17:39 GMT
+  recorded_at: Tue, 25 Jul 2023 13:32:21 GMT
 - request:
     method: post
     uri: https://api.openai.com/v1/chat/completions
@@ -570,7 +570,7 @@ http_interactions:
         know the final answer\n\u003cfinal_answer\u003e9.8696044\u003c/final_answer\u003e\n\u003c/thought\u003e"},{"role":"user","content":"\u003cquestion\u003ewhat
         is the square root of the previous answer?\u003c/question\u003e"},{"role":"assistant","content":"
         \u003cthought\u003eI can use the calculator tool to find the square root of
-        the previous answer.\u003c/thought\u003e\n\u003caction\u003eCalculator\u003c/action\u003e\n\u003caction_input\u003equestion=sqrt(9.8696044)\u003c/action_input\u003e\n\u003cobservation\u003e3.1415926534164162\u003c/observation\u003e\n"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["\n\u003cobservation\u003e"]}'
+        the previous answer.\u003c/thought\u003e\n\u003caction\u003eCalculator\u003c/action\u003e\n\u003caction_input\u003equestion=sqrt(9.8696044)\u003c/action_input\u003e\n\u003cobservation\u003e3.1415926534164162\u003c/observation\u003e\n"}],"model":"gpt-3.5-turbo-16k","temperature":0.2,"max_tokens":2048,"stop":["\n\u003cobservation\u003e"]}'
     headers:
       Content-Type:
       - application/json
@@ -588,7 +588,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Tue, 25 Jul 2023 13:17:41 GMT
+      - Tue, 25 Jul 2023 13:32:22 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -600,11 +600,11 @@ http_interactions:
       Cache-Control:
       - no-cache, must-revalidate
       Openai-Model:
-      - gpt-3.5-turbo-0613
+      - gpt-3.5-turbo-16k-0613
       Openai-Organization:
       - user-ri9zw9ahumb1bo9vs73mudbi
       Openai-Processing-Ms:
-      - '969'
+      - '673'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
@@ -612,33 +612,33 @@ http_interactions:
       X-Ratelimit-Limit-Requests:
       - '3500'
       X-Ratelimit-Limit-Tokens:
-      - '90000'
+      - '180000'
       X-Ratelimit-Remaining-Requests:
       - '3499'
       X-Ratelimit-Remaining-Tokens:
-      - '89016'
+      - '177480'
       X-Ratelimit-Reset-Requests:
       - 17ms
       X-Ratelimit-Reset-Tokens:
-      - 656ms
+      - 840ms
       X-Request-Id:
-      - ab11ed2e145659ecfc3f685a17ff42b6
+      - 3bfa78a8b901153be56f00925b1f9ab3
       Cf-Cache-Status:
       - DYNAMIC
       Server:
       - cloudflare
       Cf-Ray:
-      - 7ec4af344b9aa70f-PHX
+      - 7ec4c4be8ceaa720-PHX
       Alt-Svc:
       - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
       string: |
         {
-          "id": "chatcmpl-7gCCyPgsT5ut3NhJ3NYq3po40B9gF",
+          "id": "chatcmpl-7gCRCHcf4mdiCtqNGVPRGx4VSoj2s",
           "object": "chat.completion",
-          "created": 1690291060,
-          "model": "gpt-3.5-turbo-0613",
+          "created": 1690291942,
+          "model": "gpt-3.5-turbo-16k-0613",
           "choices": [
             {
               "index": 0,
@@ -655,5 +655,5 @@ http_interactions:
             "total_tokens": 483
           }
         }
-  recorded_at: Tue, 25 Jul 2023 13:17:40 GMT
+  recorded_at: Tue, 25 Jul 2023 13:32:22 GMT
 recorded_with: VCR 6.1.0
