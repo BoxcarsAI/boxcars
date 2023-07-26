@@ -10,7 +10,7 @@
   <a href="https://github.com/BoxcarsAI/boxcars/blob/main/LICENSE.txt"><img src="https://img.shields.io/badge/license-MIT-informational" alt="License"></a>
 </p>
 
-Boxcars is a gem that enables you to create new systems with AI composability, using various concepts such as LLMs (OpenAI, Anthropic, Gpt4all), Search, SQL (with both Sequel an Active Record support), Rails Active Record, Vector Search and more. This can even be extended with your concepts as well (including your concepts).
+Boxcars is a gem that enables you to create new systems with AI composability, using various concepts such as LLMs (OpenAI, Anthropic, Gpt4all), Search, SQL (with both Sequel and Active Record support), Rails Active Record, Vector Search and more. This can even be extended with your concepts as well (including your concepts).
 
 This gem was inspired by the popular Python library Langchain. However, we wanted to give it a Ruby spin and make it more user-friendly for beginners to get started.
 
@@ -48,7 +48,7 @@ Or install it yourself as:
 
 We will be adding more examples soon, but here are a couple to get you started. First, you'll need to set up your environment variables for OpenAI and Google SERP (OPENAI_ACCESS_TOKEN, SERPAPI_API_KEY). If you prefer not to set these variables in your environment, you can pass them directly into the API.
 
-In the examples below, we added one rubygem to load the environment at the first line, but depending on what you want, you might not need this.
+In the examples below, we added one Ruby gem to load the environment at the first line, but depending on what you want, you might not need this.
 ```ruby
 require "dotenv/load"
 require "boxcars"
@@ -68,12 +68,12 @@ irb -r dotenv/load -r ./lib/boxcars
 # run the calculator
 engine = Boxcars::Openai.new(max_tokens: 256)
 calc = Boxcars::Calculator.new(engine: engine)
-puts calc.run "what is pi to the forth power divided by 22.1?"
+puts calc.run "what is pi to the fourth power divided by 22.1?"
 ```
 Produces:
 ```text
 > Entering Calculator#run
-what is pi to the forth power divided by 22.1?
+what is pi to the fourth power divided by 22.1?
 RubyREPL: puts (Math::PI**4)/22.1
 Answer: 4.407651178009159
 
@@ -82,20 +82,20 @@ Answer: 4.407651178009159
 4.407651178009159
 ```
 
-Note that since Openai is currently the most used Engine, if you do not pass in an engine, it will default as expected. So, this is the equialent shorter version of the above script:
+Note that since Openai is currently the most used Engine, if you do not pass in an engine, it will default as expected. So, this is the equivalent shorter version of the above script:
 ```ruby
 # run the calculator
 calc = Boxcars::Calculator.new # just use the default Engine
-puts calc.run "what is pi to the forth power divided by 22.1?"
+puts calc.run "what is pi to the fourth power divided by 22.1?"
 ```
 You can change the default_engine with `Boxcars::configuration.default_engine = NewDefaultEngine`
 ### Boxcars currently implemented
 
 Here is what we have so far, but please put up a PR with your new ideas.
-- GoogleSearch: uses the SERP API to do seaches
+- GoogleSearch: uses the SERP API to do searches
 - WikipediaSearch: uses the Wikipedia API to do searches
 - Calculator: uses an Engine to generate ruby code to do math
-- SQL: given an ActiveRecord connection, it will generate and run sql statments from a prompt.
+- SQL: given an ActiveRecord connection, it will generate and run sql statements from a prompt.
 - ActiveRecord: given an ActiveRecord connection, it will generate and run ActiveRecord statements from a prompt.
 - Swagger: give a Swagger Open API file (YAML or JSON), answer questions about or run against the referenced service. See [here](https://github.com/BoxcarsAI/boxcars/blob/main/notebooks/swagger_examples.ipynb) for examples.
 
