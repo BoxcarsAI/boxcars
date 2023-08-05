@@ -1,5 +1,14 @@
 # Changelog
 
+## [v0.4.2](https://github.com/BoxcarsAI/boxcars/tree/v0.4.2) (2023-08-05)
+
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.4.1...v0.4.2)
+
+**Merged pull requests:**
+
+- Add xml engine boxcar [\#108](https://github.com/BoxcarsAI/boxcars/pull/108) ([francis](https://github.com/francis))
+- Updated README.md [\#107](https://github.com/BoxcarsAI/boxcars/pull/107) ([Flummoxsoftly](https://github.com/Flummoxsoftly))
+
 ## [v0.4.1](https://github.com/BoxcarsAI/boxcars/tree/v0.4.1) (2023-07-25)
 
 [Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.4.0...v0.4.1)
