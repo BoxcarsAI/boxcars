@@ -11,6 +11,8 @@ module Boxcars
     # @return [Array<String>] The action and input.
     def get_answer(engine_output)
       xn_get_answer(XNode.from_xml(engine_output))
+    rescue StandardError => e
+      Result.from_error("Error: #{e.message}:\n#{engine_output}")
     end
 
     # get answer an XNode

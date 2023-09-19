@@ -50,11 +50,12 @@ module Boxcars
       %i[sports_results game_spotlight],
       %i[knowledge_graph description],
       [:organic_results, 0, :snippet],
-      [:organic_results, 0, :snippet_highlighted_words, 0]
+      [:organic_results, 0, :snippet_highlighted_words, 0],
+      [:organic_results, 0, :title]
     ].freeze
 
     def find_answer(res)
-      raise Error, "Got error from SerpAPI: {res[:error]}" if res[:error]
+      raise Error, "Got error from SerpAPI: #{res[:error]}" if res[:error]
 
       ANSWER_LOCATIONS.each do |path|
         next unless res.dig(*path)

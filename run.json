@@ -1,0 +1,62 @@
+<output>
+  <articles>
+    <article id="46">
+      <confidence>
+        <cscore>4</cscore>
+        <creason>Article discusses a solar panel manufacturing project and related tax incentives in Fort Mill, South Carolina</creason>
+      </confidence>
+      <favorability>
+        <fscore>2</fscore>
+        <freason>Article suggests some uncertainty around whether the tax incentives will be approved</freason>
+      </favorability>
+      <county>York County</county>
+      <state>South Carolina</state>
+    </article>
+
+    <article id="47">
+      <confidence>
+        <cscore>5</cscore>
+        <creason>Article clearly discusses a solar energy project in Morgan County</creason>
+      </confidence>
+      <favorability>
+        <fscore>3</fscore>
+        <freason>Article suggests some public concerns but does not take a strong stance</freason>
+      </favorability>
+      <county>Morgan County</county>
+      <state>Colorado</state>
+    </article>
+
+    <article id="48">
+      <confidence>
+        <cscore>5</cscore>
+        <creason>Article discusses regulations for large-scale solar projects in Linn County, Iowa</creason>
+      </confidence>
+      <favorability>
+        <fscore>2</fscore>
+        <freason>Article suggests the county is moving toward stricter regulations</freason>
+      </favorability>
+      <county>Linn County</county>
+      <state>Iowa</state>
+    </article>
+
+    <article id="49">
+      <confidence>
+        <cscore>5</cscore>
+        <creason>Article clearly discusses approval of a solar project expansion in Clinton County</creason>
+      </confidence>
+      <favorability>
+        <fscore>4</fscore>
+        <freason>Article suggests consensus in approving the expansion</freason>
+      </favorability>
+      <county>Clinton County</county>
+      <state>Iowa</state>
+    </article>
+
+    <article id="50">
+      <confidence>
+        <cscore>1</cscore>
+        <creason>Article discusses solar panels on a farm building in the UK, not a utility-scale project in the US</creason>
+    </article>
+
+  </articles>
+</output>
