@@ -30,13 +30,13 @@ module Boxcars
             %<wanted_data>s
           }
       SYSPR
-      sprompt = stock_prompt % { wanted_data: wanted_data, data_description: data_description }
+      sprompt = format(stock_prompt, wanted_data: wanted_data, data_description: data_description)
       ctemplate = [
         Boxcar.syst(sprompt),
         Boxcar.user("%<input>s")
       ]
-      conversation = Conversation.new(lines: ctemplate)
-      ConversationPrompt.new(conversation:, input_variables: [:input], other_inputs: [], output_variables: [:answer])
+      conv = Conversation.new(lines: ctemplate)
+      ConversationPrompt.new(conversation: conv, input_variables: [:input], other_inputs: [], output_variables: [:answer])
     end
 
     # Parse out the action and input from the engine output.
@@ -59,7 +59,7 @@ module Boxcars
       else
         # we have an unexpected output from the engine
         Result.new(status: :error, answer: nil,
-                   explanation: "You gave me an improperly formatted answer or didn't use proper JSON. I was expecting a valid reply.")
+                   explanation: "You gave me an improperly formatted answer. I was expecting a valid reply.")
       end
     end
   end
