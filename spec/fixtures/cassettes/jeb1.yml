@@ -1,0 +1,99 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://api.openai.com/v1/chat/completions
+    body:
+      encoding: UTF-8
+      string: '{"messages":[{"role":"system","content":"I will provide you with the
+        input data, and your job is to extract information as described below.\n\nYour
+        Output must be valid JSON with no lead in or post answer text in the output
+        format below:\n\nOutput Format:\n  {\n    \"share_count\": \"the number of
+        shares\"\n  }\n"},{"role":"user","content":"{ at last count, there were 12,321,999
+        shares total }"}],"model":"gpt-3.5-turbo-16k","temperature":0.2,"max_tokens":2048,"stop":["Answer:"]}'
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer <openai_access_token>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 06 Oct 2023 21:51:05 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - no-cache, must-revalidate
+      Openai-Model:
+      - gpt-3.5-turbo-16k-0613
+      Openai-Organization:
+      - user-ri9zw9ahumb1bo9vs73mudbi
+      Openai-Processing-Ms:
+      - '223'
+      Openai-Version:
+      - '2020-10-01'
+      Strict-Transport-Security:
+      - max-age=15724800; includeSubDomains
+      X-Ratelimit-Limit-Requests:
+      - '3500'
+      X-Ratelimit-Limit-Tokens:
+      - '180000'
+      X-Ratelimit-Remaining-Requests:
+      - '3499'
+      X-Ratelimit-Remaining-Tokens:
+      - '177870'
+      X-Ratelimit-Reset-Requests:
+      - 17ms
+      X-Ratelimit-Reset-Tokens:
+      - 709ms
+      X-Request-Id:
+      - dcb7a71e7933210c19d582597dc43bd1
+      Cf-Cache-Status:
+      - DYNAMIC
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 81211fa8a81ca708-PHX
+      Alt-Svc:
+      - h3=":443"; ma=86400
+    body:
+      encoding: ASCII-8BIT
+      string: |
+        {
+          "id": "chatcmpl-86n0r2s980zdwXVb8kPl7sMiwhbBp",
+          "object": "chat.completion",
+          "created": 1696629065,
+          "model": "gpt-3.5-turbo-16k-0613",
+          "choices": [
+            {
+              "index": 0,
+              "message": {
+                "role": "assistant",
+                "content": "{\n  \"share_count\": \"12,321,999\"\n}"
+              },
+              "finish_reason": "stop"
+            }
+          ],
+          "usage": {
+            "prompt_tokens": 85,
+            "completion_tokens": 14,
+            "total_tokens": 99
+          }
+        }
+  recorded_at: Fri, 06 Oct 2023 21:51:05 GMT
+recorded_with: VCR 6.1.0
