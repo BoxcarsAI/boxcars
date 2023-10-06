@@ -211,6 +211,7 @@ end
 require "boxcars/observation"
 require "boxcars/result"
 require "boxcars/boxcar/engine_boxcar"
+require "boxcars/boxcar/json_engine_boxcar"
 require "boxcars/boxcar/xml_engine_boxcar"
 require "boxcars/boxcar/calculator"
 require "boxcars/boxcar/ruby_calculator"

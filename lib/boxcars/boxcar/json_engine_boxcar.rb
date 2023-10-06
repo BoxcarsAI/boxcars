@@ -11,11 +11,12 @@ module Boxcars
     # @param wanted_data [String] The data to extract from.
     # @param data_description [String] The description of the data.
     # @param kwargs [Hash] Additional arguments
-    def initialize(prompt:, wanted_data: nil, data_description: nil, **kwargs)
+    def initialize(prompt: nil, wanted_data: nil, data_description: nil, **kwargs)
       @wanted_data = wanted_data || "summarize the pertinent facts from the input data"
       @data_description = data_description || "the input data"
-      @prompt = prompt || default_prompt
-      super(prompt:, **kwargs)
+      the_prompt = prompt || default_prompt
+      kwargs[:description] ||= "JSON Engine Boxcar"
+      super(prompt: the_prompt, **kwargs)
     end
 
     def default_prompt
@@ -28,11 +29,8 @@ module Boxcars
           {
             %<wanted_data>s
           }
-
-        The Input Format:
-          {{ the input data will be here }}
       SYSPR
-      sprompt = stock_prompt.format wanted_data: wanted_data, data_description: data_description
+      sprompt = stock_prompt % { wanted_data: wanted_data, data_description: data_description }
       ctemplate = [
         Boxcar.syst(sprompt),
         Boxcar.user("%<input>s")
