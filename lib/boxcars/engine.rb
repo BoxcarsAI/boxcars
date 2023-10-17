@@ -22,4 +22,5 @@ end
 require "boxcars/engine/engine_result"
 require "boxcars/engine/anthropic"
 require "boxcars/engine/openai"
+require "boxcars/engine/perplexityai"
 require "boxcars/engine/gpt4all_eng"
