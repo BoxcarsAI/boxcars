@@ -44,7 +44,7 @@ module Boxcars
 
       request = Net::HTTP::Post.new(url)
       request["accept"] = 'application/json'
-      request["authorization"] = "Bearer #{env.fetch('PERPLEXITYAI_ACCESS_TOKEN')}"
+      request["authorization"] = "Bearer #{ENV.fetch('PERPLEXITY_API_KEY')}"
       request["content-type"] = 'application/json'
       the_body = {
         model: "mistral-7b-instruct",
@@ -53,7 +53,7 @@ module Boxcars
       request.body = the_body.to_json
 
       response = http.request(request)
-      response.read_body
+      JSON.parse(response.read_body)
     end
 
     # Get an answer from the engine.
