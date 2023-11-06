@@ -138,13 +138,6 @@ module Boxcars
     end
     # rubocop:enable Metrics/AbcSize
 
-    # the identifying parameters for the engine
-    def identifying_params
-      params = { model_name: model_name }
-      params.merge!(default_params)
-      params
-    end
-
     # the engine type
     def engine_type
       "claude"

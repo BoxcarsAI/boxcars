@@ -1,50 +1,59 @@
 # frozen_string_literal: true
 
-require 'openai'
 # Boxcars is a framework for running a series of tools to get an answer to a question.
 module Boxcars
   # A engine that uses OpenAI's API.
-  class Openai < Engine
-    attr_reader :prompts, :open_ai_params, :model_kwargs, :batch_size
+  class Perplexityai < Engine
+    attr_reader :prompts, :perplexity_params, :model_kwargs, :batch_size
 
     # The default parameters to use when asking the engine.
-    DEFAULT_PARAMS = {
-      model: "gpt-3.5-turbo-16k",
-      temperature: 0.2,
-      max_tokens: 2048
+    DEFAULT_PER_PARAMS = {
+      model: "llama-2-70b-chat",
+      temperature: 0.1,
+      max_tokens: 3200
     }.freeze
 
     # the default name of the engine
-    DEFAULT_NAME = "OpenAI engine"
+    DEFAULT_PER_NAME = "PerplexityAI engine"
     # the default description of the engine
-    DEFAULT_DESCRIPTION = "useful for when you need to use AI to answer questions. " \
-                          "You should ask targeted questions"
+    DEFAULT_PER_DESCRIPTION = "useful for when you need to use AI to answer questions. " \
+                              "You should ask targeted questions"
 
     # A engine is a container for a single tool to run.
-    # @param name [String] The name of the engine. Defaults to "OpenAI engine".
+    # @param name [String] The name of the engine. Defaults to "PerplexityAI engine".
     # @param description [String] A description of the engine. Defaults to:
     #        useful for when you need to use AI to answer questions. You should ask targeted questions".
     # @param prompts [Array<String>] The prompts to use when asking the engine. Defaults to [].
     # @param batch_size [Integer] The number of prompts to send to the engine at once. Defaults to 20.
-    def initialize(name: DEFAULT_NAME, description: DEFAULT_DESCRIPTION, prompts: [], batch_size: 20, **kwargs)
-      @open_ai_params = DEFAULT_PARAMS.merge(kwargs)
+    def initialize(name: DEFAULT_PER_NAME, description: DEFAULT_PER_DESCRIPTION, prompts: [], batch_size: 20, **kwargs)
+      @perplexity_params = DEFAULT_PER_PARAMS.merge(kwargs)
       @prompts = prompts
       @batch_size = batch_size
       super(description: description, name: name)
     end
 
-    # Get the OpenAI API client
-    # @param openai_access_token [String] The access token to use when asking the engine.
-    #   Defaults to Boxcars.configuration.openai_access_token.
-    # @return [OpenAI::Client] The OpenAI API client.
-    def self.open_ai_client(openai_access_token: nil)
-      access_token = Boxcars.configuration.openai_access_token(openai_access_token: openai_access_token)
-      organization_id = Boxcars.configuration.organization_id
-      ::OpenAI::Client.new(access_token: access_token, organization_id: organization_id)
+    def conversation_model?(model)
+      ["mistral-7b-instruct", "llama-2-13b-chat", "llama-2-70b-chat", "openhermes-2-mistral-7b"].include?(model)
     end
 
-    def conversation_model?(model)
-      ["gpt-3.5-turbo", "gpt-4", "gpt-3.5-turbo-16k"].include?(model)
+    def chat(parameters:)
+      url = URI("https://api.perplexity.ai/chat/completions")
+
+      http = Net::HTTP.new(url.host, url.port)
+      http.use_ssl = true
+
+      request = Net::HTTP::Post.new(url)
+      request["accept"] = 'application/json'
+      request["authorization"] = "Bearer #{ENV.fetch('PERPLEXITY_API_KEY')}"
+      request["content-type"] = 'application/json'
+      the_body = {
+        model: (parameters[:model] || "mistral-7b-instruct"),
+        messages: parameters[:messages]
+      }
+      request.body = the_body.to_json
+
+      response = http.request(request)
+      JSON.parse(response.read_body)
     end
 
     # Get an answer from the engine.
@@ -52,21 +61,14 @@ module Boxcars
     # @param openai_access_token [String] The access token to use when asking the engine.
     #   Defaults to Boxcars.configuration.openai_access_token.
     # @param kwargs [Hash] Additional parameters to pass to the engine if wanted.
-    def client(prompt:, inputs: {}, openai_access_token: nil, **kwargs)
-      clnt = Openai.open_ai_client(openai_access_token: openai_access_token)
-      params = open_ai_params.merge(kwargs)
-      if conversation_model?(params[:model])
-        prompt = prompt.first if prompt.is_a?(Array)
-        params = prompt.as_messages(inputs).merge(params)
-        if Boxcars.configuration.log_prompts
-          Boxcars.debug(params[:messages].last(2).map { |p| ">>>>>> Role: #{p[:role]} <<<<<<\n#{p[:content]}" }.join("\n"), :cyan)
-        end
-        clnt.chat(parameters: params)
-      else
-        params = prompt.as_prompt(inputs: inputs).merge(params)
-        Boxcars.debug("Prompt after formatting:\n#{params[:prompt]}", :cyan) if Boxcars.configuration.log_prompts
-        clnt.completions(parameters: params)
+    def client(prompt:, inputs: {}, **kwargs)
+      prompt = prompt.first if prompt.is_a?(Array)
+      params = prompt.as_messages(inputs).merge(default_params).merge(kwargs)
+      params[:model] ||= "llama-2-70b-chat"
+      if Boxcars.configuration.log_prompts
+        Boxcars.debug(params[:messages].last(2).map { |p| ">>>>>> Role: #{p[:role]} <<<<<<\n#{p[:content]}" }.join("\n"), :cyan)
       end
+      chat(parameters: params)
     end
 
     # get an answer from the engine for a question.
@@ -75,8 +77,8 @@ module Boxcars
     def run(question, **kwargs)
       prompt = Prompt.new(template: question)
       response = client(prompt: prompt, **kwargs)
-      raise Error, "OpenAI: No response from API" unless response
-      raise Error, "OpenAI: #{response['error']}" if response["error"]
+      raise Error, "PerplexityAI: No response from API" unless response
+      raise Error, "PerplexityAI: #{response['error']}" if response["error"]
 
       answer = response["choices"].map { |c| c.dig("message", "content") || c["text"] }.join("\n").strip
       puts answer
@@ -85,7 +87,7 @@ module Boxcars
 
     # Get the default parameters for the engine.
     def default_params
-      open_ai_params
+      perplexity_params
     end
 
     # Get generation informaton
@@ -112,9 +114,9 @@ module Boxcars
       if response['error']
         code = response.dig('error', 'code')
         msg = response.dig('error', 'message') || 'unknown error'
-        raise KeyError, "OPENAI_ACCESS_TOKEN not valid" if code == 'invalid_api_key'
+        raise KeyError, "PERPLEXITY_API_KEY not valid" if code == 'invalid_api_key'
 
-        raise ValueError, "OpenAI error: #{msg}"
+        raise ValueError, "PerplexityAI error: #{msg}"
       end
 
       must_haves.each do |key|
@@ -158,7 +160,7 @@ module Boxcars
 
   # the engine type
   def engine_type
-    "openai"
+    "perplexityai"
   end
 
   # calculate the number of tokens used

@@ -29,6 +29,7 @@ module Boxcars
 
     def self.from_xml(xml)
       xml = xml[xml.index("<")..-1] unless xml.start_with?("<")
+      xml = xml[0..xml.rindex(">")] unless xml.end_with?(">")
       doc = Nokogiri::XML.parse(xml)
       if doc.errors.any?
         Boxcars.debug("XML: #{xml}", :yellow)
