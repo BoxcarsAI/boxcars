@@ -7,7 +7,11 @@ require "boxcars"
 eng = Boxcars::Perplexityai.new
 # eng = Boxcars::Openai.new(model: "gpt-4")
 ctemplate = [
-  Boxcars::Boxcar.syst("The user will type in a city name. Your job is to evaluate if the given city is a good place to live. Build a comprehensive report about livability, weather, cost of living, crime rate, drivability, walkability, and bike ability, and direct flights. In the final answer, for the first paragraph, summarize the pros and cons of living in the city followed by the background information and links for the research. Finalize your answer with an overall grade from A to F on the city."),
+  Boxcars::Boxcar.syst("The user will type in a city name. Your job is to evaluate if the given city is a good place to live. " \
+                       "Build a comprehensive report about livability, weather, cost of living, crime rate, drivability, " \
+                       "walkability, and bike ability, and direct flights. In the final answer, for the first paragraph, " \
+                       "summarize the pros and cons of living in the city followed by the background information and links " \
+                       "for the research. Finalize your answer with an overall grade from A to F on the city."),
   Boxcars::Boxcar.user("%<input>s")
 ]
 conv = Boxcars::Conversation.new(lines: ctemplate)
