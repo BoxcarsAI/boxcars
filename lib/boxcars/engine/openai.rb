@@ -83,13 +83,6 @@ module Boxcars
       answer
     end
 
-    # Build extra kwargs from additional params that were passed in.
-    # @param values [Hash] The values to build extra kwargs from.
-    def build_extra(values:)
-      values[:model_kw_args] = @open_ai_params.merge(values)
-      values
-    end
-
     # Get the default parameters for the engine.
     def default_params
       open_ai_params
@@ -161,13 +154,6 @@ module Boxcars
       EngineResult.new(generations: generations, engine_output: { token_usage: token_usage })
     end
     # rubocop:enable Metrics/AbcSize
-  end
-
-  # the identifying parameters for the engine
-  def identifying_params
-    params = { model_name: model_name }
-    params.merge!(default_params)
-    params
   end
 
   # the engine type

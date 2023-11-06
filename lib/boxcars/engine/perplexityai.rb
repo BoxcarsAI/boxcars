@@ -4,20 +4,20 @@
 module Boxcars
   # A engine that uses OpenAI's API.
   class Perplexityai < Engine
-    attr_reader :prompts, :open_ai_params, :model_kwargs, :batch_size
+    attr_reader :prompts, :perplexity_params, :model_kwargs, :batch_size
 
     # The default parameters to use when asking the engine.
-    DEFAULT_PARAMS = {
-      model: "gpt-3.5-turbo-16k",
-      temperature: 0.2,
-      max_tokens: 4096
+    DEFAULT_PER_PARAMS = {
+      model: "llama-2-70b-chat",
+      temperature: 0.1,
+      max_tokens: 3200
     }.freeze
 
     # the default name of the engine
-    DEFAULT_NAME = "PerplexityAI engine"
+    DEFAULT_PER_NAME = "PerplexityAI engine"
     # the default description of the engine
-    DEFAULT_DESCRIPTION = "useful for when you need to use AI to answer questions. " \
-                          "You should ask targeted questions"
+    DEFAULT_PER_DESCRIPTION = "useful for when you need to use AI to answer questions. " \
+                              "You should ask targeted questions"
 
     # A engine is a container for a single tool to run.
     # @param name [String] The name of the engine. Defaults to "PerplexityAI engine".
@@ -25,15 +25,15 @@ module Boxcars
     #        useful for when you need to use AI to answer questions. You should ask targeted questions".
     # @param prompts [Array<String>] The prompts to use when asking the engine. Defaults to [].
     # @param batch_size [Integer] The number of prompts to send to the engine at once. Defaults to 20.
-    def initialize(name: DEFAULT_NAME, description: DEFAULT_DESCRIPTION, prompts: [], batch_size: 20, **kwargs)
-      @open_ai_params = DEFAULT_PARAMS.merge(kwargs)
+    def initialize(name: DEFAULT_PER_NAME, description: DEFAULT_PER_DESCRIPTION, prompts: [], batch_size: 20, **kwargs)
+      @perplexity_params = DEFAULT_PER_PARAMS.merge(kwargs)
       @prompts = prompts
       @batch_size = batch_size
       super(description: description, name: name)
     end
 
     def conversation_model?(model)
-      ["mistral-7b-instruct"].include?(model)
+      ["mistral-7b-instruct", "llama-2-13b-chat", "llama-2-70b-chat", "openhermes-2-mistral-7b"].include?(model)
     end
 
     def chat(parameters:)
@@ -47,7 +47,7 @@ module Boxcars
       request["authorization"] = "Bearer #{ENV.fetch('PERPLEXITY_API_KEY')}"
       request["content-type"] = 'application/json'
       the_body = {
-        model: "mistral-7b-instruct",
+        model: (parameters[:model] || "mistral-7b-instruct"),
         messages: parameters[:messages]
       }
       request.body = the_body.to_json
@@ -61,9 +61,10 @@ module Boxcars
     # @param openai_access_token [String] The access token to use when asking the engine.
     #   Defaults to Boxcars.configuration.openai_access_token.
     # @param kwargs [Hash] Additional parameters to pass to the engine if wanted.
-    def client(prompt:, inputs: {}, **_kwargs)
+    def client(prompt:, inputs: {}, **kwargs)
       prompt = prompt.first if prompt.is_a?(Array)
-      params = prompt.as_messages(inputs)
+      params = prompt.as_messages(inputs).merge(default_params).merge(kwargs)
+      params[:model] ||= "llama-2-70b-chat"
       if Boxcars.configuration.log_prompts
         Boxcars.debug(params[:messages].last(2).map { |p| ">>>>>> Role: #{p[:role]} <<<<<<\n#{p[:content]}" }.join("\n"), :cyan)
       end
@@ -84,16 +85,9 @@ module Boxcars
       answer
     end
 
-    # Build extra kwargs from additional params that were passed in.
-    # @param values [Hash] The values to build extra kwargs from.
-    def build_extra(values:)
-      values[:model_kw_args] = @open_ai_params.merge(values)
-      values
-    end
-
     # Get the default parameters for the engine.
     def default_params
-      open_ai_params
+      perplexity_params
     end
 
     # Get generation informaton
@@ -162,13 +156,6 @@ module Boxcars
       EngineResult.new(generations: generations, engine_output: { token_usage: token_usage })
     end
     # rubocop:enable Metrics/AbcSize
-  end
-
-  # the identifying parameters for the engine
-  def identifying_params
-    params = { model_name: model_name }
-    params.merge!(default_params)
-    params
   end
 
   # the engine type

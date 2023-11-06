@@ -43,7 +43,10 @@ module Boxcars
     # @param engine_output [String] The output from the engine.
     # @return [Result] The result.
     def get_answer(engine_output)
-      extract_answer(JSON.parse(engine_output))
+      # sometimes the LLM adds text in front of the JSON output, so let's strip it here
+      json_start = engine_output.index("{")
+      json_end = engine_output.rindex("}")
+      extract_answer(JSON.parse(engine_output[json_start..json_end]))
     rescue StandardError => e
       Result.from_error("Error: #{e.message}:\n#{engine_output}")
     end
