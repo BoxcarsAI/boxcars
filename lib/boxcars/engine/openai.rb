@@ -9,9 +9,9 @@ module Boxcars
 
     # The default parameters to use when asking the engine.
     DEFAULT_PARAMS = {
-      model: "gpt-3.5-turbo-16k",
-      temperature: 0.2,
-      max_tokens: 2048
+      model: "gpt-4-1106-preview",
+      temperature: 0.1,
+      max_tokens: 4096
     }.freeze
 
     # the default name of the engine
@@ -44,6 +44,8 @@ module Boxcars
     end
 
     def conversation_model?(model)
+      return true if model =~ /^gpt-4/
+
       ["gpt-3.5-turbo", "gpt-4", "gpt-3.5-turbo-16k"].include?(model)
     end
 
