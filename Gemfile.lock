@@ -8,7 +8,7 @@ PATH
       hnswlib (~> 0.8)
       nokogiri (~> 1.15)
       pgvector (~> 0.2)
-      ruby-openai (~> 4.2)
+      ruby-openai (>= 4.2, < 7.0)
 
 GEM
   remote: https://rubygems.org/
@@ -48,7 +48,7 @@ GEM
       async
     async-pool (0.4.0)
       async (>= 1.25)
-    base64 (0.1.1)
+    base64 (0.2.0)
     concurrent-ruby (1.2.2)
     console (1.17.4)
       fiber-annotation
@@ -62,7 +62,8 @@ GEM
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
     dotenv (2.8.1)
-    faraday (2.7.11)
+    event_stream_parser (1.0.0)
+    faraday (2.7.12)
       base64
       faraday-net_http (>= 2.0, < 3.1)
       ruby2_keywords (>= 0.0.4)
@@ -179,7 +180,8 @@ GEM
       rubocop (~> 1.33)
       rubocop-capybara (~> 2.17)
       rubocop-factory_bot (~> 2.22)
-    ruby-openai (4.3.2)
+    ruby-openai (6.3.1)
+      event_stream_parser (>= 0.3.0, < 2.0.0)
       faraday (>= 1)
       faraday-multipart (>= 1)
     ruby-progressbar (1.13.0)
