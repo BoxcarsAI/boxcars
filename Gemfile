@@ -28,7 +28,7 @@ gem "rest-client", "~> 2.1"
 gem "hnswlib", "~> 0.8.1"
 
 gem "pg", "~> 1.5", ">= 1.5.3"
-gem "pgvector", "~> 0.2.0"
+gem "pgvector", "~> 0.2.2"
 
 group :development, :test do
   gem "rspec", "~> 3.2"
