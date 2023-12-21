@@ -36,7 +36,7 @@ module Boxcars
     private
 
     def get_name
-      return Rails.application.class.module_parent.name if defined?(Rails)
+      Rails.application.class.module_parent.name if defined?(Rails)
     rescue StandardError => e
       boxcars.error "Error getting rails name application name: #{e.message}"
       nil

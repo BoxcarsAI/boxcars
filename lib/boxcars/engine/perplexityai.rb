@@ -47,7 +47,7 @@ module Boxcars
       request["authorization"] = "Bearer #{ENV.fetch('PERPLEXITY_API_KEY')}"
       request["content-type"] = 'application/json'
       the_body = {
-        model: (parameters[:model] || "mistral-7b-instruct"),
+        model: parameters[:model] || "mistral-7b-instruct",
         messages: parameters[:messages]
       }
       request.body = the_body.to_json
