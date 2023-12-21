@@ -5,7 +5,7 @@ source "https://rubygems.org"
 # Specify your gem's dependencies in boxcars.gemspec
 gemspec
 
-gem "debug", "~> 1.1"
+gem "debug", "~> 1.9"
 
 gem "dotenv", "~> 2.8"
 
