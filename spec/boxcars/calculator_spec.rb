@@ -2,7 +2,7 @@
 
 RSpec.describe Boxcars::Calculator do
   context "without openai api key" do
-    it "raises an error", skip_tokens: true do
+    it "raises an error", :skip_tokens do
       expect do
         described_class.new.run("1 + 1")
       end.to raise_error(Boxcars::ConfigurationError)

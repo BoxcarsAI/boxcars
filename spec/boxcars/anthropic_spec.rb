@@ -2,7 +2,7 @@
 
 RSpec.describe Boxcars::Anthropic do
   context "without an anthropic api key" do
-    it "raises an error", skip_tokens: true do
+    it "raises an error", :skip_tokens do
       expect do
         described_class.new.client(prompt: "write a poem")
       end.to raise_error(Boxcars::ConfigurationError)

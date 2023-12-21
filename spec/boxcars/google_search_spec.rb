@@ -2,7 +2,7 @@
 
 RSpec.describe Boxcars::GoogleSearch do
   context "without a serpapi api key" do
-    it "raises an error", skip_tokens: true do
+    it "raises an error", :skip_tokens do
       expect do
         described_class.new(serpapi_api_key: nil).run("what temperature is it in Austin?")
       end.to raise_error(Boxcars::ConfigurationError)
