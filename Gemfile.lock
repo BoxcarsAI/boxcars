@@ -13,15 +13,21 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    activemodel (7.0.7.1)
-      activesupport (= 7.0.7.1)
-    activerecord (7.0.7.1)
-      activemodel (= 7.0.7.1)
-      activesupport (= 7.0.7.1)
-    activesupport (7.0.7.1)
+    activemodel (7.1.2)
+      activesupport (= 7.1.2)
+    activerecord (7.1.2)
+      activemodel (= 7.1.2)
+      activesupport (= 7.1.2)
+      timeout (>= 0.4.0)
+    activesupport (7.1.2)
+      base64
+      bigdecimal
       concurrent-ruby (~> 1.0, >= 1.0.2)
+      connection_pool (>= 2.2.5)
+      drb
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
+      mutex_m
       tzinfo (~> 2.0)
     addressable (2.8.4)
       public_suffix (>= 2.0.2, < 6.0)
@@ -49,7 +55,9 @@ GEM
     async-pool (0.4.0)
       async (>= 1.25)
     base64 (0.2.0)
+    bigdecimal (3.1.5)
     concurrent-ruby (1.2.2)
+    connection_pool (2.4.1)
     console (1.17.4)
       fiber-annotation
       fiber-local
@@ -62,6 +70,8 @@ GEM
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
     dotenv (2.8.1)
+    drb (2.2.0)
+      ruby2_keywords
     event_stream_parser (1.0.0)
     faraday (2.7.12)
       base64
@@ -109,6 +119,7 @@ GEM
     minitest (5.20.0)
     multi_json (1.15.0)
     multipart-post (2.3.0)
+    mutex_m (0.2.0)
     netrc (0.11.0)
     nio4r (2.5.9)
     nokogiri (1.15.5-arm64-darwin)
@@ -198,6 +209,7 @@ GEM
     sqlite3 (1.6.9-x86_64-linux)
     stringio (3.1.0)
     strings-ansi (0.2.0)
+    timeout (0.4.1)
     timers (4.3.5)
     traces (0.11.1)
     tty-cursor (0.7.1)
@@ -225,8 +237,8 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
-  activerecord (~> 7.0)
-  activesupport (~> 7.0)
+  activerecord (~> 7.1)
+  activesupport (~> 7.1)
   async (~> 1.31.0)
   boxcars!
   debug (~> 1.9)
