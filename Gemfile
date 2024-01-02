@@ -25,7 +25,7 @@ gem "activesupport", "~> 7.0"
 
 gem "rest-client", "~> 2.1"
 
-gem "hnswlib", "~> 0.8.1"
+gem "hnswlib", "~> 0.9.0"
 
 gem "pg", "~> 1.5", ">= 1.5.3"
 gem "pgvector", "~> 0.2.2"
