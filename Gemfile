@@ -36,5 +36,5 @@ group :development, :test do
   gem "vcr", "~> 6.2.0"
   gem "webmock", "~> 3.18.1"
   gem "rubocop-rake", "~> 0.6.0"
-  gem "rubocop-rspec", "~> 2.17"
+  gem "rubocop-rspec", "~> 2.25"
 end

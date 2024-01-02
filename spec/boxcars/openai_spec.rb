@@ -2,7 +2,7 @@
 
 RSpec.describe Boxcars::Openai do
   context "without an open ai api key" do
-    it "raises an error", skip_tokens: true do
+    it "raises an error", :skip_tokens do
       expect do
         described_class.new.client(prompt: "write a poem")
       end.to raise_error(Boxcars::ConfigurationError)

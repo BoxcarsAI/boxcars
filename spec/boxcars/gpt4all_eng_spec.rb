@@ -7,8 +7,7 @@ RSpec.describe Boxcars::Gpt4allEng do
         gc = instance_double(Gpt4all::ConversationalAI)
         allow(Gpt4all::ConversationalAI).to receive(:new).and_return(gc)
         allow(gc).to receive(:prepare_resources).with(force_download: false).and_return(true)
-        allow(gc).to receive(:start_bot).and_return(true)
-        allow(gc).to receive(:stop_bot).and_return(true)
+        allow(gc).to receive_messages(start_bot: true, stop_bot: true)
         allow(gc).to receive(:prompt).with("write a haiku about love").and_return("Love, like poetry is fine")
       end
     end
