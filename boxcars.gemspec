@@ -35,7 +35,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "google_search_results", "~> 2.2"
   spec.add_dependency "gpt4all", "~> 0.0.4"
   spec.add_dependency "hnswlib", "~> 0.8"
-  spec.add_dependency "nokogiri", "~> 1.15"
+  spec.add_dependency "nokogiri", "~> 1.16"
   spec.add_dependency "pgvector", "~> 0.2"
   spec.add_dependency "ruby-openai", ">= 4.2", "< 7.0"
 
