@@ -23,7 +23,7 @@ GEM
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
       tzinfo (~> 2.0)
-    addressable (2.8.4)
+    addressable (2.8.6)
       public_suffix (>= 2.0.2, < 6.0)
     anthropic (0.1.0)
       faraday (>= 1)
@@ -90,7 +90,7 @@ GEM
       faraday (~> 2.7)
       os (~> 1.1)
       tty-progressbar (~> 0.18.2)
-    hashdiff (1.0.1)
+    hashdiff (1.1.0)
     hnswlib (0.9.0)
     http-accept (1.7.0)
     http-cookie (1.0.5)
@@ -134,7 +134,7 @@ GEM
       protocol-http (~> 0.18)
     psych (5.1.2)
       stringio
-    public_suffix (5.0.3)
+    public_suffix (5.0.4)
     racc (1.7.3)
     rainbow (3.1.1)
     rake (13.1.0)
@@ -214,7 +214,7 @@ GEM
     unf_ext (0.0.8.2)
     unicode-display_width (2.5.0)
     vcr (6.2.0)
-    webmock (3.18.1)
+    webmock (3.19.1)
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
@@ -244,7 +244,7 @@ DEPENDENCIES
   rubocop-rspec (~> 2.25)
   sqlite3 (~> 1.6)
   vcr (~> 6.2.0)
-  webmock (~> 3.18.1)
+  webmock (~> 3.19.1)
 
 BUNDLED WITH
    2.4.16
