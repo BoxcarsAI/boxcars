@@ -123,7 +123,7 @@ GEM
     parser (3.2.2.4)
       ast (~> 2.4.1)
       racc
-    pg (1.5.3)
+    pg (1.5.4)
     pgvector (0.2.2)
     protocol-hpack (1.4.2)
     protocol-http (0.25.0)
@@ -234,7 +234,7 @@ DEPENDENCIES
   faraday-retry (~> 2.0)
   github_changelog_generator (~> 1.16)
   hnswlib (~> 0.9.0)
-  pg (~> 1.5, >= 1.5.3)
+  pg (~> 1.5)
   pgvector (~> 0.2.2)
   rake (~> 13.1)
   rest-client (~> 2.1)
