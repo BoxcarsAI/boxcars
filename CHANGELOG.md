@@ -1,5 +1,72 @@
 # Changelog
 
+## [v0.4.8](https://github.com/BoxcarsAI/boxcars/tree/v0.4.8) (2024-01-08)
+
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.4.7...v0.4.8)
+
+**Closed issues:**
+
+- OpenBSD system example [\#124](https://github.com/BoxcarsAI/boxcars/issues/124)
+- End user Struggles [\#111](https://github.com/BoxcarsAI/boxcars/issues/111)
+- Add Markdown Splitter [\#96](https://github.com/BoxcarsAI/boxcars/issues/96)
+- Add ability to serialize trains and boxcars [\#95](https://github.com/BoxcarsAI/boxcars/issues/95)
+- VectorAnswer boxcar should support all vector stores [\#84](https://github.com/BoxcarsAI/boxcars/issues/84)
+- check Chroma as a vector store [\#78](https://github.com/BoxcarsAI/boxcars/issues/78)
+- Reg: User account specific / Support multi-tenancy [\#77](https://github.com/BoxcarsAI/boxcars/issues/77)
+- Failed request returns a string rather than a response object [\#76](https://github.com/BoxcarsAI/boxcars/issues/76)
+- Improve Google Search by parsing answer box with the engine? [\#70](https://github.com/BoxcarsAI/boxcars/issues/70)
+- meta data with vector store [\#64](https://github.com/BoxcarsAI/boxcars/issues/64)
+- boxcar for vector search [\#60](https://github.com/BoxcarsAI/boxcars/issues/60)
+- demo rails app [\#57](https://github.com/BoxcarsAI/boxcars/issues/57)
+- Language of output is fixed to English [\#52](https://github.com/BoxcarsAI/boxcars/issues/52)
+- Update token counting [\#37](https://github.com/BoxcarsAI/boxcars/issues/37)
+
+**Merged pull requests:**
+
+- \[infra\] Bump rubocop-rspec from 2.26.0 to 2.26.1 [\#132](https://github.com/BoxcarsAI/boxcars/pull/132) ([dependabot[bot]](https://github.com/apps/dependabot))
+- \[infra\] Bump rubocop-rspec from 2.25.0 to 2.26.0 [\#131](https://github.com/BoxcarsAI/boxcars/pull/131) ([dependabot[bot]](https://github.com/apps/dependabot))
+- \[infra\] Bump webmock from 3.18.1 to 3.19.1 [\#130](https://github.com/BoxcarsAI/boxcars/pull/130) ([dependabot[bot]](https://github.com/apps/dependabot))
+- \[infra\] Bump pg from 1.5.3 to 1.5.4 [\#129](https://github.com/BoxcarsAI/boxcars/pull/129) ([dependabot[bot]](https://github.com/apps/dependabot))
+- test with ruby 3.3 too [\#128](https://github.com/BoxcarsAI/boxcars/pull/128) ([francis](https://github.com/francis))
+- \[infra\] Bump hnswlib from 0.8.1 to 0.9.0 [\#127](https://github.com/BoxcarsAI/boxcars/pull/127) ([dependabot[bot]](https://github.com/apps/dependabot))
+- \[infra\] Bump vcr from 6.1.0 to 6.2.0 [\#126](https://github.com/BoxcarsAI/boxcars/pull/126) ([dependabot[bot]](https://github.com/apps/dependabot))
+- \[infra\] Bump debug from 1.9.0 to 1.9.1 [\#125](https://github.com/BoxcarsAI/boxcars/pull/125) ([dependabot[bot]](https://github.com/apps/dependabot))
+- \[infra\] Bump nokogiri from 1.15.4 to 1.15.5 [\#123](https://github.com/BoxcarsAI/boxcars/pull/123) ([dependabot[bot]](https://github.com/apps/dependabot))
+- \[infra\] Bump debug from 1.8.0 to 1.9.0 [\#122](https://github.com/BoxcarsAI/boxcars/pull/122) ([dependabot[bot]](https://github.com/apps/dependabot))
+- \[infra\] Bump rubocop from 1.54.2 to 1.59.0 [\#121](https://github.com/BoxcarsAI/boxcars/pull/121) ([dependabot[bot]](https://github.com/apps/dependabot))
+- \[infra\] Bump rubocop-rspec from 2.22.0 to 2.25.0 [\#120](https://github.com/BoxcarsAI/boxcars/pull/120) ([dependabot[bot]](https://github.com/apps/dependabot))
+- \[infra\] Update ruby-openai requirement from ~\> 4.2 to \>= 4.2, \< 7.0 [\#119](https://github.com/BoxcarsAI/boxcars/pull/119) ([dependabot[bot]](https://github.com/apps/dependabot))
+- \[infra\] Bump pgvector from 0.2.1 to 0.2.2 [\#118](https://github.com/BoxcarsAI/boxcars/pull/118) ([dependabot[bot]](https://github.com/apps/dependabot))
+- \[infra\] Bump rake from 13.0.6 to 13.1.0 [\#117](https://github.com/BoxcarsAI/boxcars/pull/117) ([dependabot[bot]](https://github.com/apps/dependabot))
+- \[infra\] Bump sqlite3 from 1.6.3 to 1.6.9 [\#115](https://github.com/BoxcarsAI/boxcars/pull/115) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Create dependabot.yml [\#114](https://github.com/BoxcarsAI/boxcars/pull/114) ([francis](https://github.com/francis))
+- Bump activesupport from 7.0.6 to 7.0.7.1 [\#113](https://github.com/BoxcarsAI/boxcars/pull/113) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump protocol-http1 from 0.15.0 to 0.16.0 [\#112](https://github.com/BoxcarsAI/boxcars/pull/112) ([dependabot[bot]](https://github.com/apps/dependabot))
+
+## [v0.4.7](https://github.com/BoxcarsAI/boxcars/tree/v0.4.7) (2023-11-07)
+
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.4.6...v0.4.7)
+
+## [v0.4.6](https://github.com/BoxcarsAI/boxcars/tree/v0.4.6) (2023-11-06)
+
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.4.5...v0.4.6)
+
+**Merged pull requests:**
+
+- Perpexity API [\#110](https://github.com/BoxcarsAI/boxcars/pull/110) ([francis](https://github.com/francis))
+
+## [v0.4.5](https://github.com/BoxcarsAI/boxcars/tree/v0.4.5) (2023-10-06)
+
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.4.4...v0.4.5)
+
+**Merged pull requests:**
+
+- Json engine [\#109](https://github.com/BoxcarsAI/boxcars/pull/109) ([francis](https://github.com/francis))
+
+## [v0.4.4](https://github.com/BoxcarsAI/boxcars/tree/v0.4.4) (2023-10-03)
+
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.4.3...v0.4.4)
+
 ## [v0.4.3](https://github.com/BoxcarsAI/boxcars/tree/v0.4.3) (2023-09-19)
 
 [Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.4.2...v0.4.3)
