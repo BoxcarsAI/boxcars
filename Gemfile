@@ -32,7 +32,7 @@ gem "pgvector", "~> 0.2.2"
 
 group :development, :test do
   gem "rspec", "~> 3.2"
-  gem "rubocop", "~> 1.59"
+  gem "rubocop", "~> 1.60"
   gem "vcr", "~> 6.2.0"
   gem "webmock", "~> 3.19.1"
   gem "rubocop-rake", "~> 0.6.0"
