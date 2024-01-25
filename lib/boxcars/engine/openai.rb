@@ -44,7 +44,7 @@ module Boxcars
     end
 
     def conversation_model?(model)
-      model =~ /(^gpt-4)|(-turbo\b)/
+      !!(model =~ /(^gpt-4)|(-turbo\b)/)
     end
 
     # Get an answer from the engine.
