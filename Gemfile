@@ -11,7 +11,7 @@ gem "dotenv", "~> 2.8"
 
 gem "rake", "~> 13.1"
 
-gem "sqlite3", "~> 1.6"
+gem "sqlite3", "~> 1.7"
 
 gem "async", "~>1.31.0"
 
