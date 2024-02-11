@@ -15,13 +15,13 @@ gem "sqlite3", "~> 1.7"
 
 gem "async", "~>1.31.0"
 
-gem "activerecord", "~> 7.0"
+gem "activerecord", "~> 7.1"
 
 gem "github_changelog_generator", "~> 1.16"
 
 gem "faraday-retry", "~> 2.0"
 
-gem "activesupport", "~> 7.0"
+gem "activesupport", "~> 7.1"
 
 gem "rest-client", "~> 2.1"
 
