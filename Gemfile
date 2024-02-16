@@ -7,7 +7,7 @@ gemspec
 
 gem "debug", "~> 1.9"
 
-gem "dotenv", "~> 2.8"
+gem "dotenv", "~> 3.0"
 
 gem "rake", "~> 13.1"
 
