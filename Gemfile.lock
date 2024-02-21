@@ -54,7 +54,7 @@ GEM
     console (1.17.4)
       fiber-annotation
       fiber-local
-    crack (0.4.6)
+    crack (1.0.0)
       bigdecimal
       rexml
     debug (1.9.1)
@@ -216,7 +216,7 @@ GEM
     unf_ext (0.0.8.2)
     unicode-display_width (2.5.0)
     vcr (6.2.0)
-    webmock (3.20.0)
+    webmock (3.22.0)
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
@@ -246,7 +246,7 @@ DEPENDENCIES
   rubocop-rspec (~> 2.26)
   sqlite3 (~> 1.7)
   vcr (~> 6.2.0)
-  webmock (~> 3.20.0)
+  webmock (~> 3.22.0)
 
 BUNDLED WITH
    2.4.16
