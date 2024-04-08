@@ -9,7 +9,7 @@ module Boxcars
 
     # The default parameters to use when asking the engine.
     DEFAULT_PARAMS = {
-      model: "claude-2",
+      model: "claude-3-opus-20240229",
       max_tokens_to_sample: 8096,
       temperature: 0.2
     }.freeze
