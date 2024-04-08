@@ -219,7 +219,7 @@ GEM
     unf_ext (0.0.8.2)
     unicode-display_width (2.5.0)
     vcr (6.2.0)
-    webmock (3.22.0)
+    webmock (3.23.0)
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
@@ -249,7 +249,7 @@ DEPENDENCIES
   rubocop-rspec (~> 2.29)
   sqlite3 (~> 1.7)
   vcr (~> 6.2.0)
-  webmock (~> 3.22.0)
+  webmock (~> 3.23.0)
 
 BUNDLED WITH
    2.4.16
