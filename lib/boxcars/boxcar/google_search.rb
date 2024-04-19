@@ -25,8 +25,8 @@ module Boxcars
     def run(question)
       search = ::GoogleSearch.new(q: question)
       rv = find_answer(search.get_hash)
-      puts "Question: #{question}"
-      puts "Answer: #{rv}"
+      Boxcars.info "Question: #{question}"
+      Boxcars.info "Answer: #{rv}"
       rv
     end
 
