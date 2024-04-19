@@ -22,9 +22,9 @@ RSpec.describe Boxcars::Cohere do
       expect { an.run("foobar") }.to raise_error(Boxcars::Error, "Cohere: No response from API")
     end
 
-    it "raises an when open ai returns one" do
+    it "raises an error when cohere returns one" do
       an = described_class.new
-      allow(an).to receive(:client).and_return("error" => "foobar")
+      allow(an).to receive(:client).and_return(error: "foobar")
       expect { an.run("foobar") }.to raise_error(Boxcars::Error, "Cohere: foobar")
     end
   end

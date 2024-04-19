@@ -68,8 +68,6 @@ module Boxcars
       params[:stop_sequences] = params.delete(:stop) if params.key?(:stop)
       Boxcars.debug("Prompt after formatting:#{params[:message]}", :cyan) if Boxcars.configuration.log_prompts
       chat(params, api_key)
-    rescue StandardError => e
-      { error: e.message }
     end
 
     # get an answer from the engine for a question.
