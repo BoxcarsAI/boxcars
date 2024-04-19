@@ -9,7 +9,7 @@ gem "debug", "~> 1.9"
 
 gem "dotenv", "~> 3.1"
 
-gem "rake", "~> 13.1"
+gem "rake", "~> 13.2"
 
 gem "sqlite3", "~> 1.7"
 
