@@ -5,7 +5,7 @@ http_interactions:
     uri: https://api.anthropic.com/v1/complete
     body:
       encoding: UTF-8
-      string: '{"prompt":"\n\nHuman: \n\nwrite a haiku about love\n\nAssistant:","model":"claude-3-opus-20240229","max_tokens_to_sample":8096,"temperature":0.2}'
+      string: '{"prompt":"\n\nHuman: \n\nwrite a haiku about love\n\nAssistant:","model":"claude-2","max_tokens_to_sample":8096,"temperature":0.2}'
     headers:
       Content-Type:
       - application/json
@@ -21,23 +21,21 @@ http_interactions:
       - Ruby
   response:
     status:
-      code: 400
-      message: Bad Request
+      code: 200
+      message: OK
     headers:
       Date:
-      - Tue, 05 Mar 2024 21:46:12 GMT
+      - Fri, 19 Apr 2024 18:36:01 GMT
       Content-Type:
       - application/json
-      Content-Length:
-      - '163'
+      Transfer-Encoding:
+      - chunked
       Connection:
       - keep-alive
-      X-Should-Retry:
-      - 'false'
       Request-Id:
-      - req_01Y6ajQDsvNXdqwNjKyQ9cZz
+      - req_01KJCN388QAeWK6AP6mEaJ18
       X-Cloud-Trace-Context:
-      - 1278b0a1c456808a829e415f320902ef
+      - cfa569f7a962b402b5f4192e23e51ffc
       Via:
       - 1.1 google
       Cf-Cache-Status:
@@ -45,10 +43,11 @@ http_interactions:
       Server:
       - cloudflare
       Cf-Ray:
-      - 85fd4c229bdcdbbe-LAX
+      - 876eff5c5824a709-PHX
     body:
-      encoding: UTF-8
-      string: '{"type":"error","error":{"type":"invalid_request_error","message":"\"claude-3-opus-20240229\"
-        is not supported on this API. Please use the Messages API instead."}}'
-  recorded_at: Tue, 05 Mar 2024 21:46:12 GMT
+      encoding: ASCII-8BIT
+      string: '{"type":"completion","id":"compl_01KBtfTFJRtVjtSJGRu1Uig4","completion":"
+        Here is a haiku I wrote about love:\n\nTwo hearts beating as one\nLove blooms
+        like spring''s cherry trees\nJoy lasts forever","stop_reason":"stop_sequence","model":"claude-2.1","stop":"\n\nHuman:","log_id":"compl_01KBtfTFJRtVjtSJGRu1Uig4"}'
+  recorded_at: Fri, 19 Apr 2024 18:36:01 GMT
 recorded_with: VCR 6.2.0
