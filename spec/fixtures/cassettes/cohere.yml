@@ -5,112 +5,6 @@ http_interactions:
     uri: https://api.cohere.ai/v1/chat
     body:
       encoding: UTF-8
-      string: '{"message":"write a haiku about love","chat_history":[],"connectors":[],"documents":[],"tools":[]}'
-    headers:
-      User-Agent:
-      - Faraday v2.7.12
-      Authorization:
-      - Bearer {:api_key=>"axhmZAUJwyoQKLSU9vaEsREUWVOgDBuTSX5V7lku"}
-      Content-Type:
-      - application/json
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      Accept:
-      - "*/*"
-  response:
-    status:
-      code: 401
-      message: Unauthorized
-    headers:
-      Cache-Control:
-      - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
-      Content-Type:
-      - application/json
-      Expires:
-      - Thu, 01 Jan 1970 00:00:00 UTC
-      Pragma:
-      - no-cache
-      Vary:
-      - Origin
-      X-Accel-Expires:
-      - '0'
-      Date:
-      - Fri, 19 Apr 2024 14:25:39 GMT
-      Content-Length:
-      - '31'
-      X-Envoy-Upstream-Service-Time:
-      - '8'
-      Server:
-      - envoy
-      Via:
-      - 1.1 google
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-    body:
-      encoding: UTF-8
-      string: '{"message":"invalid api token"}'
-  recorded_at: Fri, 19 Apr 2024 14:25:39 GMT
-- request:
-    method: post
-    uri: https://api.cohere.ai/v1/chat
-    body:
-      encoding: UTF-8
-      string: '{"model":"command-r-plus","max_tokens":8096,"temperature":0.2,"message":"write
-        a haiku about love"}'
-    headers:
-      Authorization:
-      - Bearer axhmZAUJwyoQKLSU9vaEsREUWVOgDBuTSX5V7lku
-      Content-Type:
-      - application/json
-      User-Agent:
-      - Faraday v2.7.12
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      Accept:
-      - "*/*"
-  response:
-    status:
-      code: 400
-      message: Bad Request
-    headers:
-      Access-Control-Expose-Headers:
-      - X-Debug-Trace-ID
-      Cache-Control:
-      - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
-      Content-Type:
-      - application/json
-      Expires:
-      - Thu, 01 Jan 1970 00:00:00 UTC
-      Pragma:
-      - no-cache
-      Vary:
-      - Origin
-      X-Accel-Expires:
-      - '0'
-      X-Debug-Trace-Id:
-      - fab10e85d2b2f1bacd89a36a7696c533
-      Date:
-      - Fri, 19 Apr 2024 16:22:52 GMT
-      Content-Length:
-      - '128'
-      X-Envoy-Upstream-Service-Time:
-      - '53'
-      Server:
-      - envoy
-      Via:
-      - 1.1 google
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-    body:
-      encoding: UTF-8
-      string: '{"message":"too many tokens: max tokens must be less than or equal
-        to 4000, the maximum output for this model - received 8096."}'
-  recorded_at: Fri, 19 Apr 2024 16:22:52 GMT
-- request:
-    method: post
-    uri: https://api.cohere.ai/v1/chat
-    body:
-      encoding: UTF-8
       string: '{"model":"command-r-plus","max_tokens":4000,"max_input_tokens":1000,"temperature":0.2,"message":"write
         a haiku about love"}'
     headers:
@@ -148,13 +42,13 @@ http_interactions:
       X-Accel-Expires:
       - '0'
       X-Debug-Trace-Id:
-      - 49d8744fcb00e674e75a51f3cfe915af
+      - e7ea33579d8ff4405d692b2d9c86aba7
       Date:
-      - Fri, 19 Apr 2024 18:00:06 GMT
+      - Fri, 19 Apr 2024 18:39:15 GMT
       Content-Length:
-      - '536'
+      - '538'
       X-Envoy-Upstream-Service-Time:
-      - '581'
+      - '979'
       Server:
       - envoy
       Via:
@@ -163,9 +57,9 @@ http_interactions:
       - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
     body:
       encoding: UTF-8
-      string: '{"response_id":"857f4dd1-0157-4746-9965-e61e45f92f98","text":"Love,
-        a sweet feeling\nTwo hearts, now beating as one\nA bond that endures","generation_id":"ad789920-07c7-44c2-b696-5c3c44c98602","chat_history":[{"role":"USER","message":"write
-        a haiku about love"},{"role":"CHATBOT","message":"Love, a sweet feeling\nTwo
-        hearts, now beating as one\nA bond that endures"}],"finish_reason":"COMPLETE","meta":{"api_version":{"version":"1"},"billed_units":{"input_tokens":5,"output_tokens":19},"tokens":{"input_tokens":71,"output_tokens":19}}}'
-  recorded_at: Fri, 19 Apr 2024 18:00:06 GMT
+      string: '{"response_id":"116010f7-a367-4414-abd6-e98f45a48fb2","text":"Love,
+        a sweet feeling\nBrings joy and warmth to the heart\nA blessing it is","generation_id":"d5fc2a18-3dc6-4c57-839d-a342be85c257","chat_history":[{"role":"USER","message":"write
+        a haiku about love"},{"role":"CHATBOT","message":"Love, a sweet feeling\nBrings
+        joy and warmth to the heart\nA blessing it is"}],"finish_reason":"COMPLETE","meta":{"api_version":{"version":"1"},"billed_units":{"input_tokens":5,"output_tokens":19},"tokens":{"input_tokens":71,"output_tokens":19}}}'
+  recorded_at: Fri, 19 Apr 2024 18:39:15 GMT
 recorded_with: VCR 6.2.0
