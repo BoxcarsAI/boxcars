@@ -8,7 +8,7 @@ PATH
       hnswlib (~> 0.8)
       nokogiri (~> 1.16)
       pgvector (~> 0.2)
-      ruby-openai (>= 4.2, < 7.0)
+      ruby-openai (>= 4.2, < 8.0)
 
 GEM
   remote: https://rubygems.org/
@@ -108,7 +108,7 @@ GEM
     mime-types-data (3.2023.0218.1)
     minitest (5.20.0)
     multi_json (1.15.0)
-    multipart-post (2.3.0)
+    multipart-post (2.4.0)
     net-http (0.4.1)
       uri
     netrc (0.11.0)
@@ -190,7 +190,7 @@ GEM
       rubocop-rspec_rails (~> 2.28)
     rubocop-rspec_rails (2.28.2)
       rubocop (~> 1.40)
-    ruby-openai (6.3.1)
+    ruby-openai (7.0.1)
       event_stream_parser (>= 0.3.0, < 2.0.0)
       faraday (>= 1)
       faraday-multipart (>= 1)
