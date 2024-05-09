@@ -29,7 +29,7 @@ GEM
       faraday (>= 1)
       faraday-multipart (>= 1)
     ast (2.4.2)
-    async (1.31.0)
+    async (1.32.1)
       console (~> 1.10)
       nio4r (~> 2.3)
       timers (~> 4.1)
@@ -50,9 +50,10 @@ GEM
       async (>= 1.25)
     bigdecimal (3.1.6)
     concurrent-ruby (1.2.2)
-    console (1.17.4)
+    console (1.24.0)
       fiber-annotation
       fiber-local
+      json
     crack (1.0.0)
       bigdecimal
       rexml
@@ -112,7 +113,7 @@ GEM
     net-http (0.4.1)
       uri
     netrc (0.11.0)
-    nio4r (2.5.9)
+    nio4r (2.7.1)
     nokogiri (1.16.2-arm64-darwin)
       racc (~> 1.4)
     nokogiri (1.16.2-x86_64-linux)
@@ -232,7 +233,7 @@ PLATFORMS
 DEPENDENCIES
   activerecord (~> 7.0)
   activesupport (~> 7.0)
-  async (~> 1.31.0)
+  async (~> 1.32.1)
   boxcars!
   debug (~> 1.9)
   dotenv (~> 3.1)
