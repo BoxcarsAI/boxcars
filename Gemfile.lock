@@ -25,7 +25,7 @@ GEM
       tzinfo (~> 2.0)
     addressable (2.8.6)
       public_suffix (>= 2.0.2, < 6.0)
-    anthropic (0.1.0)
+    anthropic (0.2.0)
       faraday (>= 1)
       faraday-multipart (>= 1)
     ast (2.4.2)
@@ -109,7 +109,7 @@ GEM
     mime-types-data (3.2023.0218.1)
     minitest (5.20.0)
     multi_json (1.15.0)
-    multipart-post (2.4.0)
+    multipart-post (2.4.1)
     net-http (0.4.1)
       uri
     netrc (0.11.0)
