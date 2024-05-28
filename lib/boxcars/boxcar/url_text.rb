@@ -10,7 +10,7 @@ module Boxcars
     # @param name [String] The name of the boxcar. Defaults to classname.
     # @param description [String] A description of the boxcar. Defaults to SERPDESC.
     def initialize(name: "FetchURL", description: DESC)
-      super(name: name, description: description)
+      super
     end
 
     # Get text from a url.

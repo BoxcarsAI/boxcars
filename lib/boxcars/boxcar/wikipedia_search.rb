@@ -13,7 +13,7 @@ module Boxcars
     # @param description [String] A description of the boxcar. Defaults to SERPDESC.
     # @param serpapi_api_key [String] The API key to use for the SerpAPI. Defaults to Boxcars.configuration.serpapi_api_key.
     def initialize(name: "Wikipedia", description: WDESC)
-      super(name: name, description: description)
+      super
     end
 
     # Get an answer from Google using the SerpAPI.
