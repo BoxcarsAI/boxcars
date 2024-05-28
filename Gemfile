@@ -7,13 +7,13 @@ gemspec
 
 gem "debug", "~> 1.9"
 
-gem "dotenv", "~> 3.0"
+gem "dotenv", "~> 3.1"
 
-gem "rake", "~> 13.1"
+gem "rake", "~> 13.2"
 
 gem "sqlite3", "~> 1.7"
 
-gem "async", "~>1.31.0"
+gem "async", "~>1.32.1"
 
 gem "activerecord", "~> 7.1"
 
@@ -34,7 +34,7 @@ group :development, :test do
   gem "rspec", "~> 3.13"
   gem "rubocop", "~> 1.60"
   gem "vcr", "~> 6.2.0"
-  gem "webmock", "~> 3.22.0"
+  gem "webmock", "~> 3.23.0"
   gem "rubocop-rake", "~> 0.6.0"
-  gem "rubocop-rspec", "~> 2.26"
+  gem "rubocop-rspec", "~> 2.29"
 end

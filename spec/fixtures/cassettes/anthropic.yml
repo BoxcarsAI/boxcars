@@ -5,7 +5,7 @@ http_interactions:
     uri: https://api.anthropic.com/v1/complete
     body:
       encoding: UTF-8
-      string: '{"prompt":"\n\nHuman: write a haiku about love\n\nAssistant:","model":"claude-2","max_tokens_to_sample":8096,"temperature":0.2}'
+      string: '{"prompt":"\n\nHuman: \n\nwrite a haiku about love\n\nAssistant:","model":"claude-2","max_tokens_to_sample":8096,"temperature":0.2}'
     headers:
       Content-Type:
       - application/json
@@ -24,25 +24,30 @@ http_interactions:
       code: 200
       message: OK
     headers:
+      Date:
+      - Fri, 19 Apr 2024 18:36:01 GMT
       Content-Type:
       - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
       Request-Id:
-      - c93499f3dae002ca1e1d3c8aa889543395a68411160a542d029846256426c4ad
+      - req_01KJCN388QAeWK6AP6mEaJ18
       X-Cloud-Trace-Context:
-      - 902ca2d44a2f0c60c859f3c82ef46d52
-      Date:
-      - Tue, 18 Jul 2023 22:46:06 GMT
-      Server:
-      - Google Frontend
-      Content-Length:
-      - '269'
+      - cfa569f7a962b402b5f4192e23e51ffc
       Via:
       - 1.1 google
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Cf-Cache-Status:
+      - DYNAMIC
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 876eff5c5824a709-PHX
     body:
-      encoding: UTF-8
-      string: '{"completion":" Here is a haiku about love:\n\nTwo hearts together
-        \nJoy and sorrow intertwined\nLove endures all things","stop_reason":"stop_sequence","model":"claude-2.0","stop":"\n\nHuman:","log_id":"c93499f3dae002ca1e1d3c8aa889543395a68411160a542d029846256426c4ad"}'
-  recorded_at: Tue, 18 Jul 2023 22:46:06 GMT
-recorded_with: VCR 6.1.0
+      encoding: ASCII-8BIT
+      string: '{"type":"completion","id":"compl_01KBtfTFJRtVjtSJGRu1Uig4","completion":"
+        Here is a haiku I wrote about love:\n\nTwo hearts beating as one\nLove blooms
+        like spring''s cherry trees\nJoy lasts forever","stop_reason":"stop_sequence","model":"claude-2.1","stop":"\n\nHuman:","log_id":"compl_01KBtfTFJRtVjtSJGRu1Uig4"}'
+  recorded_at: Fri, 19 Apr 2024 18:36:01 GMT
+recorded_with: VCR 6.2.0

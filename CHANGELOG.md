@@ -1,5 +1,36 @@
 # Changelog
 
+## [v0.4.10](https://github.com/BoxcarsAI/boxcars/tree/v0.4.10) (2024-04-19)
+
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.4.9...v0.4.10)
+
+**Merged pull requests:**
+
+- Add llms [\#169](https://github.com/BoxcarsAI/boxcars/pull/169) ([francis](https://github.com/francis))
+- \[infra\] Bump pg from 1.5.5 to 1.5.6 [\#163](https://github.com/BoxcarsAI/boxcars/pull/163) ([dependabot[bot]](https://github.com/apps/dependabot))
+- \[infra\] Bump rubocop-rspec from 2.26.1 to 2.29.1 [\#160](https://github.com/BoxcarsAI/boxcars/pull/160) ([dependabot[bot]](https://github.com/apps/dependabot))
+- \[infra\] Bump rdoc from 6.6.2 to 6.6.3.1 [\#158](https://github.com/BoxcarsAI/boxcars/pull/158) ([dependabot[bot]](https://github.com/apps/dependabot))
+- \[infra\] Bump dotenv from 3.0.2 to 3.1.0 [\#152](https://github.com/BoxcarsAI/boxcars/pull/152) ([dependabot[bot]](https://github.com/apps/dependabot))
+- \[infra\] Bump webmock from 3.22.0 to 3.23.0 [\#150](https://github.com/BoxcarsAI/boxcars/pull/150) ([dependabot[bot]](https://github.com/apps/dependabot))
+- \[infra\] Bump webmock from 3.20.0 to 3.22.0 [\#148](https://github.com/BoxcarsAI/boxcars/pull/148) ([dependabot[bot]](https://github.com/apps/dependabot))
+- \[infra\] Bump dotenv from 2.8.1 to 3.0.2 [\#146](https://github.com/BoxcarsAI/boxcars/pull/146) ([dependabot[bot]](https://github.com/apps/dependabot))
+- \[infra\] Bump pg from 1.5.4 to 1.5.5 [\#144](https://github.com/BoxcarsAI/boxcars/pull/144) ([dependabot[bot]](https://github.com/apps/dependabot))
+- \[infra\] Bump webmock from 3.19.1 to 3.20.0 [\#142](https://github.com/BoxcarsAI/boxcars/pull/142) ([dependabot[bot]](https://github.com/apps/dependabot))
+- \[infra\] Bump nokogiri from 1.16.0 to 1.16.2 [\#141](https://github.com/BoxcarsAI/boxcars/pull/141) ([dependabot[bot]](https://github.com/apps/dependabot))
+- \[infra\] Bump rspec from 3.12.0 to 3.13.0 [\#140](https://github.com/BoxcarsAI/boxcars/pull/140) ([dependabot[bot]](https://github.com/apps/dependabot))
+- \[infra\] Bump sqlite3 from 1.7.1 to 1.7.2 [\#139](https://github.com/BoxcarsAI/boxcars/pull/139) ([dependabot[bot]](https://github.com/apps/dependabot))
+
+## [v0.4.9](https://github.com/BoxcarsAI/boxcars/tree/v0.4.9) (2024-01-25)
+
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.4.8...v0.4.9)
+
+**Merged pull requests:**
+
+- use newest models by default from Open AI [\#138](https://github.com/BoxcarsAI/boxcars/pull/138) ([francis](https://github.com/francis))
+- \[infra\] Bump sqlite3 from 1.7.0 to 1.7.1 [\#137](https://github.com/BoxcarsAI/boxcars/pull/137) ([dependabot[bot]](https://github.com/apps/dependabot))
+- \[infra\] Bump rubocop from 1.60.0 to 1.60.2 [\#136](https://github.com/BoxcarsAI/boxcars/pull/136) ([dependabot[bot]](https://github.com/apps/dependabot))
+- \[infra\] Bump rubocop from 1.59.0 to 1.60.0 [\#133](https://github.com/BoxcarsAI/boxcars/pull/133) ([dependabot[bot]](https://github.com/apps/dependabot))
+
 ## [v0.4.8](https://github.com/BoxcarsAI/boxcars/tree/v0.4.8) (2024-01-08)
 
 [Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.4.7...v0.4.8)

@@ -1,0 +1,65 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://api.cohere.ai/v1/chat
+    body:
+      encoding: UTF-8
+      string: '{"model":"command-r-plus","max_tokens":4000,"max_input_tokens":1000,"temperature":0.2,"message":"write
+        a haiku about love"}'
+    headers:
+      Authorization:
+      - Bearer axhmZAUJwyoQKLSU9vaEsREUWVOgDBuTSX5V7lku
+      Content-Type:
+      - application/json
+      User-Agent:
+      - Faraday v2.9.0
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Access-Control-Expose-Headers:
+      - X-Debug-Trace-ID
+      Cache-Control:
+      - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
+      Content-Type:
+      - application/json
+      Expires:
+      - Thu, 01 Jan 1970 00:00:00 UTC
+      Num-Chars:
+      - '439'
+      Num-Tokens:
+      - '24'
+      Pragma:
+      - no-cache
+      Vary:
+      - Origin
+      X-Accel-Expires:
+      - '0'
+      X-Debug-Trace-Id:
+      - e7ea33579d8ff4405d692b2d9c86aba7
+      Date:
+      - Fri, 19 Apr 2024 18:39:15 GMT
+      Content-Length:
+      - '538'
+      X-Envoy-Upstream-Service-Time:
+      - '979'
+      Server:
+      - envoy
+      Via:
+      - 1.1 google
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+    body:
+      encoding: UTF-8
+      string: '{"response_id":"116010f7-a367-4414-abd6-e98f45a48fb2","text":"Love,
+        a sweet feeling\nBrings joy and warmth to the heart\nA blessing it is","generation_id":"d5fc2a18-3dc6-4c57-839d-a342be85c257","chat_history":[{"role":"USER","message":"write
+        a haiku about love"},{"role":"CHATBOT","message":"Love, a sweet feeling\nBrings
+        joy and warmth to the heart\nA blessing it is"}],"finish_reason":"COMPLETE","meta":{"api_version":{"version":"1"},"billed_units":{"input_tokens":5,"output_tokens":19},"tokens":{"input_tokens":71,"output_tokens":19}}}'
+  recorded_at: Fri, 19 Apr 2024 18:39:15 GMT
+recorded_with: VCR 6.2.0
