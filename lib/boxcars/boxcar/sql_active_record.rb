@@ -11,7 +11,7 @@ module Boxcars
     #   :name, :description, :prompt, :top_k, :stop, and :engine
     def initialize(connection: nil, tables: nil, except_tables: nil, **kwargs)
       connection ||= ::ActiveRecord::Base.connection
-      super(connection: connection, tables: tables, except_tables: except_tables, **kwargs)
+      super
     end
 
     private

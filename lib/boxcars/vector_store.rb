@@ -59,12 +59,11 @@ module Boxcars
     end
 
     def load_data_files(training_data_path)
-      data = []
       files = Dir.glob(training_data_path)
       raise_error "No files found at #{training_data_path}" if files.empty?
 
-      files.each do |file|
-        data << File.read(file)
+      data = files.map do |file|
+        File.read(file)
       end
       puts "Added #{files.length} files to data. Splitting text into chunks..."
       data

@@ -13,7 +13,7 @@ module Boxcars
       kwargs[:description] ||= CALCDESC
       kwargs[:parameters] ||= default_params
 
-      super(**kwargs)
+      super
     end
 
     def default_params
