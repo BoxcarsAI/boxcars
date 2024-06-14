@@ -2,5 +2,5 @@
 
 module Boxcars
   # The current version of the gem.
-  VERSION = "0.4.10"
+  VERSION = "0.5.1"
 end
