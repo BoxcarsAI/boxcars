@@ -1,5 +1,25 @@
 # Changelog
 
+## [v0.5.1](https://github.com/BoxcarsAI/boxcars/tree/v0.5.1) (2024-06-14)
+
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.4.10...v0.5.1)
+
+**Merged pull requests:**
+
+- Fix `Boxcars::SecurityError` error when we have newline [\#192](https://github.com/BoxcarsAI/boxcars/pull/192) ([moustafasallam](https://github.com/moustafasallam))
+- \[infra\] Bump rubocop from 1.64.0 to 1.64.1 [\#190](https://github.com/BoxcarsAI/boxcars/pull/190) ([dependabot[bot]](https://github.com/apps/dependabot))
+- \[infra\] Bump rubocop-rspec from 2.29.1 to 2.30.0 [\#188](https://github.com/BoxcarsAI/boxcars/pull/188) ([dependabot[bot]](https://github.com/apps/dependabot))
+- \[infra\] Bump webmock from 3.23.0 to 3.23.1 [\#186](https://github.com/BoxcarsAI/boxcars/pull/186) ([dependabot[bot]](https://github.com/apps/dependabot))
+- \[infra\] Bump rubocop from 1.60.2 to 1.64.0 [\#183](https://github.com/BoxcarsAI/boxcars/pull/183) ([dependabot[bot]](https://github.com/apps/dependabot))
+- \[infra\] Bump rexml from 3.2.6 to 3.2.8 [\#182](https://github.com/BoxcarsAI/boxcars/pull/182) ([dependabot[bot]](https://github.com/apps/dependabot))
+- \[infra\] Bump nokogiri from 1.16.2 to 1.16.5 [\#181](https://github.com/BoxcarsAI/boxcars/pull/181) ([dependabot[bot]](https://github.com/apps/dependabot))
+- \[infra\] Bump anthropic from 0.1.0 to 0.2.0 [\#180](https://github.com/BoxcarsAI/boxcars/pull/180) ([dependabot[bot]](https://github.com/apps/dependabot))
+- \[infra\] Bump debug from 1.9.1 to 1.9.2 [\#179](https://github.com/BoxcarsAI/boxcars/pull/179) ([dependabot[bot]](https://github.com/apps/dependabot))
+- \[infra\] Bump dotenv from 3.1.0 to 3.1.2 [\#177](https://github.com/BoxcarsAI/boxcars/pull/177) ([dependabot[bot]](https://github.com/apps/dependabot))
+- \[infra\] Bump async from 1.31.0 to 1.32.1 [\#175](https://github.com/BoxcarsAI/boxcars/pull/175) ([dependabot[bot]](https://github.com/apps/dependabot))
+- \[infra\] Update ruby-openai requirement from \>= 4.2, \< 7.0 to \>= 4.2, \< 8.0 [\#174](https://github.com/BoxcarsAI/boxcars/pull/174) ([dependabot[bot]](https://github.com/apps/dependabot))
+- \[infra\] Bump rake from 13.1.0 to 13.2.1 [\#168](https://github.com/BoxcarsAI/boxcars/pull/168) ([dependabot[bot]](https://github.com/apps/dependabot))
+
 ## [v0.4.10](https://github.com/BoxcarsAI/boxcars/tree/v0.4.10) (2024-04-19)
 
 [Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.4.9...v0.4.10)
@@ -205,7 +225,7 @@
 
 - Chore/refactored vector stores [\#92](https://github.com/BoxcarsAI/boxcars/pull/92) ([jaigouk](https://github.com/jaigouk))
 - Fix the issue of calling the wrong method in vector\_answer.rb. [\#91](https://github.com/BoxcarsAI/boxcars/pull/91) ([xleotranx](https://github.com/xleotranx))
-- issue\_83 Fix readme 404 [\#87](https://github.com/BoxcarsAI/boxcars/pull/87) ([beouk](https://github.com/beouk))
+- issue\_83 Fix readme 404 [\#87](https://github.com/BoxcarsAI/boxcars/pull/87) ([ntabernacle](https://github.com/ntabernacle))
 
 ## [v0.2.13](https://github.com/BoxcarsAI/boxcars/tree/v0.2.13) (2023-05-24)
 
