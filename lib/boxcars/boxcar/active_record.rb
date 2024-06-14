@@ -99,10 +99,10 @@ module Boxcars
 
     # check for dangerous code that is outside of ActiveRecord
     def safe_to_run?(code)
-      bad_words = %w[commit drop_constraint drop_constraint! drop_extension drop_extension! drop_foreign_key drop_foreign_key! \
-                     drop_index drop_index! drop_join_table drop_join_table! drop_materialized_view drop_materialized_view! \
-                     drop_partition drop_partition! drop_schema drop_schema! drop_table drop_table! drop_trigger drop_trigger! \
-                     drop_view drop_view! eval instance_eval send system execute reset revoke rollback truncate \
+      bad_words = %w[commit drop_constraint drop_constraint! drop_extension drop_extension! drop_foreign_key drop_foreign_key!
+                     drop_index drop_index! drop_join_table drop_join_table! drop_materialized_view drop_materialized_view!
+                     drop_partition drop_partition! drop_schema drop_schema! drop_table drop_table! drop_trigger drop_trigger!
+                     drop_view drop_view! eval instance_eval send system execute reset revoke rollback truncate
                      encrypted_password].freeze
       without_strings = code.gsub(/('([^'\\]*(\\.[^'\\]*)*)'|"([^"\\]*(\\.[^"\\]*)*"))/, 'XX')
 
