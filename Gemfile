@@ -15,7 +15,7 @@ gem "sqlite3", "~> 1.7"
 
 gem "async", "~>1.32.1"
 
-gem "activerecord", "~> 7.0"
+gem "activerecord", "~> 7.1"
 
 gem "github_changelog_generator", "~> 1.16"
 
