@@ -9,7 +9,7 @@ module Boxcars
 
     # The default parameters to use when asking the engine.
     DEFAULT_PARAMS = {
-      model: "gpt-4-turbo-preview",
+      model: "gpt-4o-mini",
       temperature: 0.1,
       max_tokens: 4096
     }.freeze

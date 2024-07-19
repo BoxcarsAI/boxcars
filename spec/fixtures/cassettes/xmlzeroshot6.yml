@@ -2,15 +2,16 @@
 http_interactions:
 - request:
     method: post
-    uri: https://api.anthropic.com/v1/complete
+    uri: https://api.anthropic.com/v1/messages
     body:
       encoding: UTF-8
-      string: '{"prompt":"\n\nHuman: \u003ctraining\u003eAnswer the following questions
-        as best you can. You have access to the following tools for actions:\n\u003cboxcars\u003e\n\u003ctool
-        name=\"Calculator\" description=\"useful for when you need to answer questions
-        about math\"\u003e\n  \u003cparams\u003e\n    \u003cparam name=\"question\"
-        data-type=\"string\" required=\"true\" description=\"the input question\"
-        /\u003e\n  \u003c/params\u003e\n\u003c/tool\u003e\n\u003c/boxcars\u003eUse
+      string: '{"messages":[{"role":"user","content":"\u003cquestion\u003ewhat is
+        pi squared to 7 digits?\u003c/question\u003e"}],"model":"claude-3-5-sonnet-20240620","max_tokens":4096,"temperature":0.1,"stop_sequences":["\n\u003cobservation\u003e"],"system":"\u003ctraining\u003eAnswer
+        the following questions as best you can. You have access to the following
+        tools for actions:\n\u003cboxcars\u003e\n\u003ctool name=\"Calculator\" description=\"useful
+        for when you need to answer questions about math\"\u003e\n  \u003cparams\u003e\n    \u003cparam
+        name=\"question\" data-type=\"string\" required=\"true\" description=\"the
+        input question\" /\u003e\n  \u003c/params\u003e\n\u003c/tool\u003e\n\u003c/boxcars\u003eUse
         the following format making sure all open tags have closing tags:\n \u003cquestion\u003ethe
         input question you must answer\u003c/question\u003e\n \u003cthought\u003eyou
         should always think about what to do\u003c/thought\u003e\n \u003caction\u003ethe
@@ -23,15 +24,14 @@ http_interactions:
         END -\nYour answer should always have begin and end tags for each element.\nAlso
         make sure to specify arguments for the action_input.\nFinally, if you can
         deduct the answer from the question or observations, you can jump to final_answer
-        and give me the answer.\n\u003c/training\u003e\n\nHuman: \u003cquestion\u003ewhat
-        is pi squared to 7 digits?\u003c/question\u003e\n\nAssistant: \n\nAssistant:","model":"claude-2","max_tokens_to_sample":8096,"temperature":0.2,"stop_sequences":["\n\u003cobservation\u003e"]}'
+        and give me the answer.\n\u003c/training\u003e"}'
     headers:
-      Content-Type:
-      - application/json
       X-Api-Key:
       - "<ANTHROPIC_API_KEY>"
       Anthropic-Version:
       - '2023-06-01'
+      Content-Type:
+      - application/json
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -43,28 +43,34 @@ http_interactions:
       code: 200
       message: OK
     headers:
+      Date:
+      - Fri, 19 Jul 2024 22:40:22 GMT
       Content-Type:
       - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
       Request-Id:
-      - e2364589e8ad1e55b2fe2c17b2668543e32b7f849b7d447de1fae98f8ba5c889
+      - req_01GkAhXFGeCzktFxYa7y4D5y
       X-Cloud-Trace-Context:
-      - f5294e7a1d26c5d1eeed761ebb017e9f
-      Date:
-      - Tue, 25 Jul 2023 13:18:00 GMT
-      Server:
-      - Google Frontend
-      Content-Length:
-      - '389'
+      - fdce61091c50b59e77eb342f0361344f
       Via:
       - 1.1 google
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Cf-Cache-Status:
+      - DYNAMIC
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 8a5e366efd351b0f-PHX
     body:
-      encoding: UTF-8
-      string: '{"completion":" <thought>To answer this question, I need to calculate
-        pi squared to 7 digits.</thought>\n\n<action>Calculator</action>\n\n<action_input>\n<![CDATA[\nquestion
-        = \"what is pi squared to 7 digits?\"\n]]>\n</action_input>\n","stop_reason":"stop_sequence","model":"claude-2.0","stop":"\n<observation>","log_id":"e2364589e8ad1e55b2fe2c17b2668543e32b7f849b7d447de1fae98f8ba5c889"}'
-  recorded_at: Tue, 25 Jul 2023 13:18:00 GMT
+      encoding: ASCII-8BIT
+      string: '{"id":"msg_013zVmNYEYZU8CiJ69S5YVU9","type":"message","role":"assistant","model":"claude-3-5-sonnet-20240620","content":[{"type":"text","text":"<thought>To
+        answer this question, I need to calculate pi squared and round it to 7 digits
+        after the decimal point. I know that pi is approximately 3.14159, but for
+        more precise calculations, I should use a calculator.</thought>\n\n<action>Calculator</action>\n<action_input>question:
+        What is pi squared to 7 decimal places?</action_input>\n"}],"stop_reason":"stop_sequence","stop_sequence":"\n<observation>","usage":{"input_tokens":329,"output_tokens":89}}'
+  recorded_at: Fri, 19 Jul 2024 22:40:22 GMT
 - request:
     method: post
     uri: https://api.openai.com/v1/chat/completions
@@ -76,14 +82,15 @@ http_interactions:
         that prints the results to the console. If anyone gives you a hard math problem,
         just use the following format and we’ll take care of the rest:\n${{Question
         with hard calculation.}}\nreply only with the following format:\n```ruby\n${{only
-        Ruby code that prints the answer}}\n```\n```output\n${{Output of your code}}\n```\n\nOtherwise,
+        Ruby code that prints the answer. If you use puts, make sure to wrap the expression
+        in paranthesis}}\n```\n```output\n${{Output of your code}}\n```\n\nOtherwise,
         you should use this simpler format:\n${{Question without hard calculation}}\nAnswer:
         ${{Answer}}\n\nDo not give an explanation of the answer and make sure your
         answer starts with either ''Answer:'' or ''```ruby''."},{"role":"system","content":"here
         is a hard example:\nthe user asks: What is 37593 * 67?\nyour answer: ```ruby\nputs(37593
         * 67)\n```\n```output\n2518731\n```\nAnswer: 2518731"},{"role":"system","content":"basic
-        example:\nuser asks: What is 2518731 + 0?\nyou answer: Answer: 2518731"},{"role":"system","content":"Begin."},{"role":"user","content":"question
-        = \"what is pi squared to 7 digits?\""}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["```output"]}'
+        example:\nuser asks: What is 2518731 + 0?\nyou answer: Answer: 2518731"},{"role":"system","content":"Begin."},{"role":"user","content":"question:
+        What is pi squared to 7 decimal places?"}],"model":"gpt-4o-mini","temperature":0.1,"max_tokens":4096,"stop":["```output"]}'
     headers:
       Content-Type:
       - application/json
@@ -101,74 +108,78 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Tue, 25 Jul 2023 13:18:02 GMT
+      - Fri, 19 Jul 2024 22:40:23 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
       - chunked
       Connection:
       - keep-alive
-      Access-Control-Allow-Origin:
-      - "*"
-      Cache-Control:
-      - no-cache, must-revalidate
-      Openai-Model:
-      - gpt-3.5-turbo-0613
       Openai-Organization:
-      - user-ri9zw9ahumb1bo9vs73mudbi
+      - boxcars-ai
       Openai-Processing-Ms:
-      - '1032'
+      - '544'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
-      - max-age=15724800; includeSubDomains
+      - max-age=15552000; includeSubDomains; preload
       X-Ratelimit-Limit-Requests:
-      - '3500'
+      - '10000'
       X-Ratelimit-Limit-Tokens:
-      - '90000'
+      - '1000000'
       X-Ratelimit-Remaining-Requests:
-      - '3499'
+      - '9999'
       X-Ratelimit-Remaining-Tokens:
-      - '89238'
+      - '995636'
       X-Ratelimit-Reset-Requests:
-      - 17ms
+      - 6ms
       X-Ratelimit-Reset-Tokens:
-      - 508ms
+      - 261ms
       X-Request-Id:
-      - 61595477940162d1a7fbff2458f1d4f8
+      - req_cb7a937cda9163b977199e98d6e2fd12
       Cf-Cache-Status:
       - DYNAMIC
+      Set-Cookie:
+      - __cf_bm=55khK8jE36O8tDew.1dXynlzRWYCkKN2Yq3uoGVd9.c-1721428823-1.0.1.1-Fm6CGJrDfaKSuPENSthZGeb8n3XrMH9GtMIjur0nH4Ypuuf96GiVzRlKgE7sk6c10EwKtNHNshZzo2eJkvtdxg;
+        path=/; expires=Fri, 19-Jul-24 23:10:23 GMT; domain=.api.openai.com; HttpOnly;
+        Secure; SameSite=None
+      - _cfuvid=_GYnFEi69VWvuF5woh71h_9F7kzbzywNDwS5bo8IlHs-1721428823213-0.0.1.1-604800000;
+        path=/; domain=.api.openai.com; HttpOnly; Secure; SameSite=None
+      X-Content-Type-Options:
+      - nosniff
       Server:
       - cloudflare
       Cf-Ray:
-      - 7ec4afb83994a703-PHX
+      - 8a5e367c6fe7a6fa-PHX
       Alt-Svc:
       - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
       string: |
         {
-          "id": "chatcmpl-7gCDJeYEHIVYHnpPsJDBgoVc5Y9eq",
+          "id": "chatcmpl-9mqYwvEYiNzMZFli8P6kiODcg2Cc3",
           "object": "chat.completion",
-          "created": 1690291081,
-          "model": "gpt-3.5-turbo-0613",
+          "created": 1721428822,
+          "model": "gpt-4o-mini-2024-07-18",
           "choices": [
             {
               "index": 0,
               "message": {
                 "role": "assistant",
-                "content": "```ruby\npi = Math::PI\npi_squared = pi ** 2\npi_squared.round(7)\n```\n"
+                "content": "```ruby\nputs(Math::PI**2).round(7)\n```\n"
               },
+              "logprobs": null,
               "finish_reason": "stop"
             }
           ],
           "usage": {
-            "prompt_tokens": 266,
-            "completion_tokens": 25,
-            "total_tokens": 291
-          }
+            "prompt_tokens": 282,
+            "completion_tokens": 16,
+            "total_tokens": 298
+          },
+          "system_fingerprint": "fp_8b761cb050"
         }
-  recorded_at: Tue, 25 Jul 2023 13:18:02 GMT
+  recorded_at: Fri, 19 Jul 2024 22:40:23 GMT
 - request:
     method: post
     uri: https://api.openai.com/v1/chat/completions
@@ -180,16 +191,16 @@ http_interactions:
         that prints the results to the console. If anyone gives you a hard math problem,
         just use the following format and we’ll take care of the rest:\n${{Question
         with hard calculation.}}\nreply only with the following format:\n```ruby\n${{only
-        Ruby code that prints the answer}}\n```\n```output\n${{Output of your code}}\n```\n\nOtherwise,
+        Ruby code that prints the answer. If you use puts, make sure to wrap the expression
+        in paranthesis}}\n```\n```output\n${{Output of your code}}\n```\n\nOtherwise,
         you should use this simpler format:\n${{Question without hard calculation}}\nAnswer:
         ${{Answer}}\n\nDo not give an explanation of the answer and make sure your
         answer starts with either ''Answer:'' or ''```ruby''."},{"role":"system","content":"here
         is a hard example:\nthe user asks: What is 37593 * 67?\nyour answer: ```ruby\nputs(37593
         * 67)\n```\n```output\n2518731\n```\nAnswer: 2518731"},{"role":"system","content":"basic
-        example:\nuser asks: What is 2518731 + 0?\nyou answer: Answer: 2518731"},{"role":"system","content":"Begin."},{"role":"user","content":"question
-        = \"what is pi squared to 7 digits?\""},{"role":"assistant","content":"```ruby\npi
-        = Math::PI\npi_squared = pi ** 2\npi_squared.round(7)\n```"},{"role":"user","content":"The
-        code you gave me did not print a result"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["```output"]}'
+        example:\nuser asks: What is 2518731 + 0?\nyou answer: Answer: 2518731"},{"role":"system","content":"Begin."},{"role":"user","content":"question:
+        What is pi squared to 7 decimal places?"},{"role":"assistant","content":"```ruby\nputs(Math::PI**2).round(7)\n```"},{"role":"user","content":"undefined
+        method `round'' for nil:NilClass"}],"model":"gpt-4o-mini","temperature":0.1,"max_tokens":4096,"stop":["```output"]}'
     headers:
       Content-Type:
       - application/json
@@ -207,178 +218,114 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Tue, 25 Jul 2023 13:18:03 GMT
+      - Fri, 19 Jul 2024 22:40:23 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
       - chunked
       Connection:
       - keep-alive
-      Access-Control-Allow-Origin:
-      - "*"
-      Cache-Control:
-      - no-cache, must-revalidate
-      Openai-Model:
-      - gpt-3.5-turbo-0613
       Openai-Organization:
-      - user-ri9zw9ahumb1bo9vs73mudbi
+      - boxcars-ai
       Openai-Processing-Ms:
-      - '1407'
+      - '291'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
-      - max-age=15724800; includeSubDomains
+      - max-age=15552000; includeSubDomains; preload
       X-Ratelimit-Limit-Requests:
-      - '3500'
+      - '10000'
       X-Ratelimit-Limit-Tokens:
-      - '90000'
+      - '1000000'
       X-Ratelimit-Remaining-Requests:
-      - '3499'
+      - '9999'
       X-Ratelimit-Remaining-Tokens:
-      - '89209'
+      - '995614'
       X-Ratelimit-Reset-Requests:
-      - 17ms
+      - 6ms
       X-Ratelimit-Reset-Tokens:
-      - 527ms
+      - 263ms
       X-Request-Id:
-      - 15135e1b09f6894e650c5b75e1aa2154
+      - req_afaca7422e62c4ddcc72c2136fea4d8c
       Cf-Cache-Status:
       - DYNAMIC
+      Set-Cookie:
+      - __cf_bm=FBfcqNiay_779UW8e1_0FNSMllSPVgH5AFEcbymC_a0-1721428823-1.0.1.1-AM2J9YVlGk0NbFZke97EUFEf3v2wajsx2L2KGJNyH56z05wPCYtedReMwGbJQaH8athETgxzQh1aqbO6H_R5.A;
+        path=/; expires=Fri, 19-Jul-24 23:10:23 GMT; domain=.api.openai.com; HttpOnly;
+        Secure; SameSite=None
+      - _cfuvid=bz3VC2GfTq21KKefshLzvFlUt6C9QaxDvBmIG5Fy13w-1721428823924-0.0.1.1-604800000;
+        path=/; domain=.api.openai.com; HttpOnly; Secure; SameSite=None
+      X-Content-Type-Options:
+      - nosniff
       Server:
       - cloudflare
       Cf-Ray:
-      - 7ec4afc06bd3a700-PHX
+      - 8a5e36828d24a6f7-PHX
       Alt-Svc:
       - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
       string: |
         {
-          "id": "chatcmpl-7gCDK1jIAkfXHyBjQ0qof9hoZfWmQ",
+          "id": "chatcmpl-9mqYxPusIQvSnwthiaXoFdyzPrv7f",
           "object": "chat.completion",
-          "created": 1690291082,
-          "model": "gpt-3.5-turbo-0613",
+          "created": 1721428823,
+          "model": "gpt-4o-mini-2024-07-18",
           "choices": [
             {
               "index": 0,
               "message": {
                 "role": "assistant",
-                "content": "Apologies for the oversight. Here's the corrected code:\n\n```ruby\npi = Math::PI\npi_squared = pi ** 2\nputs pi_squared.round(7)\n```\n\n"
+                "content": "```ruby\nputs((Math::PI**2).round(7))\n```\n"
               },
+              "logprobs": null,
               "finish_reason": "stop"
             }
           ],
           "usage": {
-            "prompt_tokens": 308,
-            "completion_tokens": 38,
-            "total_tokens": 346
-          }
+            "prompt_tokens": 315,
+            "completion_tokens": 17,
+            "total_tokens": 332
+          },
+          "system_fingerprint": "fp_7dd529cfca"
         }
-  recorded_at: Tue, 25 Jul 2023 13:18:03 GMT
+  recorded_at: Fri, 19 Jul 2024 22:40:23 GMT
 - request:
     method: post
-    uri: https://api.anthropic.com/v1/complete
+    uri: https://api.anthropic.com/v1/messages
     body:
       encoding: UTF-8
-      string: '{"prompt":"\n\nHuman: \u003ctraining\u003eAnswer the following questions
-        as best you can. You have access to the following tools for actions:\n\u003cboxcars\u003e\n\u003ctool
-        name=\"Calculator\" description=\"useful for when you need to answer questions
-        about math\"\u003e\n  \u003cparams\u003e\n    \u003cparam name=\"question\"
-        data-type=\"string\" required=\"true\" description=\"the input question\"
-        /\u003e\n  \u003c/params\u003e\n\u003c/tool\u003e\n\u003c/boxcars\u003eUse
-        the following format making sure all open tags have closing tags:\n \u003cquestion\u003ethe
-        input question you must answer\u003c/question\u003e\n \u003cthought\u003eyou
-        should always think about what to do\u003c/thought\u003e\n \u003caction\u003ethe
-        action to take, from this action list above\u003c/action\u003e\n \u003caction_input\u003einput
-        to the action\u003c/action_input\u003e\n \u003cobservation\u003ethe result
-        of the action\u003c/observation\u003e\n ... (this thought/action/action_input/observation
-        sequence repeats until you know the final answer) ...\n \u003cthought\u003eI
-        know the final answer\u003c/thought\u003e\n \u003cfinal_answer\u003ethe final
-        answer to the original input question\u003c/final_answer\u003e\n-- FORMAT
-        END -\nYour answer should always have begin and end tags for each element.\nAlso
-        make sure to specify arguments for the action_input.\nFinally, if you can
-        deduct the answer from the question or observations, you can jump to final_answer
-        and give me the answer.\n\u003c/training\u003e\n\nHuman: \u003cquestion\u003ewhat
-        is pi squared to 7 digits?\u003c/question\u003e\n\nAssistant:   \u003cthought\u003eTo
-        answer this question, I need to calculate pi squared to 7 digits.\u003c/thought\u003e\n\n\u003caction\u003eCalculator\u003c/action\u003e\n\n\u003caction_input\u003e\n\u003c![CDATA[\nquestion
-        = \"what is pi squared to 7 digits?\"\n]]\u003e\n\u003c/action_input\u003e\n\n\u003cobservation\u003e9.8696044\u003c/observation\u003e\n\n\nAssistant:","model":"claude-2","max_tokens_to_sample":8096,"temperature":0.2,"stop_sequences":["\n\u003cobservation\u003e"]}'
-    headers:
-      Content-Type:
-      - application/json
-      X-Api-Key:
-      - "<ANTHROPIC_API_KEY>"
-      Anthropic-Version:
-      - '2023-06-01'
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      Accept:
-      - "*/*"
-      User-Agent:
-      - Ruby
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Content-Type:
-      - application/json
-      Request-Id:
-      - 522f18af8969ca1f94699e9519686ad36c5a3e2cc391e719617bc2d651cd299d
-      X-Cloud-Trace-Context:
-      - fd11658b58cab184d856808347b9abff
-      Date:
-      - Tue, 25 Jul 2023 13:18:06 GMT
-      Server:
-      - Google Frontend
-      Content-Length:
-      - '288'
-      Via:
-      - 1.1 google
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-    body:
-      encoding: UTF-8
-      string: '{"completion":" <thought>I calculated pi squared to 7 digits using
-        the Calculator tool.</thought>\n\n<final_answer>9.8696044</final_answer>","stop_reason":"stop_sequence","model":"claude-2.0","stop":"\n\nHuman:","log_id":"522f18af8969ca1f94699e9519686ad36c5a3e2cc391e719617bc2d651cd299d"}'
-  recorded_at: Tue, 25 Jul 2023 13:18:06 GMT
-- request:
-    method: post
-    uri: https://api.anthropic.com/v1/complete
-    body:
-      encoding: UTF-8
-      string: '{"prompt":"\n\nHuman: \u003ctraining\u003eAnswer the following questions
-        as best you can. You have access to the following tools for actions:\n\u003cboxcars\u003e\n\u003ctool
-        name=\"Calculator\" description=\"useful for when you need to answer questions
-        about math\"\u003e\n  \u003cparams\u003e\n    \u003cparam name=\"question\"
-        data-type=\"string\" required=\"true\" description=\"the input question\"
-        /\u003e\n  \u003c/params\u003e\n\u003c/tool\u003e\n\u003c/boxcars\u003eUse
-        the following format making sure all open tags have closing tags:\n \u003cquestion\u003ethe
-        input question you must answer\u003c/question\u003e\n \u003cthought\u003eyou
-        should always think about what to do\u003c/thought\u003e\n \u003caction\u003ethe
-        action to take, from this action list above\u003c/action\u003e\n \u003caction_input\u003einput
-        to the action\u003c/action_input\u003e\n \u003cobservation\u003ethe result
-        of the action\u003c/observation\u003e\n ... (this thought/action/action_input/observation
-        sequence repeats until you know the final answer) ...\n \u003cthought\u003eI
-        know the final answer\u003c/thought\u003e\n \u003cfinal_answer\u003ethe final
-        answer to the original input question\u003c/final_answer\u003e\n-- FORMAT
-        END -\nYour answer should always have begin and end tags for each element.\nAlso
-        make sure to specify arguments for the action_input.\nFinally, if you can
-        deduct the answer from the question or observations, you can jump to final_answer
-        and give me the answer.\n\u003c/training\u003e\n\nHuman: \u003cquestion\u003ewhat
-        is pi squared to 7 digits?\u003c/question\u003e\n\nAssistant: \u003cthought\u003e
+      string: '{"messages":[{"role":"user","content":"\u003cquestion\u003ewhat is
+        pi squared to 7 digits?\u003c/question\u003e"},{"role":"assistant","content":"
         \u003cthought\u003eTo answer this question, I need to calculate pi squared
-        to 7 digits.\u003c/thought\u003e\n\n\u003caction\u003eCalculator\u003c/action\u003e\n\n\u003caction_input\u003e\n\u003c![CDATA[\nquestion
-        = \"what is pi squared to 7 digits?\"\n]]\u003e\n\u003c/action_input\u003e\n\n\u003cobservation\u003e9.8696044\u003c/observation\u003e\n\nAssistant:
-        \u003cthought\u003eI know the final answer\n\u003cfinal_answer\u003e9.8696044\u003c/final_answer\u003e\n\u003c/thought\u003e\n\nHuman:
-        \u003cquestion\u003ewhat is the square root of the previous answer?\u003c/question\u003e\n\nAssistant:
-        \n\nAssistant:","model":"claude-2","max_tokens_to_sample":8096,"temperature":0.2,"stop_sequences":["\n\u003cobservation\u003e"]}'
+        and round it to 7 digits after the decimal point. I know that pi is approximately
+        3.14159, but for more precise calculations, I should use a calculator.\u003c/thought\u003e\n\n\u003caction\u003eCalculator\u003c/action\u003e\n\u003caction_input\u003equestion:
+        What is pi squared to 7 decimal places?\u003c/action_input\u003e\n\n\u003cobservation\u003e9.8696044\u003c/observation\u003e"}],"model":"claude-3-5-sonnet-20240620","max_tokens":4096,"temperature":0.1,"stop_sequences":["\n\u003cobservation\u003e"],"system":"\u003ctraining\u003eAnswer
+        the following questions as best you can. You have access to the following
+        tools for actions:\n\u003cboxcars\u003e\n\u003ctool name=\"Calculator\" description=\"useful
+        for when you need to answer questions about math\"\u003e\n  \u003cparams\u003e\n    \u003cparam
+        name=\"question\" data-type=\"string\" required=\"true\" description=\"the
+        input question\" /\u003e\n  \u003c/params\u003e\n\u003c/tool\u003e\n\u003c/boxcars\u003eUse
+        the following format making sure all open tags have closing tags:\n \u003cquestion\u003ethe
+        input question you must answer\u003c/question\u003e\n \u003cthought\u003eyou
+        should always think about what to do\u003c/thought\u003e\n \u003caction\u003ethe
+        action to take, from this action list above\u003c/action\u003e\n \u003caction_input\u003einput
+        to the action\u003c/action_input\u003e\n \u003cobservation\u003ethe result
+        of the action\u003c/observation\u003e\n ... (this thought/action/action_input/observation
+        sequence repeats until you know the final answer) ...\n \u003cthought\u003eI
+        know the final answer\u003c/thought\u003e\n \u003cfinal_answer\u003ethe final
+        answer to the original input question\u003c/final_answer\u003e\n-- FORMAT
+        END -\nYour answer should always have begin and end tags for each element.\nAlso
+        make sure to specify arguments for the action_input.\nFinally, if you can
+        deduct the answer from the question or observations, you can jump to final_answer
+        and give me the answer.\n\u003c/training\u003e"}'
     headers:
-      Content-Type:
-      - application/json
       X-Api-Key:
       - "<ANTHROPIC_API_KEY>"
       Anthropic-Version:
       - '2023-06-01'
+      Content-Type:
+      - application/json
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -390,29 +337,110 @@ http_interactions:
       code: 200
       message: OK
     headers:
+      Date:
+      - Fri, 19 Jul 2024 22:40:25 GMT
       Content-Type:
       - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
       Request-Id:
-      - e9a43b72d661a87be3d257ec77bd660e58c1477f26647d1753a81a8fc0dafe79
+      - req_01YHUEMqR93sptzZKgf9KCbn
       X-Cloud-Trace-Context:
-      - a8d15d8802d6191f61b21365a813879e
-      Date:
-      - Tue, 25 Jul 2023 13:18:09 GMT
-      Server:
-      - Google Frontend
-      Content-Length:
-      - '487'
+      - 10e6ad46aec02c071c13fe0f46df848c
       Via:
       - 1.1 google
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Cf-Cache-Status:
+      - DYNAMIC
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 8a5e36873c1aa6ee-PHX
+    body:
+      encoding: ASCII-8BIT
+      string: '{"id":"msg_01VL87VHDszLxcWGR27eDkz4","type":"message","role":"assistant","model":"claude-3-5-sonnet-20240620","content":[{"type":"text","text":"\n\n<thought>The
+        calculator has provided the result of pi squared to 7 decimal places. This
+        is exactly what we need to answer the question.</thought>\n\n<final_answer>Pi
+        squared to 7 digits after the decimal point is 9.8696044.</final_answer>"}],"stop_reason":"end_turn","stop_sequence":null,"usage":{"input_tokens":426,"output_tokens":65}}'
+  recorded_at: Fri, 19 Jul 2024 22:40:25 GMT
+- request:
+    method: post
+    uri: https://api.anthropic.com/v1/messages
     body:
       encoding: UTF-8
-      string: '{"completion":" <thought>To find the square root of the previous answer,
-        I first need to recall what the previous answer was.</thought>\n\n<thought>The
-        previous answer was 9.8696044.</thought> \n\n<action>Calculator</action>\n\n<action_input>\n<![CDATA[  \nquestion
-        = \"what is the square root of 9.8696044?\"\n]]>\n</action_input>\n","stop_reason":"stop_sequence","model":"claude-2.0","stop":"\n<observation>","log_id":"e9a43b72d661a87be3d257ec77bd660e58c1477f26647d1753a81a8fc0dafe79"}'
-  recorded_at: Tue, 25 Jul 2023 13:18:09 GMT
+      string: '{"messages":[{"role":"user","content":"\u003cquestion\u003ewhat is
+        pi squared to 7 digits?\u003c/question\u003e"},{"role":"assistant","content":"\u003cthought\u003e\u003cthought\u003eTo
+        answer this question, I need to calculate pi squared and round it to 7 digits
+        after the decimal point. I know that pi is approximately 3.14159, but for
+        more precise calculations, I should use a calculator.\u003c/thought\u003e\n\n\u003caction\u003eCalculator\u003c/action\u003e\n\u003caction_input\u003equestion:
+        What is pi squared to 7 decimal places?\u003c/action_input\u003e\n\n\u003cobservation\u003e9.8696044\u003c/observation\u003e\n\u003cthought\u003eI
+        know the final answer\n\u003cfinal_answer\u003ePi squared to 7 digits after
+        the decimal point is 9.8696044.\u003c/final_answer\u003e\n\u003c/thought\u003e"},{"role":"user","content":"\u003cquestion\u003ewhat
+        is the square root of the previous answer?\u003c/question\u003e"}],"model":"claude-3-5-sonnet-20240620","max_tokens":4096,"temperature":0.1,"stop_sequences":["\n\u003cobservation\u003e"],"system":"\u003ctraining\u003eAnswer
+        the following questions as best you can. You have access to the following
+        tools for actions:\n\u003cboxcars\u003e\n\u003ctool name=\"Calculator\" description=\"useful
+        for when you need to answer questions about math\"\u003e\n  \u003cparams\u003e\n    \u003cparam
+        name=\"question\" data-type=\"string\" required=\"true\" description=\"the
+        input question\" /\u003e\n  \u003c/params\u003e\n\u003c/tool\u003e\n\u003c/boxcars\u003eUse
+        the following format making sure all open tags have closing tags:\n \u003cquestion\u003ethe
+        input question you must answer\u003c/question\u003e\n \u003cthought\u003eyou
+        should always think about what to do\u003c/thought\u003e\n \u003caction\u003ethe
+        action to take, from this action list above\u003c/action\u003e\n \u003caction_input\u003einput
+        to the action\u003c/action_input\u003e\n \u003cobservation\u003ethe result
+        of the action\u003c/observation\u003e\n ... (this thought/action/action_input/observation
+        sequence repeats until you know the final answer) ...\n \u003cthought\u003eI
+        know the final answer\u003c/thought\u003e\n \u003cfinal_answer\u003ethe final
+        answer to the original input question\u003c/final_answer\u003e\n-- FORMAT
+        END -\nYour answer should always have begin and end tags for each element.\nAlso
+        make sure to specify arguments for the action_input.\nFinally, if you can
+        deduct the answer from the question or observations, you can jump to final_answer
+        and give me the answer.\n\u003c/training\u003e"}'
+    headers:
+      X-Api-Key:
+      - "<ANTHROPIC_API_KEY>"
+      Anthropic-Version:
+      - '2023-06-01'
+      Content-Type:
+      - application/json
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 19 Jul 2024 22:40:27 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Request-Id:
+      - req_015p3Ccmit3xN5yGiRd14oqh
+      X-Cloud-Trace-Context:
+      - bf0893deae817e62f1f735e7edc1d3cd
+      Via:
+      - 1.1 google
+      Cf-Cache-Status:
+      - DYNAMIC
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 8a5e36901932a720-PHX
+    body:
+      encoding: ASCII-8BIT
+      string: '{"id":"msg_01G8gNyUJYwUWEKPEGJy715P","type":"message","role":"assistant","model":"claude-3-5-sonnet-20240620","content":[{"type":"text","text":"<thought>To
+        find the square root of the previous answer, I need to calculate the square
+        root of 9.8696044. I''ll use the calculator tool for this calculation.</thought>\n\n<action>Calculator</action>\n<action_input>question:
+        What is the square root of 9.8696044?</action_input>\n"}],"stop_reason":"stop_sequence","stop_sequence":"\n<observation>","usage":{"input_tokens":492,"output_tokens":78}}'
+  recorded_at: Fri, 19 Jul 2024 22:40:27 GMT
 - request:
     method: post
     uri: https://api.openai.com/v1/chat/completions
@@ -424,16 +452,16 @@ http_interactions:
         that prints the results to the console. If anyone gives you a hard math problem,
         just use the following format and we’ll take care of the rest:\n${{Question
         with hard calculation.}}\nreply only with the following format:\n```ruby\n${{only
-        Ruby code that prints the answer}}\n```\n```output\n${{Output of your code}}\n```\n\nOtherwise,
+        Ruby code that prints the answer. If you use puts, make sure to wrap the expression
+        in paranthesis}}\n```\n```output\n${{Output of your code}}\n```\n\nOtherwise,
         you should use this simpler format:\n${{Question without hard calculation}}\nAnswer:
         ${{Answer}}\n\nDo not give an explanation of the answer and make sure your
         answer starts with either ''Answer:'' or ''```ruby''."},{"role":"system","content":"here
         is a hard example:\nthe user asks: What is 37593 * 67?\nyour answer: ```ruby\nputs(37593
         * 67)\n```\n```output\n2518731\n```\nAnswer: 2518731"},{"role":"system","content":"basic
-        example:\nuser asks: What is 2518731 + 0?\nyou answer: Answer: 2518731"},{"role":"system","content":"Begin."},{"role":"user","content":"question
-        = \"what is the square root of 9.8696044?\""},{"role":"assistant","content":"```ruby\npi
-        = Math::PI\npi_squared = pi ** 2\npi_squared.round(7)\n```"},{"role":"user","content":"The
-        code you gave me did not print a result"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["```output"]}'
+        example:\nuser asks: What is 2518731 + 0?\nyou answer: Answer: 2518731"},{"role":"system","content":"Begin."},{"role":"user","content":"question:
+        What is the square root of 9.8696044?"},{"role":"assistant","content":"```ruby\nputs(Math::PI**2).round(7)\n```"},{"role":"user","content":"undefined
+        method `round'' for nil:NilClass"}],"model":"gpt-4o-mini","temperature":0.1,"max_tokens":4096,"stop":["```output"]}'
     headers:
       Content-Type:
       - application/json
@@ -451,85 +479,212 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Tue, 25 Jul 2023 13:18:11 GMT
+      - Fri, 19 Jul 2024 22:40:27 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
       - chunked
       Connection:
       - keep-alive
-      Access-Control-Allow-Origin:
-      - "*"
-      Cache-Control:
-      - no-cache, must-revalidate
-      Openai-Model:
-      - gpt-3.5-turbo-0613
       Openai-Organization:
-      - user-ri9zw9ahumb1bo9vs73mudbi
+      - boxcars-ai
       Openai-Processing-Ms:
-      - '1294'
+      - '177'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
-      - max-age=15724800; includeSubDomains
+      - max-age=15552000; includeSubDomains; preload
       X-Ratelimit-Limit-Requests:
-      - '3500'
+      - '10000'
       X-Ratelimit-Limit-Tokens:
-      - '90000'
+      - '1000000'
       X-Ratelimit-Remaining-Requests:
-      - '3499'
+      - '9999'
       X-Ratelimit-Remaining-Tokens:
-      - '89208'
+      - '995614'
       X-Ratelimit-Reset-Requests:
-      - 17ms
+      - 6ms
       X-Ratelimit-Reset-Tokens:
-      - 528ms
+      - 263ms
       X-Request-Id:
-      - 0d953e081cec4bfa3ce75cc6fc1275b9
+      - req_c904d6b208bd52789a3a29bdb3b7173f
       Cf-Cache-Status:
       - DYNAMIC
+      Set-Cookie:
+      - __cf_bm=oSo9UoHVDISzYq6QVoglkHpdsiATBuFqjDYO8d0op_g-1721428827-1.0.1.1-jgwfg3FL1MUBNxQohAn8dbB8QZVRI8g3B2NsRAXng8G6CIIfa69SFSU5jB8y5rZzraHkECrtz.o6HAf3PCWk1g;
+        path=/; expires=Fri, 19-Jul-24 23:10:27 GMT; domain=.api.openai.com; HttpOnly;
+        Secure; SameSite=None
+      - _cfuvid=6B_SscY.6VydDaokO.nG3TWGlq9q4n8Ved06VdQGz5o-1721428827894-0.0.1.1-604800000;
+        path=/; domain=.api.openai.com; HttpOnly; Secure; SameSite=None
+      X-Content-Type-Options:
+      - nosniff
       Server:
       - cloudflare
       Cf-Ray:
-      - 7ec4aff10ee9a71a-PHX
+      - 8a5e369bfe251afb-PHX
       Alt-Svc:
       - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
       string: |
         {
-          "id": "chatcmpl-7gCDSRYzGXh59fet0veJDwcRZEBS7",
+          "id": "chatcmpl-9mqZ1RXMwyAm9fSAGQSNRRA2wtEDk",
           "object": "chat.completion",
-          "created": 1690291090,
-          "model": "gpt-3.5-turbo-0613",
+          "created": 1721428827,
+          "model": "gpt-4o-mini-2024-07-18",
           "choices": [
             {
               "index": 0,
               "message": {
                 "role": "assistant",
-                "content": "Apologies for the confusion. Here's the corrected code:\n\n```ruby\nresult = Math.sqrt(9.8696044)\nputs result\n```\n\nOutput:\n"
+                "content": "```ruby\nputs(Math.sqrt(9.8696044)\n```\n"
               },
+              "logprobs": null,
               "finish_reason": "stop"
             }
           ],
           "usage": {
-            "prompt_tokens": 312,
-            "completion_tokens": 33,
-            "total_tokens": 345
-          }
+            "prompt_tokens": 318,
+            "completion_tokens": 15,
+            "total_tokens": 333
+          },
+          "system_fingerprint": "fp_661538dc1f"
         }
-  recorded_at: Tue, 25 Jul 2023 13:18:11 GMT
+  recorded_at: Fri, 19 Jul 2024 22:40:27 GMT
 - request:
     method: post
-    uri: https://api.anthropic.com/v1/complete
+    uri: https://api.openai.com/v1/chat/completions
     body:
       encoding: UTF-8
-      string: '{"prompt":"\n\nHuman: \u003ctraining\u003eAnswer the following questions
-        as best you can. You have access to the following tools for actions:\n\u003cboxcars\u003e\n\u003ctool
-        name=\"Calculator\" description=\"useful for when you need to answer questions
-        about math\"\u003e\n  \u003cparams\u003e\n    \u003cparam name=\"question\"
-        data-type=\"string\" required=\"true\" description=\"the input question\"
-        /\u003e\n  \u003c/params\u003e\n\u003c/tool\u003e\n\u003c/boxcars\u003eUse
+      string: '{"messages":[{"role":"system","content":"You can do basic math, but
+        for any hard calculations that a human could not do in their head, use the
+        following approach instead. Return code written in the Ruby programming language
+        that prints the results to the console. If anyone gives you a hard math problem,
+        just use the following format and we’ll take care of the rest:\n${{Question
+        with hard calculation.}}\nreply only with the following format:\n```ruby\n${{only
+        Ruby code that prints the answer. If you use puts, make sure to wrap the expression
+        in paranthesis}}\n```\n```output\n${{Output of your code}}\n```\n\nOtherwise,
+        you should use this simpler format:\n${{Question without hard calculation}}\nAnswer:
+        ${{Answer}}\n\nDo not give an explanation of the answer and make sure your
+        answer starts with either ''Answer:'' or ''```ruby''."},{"role":"system","content":"here
+        is a hard example:\nthe user asks: What is 37593 * 67?\nyour answer: ```ruby\nputs(37593
+        * 67)\n```\n```output\n2518731\n```\nAnswer: 2518731"},{"role":"system","content":"basic
+        example:\nuser asks: What is 2518731 + 0?\nyou answer: Answer: 2518731"},{"role":"system","content":"Begin."},{"role":"user","content":"question:
+        What is the square root of 9.8696044?"},{"role":"assistant","content":"```ruby\nputs(Math::PI**2).round(7)\n```"},{"role":"user","content":"undefined
+        method `round'' for nil:NilClass"},{"role":"assistant","content":"```ruby\nputs(Math.sqrt(9.8696044)\n```"},{"role":"user","content":"The
+        code you gave me did not print a result"}],"model":"gpt-4o-mini","temperature":0.1,"max_tokens":4096,"stop":["```output"]}'
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer <openai_access_token>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 19 Jul 2024 22:40:28 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Openai-Organization:
+      - boxcars-ai
+      Openai-Processing-Ms:
+      - '484'
+      Openai-Version:
+      - '2020-10-01'
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains; preload
+      X-Ratelimit-Limit-Requests:
+      - '10000'
+      X-Ratelimit-Limit-Tokens:
+      - '1000000'
+      X-Ratelimit-Remaining-Requests:
+      - '9999'
+      X-Ratelimit-Remaining-Tokens:
+      - '995593'
+      X-Ratelimit-Reset-Requests:
+      - 6ms
+      X-Ratelimit-Reset-Tokens:
+      - 264ms
+      X-Request-Id:
+      - req_80e9494cb24699c2f63d3a9a5877afd6
+      Cf-Cache-Status:
+      - DYNAMIC
+      Set-Cookie:
+      - __cf_bm=RAYWowzUcmaMuayeKQaBaaGZrRnAdm.e7keyTaqq48Y-1721428828-1.0.1.1-gD4gIJE1QrRIllERsunxzqtXXAWPJUCGJ8KJC280QPw7uOFrKb0mbdDBdwFfBA6oeveZ0FLu0v31M9Mc.IZ4xg;
+        path=/; expires=Fri, 19-Jul-24 23:10:28 GMT; domain=.api.openai.com; HttpOnly;
+        Secure; SameSite=None
+      - _cfuvid=9Ioe0Yxp7OKUBj6PP2nKAHTOp6R4BJexcu8DXSra9mA-1721428828870-0.0.1.1-604800000;
+        path=/; domain=.api.openai.com; HttpOnly; Secure; SameSite=None
+      X-Content-Type-Options:
+      - nosniff
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 8a5e369fda581b00-PHX
+      Alt-Svc:
+      - h3=":443"; ma=86400
+    body:
+      encoding: ASCII-8BIT
+      string: |
+        {
+          "id": "chatcmpl-9mqZ2wGilStYqdh1EiXt698G9A5aH",
+          "object": "chat.completion",
+          "created": 1721428828,
+          "model": "gpt-4o-mini-2024-07-18",
+          "choices": [
+            {
+              "index": 0,
+              "message": {
+                "role": "assistant",
+                "content": "```ruby\nputs(Math.sqrt(9.8696044))\n```\n"
+              },
+              "logprobs": null,
+              "finish_reason": "stop"
+            }
+          ],
+          "usage": {
+            "prompt_tokens": 350,
+            "completion_tokens": 15,
+            "total_tokens": 365
+          },
+          "system_fingerprint": "fp_7dd529cfca"
+        }
+  recorded_at: Fri, 19 Jul 2024 22:40:28 GMT
+- request:
+    method: post
+    uri: https://api.anthropic.com/v1/messages
+    body:
+      encoding: UTF-8
+      string: '{"messages":[{"role":"user","content":"\u003cquestion\u003ewhat is
+        pi squared to 7 digits?\u003c/question\u003e"},{"role":"assistant","content":"\u003cthought\u003e\u003cthought\u003eTo
+        answer this question, I need to calculate pi squared and round it to 7 digits
+        after the decimal point. I know that pi is approximately 3.14159, but for
+        more precise calculations, I should use a calculator.\u003c/thought\u003e\n\n\u003caction\u003eCalculator\u003c/action\u003e\n\u003caction_input\u003equestion:
+        What is pi squared to 7 decimal places?\u003c/action_input\u003e\n\n\u003cobservation\u003e9.8696044\u003c/observation\u003e\n\u003cthought\u003eI
+        know the final answer\n\u003cfinal_answer\u003ePi squared to 7 digits after
+        the decimal point is 9.8696044.\u003c/final_answer\u003e\n\u003c/thought\u003e"},{"role":"user","content":"\u003cquestion\u003ewhat
+        is the square root of the previous answer?\u003c/question\u003e"},{"role":"assistant","content":"
+        \u003cthought\u003eTo find the square root of the previous answer, I need
+        to calculate the square root of 9.8696044. I''ll use the calculator tool for
+        this calculation.\u003c/thought\u003e\n\n\u003caction\u003eCalculator\u003c/action\u003e\n\u003caction_input\u003equestion:
+        What is the square root of 9.8696044?\u003c/action_input\u003e\n\n\u003cobservation\u003e3.1415926534164162\u003c/observation\u003e"}],"model":"claude-3-5-sonnet-20240620","max_tokens":4096,"temperature":0.1,"stop_sequences":["\n\u003cobservation\u003e"],"system":"\u003ctraining\u003eAnswer
+        the following questions as best you can. You have access to the following
+        tools for actions:\n\u003cboxcars\u003e\n\u003ctool name=\"Calculator\" description=\"useful
+        for when you need to answer questions about math\"\u003e\n  \u003cparams\u003e\n    \u003cparam
+        name=\"question\" data-type=\"string\" required=\"true\" description=\"the
+        input question\" /\u003e\n  \u003c/params\u003e\n\u003c/tool\u003e\n\u003c/boxcars\u003eUse
         the following format making sure all open tags have closing tags:\n \u003cquestion\u003ethe
         input question you must answer\u003c/question\u003e\n \u003cthought\u003eyou
         should always think about what to do\u003c/thought\u003e\n \u003caction\u003ethe
@@ -542,24 +697,14 @@ http_interactions:
         END -\nYour answer should always have begin and end tags for each element.\nAlso
         make sure to specify arguments for the action_input.\nFinally, if you can
         deduct the answer from the question or observations, you can jump to final_answer
-        and give me the answer.\n\u003c/training\u003e\n\nHuman: \u003cquestion\u003ewhat
-        is pi squared to 7 digits?\u003c/question\u003e\n\nAssistant: \u003cthought\u003e
-        \u003cthought\u003eTo answer this question, I need to calculate pi squared
-        to 7 digits.\u003c/thought\u003e\n\n\u003caction\u003eCalculator\u003c/action\u003e\n\n\u003caction_input\u003e\n\u003c![CDATA[\nquestion
-        = \"what is pi squared to 7 digits?\"\n]]\u003e\n\u003c/action_input\u003e\n\n\u003cobservation\u003e9.8696044\u003c/observation\u003e\n\nAssistant:
-        \u003cthought\u003eI know the final answer\n\u003cfinal_answer\u003e9.8696044\u003c/final_answer\u003e\n\u003c/thought\u003e\n\nHuman:
-        \u003cquestion\u003ewhat is the square root of the previous answer?\u003c/question\u003e\n\nAssistant:   \u003cthought\u003eTo
-        find the square root of the previous answer, I first need to recall what the
-        previous answer was.\u003c/thought\u003e\n\n\u003cthought\u003eThe previous
-        answer was 9.8696044.\u003c/thought\u003e \n\n\u003caction\u003eCalculator\u003c/action\u003e\n\n\u003caction_input\u003e\n\u003c![CDATA[  \nquestion
-        = \"what is the square root of 9.8696044?\"\n]]\u003e\n\u003c/action_input\u003e\n\n\u003cobservation\u003e3.1415926534164162\u003c/observation\u003e\n\n\nAssistant:","model":"claude-2","max_tokens_to_sample":8096,"temperature":0.2,"stop_sequences":["\n\u003cobservation\u003e"]}'
+        and give me the answer.\n\u003c/training\u003e"}'
     headers:
-      Content-Type:
-      - application/json
       X-Api-Key:
       - "<ANTHROPIC_API_KEY>"
       Anthropic-Version:
       - '2023-06-01'
+      Content-Type:
+      - application/json
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -571,25 +716,29 @@ http_interactions:
       code: 200
       message: OK
     headers:
+      Date:
+      - Fri, 19 Jul 2024 22:40:31 GMT
       Content-Type:
       - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
       Request-Id:
-      - 132dd6e2237a2f1cfbbac214efdbb9c0f1e4e3f554b96ba17f5a72debf9cd492
+      - req_016G8xivtPWW7kmodLhZv6Wa
       X-Cloud-Trace-Context:
-      - cabd895b6e8db1c8126cd8bfe2777881
-      Date:
-      - Tue, 25 Jul 2023 13:18:14 GMT
-      Server:
-      - Google Frontend
-      Content-Length:
-      - '320'
+      - 92e25d62242d0e42b97bcf58e85921be
       Via:
       - 1.1 google
-      Alt-Svc:
-      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Cf-Cache-Status:
+      - DYNAMIC
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 8a5e36a5ebb5c4bf-PHX
     body:
-      encoding: UTF-8
-      string: '{"completion":" <thought>I know the final answer now after taking the
-        square root of the previous observation.</thought>\n\n<final_answer>3.1415926534164162</final_answer>","stop_reason":"stop_sequence","model":"claude-2.0","stop":"\n\nHuman:","log_id":"132dd6e2237a2f1cfbbac214efdbb9c0f1e4e3f554b96ba17f5a72debf9cd492"}'
-  recorded_at: Tue, 25 Jul 2023 13:18:14 GMT
-recorded_with: VCR 6.1.0
+      encoding: ASCII-8BIT
+      string: !binary |-
+        eyJpZCI6Im1zZ18wMThHcnJaTWI1Mnp2YTdKSnVjVzdFZXYiLCJ0eXBlIjoibWVzc2FnZSIsInJvbGUiOiJhc3Npc3RhbnQiLCJtb2RlbCI6ImNsYXVkZS0zLTUtc29ubmV0LTIwMjQwNjIwIiwiY29udGVudCI6W3sidHlwZSI6InRleHQiLCJ0ZXh0IjoiXG5cbjx0aG91Z2h0PlRoZSBjYWxjdWxhdG9yIGhhcyBnaXZlbiB1cyB0aGUgc3F1YXJlIHJvb3Qgb2YgOS44Njk2MDQ0LCB3aGljaCBpcyBhcHByb3hpbWF0ZWx5IDMuMTQxNTkyNjUzNDE2NDE2Mi4gVGhpcyBpcyBhY3R1YWxseSB0aGUgdmFsdWUgb2YgcGkgKM+AKSB3aXRoIGhpZ2ggcHJlY2lzaW9uLiBUaGUgcXVlc3Rpb24gZGlkbid0IHNwZWNpZnkgaG93IG1hbnkgZGVjaW1hbCBwbGFjZXMgdG8gaW5jbHVkZSwgc28gSSdsbCBwcm92aWRlIHRoZSBhbnN3ZXIgd2l0aCB0aGUgc2FtZSBwcmVjaXNpb24gYXMgdGhlIGlucHV0LjwvdGhvdWdodD5cblxuPGZpbmFsX2Fuc3dlcj5UaGUgc3F1YXJlIHJvb3Qgb2YgdGhlIHByZXZpb3VzIGFuc3dlciAoOS44Njk2MDQ0KSBpcyBhcHByb3hpbWF0ZWx5IDMuMTQxNTkyNywgd2hpY2ggaXMgdGhlIHZhbHVlIG9mIHBpICjPgCkgdG8gNyBkZWNpbWFsIHBsYWNlcy48L2ZpbmFsX2Fuc3dlcj4ifV0sInN0b3BfcmVhc29uIjoiZW5kX3R1cm4iLCJzdG9wX3NlcXVlbmNlIjpudWxsLCJ1c2FnZSI6eyJpbnB1dF90b2tlbnMiOjU4MSwib3V0cHV0X3Rva2VucyI6MTI3fX0=
+  recorded_at: Fri, 19 Jul 2024 22:40:31 GMT
+recorded_with: VCR 6.2.0

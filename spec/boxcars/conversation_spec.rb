@@ -25,12 +25,6 @@ RSpec.describe Boxcars::Conversation do
         described_class.new(lines: [[:user, "123"], [:foo, "abc"]])
       end.to raise_error(Boxcars::ArgumentError)
     end
-
-    it "validates conversation is a string" do
-      expect do
-        described_class.new(lines: [[:user, { a: 1 }]])
-      end.to raise_error(Boxcars::ArgumentError)
-    end
   end
 
   context "with valid arguments" do

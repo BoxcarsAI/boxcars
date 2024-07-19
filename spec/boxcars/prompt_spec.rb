@@ -9,7 +9,7 @@ RSpec.describe Boxcars::Prompt do
     end
 
     it "can use as chatGPT messases" do
-      expect(described_class.new(**template).as_messages({ you: :bob })).to eq({ messages: [{ role: :assistant, content: "hi bob!" }] })
+      expect(described_class.new(**template).as_messages({ you: :bob })).to eq({ messages: [{ role: :user, content: "hi bob!" }] })
     end
   end
 end

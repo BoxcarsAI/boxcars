@@ -2,17 +2,17 @@
 http_interactions:
 - request:
     method: post
-    uri: https://api.anthropic.com/v1/complete
+    uri: https://api.anthropic.com/v1/messages
     body:
       encoding: UTF-8
-      string: '{"prompt":"\n\nHuman: \n\nwrite a haiku about love\n\nAssistant:","model":"claude-2","max_tokens_to_sample":8096,"temperature":0.2}'
+      string: '{"messages":[{"role":"user","content":"write a haiku about love"}],"model":"claude-3-5-sonnet-20240620","max_tokens":4096,"temperature":0.1}'
     headers:
-      Content-Type:
-      - application/json
       X-Api-Key:
       - "<ANTHROPIC_API_KEY>"
       Anthropic-Version:
       - '2023-06-01'
+      Content-Type:
+      - application/json
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -25,7 +25,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Fri, 19 Apr 2024 18:36:01 GMT
+      - Fri, 19 Jul 2024 03:06:14 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -33,9 +33,9 @@ http_interactions:
       Connection:
       - keep-alive
       Request-Id:
-      - req_01KJCN388QAeWK6AP6mEaJ18
+      - req_01PTPVJjGjrTnc9bgK6GRLs6
       X-Cloud-Trace-Context:
-      - cfa569f7a962b402b5f4192e23e51ffc
+      - 598ab8dcb21e2c64d8c0121b05ae8f9c
       Via:
       - 1.1 google
       Cf-Cache-Status:
@@ -43,11 +43,14 @@ http_interactions:
       Server:
       - cloudflare
       Cf-Ray:
-      - 876eff5c5824a709-PHX
+      - 8a577e87d88ba709-PHX
     body:
       encoding: ASCII-8BIT
-      string: '{"type":"completion","id":"compl_01KBtfTFJRtVjtSJGRu1Uig4","completion":"
-        Here is a haiku I wrote about love:\n\nTwo hearts beating as one\nLove blooms
-        like spring''s cherry trees\nJoy lasts forever","stop_reason":"stop_sequence","model":"claude-2.1","stop":"\n\nHuman:","log_id":"compl_01KBtfTFJRtVjtSJGRu1Uig4"}'
-  recorded_at: Fri, 19 Apr 2024 18:36:01 GMT
+      string: '{"id":"msg_01H9qkYz8RZT2YoJdUCzrBAU","type":"message","role":"assistant","model":"claude-3-5-sonnet-20240620","content":[{"type":"text","text":"Here''s
+        a haiku about love:\n\nGentle hearts entwine\nWhispers soft as butterfly wings\nLove
+        blooms in spring''s warmth\n\nThis haiku follows the traditional 5-7-5 syllable
+        pattern and incorporates natural imagery, which is common in haiku poetry.
+        It expresses the tenderness and blossoming nature of love, comparing it to
+        the renewal and growth associated with springtime."}],"stop_reason":"end_turn","stop_sequence":null,"usage":{"input_tokens":13,"output_tokens":92}}'
+  recorded_at: Fri, 19 Jul 2024 03:06:14 GMT
 recorded_with: VCR 6.2.0
