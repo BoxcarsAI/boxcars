@@ -9,9 +9,9 @@ module Boxcars
 
     # The default parameters to use when asking the engine.
     DEFAULT_PARAMS = {
-      model: "claude-2",
-      max_tokens_to_sample: 8096,
-      temperature: 0.2
+      model: "claude-3-5-sonnet-20240620",
+      max_tokens: 4096,
+      temperature: 0.1
     }.freeze
 
     # the default name of the engine
@@ -32,8 +32,8 @@ module Boxcars
       super(description: description, name: name)
     end
 
-    def conversation_model?(_model)
-      false
+    def conversation_model?(model)
+      @conversation_model ||= (extract_model_version(model) > 3.49)
     end
 
     def anthropic_client(anthropic_api_key: nil)
@@ -46,13 +46,27 @@ module Boxcars
     #   Defaults to Boxcars.configuration.anthropic_api_key.
     # @param kwargs [Hash] Additional parameters to pass to the engine if wanted.
     def client(prompt:, inputs: {}, **kwargs)
+      model_params = llm_params.merge(kwargs)
       api_key = Boxcars.configuration.anthropic_api_key(**kwargs)
       aclient = anthropic_client(anthropic_api_key: api_key)
-      params = prompt.as_prompt(inputs: inputs, prefixes: default_prefixes, show_roles: true).merge(llm_params.merge(kwargs))
-      params[:prompt] = "\n\n#{params[:prompt]}" unless params[:prompt].start_with?("\n\n")
-      params[:stop_sequences] = params.delete(:stop) if params.key?(:stop)
-      Boxcars.debug("Prompt after formatting:#{params[:prompt]}", :cyan) if Boxcars.configuration.log_prompts
-      aclient.complete(parameters: params)
+      prompt = prompt.first if prompt.is_a?(Array)
+
+      if conversation_model?(model_params[:model])
+        params = convert_to_anthropic(prompt.as_messages(inputs).merge(model_params))
+        if Boxcars.configuration.log_prompts
+          Boxcars.debug(params[:messages].last(2).map { |p| ">>>>>> Role: #{p[:role]} <<<<<<\n#{p[:content]}" }.join("\n"), :cyan)
+        end
+        response = aclient.messages(parameters: params)
+        response['completion'] = response.dig('content', 0, 'text')
+        response.delete('content')
+        response
+      else
+        params = prompt.as_prompt(inputs: inputs, prefixes: default_prefixes, show_roles: true).merge(model_params)
+        params[:prompt] = "\n\n#{params[:prompt]}" unless params[:prompt].start_with?("\n\n")
+        params[:stop_sequences] = params.delete(:stop) if params.key?(:stop)
+        Boxcars.debug("Prompt after formatting:#{params[:prompt]}", :cyan) if Boxcars.configuration.log_prompts
+        aclient.complete(parameters: params)
+      end
     end
 
     # get an answer from the engine for a question.
@@ -163,6 +177,46 @@ module Boxcars
       # get max context size for model by name
       max_size = modelname_to_contextsize(model_name)
       max_size - num_tokens
+    end
+
+    def extract_model_version(model_string)
+      # Use a regular expression to find the version number
+      match = model_string.match(/claude-(\d+)(?:-(\d+))?/)
+
+      raise ArgumentError, "No version number found in model string: #{model_string}" unless match
+
+      major = match[1].to_i
+      minor = match[2].to_i
+
+      # Combine major and minor versions
+      major + (minor.to_f / 10)
+    end
+
+    # convert generic parameters to Anthopic specific ones
+    def convert_to_anthropic(params)
+      params[:stop_sequences] = params.delete(:stop) if params.key?(:stop)
+      params[:system] = params[:messages].shift[:content] if params.dig(:messages, 0, :role) == :system
+      params[:messages].pop if params[:messages].last[:content].blank?
+      combine_assistant(params)
+    end
+
+    def combine_assistant(params)
+      params[:messages] = combine_assistant_entries(params[:messages])
+      params[:messages].last[:content].rstrip! if params[:messages].last[:role] == :assistant
+      params
+    end
+
+    # if we have multiple assistant entries in a row, we need to combine them
+    def combine_assistant_entries(hashes)
+      combined_hashes = []
+      hashes.each do |hash|
+        if combined_hashes.empty? || combined_hashes.last[:role] != :assistant || hash[:role] != :assistant
+          combined_hashes << hash
+        else
+          combined_hashes.last[:content].concat("\n", hash[:content].rstrip)
+        end
+      end
+      combined_hashes
     end
 
     def default_prefixes

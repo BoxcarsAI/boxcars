@@ -109,13 +109,13 @@ RSpec.describe Boxcars::ActiveRecord do
 
     it "counts the number of models" do
       VCR.use_cassette("ar10") do
-        expect(boxcar.run("how many ActiveRecord model classes are there?")).to eq(6)
+        expect(boxcar.run("how many ActiveRecord model classes are there?")).to eq(4)
       end
     end
 
     it "remove the puts on the code" do
       VCR.use_cassette("ar11") do
-        expect(boxcar.run("print the number of ActiveRecord model classes")).to eq(6)
+        expect(boxcar.run("print the number of ActiveRecord model classes")).to eq(4)
       end
     end
   end

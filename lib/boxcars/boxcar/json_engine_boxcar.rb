@@ -5,23 +5,27 @@ module Boxcars
   # For Boxcars that use an engine to do their work.
   class JSONEngineBoxcar < EngineBoxcar
     # A JSON Engine Boxcar is a container for a single tool to run.
-    attr_accessor :wanted_data, :data_description
+    attr_accessor :wanted_data, :data_description, :important
 
     # @param prompt [Boxcars::Prompt] The prompt to use for this boxcar with sane defaults.
     # @param wanted_data [String] The data to extract from.
     # @param data_description [String] The description of the data.
+    # @param important [String] Any important instructions you want to give the LLM.
     # @param kwargs [Hash] Additional arguments
-    def initialize(prompt: nil, wanted_data: nil, data_description: nil, **kwargs)
+    def initialize(prompt: nil, wanted_data: nil, data_description: nil, important: nil, **kwargs)
       @wanted_data = wanted_data || "summarize the pertinent facts from the input data"
       @data_description = data_description || "the input data"
+      @important = important
       the_prompt = prompt || default_prompt
+      the_prompt.append("\n\nImportant: #{important}\n") if important.present?
       kwargs[:description] ||= "JSON Engine Boxcar"
       super(prompt: the_prompt, **kwargs)
     end
 
     def default_prompt
       stock_prompt = <<~SYSPR
-        I will provide you with %<data_description>s, and your job is to extract information as described below.
+        I will provide you with %<data_description>s.
+        Your job is to extract information as described below.
 
         Your Output must be valid JSON with no lead in or post answer text in the output format below:
 

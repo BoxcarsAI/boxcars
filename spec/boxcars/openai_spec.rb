@@ -12,7 +12,7 @@ RSpec.describe Boxcars::Openai do
   context "with an open ai api key" do
     it "can write a short poem" do
       VCR.use_cassette("openai") do
-        expect(described_class.new.run("write a haiku about love")).to eq("Love, a gentle breeze\nWhispers sweet nothings in ear\nHeart beats as one, true")
+        expect(described_class.new.run("write a haiku about love")).to eq("Whispers in the night,  \nHearts entwined like gentle vines,  \nEternal embrace.")
       end
     end
 

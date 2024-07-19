@@ -29,7 +29,7 @@ module Boxcars
     # @param inputs [Hash] The inputs to use for the prompt.
     # @return [Hash] The formatted prompt { prompt: "..."}
     def as_messages(inputs)
-      { messages: [{ role: :assistant, content: format(inputs) }] }
+      { messages: [{ role: :user, content: format(inputs) }] }
     end
 
     # tack on the ongoing conversation if present to the prompt

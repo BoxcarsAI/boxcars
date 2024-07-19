@@ -48,7 +48,8 @@ module Boxcars
            "use the following format and we’ll take care of the rest:\n",
            "${{Question with hard calculation.}}\n",
            "reply only with the following format:\n",
-           "```ruby\n${{only Ruby code that prints the answer}}\n```\n",
+           "```ruby\n${{only Ruby code that prints the answer. " \
+           "If you use puts, make sure to wrap the expression in paranthesis}}\n```\n",
            "```output\n${{Output of your code}}\n```\n\n",
            "Otherwise, you should use this simpler format:\n",
            "${{Question without hard calculation}}\n",

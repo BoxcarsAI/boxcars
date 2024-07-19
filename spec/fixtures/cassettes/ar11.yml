@@ -27,11 +27,7 @@ http_interactions:
         and ARCode\nBe careful to not query for attributes that do not exist, and
         to use the format specified above.\nFinally, try not to use print or puts
         in your code"},{"role":"user","content":"Question: print the number of ActiveRecord
-        model classes"},{"role":"assistant","content":"ARChanges: `Ticket.where(user_id:
-        john.id, status: \"open\").update_all(user_id: sally.id)` \nARCode: `Ticket.where(user_id:
-        john.id, status: \"open\").update_all(user_id: sally.id)`"},{"role":"user","content":"ARChanges
-        Error: undefined local variable or method `john - please fix \"ARChanges:\"
-        to not have this error"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["Answer:"]}'
+        model classes"}],"model":"gpt-4o-mini","temperature":0.1,"max_tokens":4096,"stop":["Answer:"]}'
     headers:
       Content-Type:
       - application/json
@@ -49,167 +45,76 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 07 Jun 2023 00:09:37 GMT
+      - Fri, 19 Jul 2024 22:48:41 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
       - chunked
       Connection:
       - keep-alive
-      Access-Control-Allow-Origin:
-      - "*"
-      Cache-Control:
-      - no-cache, must-revalidate
-      Openai-Model:
-      - gpt-3.5-turbo-0301
       Openai-Organization:
-      - user-ri9zw9ahumb1bo9vs73mudbi
+      - boxcars-ai
       Openai-Processing-Ms:
-      - '5354'
+      - '450'
       Openai-Version:
       - '2020-10-01'
       Strict-Transport-Security:
-      - max-age=15724800; includeSubDomains
+      - max-age=15552000; includeSubDomains; preload
       X-Ratelimit-Limit-Requests:
-      - '3500'
+      - '10000'
       X-Ratelimit-Limit-Tokens:
-      - '90000'
+      - '1000000'
       X-Ratelimit-Remaining-Requests:
-      - '3499'
+      - '9999'
       X-Ratelimit-Remaining-Tokens:
-      - '89011'
+      - '995501'
       X-Ratelimit-Reset-Requests:
-      - 17ms
+      - 6ms
       X-Ratelimit-Reset-Tokens:
-      - 658ms
+      - 269ms
       X-Request-Id:
-      - 8da12a1656f955b10141e2bddd8d4bf2
+      - req_c1b77a7960dee9ded1e35bcc2020b817
       Cf-Cache-Status:
       - DYNAMIC
+      Set-Cookie:
+      - __cf_bm=VAXgQXB3O5cm2_vljLZqgfWIdVHeCH24RFp20YjF9Wc-1721429321-1.0.1.1-gWVxUPQZRtSLKsPQ30Z_HfKdXXIo.ZfDBy8S3JrCVhGjLF4R5jjGM1u5tfAzwEJtB0ZcgrPKJHafQKdrG3MT8w;
+        path=/; expires=Fri, 19-Jul-24 23:18:41 GMT; domain=.api.openai.com; HttpOnly;
+        Secure; SameSite=None
+      - _cfuvid=wa0XDXeOLM_wirydFxM6zOhRPrYNX_lBcb4unYSI2DM-1721429321566-0.0.1.1-604800000;
+        path=/; domain=.api.openai.com; HttpOnly; Secure; SameSite=None
+      X-Content-Type-Options:
+      - nosniff
       Server:
       - cloudflare
       Cf-Ray:
-      - 7d34aab81e721b2d-PHX
+      - 8a5e42a79c48a709-PHX
       Alt-Svc:
       - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
-      string: '{"id":"chatcmpl-7Ob1wovgXgM1dymXz9wwp7ujOVH5G","object":"chat.completion","created":1686096572,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":452,"completion_tokens":76,"total_tokens":528},"choices":[{"message":{"role":"assistant","content":"I
-        apologize for the mistake. There was a typo in the previous ARChanges code.
-        Here is the correct code:\n\nARChanges: `Ticket.where(user_id: User.find_by(name:
-        \"john\").id, status: \"open\").update_all(user_id: User.find_by(name: \"sally\").id)`
-        \n\nARCode: `puts ActiveRecord::Base.descendants.count`\n\n"},"finish_reason":"stop","index":0}]}
-
-        '
-  recorded_at: Wed, 07 Jun 2023 00:09:37 GMT
-- request:
-    method: post
-    uri: https://api.openai.com/v1/chat/completions
-    body:
-      encoding: UTF-8
-      string: '{"messages":[{"role":"system","content":"You are a Ruby on Rails Active
-        Record code generator"},{"role":"system","content":"Given an input question,
-        first create a syntactically correct Rails Active Record code to run, then
-        look at the results of the code and return the answer. Unless the user specifies
-        in her question a specific number of examples she wishes to obtain, limit
-        your code to at most 5 results.\nNever query for all the columns from a specific
-        model, only ask for the relevant attributes given the question.\nAlso, pay
-        attention to which attribute is in which model.\n\nUse the following format:\nQuestion:
-        ${{Question here}}\nARChanges: ${{Active Record code to compute the number
-        of records going to change}} - Only add this line if the ARCode on the next
-        line will make data changes.\nARCode: ${{Active Record code to run}} - make
-        sure you use valid code\nAnswer: ${{Final answer here}}\n\nOnly use the following
-        Active Record models: [Comment(id: integer, content: text, user_id: integer,
-        ticket_id: integer, created_at: datetime, updated_at: datetime), Ticket(id:
-        integer, title: string, user_id: integer, status: integer, body: text, created_at:
-        datetime, updated_at: datetime), User(id: integer, name: string, created_at:
-        datetime, updated_at: datetime)]\nPay attention to use only the attribute
-        names that you can see in the model description.\nDo not make up variable
-        or attribute names, and do not share variables between the code in ARChanges
-        and ARCode\nBe careful to not query for attributes that do not exist, and
-        to use the format specified above.\nFinally, try not to use print or puts
-        in your code"},{"role":"user","content":"Question: print the number of ActiveRecord
-        model classes"},{"role":"assistant","content":"ARChanges: `Ticket.where(user_id:
-        john.id, status: \"open\").update_all(user_id: sally.id)` \nARCode: `Ticket.where(user_id:
-        john.id, status: \"open\").update_all(user_id: sally.id)`"},{"role":"user","content":"ARChanges
-        Error: undefined local variable or method `john - please fix \"ARChanges:\"
-        to not have this error"},{"role":"assistant","content":"I apologize for the
-        mistake. There was a typo in the previous ARChanges code. Here is the correct
-        code:\n\nARChanges: `Ticket.where(user_id: User.find_by(name: \"john\").id,
-        status: \"open\").update_all(user_id: User.find_by(name: \"sally\").id)` \n\nARCode:
-        `puts ActiveRecord::Base.descendants.count`"},{"role":"user","content":"ARChanges
-        Error: undefined method `id'' for nil:NilClass - please fix \"ARChanges:\"
-        to not have this error"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["Answer:"]}'
-    headers:
-      Content-Type:
-      - application/json
-      Authorization:
-      - Bearer <openai_access_token>
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      Accept:
-      - "*/*"
-      User-Agent:
-      - Ruby
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Date:
-      - Wed, 07 Jun 2023 00:09:45 GMT
-      Content-Type:
-      - application/json
-      Transfer-Encoding:
-      - chunked
-      Connection:
-      - keep-alive
-      Access-Control-Allow-Origin:
-      - "*"
-      Cache-Control:
-      - no-cache, must-revalidate
-      Openai-Model:
-      - gpt-3.5-turbo-0301
-      Openai-Organization:
-      - user-ri9zw9ahumb1bo9vs73mudbi
-      Openai-Processing-Ms:
-      - '7658'
-      Openai-Version:
-      - '2020-10-01'
-      Strict-Transport-Security:
-      - max-age=15724800; includeSubDomains
-      X-Ratelimit-Limit-Requests:
-      - '3500'
-      X-Ratelimit-Limit-Tokens:
-      - '90000'
-      X-Ratelimit-Remaining-Requests:
-      - '3499'
-      X-Ratelimit-Remaining-Tokens:
-      - '88911'
-      X-Ratelimit-Reset-Requests:
-      - 17ms
-      X-Ratelimit-Reset-Tokens:
-      - 726ms
-      X-Request-Id:
-      - a84b2cfa31ab544b95651267d3bed78a
-      Cf-Cache-Status:
-      - DYNAMIC
-      Server:
-      - cloudflare
-      Cf-Ray:
-      - 7d34aada4e81a6fc-PHX
-      Alt-Svc:
-      - h3=":443"; ma=86400
-    body:
-      encoding: ASCII-8BIT
-      string: '{"id":"chatcmpl-7Ob22LdgACfXXwgy5ypKxqgfgiAsO","object":"chat.completion","created":1686096578,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":564,"completion_tokens":109,"total_tokens":673},"choices":[{"message":{"role":"assistant","content":"I
-        apologize for the mistake. It seems that there is no user with the name \"john\"
-        or \"sally\" in the database. Here is the correct code:\n\nARChanges: `Ticket.where(user_id:
-        User.first.id, status: \"open\").update_all(user_id: User.second.id)`\n\nARCode:
-        `puts ActiveRecord::Base.descendants.count`\n\nThis will change the user_id
-        of all open tickets from the first user in the database to the second user
-        in the database, and then print the number of ActiveRecord model classes."},"finish_reason":"stop","index":0}]}
-
-        '
-  recorded_at: Wed, 07 Jun 2023 00:09:45 GMT
-recorded_with: VCR 6.1.0
+      string: |
+        {
+          "id": "chatcmpl-9mqgzI7N6vVhO2YJqRkD7PWZrbcs4",
+          "object": "chat.completion",
+          "created": 1721429321,
+          "model": "gpt-4o-mini-2024-07-18",
+          "choices": [
+            {
+              "index": 0,
+              "message": {
+                "role": "assistant",
+                "content": "ARCode: ActiveRecord::Base.descendants.count\n"
+              },
+              "logprobs": null,
+              "finish_reason": "stop"
+            }
+          ],
+          "usage": {
+            "prompt_tokens": 364,
+            "completion_tokens": 11,
+            "total_tokens": 375
+          },
+          "system_fingerprint": "fp_661538dc1f"
+        }
+  recorded_at: Fri, 19 Jul 2024 22:48:41 GMT
+recorded_with: VCR 6.2.0

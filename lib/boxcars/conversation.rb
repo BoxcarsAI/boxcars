@@ -20,7 +20,6 @@ module Boxcars
         raise ArgumentError, "Conversation item must be a array" unless ln.is_a?(Array)
         raise ArgumentError, "Conversation item must have 2 items, role and text" unless ln.size == 2
         raise ArgumentError, "Conversation item must have a role #{ln} in (#{PEOPLE})" unless PEOPLE.include? ln[0]
-        raise ArgumentError, "Conversation value must be a string" unless ln[1].is_a?(String)
       end
     end
 
@@ -110,6 +109,24 @@ module Boxcars
       first_line = e.message.to_s.split("\n").first
       Boxcars.error "Missing prompt input key: #{first_line}"
       raise KeyError, "Prompt format error: #{first_line}"
+    end
+
+    def process_content(content, inputs)
+      # If content is a string, treat it as text
+      if content.is_a?(String)
+        [{ type: "text", text: cformat(content, inputs) }]
+      # If content is an array, assume it's already in the new format
+      elsif content.is_a?(Array)
+        content.map do |item|
+          if item[:type] == "text"
+            { type: "text", text: cformat(item[:text], inputs) }
+          else
+            item # Pass through non-text items (like images) without modification
+          end
+        end
+      else
+        raise ArgumentError, "Invalid content type: #{content.class}"
+      end
     end
 
     # special format that replaces lone percent signs with double percent signs
