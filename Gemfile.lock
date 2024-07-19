@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    boxcars (0.5.1)
+    boxcars (0.6.1)
       anthropic (~> 0.1)
       google_search_results (~> 2.2)
       gpt4all (~> 0.0.4)
@@ -193,18 +193,9 @@ GEM
       unicode-display_width (>= 2.4.0, < 3.0)
     rubocop-ast (1.31.3)
       parser (>= 3.3.1.0)
-    rubocop-capybara (2.21.0)
-      rubocop (~> 1.41)
-    rubocop-factory_bot (2.26.1)
-      rubocop (~> 1.61)
     rubocop-rake (0.6.0)
       rubocop (~> 1.0)
-    rubocop-rspec (2.31.0)
-      rubocop (~> 1.40)
-      rubocop-capybara (~> 2.17)
-      rubocop-factory_bot (~> 2.22)
-      rubocop-rspec_rails (~> 2.28)
-    rubocop-rspec_rails (2.29.1)
+    rubocop-rspec (3.0.3)
       rubocop (~> 1.61)
     ruby-openai (7.1.0)
       event_stream_parser (>= 0.3.0, < 2.0.0)
