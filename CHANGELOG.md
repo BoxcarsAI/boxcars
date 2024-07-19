@@ -1,5 +1,16 @@
 # Changelog
 
+## [v0.6.1](https://github.com/BoxcarsAI/boxcars/tree/v0.6.1) (2024-07-19)
+
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.5.1...v0.6.1)
+
+**Merged pull requests:**
+
+- various updates with Claude 3.5 support [\#197](https://github.com/BoxcarsAI/boxcars/pull/197) ([francis](https://github.com/francis))
+- \[infra\] Bump rubocop-rspec from 2.30.0 to 3.0.2 [\#195](https://github.com/BoxcarsAI/boxcars/pull/195) ([dependabot[bot]](https://github.com/apps/dependabot))
+- \[infra\] Bump nokogiri from 1.16.5 to 1.16.6 [\#194](https://github.com/BoxcarsAI/boxcars/pull/194) ([dependabot[bot]](https://github.com/apps/dependabot))
+- \[infra\] Bump ruby-openai from 7.0.1 to 7.1.0 [\#193](https://github.com/BoxcarsAI/boxcars/pull/193) ([dependabot[bot]](https://github.com/apps/dependabot))
+
 ## [v0.5.1](https://github.com/BoxcarsAI/boxcars/tree/v0.5.1) (2024-06-14)
 
 [Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.4.10...v0.5.1)
