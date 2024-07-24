@@ -5,20 +5,20 @@ module Boxcars
   # For Boxcars that use an engine to do their work.
   class JSONEngineBoxcar < EngineBoxcar
     # A JSON Engine Boxcar is a container for a single tool to run.
-    attr_accessor :wanted_data, :data_description, :important
+    attr_accessor :wanted_data, :data_description, :important, :symbolize
 
     # @param prompt [Boxcars::Prompt] The prompt to use for this boxcar with sane defaults.
     # @param wanted_data [String] The data to extract from.
     # @param data_description [String] The description of the data.
     # @param important [String] Any important instructions you want to give the LLM.
     # @param kwargs [Hash] Additional arguments
-    def initialize(prompt: nil, wanted_data: nil, data_description: nil, important: nil, **kwargs)
+    def initialize(prompt: nil, wanted_data: nil, data_description: nil, important: nil, symbolize: false, **kwargs)
       @wanted_data = wanted_data || "summarize the pertinent facts from the input data"
       @data_description = data_description || "the input data"
       @important = important
       the_prompt = prompt || default_prompt
-      the_prompt.append("\n\nImportant: #{important}\n") if important.present?
       kwargs[:description] ||= "JSON Engine Boxcar"
+      @symbolize = symbolize
       super(prompt: the_prompt, **kwargs)
     end
 
@@ -34,6 +34,8 @@ module Boxcars
             %<wanted_data>s
           }
       SYSPR
+      stock_prompt += "\n\nImportant:\n#{important}\n" if important.present?
+
       sprompt = format(stock_prompt, wanted_data: wanted_data, data_description: data_description)
       ctemplate = [
         Boxcar.syst(sprompt),
@@ -50,7 +52,7 @@ module Boxcars
       # sometimes the LLM adds text in front of the JSON output, so let's strip it here
       json_start = engine_output.index("{")
       json_end = engine_output.rindex("}")
-      extract_answer(JSON.parse(engine_output[json_start..json_end]))
+      extract_answer(JSON.parse(engine_output[json_start..json_end], symbolize_names: symbolize))
     rescue StandardError => e
       Result.from_error("Error: #{e.message}:\n#{engine_output}")
     end
