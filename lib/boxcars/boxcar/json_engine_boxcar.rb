@@ -11,6 +11,7 @@ module Boxcars
     # @param wanted_data [String] The data to extract from.
     # @param data_description [String] The description of the data.
     # @param important [String] Any important instructions you want to give the LLM.
+    # @param symbolize [Boolean] Symbolize the JSON results if true
     # @param kwargs [Hash] Additional arguments
     def initialize(prompt: nil, wanted_data: nil, data_description: nil, important: nil, symbolize: false, **kwargs)
       @wanted_data = wanted_data || "summarize the pertinent facts from the input data"
