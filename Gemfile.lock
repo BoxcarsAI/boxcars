@@ -8,7 +8,7 @@ PATH
       hnswlib (~> 0.8)
       nokogiri (~> 1.16)
       pgvector (~> 0.2)
-      ruby-openai (>= 7.1)
+      ruby-openai (>= 7.1, < 8.0)
 
 GEM
   remote: https://rubygems.org/
