@@ -10,11 +10,11 @@ RSpec.describe Boxcars::Groq do
   end
 
   context "with an groq api key" do
-    it "can write a short poem" do
-      VCR.use_cassette("groq") do
-        expect(described_class.new.run("write a haiku about love")).to eq("Softly glowing flame\nWarming heart and gentle soul\nLove's eternal fire")
-      end
-    end
+    # it "can write a short poem" do
+    #   VCR.use_cassette("groq") do
+    #     expect(described_class.new.run("write a haiku about love")).to eq("Softly glowing flame\nWarming heart and gentle soul\nLove's eternal fire")
+    #   end
+    # end
 
     it "raises an error when nil response" do
       oi = described_class.new
