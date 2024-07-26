@@ -8,7 +8,7 @@ PATH
       hnswlib (~> 0.8)
       nokogiri (~> 1.16)
       pgvector (~> 0.2)
-      ruby-openai (>= 4.2, < 8.0)
+      ruby-openai (>= 7.1, < 8.0)
 
 GEM
   remote: https://rubygems.org/
@@ -81,7 +81,7 @@ GEM
       faraday (>= 0.8)
     faraday-multipart (1.0.4)
       multipart-post (~> 2)
-    faraday-net_http (3.1.0)
+    faraday-net_http (3.1.1)
       net-http
     faraday-retry (2.2.1)
       faraday (~> 2.0)
