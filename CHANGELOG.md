@@ -1,5 +1,21 @@
 # Changelog
 
+## [v0.6.3](https://github.com/BoxcarsAI/boxcars/tree/v0.6.3) (2024-07-26)
+
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.6.2...v0.6.3)
+
+**Merged pull requests:**
+
+- Add Groq engine [\#199](https://github.com/BoxcarsAI/boxcars/pull/199) ([francis](https://github.com/francis))
+
+## [v0.6.2](https://github.com/BoxcarsAI/boxcars/tree/v0.6.2) (2024-07-24)
+
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.6.1...v0.6.2)
+
+**Merged pull requests:**
+
+- add flag for symbolizing JSON Engine Boxcar results [\#198](https://github.com/BoxcarsAI/boxcars/pull/198) ([francis](https://github.com/francis))
+
 ## [v0.6.1](https://github.com/BoxcarsAI/boxcars/tree/v0.6.1) (2024-07-19)
 
 [Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.5.1...v0.6.1)
