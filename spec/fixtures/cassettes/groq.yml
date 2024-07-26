@@ -1,0 +1,72 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://api.groq.com/openai/v1/chat/completions
+    body:
+      encoding: UTF-8
+      string: '{"messages":[{"role":"user","content":"write a haiku about love"}],"model":"llama3-70b-8192","temperature":0.1,"max_tokens":4096}'
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer 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
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 26 Jul 2024 19:14:42 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Cache-Control:
+      - private, max-age=0, no-store, no-cache, must-revalidate
+      Vary:
+      - Origin
+      X-Ratelimit-Limit-Requests:
+      - '14400'
+      X-Ratelimit-Limit-Tokens:
+      - '6000'
+      X-Ratelimit-Remaining-Requests:
+      - '14399'
+      X-Ratelimit-Remaining-Tokens:
+      - '5989'
+      X-Ratelimit-Reset-Requests:
+      - 6s
+      X-Ratelimit-Reset-Tokens:
+      - 110ms
+      X-Request-Id:
+      - req_01j3r7f0fffxbr0kwkapzsfvxm
+      Via:
+      - 1.1 google
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Set-Cookie:
+      - __cf_bm=LiAkCn9wlyHmiDUMztkqn98Pw1yr7jDSqvS._ls19OM-1722021282-1.0.1.1-0VY5XA3DcLbnidWXaDTpvZqfcF0RYnaq2crh2_5L7UFXwXu4_ojRMjoa6LqRX.92D0lMRGu1cIlWSARM0clkAQ;
+        path=/; expires=Fri, 26-Jul-24 19:44:42 GMT; domain=.groq.com; HttpOnly; Secure;
+        SameSite=None
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 8a96b6d5e8dda6f0-PHX
+    body:
+      encoding: ASCII-8BIT
+      string: '{"id":"chatcmpl-d83097f4-42f4-43fb-b03c-010db2b2d760","object":"chat.completion","created":1722021282,"model":"llama3-70b-8192","choices":[{"index":0,"message":{"role":"assistant","content":"Softly
+        glowing flame\nWarming heart and gentle soul\nLove''s eternal fire"},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":16,"prompt_time":0.0041608,"completion_tokens":17,"completion_time":0.049478319,"total_tokens":33,"total_time":0.053639119},"system_fingerprint":"fp_753a4aecf6","x_groq":{"id":"req_01j3r7f0fffxbr0kwkapzsfvxm"}}
+
+        '
+  recorded_at: Fri, 26 Jul 2024 19:14:42 GMT
+recorded_with: VCR 6.2.0

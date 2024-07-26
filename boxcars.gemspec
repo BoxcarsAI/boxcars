@@ -37,7 +37,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "hnswlib", "~> 0.8"
   spec.add_dependency "nokogiri", "~> 1.16"
   spec.add_dependency "pgvector", "~> 0.2"
-  spec.add_dependency "ruby-openai", ">= 4.2", "< 8.0"
+  spec.add_dependency "ruby-openai", ">= 7.1"
 
   # For more information and examples about making a new gem, checkout our
   # guide at: https://bundler.io/guides/creating_gem.html
