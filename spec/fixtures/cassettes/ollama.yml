@@ -1,0 +1,38 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: http://localhost:11434/v1/chat/completions
+    body:
+      encoding: UTF-8
+      string: '{"messages":[{"role":"user","content":"write a haiku about love"}],"model":"llama3","temperature":0.1,"max_tokens":4096}'
+    headers:
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 26 Jul 2024 23:37:08 GMT
+      Content-Length:
+      - '361'
+    body:
+      encoding: UTF-8
+      string: '{"id":"chatcmpl-498","object":"chat.completion","created":1722037028,"model":"llama3","system_fingerprint":"fp_ollama","choices":[{"index":0,"message":{"role":"assistant","content":"Softly
+        glowing flame\nWarming hearts and gentle souls\nLove''s sweet, tender name"},"finish_reason":"stop"}],"usage":{"prompt_tokens":16,"completion_tokens":19,"total_tokens":35}}
+
+        '
+  recorded_at: Fri, 26 Jul 2024 23:37:08 GMT
+recorded_with: VCR 6.2.0

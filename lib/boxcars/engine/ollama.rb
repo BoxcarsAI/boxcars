@@ -26,7 +26,7 @@ module Boxcars
     # @param prompts [Array<String>] The prompts to use when asking the engine. Defaults to [].
     # @param batch_size [Integer] The number of prompts to send to the engine at once. Defaults to 2.
     def initialize(name: DEFAULT_NAME, description: DEFAULT_DESCRIPTION, prompts: [], batch_size: 2, **kwargs)
-      @ollama_parmas = DEFAULT_PARAMS.merge(kwargs)
+      @ollama_params = DEFAULT_PARAMS.merge(kwargs)
       @prompts = prompts
       @batch_size = batch_size
       super(description: description, name: name)
@@ -51,13 +51,14 @@ module Boxcars
     # @param kwargs [Hash] Additional parameters to pass to the engine if wanted.
     def client(prompt:, inputs: {}, **kwargs)
       clnt = Ollama.open_ai_client
-      params = ollama_parmas.merge(kwargs)
+      params = ollama_params.merge(kwargs)
       prompt = prompt.first if prompt.is_a?(Array)
       params = prompt.as_messages(inputs).merge(params)
       if Boxcars.configuration.log_prompts
         Boxcars.debug(params[:messages].last(2).map { |p| ">>>>>> Role: #{p[:role]} <<<<<<\n#{p[:content]}" }.join("\n"), :cyan)
       end
-      clnt.chat(parameters: params)
+      ans = clnt.chat(parameters: params)
+      ans['choices'].pluck('message').pluck('content').join("\n")
     rescue => e
       Boxcars.error(e, :red)
       raise
@@ -69,6 +70,9 @@ module Boxcars
     def run(question, **kwargs)
       prompt = Prompt.new(template: question)
       answer = client(prompt: prompt, **kwargs)
+      raise Error, "Ollama: No response from API" unless answer
+
+      # raise Error, "Ollama: #{response['error']}" if response["error"]
       Boxcars.debug("Answer: #{answer}", :cyan)
       answer
     end
