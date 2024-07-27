@@ -71,8 +71,8 @@ module Boxcars
       prompt = Prompt.new(template: question)
       response = client(prompt: prompt, **kwargs)
       raise Error, "Groq: No response from API" unless response
-      raise Error, "Groq: #{response['error']}" if response["error"]
 
+      check_response(response)
       answer = response["choices"].map { |c| c.dig("message", "content") || c["text"] }.join("\n").strip
       puts answer
       answer
@@ -83,31 +83,16 @@ module Boxcars
       groq_parmas
     end
 
-    # Get generation informaton
-    # @param sub_choices [Array<Hash>] The choices to get generation info for.
-    # @return [Array<Generation>] The generation information.
-    def generation_info(sub_choices)
-      sub_choices.map do |choice|
-        Generation.new(
-          text: choice.dig("message", "content") || choice["text"],
-          generation_info: {
-            finish_reason: choice.fetch("finish_reason", nil),
-            logprobs: choice.fetch("logprobs", nil)
-          }
-        )
-      end
-    end
-
     # make sure we got a valid response
     # @param response [Hash] The response to check.
     # @param must_haves [Array<String>] The keys that must be in the response. Defaults to %w[choices].
     # @raise [KeyError] if there is an issue with the access token.
     # @raise [ValueError] if the response is not valid.
     def check_response(response, must_haves: %w[choices])
-      if response['error']
+      if response['error'].is_a?(Hash)
         code = response.dig('error', 'code')
         msg = response.dig('error', 'message') || 'unknown error'
-        raise KeyError, "OPENAI_ACCESS_TOKEN not valid" if code == 'invalid_api_key'
+        raise KeyError, "GROQ_API_TOKEN not valid" if code == 'invalid_api_key'
 
         raise ValueError, "Groq error: #{msg}"
       end
@@ -117,58 +102,20 @@ module Boxcars
       end
     end
 
-    # Call out to Groq's endpoint with k unique prompts.
-    # @param prompts [Array<String>] The prompts to pass into the model.
-    # @param inputs [Array<String>] The inputs to subsitite into the prompt.
-    # @param stop [Array<String>] Optional list of stop words to use when generating.
-    # @return [EngineResult] The full engine output.
-    def generate(prompts:, stop: nil)
-      params = {}
-      params[:stop] = stop if stop
-      choices = []
-      token_usage = {}
-      # Get the token usage from the response.
-      # Includes prompt, completion, and total tokens used.
-      inkeys = %w[completion_tokens prompt_tokens total_tokens].freeze
-      prompts.each_slice(batch_size) do |sub_prompts|
-        sub_prompts.each do |sprompts, inputs|
-          response = client(prompt: sprompts, inputs: inputs, **params)
-          check_response(response)
-          choices.concat(response["choices"])
-          usage_keys = inkeys & response["usage"].keys
-          usage_keys.each { |key| token_usage[key] = token_usage[key].to_i + response["usage"][key] }
-        end
-      end
-
-      n = params.fetch(:n, 1)
-      generations = []
-      prompts.each_with_index do |_prompt, i|
-        sub_choices = choices[i * n, (i + 1) * n]
-        generations.push(generation_info(sub_choices))
-      end
-      EngineResult.new(generations: generations, engine_output: { token_usage: token_usage })
+    # the engine type
+    def engine_type
+      "groq"
     end
-    # rubocop:enable Metrics/AbcSize
-  end
 
-  # the engine type
-  def engine_type
-    "groq"
-  end
+    # Calculate the maximum number of tokens possible to generate for a prompt.
+    # @param prompt_text [String] The prompt text to use.
+    # @return [Integer] the number of tokens possible to generate.
+    def max_tokens_for_prompt(prompt_text)
+      num_tokens = get_num_tokens(prompt_text)
 
-  # calculate the number of tokens used
-  def get_num_tokens(text:)
-    text.split.length # TODO: hook up to token counting gem
-  end
-
-  # Calculate the maximum number of tokens possible to generate for a prompt.
-  # @param prompt_text [String] The prompt text to use.
-  # @return [Integer] the number of tokens possible to generate.
-  def max_tokens_for_prompt(prompt_text)
-    num_tokens = get_num_tokens(prompt_text)
-
-    # get max context size for model by name
-    max_size = 8096
-    max_size - num_tokens
+      # get max context size for model by name
+      max_size = 8096
+      max_size - num_tokens
+    end
   end
 end

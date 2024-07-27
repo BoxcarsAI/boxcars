@@ -22,10 +22,10 @@ RSpec.describe Boxcars::Groq do
       expect { oi.run("foobar") }.to raise_error(Boxcars::Error, "Groq: No response from API")
     end
 
-    it "raises an when groq returns one" do
+    it "raises invalid_key when groq returns one" do
       oi = described_class.new
-      allow(oi).to receive(:client).and_return("error" => "foobar")
-      expect { oi.run("foobar") }.to raise_error(Boxcars::Error, "Groq: foobar")
+      allow(oi).to receive(:client).and_return("error" => { 'code' => 'invalid_api_key', 'message' => 'bad' })
+      expect { oi.run("foobar") }.to raise_error(Boxcars::KeyError, "GROQ_API_TOKEN not valid")
     end
 
     it "thinks gpt-4 is a conversation model" do

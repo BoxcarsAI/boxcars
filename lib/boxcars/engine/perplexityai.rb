@@ -8,9 +8,8 @@ module Boxcars
 
     # The default parameters to use when asking the engine.
     DEFAULT_PER_PARAMS = {
-      model: "llama-2-70b-chat",
-      temperature: 0.1,
-      max_tokens: 3200
+      model: "'llama-3-sonar-large-32k-online'",
+      temperature: 0.1
     }.freeze
 
     # the default name of the engine
@@ -32,28 +31,26 @@ module Boxcars
       super(description: description, name: name)
     end
 
-    def conversation_model?(model)
-      ["mistral-7b-instruct", "llama-2-13b-chat", "llama-2-70b-chat", "openhermes-2-mistral-7b"].include?(model)
+    def conversation_model?(_model)
+      true
     end
 
     def chat(parameters:)
-      url = URI("https://api.perplexity.ai/chat/completions")
+      conn = Faraday.new(url: "https://api.perplexity.ai/chat/completions") do |faraday|
+        faraday.request :json
+        faraday.response :json
+        faraday.response :raise_error
+      end
 
-      http = Net::HTTP.new(url.host, url.port)
-      http.use_ssl = true
+      response = conn.post do |req|
+        req.headers['Authorization'] = "Bearer #{ENV.fetch('PERPLEXITY_API_KEY')}"
+        req.body = {
+          model: parameters[:model],
+          messages: parameters[:messages]
+        }
+      end
 
-      request = Net::HTTP::Post.new(url)
-      request["accept"] = 'application/json'
-      request["authorization"] = "Bearer #{ENV.fetch('PERPLEXITY_API_KEY')}"
-      request["content-type"] = 'application/json'
-      the_body = {
-        model: parameters[:model] || "mistral-7b-instruct",
-        messages: parameters[:messages]
-      }
-      request.body = the_body.to_json
-
-      response = http.request(request)
-      JSON.parse(response.read_body)
+      response.body
     end
 
     # Get an answer from the engine.
@@ -64,7 +61,6 @@ module Boxcars
     def client(prompt:, inputs: {}, **kwargs)
       prompt = prompt.first if prompt.is_a?(Array)
       params = prompt.as_messages(inputs).merge(default_params).merge(kwargs)
-      params[:model] ||= "llama-2-70b-chat"
       if Boxcars.configuration.log_prompts
         Boxcars.debug(params[:messages].last(2).map { |p| ">>>>>> Role: #{p[:role]} <<<<<<\n#{p[:content]}" }.join("\n"), :cyan)
       end
@@ -90,21 +86,6 @@ module Boxcars
       perplexity_params
     end
 
-    # Get generation informaton
-    # @param sub_choices [Array<Hash>] The choices to get generation info for.
-    # @return [Array<Generation>] The generation information.
-    def generation_info(sub_choices)
-      sub_choices.map do |choice|
-        Generation.new(
-          text: choice.dig("message", "content") || choice["text"],
-          generation_info: {
-            finish_reason: choice.fetch("finish_reason", nil),
-            logprobs: choice.fetch("logprobs", nil)
-          }
-        )
-      end
-    end
-
     # make sure we got a valid response
     # @param response [Hash] The response to check.
     # @param must_haves [Array<String>] The keys that must be in the response. Defaults to %w[choices].
@@ -123,39 +104,6 @@ module Boxcars
         raise ValueError, "Expecting key #{key} in response" unless response.key?(key)
       end
     end
-
-    # Call out to OpenAI's endpoint with k unique prompts.
-    # @param prompts [Array<String>] The prompts to pass into the model.
-    # @param inputs [Array<String>] The inputs to subsitite into the prompt.
-    # @param stop [Array<String>] Optional list of stop words to use when generating.
-    # @return [EngineResult] The full engine output.
-    def generate(prompts:, stop: nil)
-      params = {}
-      params[:stop] = stop if stop
-      choices = []
-      token_usage = {}
-      # Get the token usage from the response.
-      # Includes prompt, completion, and total tokens used.
-      inkeys = %w[completion_tokens prompt_tokens total_tokens].freeze
-      prompts.each_slice(batch_size) do |sub_prompts|
-        sub_prompts.each do |sprompts, inputs|
-          response = client(prompt: sprompts, inputs: inputs, **params)
-          check_response(response)
-          choices.concat(response["choices"])
-          usage_keys = inkeys & response["usage"].keys
-          usage_keys.each { |key| token_usage[key] = token_usage[key].to_i + response["usage"][key] }
-        end
-      end
-
-      n = params.fetch(:n, 1)
-      generations = []
-      prompts.each_with_index do |_prompt, i|
-        sub_choices = choices[i * n, (i + 1) * n]
-        generations.push(generation_info(sub_choices))
-      end
-      EngineResult.new(generations: generations, engine_output: { token_usage: token_usage })
-    end
-    # rubocop:enable Metrics/AbcSize
   end
 
   # the engine type
@@ -168,29 +116,10 @@ module Boxcars
     text.split.length # TODO: hook up to token counting gem
   end
 
-  # lookup the context size for a model by name
-  # @param modelname [String] The name of the model to lookup.
-  def modelname_to_contextsize(modelname)
-    model_lookup = {
-      'text-davinci-003': 4097,
-      'text-curie-001': 2048,
-      'text-babbage-001': 2048,
-      'text-ada-001': 2048,
-      'code-davinci-002': 8000,
-      'code-cushman-001': 2048,
-      'gpt-3.5-turbo-1': 4096
-    }.freeze
-    model_lookup[modelname] || 4097
-  end
-
   # Calculate the maximum number of tokens possible to generate for a prompt.
   # @param prompt_text [String] The prompt text to use.
   # @return [Integer] the number of tokens possible to generate.
-  def max_tokens_for_prompt(prompt_text)
-    num_tokens = get_num_tokens(prompt_text)
-
-    # get max context size for model by name
-    max_size = modelname_to_contextsize(model_name)
-    max_size - num_tokens
+  def max_tokens_for_prompt(_prompt_text)
+    8096
   end
 end

@@ -90,21 +90,6 @@ module Boxcars
       llm_params
     end
 
-    # Get generation informaton
-    # @param sub_choices [Array<Hash>] The choices to get generation info for.
-    # @return [Array<Generation>] The generation information.
-    def generation_info(sub_choices)
-      sub_choices.map do |choice|
-        Generation.new(
-          text: choice["completion"],
-          generation_info: {
-            finish_reason: choice.fetch("stop_reason", nil),
-            logprobs: choice.fetch("logprobs", nil)
-          }
-        )
-      end
-    end
-
     # make sure we got a valid response
     # @param response [Hash] The response to check.
     # @param must_haves [Array<String>] The keys that must be in the response. Defaults to %w[choices].
@@ -124,43 +109,9 @@ module Boxcars
       end
     end
 
-    # Call out to OpenAI's endpoint with k unique prompts.
-    # @param prompts [Array<String>] The prompts to pass into the model.
-    # @param inputs [Array<String>] The inputs to subsitite into the prompt.
-    # @param stop [Array<String>] Optional list of stop words to use when generating.
-    # @return [EngineResult] The full engine output.
-    def generate(prompts:, stop: nil)
-      params = {}
-      params[:stop] = stop if stop
-      choices = []
-      # Get the token usage from the response.
-      # Includes prompt, completion, and total tokens used.
-      prompts.each_slice(batch_size) do |sub_prompts|
-        sub_prompts.each do |sprompts, inputs|
-          response = client(prompt: sprompts, inputs: inputs, **params)
-          check_response(response)
-          choices << response
-        end
-      end
-
-      n = params.fetch(:n, 1)
-      generations = []
-      prompts.each_with_index do |_prompt, i|
-        sub_choices = choices[i * n, (i + 1) * n]
-        generations.push(generation_info(sub_choices))
-      end
-      EngineResult.new(generations: generations, engine_output: { token_usage: {} })
-    end
-    # rubocop:enable Metrics/AbcSize
-
     # the engine type
     def engine_type
       "claude"
-    end
-
-    # calculate the number of tokens used
-    def get_num_tokens(text:)
-      text.split.length # TODO: hook up to token counting gem
     end
 
     # lookup the context size for a model by name
