@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.6.4](https://github.com/BoxcarsAI/boxcars/tree/v0.6.4) (2024-07-27)
+
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.6.3...v0.6.4)
+
+**Merged pull requests:**
+
+- Add Ollama Engine [\#200](https://github.com/BoxcarsAI/boxcars/pull/200) ([francis](https://github.com/francis))
+
 ## [v0.6.3](https://github.com/BoxcarsAI/boxcars/tree/v0.6.3) (2024-07-26)
 
 [Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.6.2...v0.6.3)
