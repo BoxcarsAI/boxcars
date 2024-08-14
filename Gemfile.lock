@@ -140,7 +140,7 @@ GEM
     parser (3.3.4.0)
       ast (~> 2.4.1)
       racc
-    pg (1.5.6)
+    pg (1.5.7)
     pgvector (0.2.2)
     protocol-hpack (1.4.3)
     protocol-http (0.26.8)
