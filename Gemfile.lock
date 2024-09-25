@@ -237,7 +237,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
-  activerecord (~> 7.0)
+  activerecord (~> 7.1)
   activesupport (~> 7.1)
   async (~> 1.32.1)
   boxcars!
