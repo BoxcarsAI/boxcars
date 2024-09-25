@@ -165,7 +165,7 @@ GEM
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
-    rexml (3.3.4)
+    rexml (3.3.6)
       strscan
     rspec (3.13.0)
       rspec-core (~> 3.13.0)
@@ -224,7 +224,7 @@ GEM
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.5.0)
     uri (0.13.0)
-    vcr (6.3.0)
+    vcr (6.3.1)
       base64
     webmock (3.23.1)
       addressable (>= 2.8.0)
@@ -238,7 +238,7 @@ PLATFORMS
 
 DEPENDENCIES
   activerecord (~> 7.1)
-  activesupport (~> 7.0)
+  activesupport (~> 7.1)
   async (~> 1.32.1)
   boxcars!
   debug (~> 1.9)
@@ -255,7 +255,7 @@ DEPENDENCIES
   rubocop-rake (~> 0.6.0)
   rubocop-rspec (~> 3.0)
   sqlite3 (~> 1.7)
-  vcr (~> 6.3.0)
+  vcr (~> 6.3.1)
   webmock (~> 3.23.1)
 
 BUNDLED WITH
