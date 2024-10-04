@@ -68,7 +68,6 @@ module Boxcars
       end
       EngineResult.new(generations: generations, engine_output: { token_usage: token_usage })
     end
-    # rubocop:enable Metrics/AbcSize
   end
 end
 
