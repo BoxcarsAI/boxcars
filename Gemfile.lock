@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    boxcars (0.6.4)
+    boxcars (0.6.5)
       anthropic (~> 0.1)
       google_search_results (~> 2.2)
       gpt4all (~> 0.0.4)
