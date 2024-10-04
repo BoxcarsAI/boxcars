@@ -28,6 +28,11 @@ module Boxcars
     # @param batch_size [Integer] The number of prompts to send to the engine at once. Defaults to 20.
     def initialize(name: DEFAULT_NAME, description: DEFAULT_DESCRIPTION, prompts: [], batch_size: 20, **kwargs)
       @open_ai_params = DEFAULT_PARAMS.merge(kwargs)
+      if @open_ai_params[:model] =~ /^o/ && @open_ai_params[:max_tokens].present?
+        @open_ai_params[:max_completion_tokens] = @open_ai_params.delete(:max_tokens)
+        @open_ai_params.delete(:temperature)
+      end
+
       @prompts = prompts
       @batch_size = batch_size
       super(description: description, name: name)
@@ -44,7 +49,7 @@ module Boxcars
     end
 
     def conversation_model?(model)
-      !!(model =~ /(^gpt-4)|(-turbo\b)/)
+      !!(model =~ /(^gpt-4)|(-turbo\b)|(^o\d)/)
     end
 
     # Get an answer from the engine.
@@ -57,6 +62,10 @@ module Boxcars
       params = open_ai_params.merge(kwargs)
       if conversation_model?(params[:model])
         prompt = prompt.first if prompt.is_a?(Array)
+        if params[:model] =~ /^o/
+          params.delete(:response_format)
+          params.delete(:stop)
+        end
         params = prompt.as_messages(inputs).merge(params)
         if Boxcars.configuration.log_prompts
           Boxcars.debug(params[:messages].last(2).map { |p| ">>>>>> Role: #{p[:role]} <<<<<<\n#{p[:content]}" }.join("\n"), :cyan)
