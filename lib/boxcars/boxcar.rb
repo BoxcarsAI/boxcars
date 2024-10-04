@@ -166,7 +166,7 @@ module Boxcars
         output = call(inputs: inputs)
       rescue StandardError => e
         Boxcars.error "Error in #{name} boxcar#call: #{e}\nbt:#{e.backtrace[0..5].join("\n   ")}", :red
-        Boxcars.error("Response Body: #{e.response[:body]}", :red) if e.respond_to?(:response)
+        Boxcars.error("Response Body: #{e.response[:body]}", :red) if e.respond_to?(:response) && e.response.present?
         raise e
       end
       validate_outputs(outputs: output.keys)
