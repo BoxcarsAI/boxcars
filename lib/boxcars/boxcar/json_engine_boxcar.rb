@@ -50,12 +50,14 @@ module Boxcars
     # @param engine_output [String] The output from the engine.
     # @return [Result] The result.
     def get_answer(engine_output)
-      # sometimes the LLM adds text in front of the JSON output, so let's strip it here
-      json_start = engine_output.index("{")
-      json_end = engine_output.rindex("}")
-      extract_answer(JSON.parse(engine_output[json_start..json_end], symbolize_names: symbolize))
+      json_string = extract_json(engine_output)
+      reply = JSON.parse(json_string, symbolize_names: symbolize)
+      Result.new(status: :ok, answer: reply, explanation: reply)
+    rescue JSON::ParserError => e
+      Boxcars.debug "JSON: #{engine_output}", :red
+      Result.from_error("JSON parsing error: #{e.message}")
     rescue StandardError => e
-      Result.from_error("Error: #{e.message}:\n#{engine_output}")
+      Result.from_error("Unexpected error: #{e.message}")
     end
 
     # get answer from parsed JSON
@@ -63,14 +65,29 @@ module Boxcars
     # @return [Result] The result.
     def extract_answer(data)
       reply = data
+      Result.new(status: :ok, answer: reply, explanation: reply)
+    end
 
-      if reply.present?
-        Result.new(status: :ok, answer: reply, explanation: reply)
-      else
-        # we have an unexpected output from the engine
-        Result.new(status: :error, answer: nil,
-                   explanation: "You gave me an improperly formatted answer. I was expecting a valid reply.")
-      end
+    private
+
+    def extract_json(text)
+      # Escape control characters (U+0000 to U+001F)
+      text = text.gsub(/[\u0000-\u001F]/, '')
+      # first strip hidden characters
+      # text = text.encode('UTF-8', invalid: :replace, undef: :replace, replace: '')
+
+      # sometimes the LLM adds text in front of the JSON output, so let's strip it here
+      json_start = text.index("{")
+      json_end = text.rindex("}")
+      text[json_start..json_end]
+    end
+
+    def extract_json2(text)
+      # Match the outermost JSON object
+      match = text.match(/\{(?:[^{}]|\{(?:[^{}]|\{[^{}]*\})*\})*\}/)
+      raise StandardError, "No valid JSON object found in the output" unless match
+
+      match[0]
     end
   end
 end
