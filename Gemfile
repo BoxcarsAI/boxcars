@@ -34,7 +34,7 @@ group :development, :test do
   gem "rspec", "~> 3.13"
   gem "rubocop", "~> 1.66"
   gem "vcr", "~> 6.3.1"
-  gem "webmock", "~> 3.23.1"
+  gem "webmock", "~> 3.24.0"
   gem "rubocop-rake", "~> 0.6.0"
   gem "rubocop-rspec", "~> 3.1"
 end

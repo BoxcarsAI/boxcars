@@ -103,7 +103,7 @@ GEM
       faraday (~> 2.7)
       os (~> 1.1)
       tty-progressbar (~> 0.18.2)
-    hashdiff (1.1.0)
+    hashdiff (1.1.1)
     hnswlib (0.9.0)
     http-accept (1.7.0)
     http-cookie (1.0.6)
@@ -151,7 +151,7 @@ GEM
       protocol-http (~> 0.18)
     psych (5.1.2)
       stringio
-    public_suffix (6.0.0)
+    public_suffix (6.0.1)
     racc (1.8.1)
     rainbow (3.1.1)
     rake (13.2.1)
@@ -223,7 +223,7 @@ GEM
     uri (0.13.0)
     vcr (6.3.1)
       base64
-    webmock (3.23.1)
+    webmock (3.24.0)
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
@@ -254,7 +254,7 @@ DEPENDENCIES
   rubocop-rspec (~> 3.1)
   sqlite3 (~> 1.7)
   vcr (~> 6.3.1)
-  webmock (~> 3.23.1)
+  webmock (~> 3.24.0)
 
 BUNDLED WITH
    2.4.16
