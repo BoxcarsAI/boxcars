@@ -1,5 +1,31 @@
 # Changelog
 
+## [v0.6.5](https://github.com/BoxcarsAI/boxcars/tree/v0.6.5) (2024-10-04)
+
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.6.4...v0.6.5)
+
+**Closed issues:**
+
+- Consider methods to prevent hallucinations and incorrect answers [\#89](https://github.com/BoxcarsAI/boxcars/issues/89)
+- Fix: change SQL Boxcar to use the name of the database in the prompt [\#14](https://github.com/BoxcarsAI/boxcars/issues/14)
+
+**Merged pull requests:**
+
+- Update ruby [\#217](https://github.com/BoxcarsAI/boxcars/pull/217) ([francis](https://github.com/francis))
+- \[infra\] Bump rubocop-rspec from 3.0.4 to 3.1.0 [\#216](https://github.com/BoxcarsAI/boxcars/pull/216) ([dependabot[bot]](https://github.com/apps/dependabot))
+- \[infra\] Bump pg from 1.5.7 to 1.5.8 [\#214](https://github.com/BoxcarsAI/boxcars/pull/214) ([dependabot[bot]](https://github.com/apps/dependabot))
+- \[infra\] Bump dotenv from 3.1.2 to 3.1.4 [\#213](https://github.com/BoxcarsAI/boxcars/pull/213) ([dependabot[bot]](https://github.com/apps/dependabot))
+- \[infra\] Bump rubocop from 1.65.1 to 1.66.1 [\#212](https://github.com/BoxcarsAI/boxcars/pull/212) ([dependabot[bot]](https://github.com/apps/dependabot))
+- \[infra\] Bump activesupport from 7.1.3.4 to 7.1.4 [\#211](https://github.com/BoxcarsAI/boxcars/pull/211) ([dependabot[bot]](https://github.com/apps/dependabot))
+- \[infra\] Bump activerecord from 7.1.3.4 to 7.1.4 [\#210](https://github.com/BoxcarsAI/boxcars/pull/210) ([dependabot[bot]](https://github.com/apps/dependabot))
+- \[infra\] Bump rexml from 3.3.4 to 3.3.6 [\#209](https://github.com/BoxcarsAI/boxcars/pull/209) ([dependabot[bot]](https://github.com/apps/dependabot))
+- \[infra\] Bump vcr from 6.3.0 to 6.3.1 [\#208](https://github.com/BoxcarsAI/boxcars/pull/208) ([dependabot[bot]](https://github.com/apps/dependabot))
+- \[infra\] Bump vcr from 6.2.0 to 6.3.0 [\#207](https://github.com/BoxcarsAI/boxcars/pull/207) ([dependabot[bot]](https://github.com/apps/dependabot))
+- \[infra\] Bump rubocop-rspec from 3.0.3 to 3.0.4 [\#205](https://github.com/BoxcarsAI/boxcars/pull/205) ([dependabot[bot]](https://github.com/apps/dependabot))
+- \[infra\] Bump rubocop from 1.65.0 to 1.65.1 [\#204](https://github.com/BoxcarsAI/boxcars/pull/204) ([dependabot[bot]](https://github.com/apps/dependabot))
+- \[infra\] Bump nokogiri from 1.16.6 to 1.16.7 [\#202](https://github.com/BoxcarsAI/boxcars/pull/202) ([dependabot[bot]](https://github.com/apps/dependabot))
+- \[infra\] Bump pg from 1.5.6 to 1.5.7 [\#201](https://github.com/BoxcarsAI/boxcars/pull/201) ([dependabot[bot]](https://github.com/apps/dependabot))
+
 ## [v0.6.4](https://github.com/BoxcarsAI/boxcars/tree/v0.6.4) (2024-07-27)
 
 [Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.6.3...v0.6.4)
