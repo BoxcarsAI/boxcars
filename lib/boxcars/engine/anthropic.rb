@@ -45,6 +45,7 @@ module Boxcars
     # @param anthropic_api_key [String] Optional api key to use when asking the engine.
     #   Defaults to Boxcars.configuration.anthropic_api_key.
     # @param kwargs [Hash] Additional parameters to pass to the engine if wanted.
+    # rubocop:disable Metrics/PerceivedComplexity
     def client(prompt:, inputs: {}, **kwargs)
       model_params = llm_params.merge(kwargs)
       api_key = Boxcars.configuration.anthropic_api_key(**kwargs)
@@ -54,6 +55,9 @@ module Boxcars
       if conversation_model?(model_params[:model])
         params = convert_to_anthropic(prompt.as_messages(inputs).merge(model_params))
         if Boxcars.configuration.log_prompts
+          if params[:messages].length < 2 && params[:system].present?
+            Boxcars.debug(">>>>>> Role: system <<<<<<\n#{params[:system]}")
+          end
           Boxcars.debug(params[:messages].last(2).map { |p| ">>>>>> Role: #{p[:role]} <<<<<<\n#{p[:content]}" }.join("\n"), :cyan)
         end
         response = aclient.messages(parameters: params)
@@ -68,6 +72,7 @@ module Boxcars
         aclient.complete(parameters: params)
       end
     end
+    # rubocop:enable Metrics/PerceivedComplexity
 
     # get an answer from the engine for a question.
     # @param question [String] The question to ask the engine.
