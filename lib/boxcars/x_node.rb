@@ -54,7 +54,9 @@ module Boxcars
     end
 
     def xtext(path)
+      # rubocop:disable Style/SafeNavigationChainLength
       rv = xpath(path)&.text&.gsub(/[[:space:]]+/, " ")&.strip
+      # rubocop:enable Style/SafeNavigationChainLength
       return nil if rv.empty?
 
       rv
