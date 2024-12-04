@@ -1,8 +1,34 @@
 # Changelog
 
+## [v0.6.7](https://github.com/BoxcarsAI/boxcars/tree/v0.6.7) (2024-12-04)
+
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.6.6...v0.6.7)
+
+## [v0.6.6](https://github.com/BoxcarsAI/boxcars/tree/v0.6.6) (2024-11-15)
+
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.6.5...v0.6.6)
+
+**Merged pull requests:**
+
+- update anthropic prompt output [\#235](https://github.com/BoxcarsAI/boxcars/pull/235) ([francis](https://github.com/francis))
+- \[infra\] Bump rubocop-rspec from 3.1.0 to 3.2.0 [\#230](https://github.com/BoxcarsAI/boxcars/pull/230) ([dependabot[bot]](https://github.com/apps/dependabot))
+- \[infra\] Bump rexml from 3.3.8 to 3.3.9 [\#229](https://github.com/BoxcarsAI/boxcars/pull/229) ([dependabot[bot]](https://github.com/apps/dependabot))
+- \[infra\] Bump activerecord from 7.1.4 to 7.1.4.2 [\#228](https://github.com/BoxcarsAI/boxcars/pull/228) ([dependabot[bot]](https://github.com/apps/dependabot))
+- \[infra\] Bump activesupport from 7.1.4 to 7.1.4.2 [\#227](https://github.com/BoxcarsAI/boxcars/pull/227) ([dependabot[bot]](https://github.com/apps/dependabot))
+- \[infra\] Bump rubocop from 1.66.1 to 1.67.0 [\#224](https://github.com/BoxcarsAI/boxcars/pull/224) ([dependabot[bot]](https://github.com/apps/dependabot))
+- \[infra\] Bump ruby-openai from 7.1.0 to 7.3.1 [\#223](https://github.com/BoxcarsAI/boxcars/pull/223) ([dependabot[bot]](https://github.com/apps/dependabot))
+- \[infra\] Bump anthropic from 0.3.0 to 0.3.2 [\#220](https://github.com/BoxcarsAI/boxcars/pull/220) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Dep auto [\#219](https://github.com/BoxcarsAI/boxcars/pull/219) ([francis](https://github.com/francis))
+- \[infra\] Bump webmock from 3.23.1 to 3.24.0 [\#218](https://github.com/BoxcarsAI/boxcars/pull/218) ([dependabot[bot]](https://github.com/apps/dependabot))
+- \[infra\] Bump sqlite3 from 1.7.3 to 2.0.4 [\#206](https://github.com/BoxcarsAI/boxcars/pull/206) ([dependabot[bot]](https://github.com/apps/dependabot))
+
 ## [v0.6.5](https://github.com/BoxcarsAI/boxcars/tree/v0.6.5) (2024-10-04)
 
 [Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.6.4...v0.6.5)
+
+**Implemented enhancements:**
+
+- use sample sql data in the prompts [\#11](https://github.com/BoxcarsAI/boxcars/issues/11)
 
 **Closed issues:**
 
