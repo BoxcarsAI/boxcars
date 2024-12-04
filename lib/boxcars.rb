@@ -62,6 +62,11 @@ module Boxcars
       key_lookup(:groq_api_key, kwargs)
     end
 
+    # @return [String] The Google AI API key either from arg or env.
+    def gemini_api_key(**kwargs)
+      key_lookup(:gemini_api_key, kwargs)
+    end
+
     private
 
     def check_key(key, val)

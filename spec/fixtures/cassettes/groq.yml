@@ -10,7 +10,7 @@ http_interactions:
       Content-Type:
       - application/json
       Authorization:
-      - Bearer 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
+      - Bearer xxx
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:

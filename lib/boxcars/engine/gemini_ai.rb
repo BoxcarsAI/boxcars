@@ -2,22 +2,19 @@
 
 # Boxcars - a framework for running a series of tools to get an answer to a question.
 module Boxcars
-  # A engine that uses Cohere's API.
-  class Cohere < Engine
+  # A engine that uses Gemini's API.
+  class GeminiAi < Engine
     attr_reader :prompts, :llm_params, :model_kwargs, :batch_size
 
     # The default parameters to use when asking the engine.
     DEFAULT_PARAMS = {
-      model: "command-r-plus",
-      max_tokens: 4000,
-      max_input_tokens: 1000,
-      temperature: 0.2
+      model: "gemini-1.5-flash-latest"
     }.freeze
 
     # the default name of the engine
-    DEFAULT_NAME = "Cohere engine"
+    DEFAULT_NAME = "Google Gemini AI engine"
     # the default description of the engine
-    DEFAULT_DESCRIPTION = "useful for when you need to use Cohere AI to answer questions. " \
+    DEFAULT_DESCRIPTION = "useful for when you need to use Google Gemini AI to answer questions. " \
                           "You should ask targeted questions"
 
     # A engine is the driver for a single tool to run.
@@ -36,33 +33,39 @@ module Boxcars
       true
     end
 
-    def chat(params, cohere_api_key)
-      raise Boxcars::ConfigurationError('Cohere API key not set') if cohere_api_key.blank?
+    def chat(params, gemini_api_key)
+      raise Boxcars::ConfigurationError('Google AI API key not set') if gemini_api_key.blank?
+
+      model_string = params.delete(:model_string)
+      raise Boxcars::ConfigurationError('Google AI API key not set') if model_string.blank?
 
       # Define the API endpoint and parameters
-      api_endpoint = 'https://api.cohere.ai/v1/chat'
+      api_endpoint = "https://generativelanguage.googleapis.com/v1beta/models/#{model_string}:generateContent?key=#{gemini_api_key}"
 
       connection = Faraday.new(api_endpoint) do |faraday|
         faraday.request :url_encoded
-        faraday.headers['Authorization'] = "Bearer #{cohere_api_key}"
         faraday.headers['Content-Type'] = 'application/json'
       end
 
       # Make the API call
       response = connection.post { |req| req.body = params.to_json }
+
       JSON.parse(response.body, symbolize_names: true)
     end
 
     # Get an answer from the engine.
     # @param prompt [String] The prompt to use when asking the engine.
-    # @param cohere_api_key [String] Optional api key to use when asking the engine.
-    #   Defaults to Boxcars.configuration.cohere_api_key.
+    # @param gemini_api_key [String] Optional api key to use when asking the engine.
+    #   Defaults to Boxcars.configuration.gemini_api_key.
     # @param kwargs [Hash] Additional parameters to pass to the engine if wanted.
     def client(prompt:, inputs: {}, **kwargs)
-      api_key = Boxcars.configuration.cohere_api_key(**kwargs)
-      params = prompt.as_prompt(inputs: inputs, prefixes: default_prefixes, show_roles: true).merge(llm_params.merge(kwargs))
-      params[:message] = params.delete(:prompt)
-      params[:stop_sequences] = params.delete(:stop) if params.key?(:stop)
+      api_key = Boxcars.configuration.gemini_api_key(**kwargs)
+      option_params = llm_params.merge(kwargs)
+      model_string = option_params.delete(:model) || DEFAULT_PARAMS[:model]
+      convo = prompt.as_messages(inputs: inputs)
+      # Convert conversation to Google Gemini format
+      params = to_google_gemini_format(convo[:messages], option_params)
+      params[:model_string] = model_string
       Boxcars.debug("Prompt after formatting:#{params[:message]}", :cyan) if Boxcars.configuration.log_prompts
       chat(params, api_key)
     end
@@ -74,10 +77,10 @@ module Boxcars
       prompt = Prompt.new(template: question)
       response = client(prompt: prompt, **kwargs)
 
-      raise Error, "Cohere: No response from API" unless response
-      raise Error, "Cohere: #{response[:error]}" if response[:error]
+      raise Error, "GeminiAI: No response from API" unless response
+      raise Error, "GeminiAI: #{response[:error]}" if response[:error]
 
-      answer = response[:text]
+      answer = response[:candidates].first[:content][:parts].first[:text]
       Boxcars.debug(response, :yellow)
       answer
     end
@@ -98,7 +101,7 @@ module Boxcars
         msg = response.dig('error', 'message') || 'unknown error'
         raise KeyError, "ANTHOPIC_API_KEY not valid" if code == 'invalid_api_key'
 
-        raise ValueError, "Cohere error: #{msg}"
+        raise ValueError, "Gemini error: #{msg}"
       end
 
       must_haves.each do |key|
@@ -126,6 +129,28 @@ module Boxcars
       # get max context size for model by name
       max_size = modelname_to_contextsize(model_name)
       max_size - num_tokens
+    end
+
+    def to_google_gemini_format(convo, option_params)
+      instructions = convo.shift.last if convo.first && convo.first[:role] == :system
+      system_instructions = instructions || "You are a helpful assistant."
+
+      # Convert conversation history to the format expected by Google
+      contents = convo.map { |message| { text: message[:content] } }
+
+      generation_config = {}
+      if option_params.length.positive?
+        generation_config.merge!(option_params)
+        generation_config[:stopSequences] = [generation_config.delete(:stop)] if generation_config[:stop].present?
+      end
+
+      rv = {
+        system_instruction: { parts: { text: system_instructions } }, # System instructions or context
+        contents: { parts: contents } # The chat messages
+      }
+
+      rv[:generationConfig] = generation_config if generation_config.length.positive?
+      rv
     end
 
     def default_prefixes

@@ -9,7 +9,7 @@ http_interactions:
         a haiku about love"}'
     headers:
       Authorization:
-      - Bearer axhmZAUJwyoQKLSU9vaEsREUWVOgDBuTSX5V7lku
+      - Bearer xxxx
       Content-Type:
       - application/json
       User-Agent:
