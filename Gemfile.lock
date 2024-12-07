@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    boxcars (0.6.7)
+    boxcars (0.6.8)
       anthropic (~> 0.1)
       google_search_results (~> 2.2)
       gpt4all (~> 0.0.4)
@@ -77,16 +77,16 @@ GEM
     dotenv (3.1.4)
     drb (2.2.1)
     event_stream_parser (1.0.0)
-    faraday (2.12.0)
-      faraday-net_http (>= 2.0, < 3.4)
+    faraday (2.12.1)
+      faraday-net_http (>= 2.0, < 3.5)
       json
       logger
     faraday-http-cache (2.5.1)
       faraday (>= 0.8)
     faraday-multipart (1.0.4)
       multipart-post (~> 2)
-    faraday-net_http (3.3.0)
-      net-http
+    faraday-net_http (3.4.0)
+      net-http (>= 0.5.0)
     faraday-retry (2.2.1)
       faraday (~> 2.0)
     fiber-annotation (0.2.0)
@@ -127,7 +127,7 @@ GEM
     minitest (5.25.4)
     multi_json (1.15.0)
     multipart-post (2.4.1)
-    net-http (0.4.1)
+    net-http (0.6.0)
       uri
     netrc (0.11.0)
     nio4r (2.7.3)
@@ -224,7 +224,7 @@ GEM
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.6.0)
-    uri (0.13.1)
+    uri (1.0.2)
     vcr (6.3.1)
       base64
     webmock (3.24.0)

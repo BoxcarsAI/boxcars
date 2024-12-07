@@ -32,8 +32,8 @@ module Boxcars
       super(description: description, name: name)
     end
 
-    def conversation_model?(model)
-      @conversation_model ||= (extract_model_version(model) > 3.49)
+    def conversation_model?(_model)
+      true
     end
 
     def anthropic_client(anthropic_api_key: nil)
@@ -45,34 +45,27 @@ module Boxcars
     # @param anthropic_api_key [String] Optional api key to use when asking the engine.
     #   Defaults to Boxcars.configuration.anthropic_api_key.
     # @param kwargs [Hash] Additional parameters to pass to the engine if wanted.
-    # rubocop:disable Metrics/PerceivedComplexity
     def client(prompt:, inputs: {}, **kwargs)
       model_params = llm_params.merge(kwargs)
       api_key = Boxcars.configuration.anthropic_api_key(**kwargs)
       aclient = anthropic_client(anthropic_api_key: api_key)
       prompt = prompt.first if prompt.is_a?(Array)
-
-      if conversation_model?(model_params[:model])
-        params = convert_to_anthropic(prompt.as_messages(inputs).merge(model_params))
-        if Boxcars.configuration.log_prompts
-          if params[:messages].length < 2 && params[:system].present?
-            Boxcars.debug(">>>>>> Role: system <<<<<<\n#{params[:system]}")
-          end
-          Boxcars.debug(params[:messages].last(2).map { |p| ">>>>>> Role: #{p[:role]} <<<<<<\n#{p[:content]}" }.join("\n"), :cyan)
+      params = convert_to_anthropic(prompt.as_messages(inputs).merge(model_params))
+      if Boxcars.configuration.log_prompts
+        if params[:messages].length < 2 && params[:system].present?
+          Boxcars.debug(">>>>>> Role: system <<<<<<\n#{params[:system]}")
         end
-        response = aclient.messages(parameters: params)
-        response['completion'] = response.dig('content', 0, 'text')
-        response.delete('content')
-        response
-      else
-        params = prompt.as_prompt(inputs: inputs, prefixes: default_prefixes, show_roles: true).merge(model_params)
-        params[:prompt] = "\n\n#{params[:prompt]}" unless params[:prompt].start_with?("\n\n")
-        params[:stop_sequences] = params.delete(:stop) if params.key?(:stop)
-        Boxcars.debug("Prompt after formatting:#{params[:prompt]}", :cyan) if Boxcars.configuration.log_prompts
-        aclient.complete(parameters: params)
+        Boxcars.debug(params[:messages].last(2).map { |p| ">>>>>> Role: #{p[:role]} <<<<<<\n#{p[:content]}" }.join("\n"), :cyan)
       end
+      response = aclient.messages(parameters: params)
+      response['completion'] = response.dig('content', 0, 'text')
+      response.delete('content')
+      response
+    rescue StandardError => e
+      err = e.respond_to?(:response) ? e.response[:body] : e
+      Boxcars.warn("Anthropic Error #{e.class.name}: #{err}", :red)
+      raise
     end
-    # rubocop:enable Metrics/PerceivedComplexity
 
     # get an answer from the engine for a question.
     # @param question [String] The question to ask the engine.

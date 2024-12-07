@@ -45,7 +45,7 @@ module Boxcars
     def self.open_ai_client(openai_access_token: nil)
       access_token = Boxcars.configuration.openai_access_token(openai_access_token: openai_access_token)
       organization_id = Boxcars.configuration.organization_id
-      ::OpenAI::Client.new(access_token: access_token, organization_id: organization_id)
+      ::OpenAI::Client.new(access_token: access_token, organization_id: organization_id, log_errors: true)
     end
 
     def conversation_model?(model)
@@ -76,6 +76,10 @@ module Boxcars
         Boxcars.debug("Prompt after formatting:\n#{params[:prompt]}", :cyan) if Boxcars.configuration.log_prompts
         clnt.completions(parameters: params)
       end
+    rescue StandardError => e
+      err = e.respond_to?(:response) ? e.response[:body] : e
+      Boxcars.warn("OpenAI Error #{e.class.name}: #{err}", :red)
+      raise
     end
 
     # get an answer from the engine for a question.
