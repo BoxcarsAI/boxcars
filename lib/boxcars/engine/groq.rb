@@ -73,9 +73,7 @@ module Boxcars
       raise Error, "Groq: No response from API" unless response
 
       check_response(response)
-      answer = response["choices"].map { |c| c.dig("message", "content") || c["text"] }.join("\n").strip
-      puts answer
-      answer
+      response["choices"].map { |c| c.dig("message", "content") || c["text"] }.join("\n").strip
     end
 
     # Get the default parameters for the engine.

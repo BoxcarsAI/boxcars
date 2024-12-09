@@ -78,7 +78,7 @@ module Boxcars
       raise Error, "Cohere: #{response[:error]}" if response[:error]
 
       answer = response[:text]
-      Boxcars.debug(response, :yellow)
+      Boxcars.debug("Answer: #{answer}", :cyan)
       answer
     end
 

@@ -78,7 +78,7 @@ module Boxcars
       raise Error, "Anthropic: #{response['error']}" if response['error']
 
       answer = response['completion']
-      Boxcars.debug(response, :yellow)
+      Boxcars.debug("Answer: #{answer}", :cyan)
       answer
     end
 

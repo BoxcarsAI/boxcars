@@ -92,7 +92,7 @@ module Boxcars
       raise Error, "OpenAI: #{response['error']}" if response["error"]
 
       answer = response["choices"].map { |c| c.dig("message", "content") || c["text"] }.join("\n").strip
-      puts answer
+      Boxcars.debug("Answer: #{answer}", :cyan)
       answer
     end
 
