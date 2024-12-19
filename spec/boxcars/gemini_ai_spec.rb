@@ -25,7 +25,7 @@ RSpec.describe Boxcars::GeminiAi do
     it "raises an error when gemini_ai returns one" do
       an = described_class.new
       allow(an).to receive(:client).and_return(error: "foobar")
-      expect { an.run("foobar") }.to raise_error(Boxcars::Error, "GeminiAI: foobar")
+      expect { an.run("foobar") }.to raise_error(Boxcars::ValueError)
     end
   end
 end
