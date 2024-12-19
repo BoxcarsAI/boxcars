@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.6.9](https://github.com/BoxcarsAI/boxcars/tree/v0.6.9) (2024-12-19)
+
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.6.8...v0.6.9)
+
+## [v0.6.8](https://github.com/BoxcarsAI/boxcars/tree/v0.6.8) (2024-12-07)
+
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.6.7...v0.6.8)
+
 ## [v0.6.7](https://github.com/BoxcarsAI/boxcars/tree/v0.6.7) (2024-12-04)
 
 [Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.6.6...v0.6.7)
