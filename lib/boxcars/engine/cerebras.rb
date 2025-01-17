@@ -63,7 +63,8 @@ module Boxcars
       raise Error, "Cerebras: No response from API" unless adapter
 
       convo = prompt.as_intelligence_conversation(inputs: inputs)
-     raise Error, "Cerebras: No conversation" unless convo
+      raise Error, "Cerebras: No conversation" unless convo
+
       # Make API call
       request = Intelligence::ChatRequest.new(adapter: adapter)
       response = request.chat(convo)
