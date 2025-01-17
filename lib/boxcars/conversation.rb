@@ -95,6 +95,20 @@ module Boxcars
       raise KeyError, "Prompt format error: #{first_line}"
     end
 
+    def as_intelligence_conversation(inputs = nil)
+      conversation = Intelligence::Conversation.new
+      no_history.each do |ln|
+        message = Intelligence::Message.new(ln[0])
+        message << Intelligence::MessageContent::Text.new(text: cformat(ln.last, inputs))
+        conversation.messages << message
+      end
+      conversation
+    rescue ::KeyError => e
+      first_line = e.message.to_s.split("\n").first
+      Boxcars.error "Missing prompt input key: #{first_line}"
+      raise KeyError, "Prompt format error: #{first_line}"
+    end
+
     # compute the prompt parameters with input substitutions
     # @param inputs [Hash] The inputs to use for the prompt.
     # @return [Hash] The formatted prompt { prompt: "..."}

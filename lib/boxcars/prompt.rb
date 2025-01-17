@@ -44,6 +44,18 @@ module Boxcars
     def default_prefixes
     end
 
+    # Convert the prompt to an Intelligence::Conversation
+    # @param inputs [Hash] The inputs to use for the prompt
+    # @return [Intelligence::Conversation] The converted conversation
+    def as_intelligence_conversation(inputs: nil)
+      conversation = Intelligence::Conversation.new
+      user_msg = Intelligence::Message.new(:user)
+      user_msg << Intelligence::MessageContent::Text.new(text: format(inputs))
+      conversation.messages << user_msg
+
+      conversation
+    end
+
     private
 
     # format the prompt with the input variables

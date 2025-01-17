@@ -27,7 +27,7 @@ module Boxcars
 
   # Configuration contains gem settings
   class Configuration
-    attr_writer :openai_access_token, :serpapi_api_key, :groq_api_key
+    attr_writer :openai_access_token, :serpapi_api_key, :groq_api_key, :cerebras_api_key
     attr_accessor :organization_id, :logger, :log_prompts, :log_generated, :default_train, :default_engine
 
     def initialize
@@ -60,6 +60,11 @@ module Boxcars
     # @return [String] The Groq API key either from arg or env.
     def groq_api_key(**kwargs)
       key_lookup(:groq_api_key, kwargs)
+    end
+
+    # @return [String] The Cerebras API key either from arg or env.
+    def cerebras_api_key(**kwargs)
+      key_lookup(:cerebras_api_key, kwargs)
     end
 
     # @return [String] The Google AI API key either from arg or env.
