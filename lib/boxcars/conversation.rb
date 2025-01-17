@@ -95,7 +95,7 @@ module Boxcars
       raise KeyError, "Prompt format error: #{first_line}"
     end
 
-    def as_intelligence_conversation(inputs = nil)
+    def as_intelligence_conversation(inputs: nil)
       conversation = Intelligence::Conversation.new
       no_history.each do |ln|
         message = Intelligence::Message.new(ln[0])
