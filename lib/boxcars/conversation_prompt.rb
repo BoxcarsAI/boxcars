@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Boxcars
   # used by Boxcars that have engine's to create a conversation prompt.
   class ConversationPrompt < Prompt
