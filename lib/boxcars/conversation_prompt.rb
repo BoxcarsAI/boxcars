@@ -56,7 +56,7 @@ module Boxcars
     # @param inputs [Hash] The inputs to use for the prompt
     # @return [Intelligence::Conversation] The converted conversation
     def as_intelligence_conversation(inputs: nil)
-      conversation.to_intelligence_conversation(inputs: inputs)
+      conversation.as_intelligence_conversation(inputs: inputs)
     end
   end
 end

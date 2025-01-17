@@ -60,17 +60,17 @@ module Boxcars
     def client(prompt:, inputs: {}, api_key: nil, **kwargs)
       params = cerebras_params.merge(kwargs)
       adapter = Cerebras.adapter(api_key: api_key, params: params)
-      raise Error, "OpenAI: No response from API" unless adapter
+      raise Error, "Cerebras: No response from API" unless adapter
 
       convo = prompt.as_intelligence_conversation(inputs: inputs)
-
-      # Add content processing
-      Boxcars.debug("Sending to Cerebras:\n#{convo}", :cyan) if Boxcars.configuration.log_prompts
+      raise Error, "Cerebras: No conversation" unless convo
 
       # Make API call
       request = Intelligence::ChatRequest.new(adapter: adapter)
       response = request.chat(convo)
-      check_response(response)
+      return JSON.parse(response.body) if response.success?
+
+      raise Error, "Cerebras: #{response.reason_phrase}"
     rescue StandardError => e
       Boxcars.error("Cerebras Error: #{e.message}", :red)
       raise
@@ -95,7 +95,7 @@ module Boxcars
     end
 
     def check_response(response)
-      return response.result.text if response.success?
+      return if response.present? && response.key?("choices")
 
       raise KeyError, "CEREBRAS_API_KEY not valid" if response&.reason_phrase == "Unauthorized"
 
