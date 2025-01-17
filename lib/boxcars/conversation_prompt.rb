@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-
 module Boxcars
   # used by Boxcars that have engine's to create a conversation prompt.
   class ConversationPrompt < Prompt
@@ -50,6 +49,13 @@ module Boxcars
 
     def default_prefixes
       conversation.default_prefixes
+    end
+
+    # Convert the prompt to an Intelligence::Conversation
+    # @param inputs [Hash] The inputs to use for the prompt
+    # @return [Intelligence::Conversation] The converted conversation
+    def as_intelligence_conversation(inputs: nil)
+      conversation.to_intelligence_conversation(inputs: inputs)
     end
   end
 end

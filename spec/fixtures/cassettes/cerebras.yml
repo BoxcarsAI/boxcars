@@ -1,0 +1,178 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://api.cerebras.ai/v1/chat/completions
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v2.12.2
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer abcdefgh
+      Content-Length:
+      - '0'
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 422
+      message: Unprocessable Entity
+    headers:
+      Date:
+      - Thu, 16 Jan 2025 17:35:50 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '118'
+      Connection:
+      - keep-alive
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      X-Content-Type-Options:
+      - nosniff
+      Strict-Transport-Security:
+      - max-age=3600; includeSubDomains
+      Cf-Cache-Status:
+      - DYNAMIC
+      Set-Cookie:
+      - __cf_bm=Oi2PniDAXdT3MDevsTT2wBHDNhPYiBrtlQ86GtaKJec-1737048950-1.0.1.1-u0eCQVep87baLJ4JwZ3yvH9GxGt8jSLof9_2P24kiNWsZ3eZTvz8Yiq.c_5jtPgXPVicVsze154rsPP5rnM7rA;
+        path=/; expires=Thu, 16-Jan-25 18:05:50 GMT; domain=.api.cerebras.ai; HttpOnly;
+        Secure; SameSite=None
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 902fdd44a94783f1-LAX
+      Alt-Svc:
+      - h3=":443"; ma=86400
+    body:
+      encoding: UTF-8
+      string: '{"message":"body: Field required","type":"invalid_request_error","param":"validation_error","code":"wrong_api_format"}'
+  recorded_at: Thu, 16 Jan 2025 17:35:50 GMT
+- request:
+    method: post
+    uri: https://api.cerebras.ai/v1/chat/completions
+    body:
+      encoding: UTF-8
+      string: '{"model":"llama-3.3-70b","temperature":0.1,"messages":[{"role":"user","content":"write
+        a haiku about love"}]}'
+    headers:
+      User-Agent:
+      - Faraday v2.12.2
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer abcdefgh
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 401
+      message: Unauthorized
+    headers:
+      Date:
+      - Fri, 17 Jan 2025 18:12:07 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '99'
+      Connection:
+      - keep-alive
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      X-Content-Type-Options:
+      - nosniff
+      Strict-Transport-Security:
+      - max-age=3600; includeSubDomains
+      Cf-Cache-Status:
+      - DYNAMIC
+      Set-Cookie:
+      - __cf_bm=yK7tlynlL11QE7rRLA4nCwOgqmrrs21lyIGycinW4MM-1737137527-1.0.1.1-Tkc413ps2bSJRQxgCcdV8.uhbbVjyDQwb1EwoyUnDO_RkyYtDbMf7hXoGi6VpktJPc4bGU0Bc58t2F41piKZNw;
+        path=/; expires=Fri, 17-Jan-25 18:42:07 GMT; domain=.api.cerebras.ai; HttpOnly;
+        Secure; SameSite=None
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 90384fcbd8907d52-LAX
+      Alt-Svc:
+      - h3=":443"; ma=86400
+    body:
+      encoding: UTF-8
+      string: '{"message":"Wrong API Key","type":"invalid_request_error","param":"api_key","code":"wrong_api_key"}'
+  recorded_at: Fri, 17 Jan 2025 18:12:07 GMT
+- request:
+    method: post
+    uri: https://api.cerebras.ai/v1/chat/completions
+    body:
+      encoding: UTF-8
+      string: '{"model":"llama-3.3-70b","temperature":0.1,"messages":[{"role":"user","content":"write
+        a haiku about love"}]}'
+    headers:
+      User-Agent:
+      - Faraday v2.12.2
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer csk-396tk3fpt4mhrt32ryjw2ejd4r9hfcwdcwcdeprefvfpv2mp
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 17 Jan 2025 18:13:05 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      X-Request-Id:
+      - 903851374f0cf7a7-LAX
+      X-Ratelimit-Limit-Requests-Day:
+      - '14400'
+      X-Ratelimit-Limit-Tokens-Minute:
+      - '60000'
+      X-Ratelimit-Remaining-Requests-Day:
+      - '14400'
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - '60000'
+      X-Ratelimit-Reset-Requests-Day:
+      - '20814.08611536026'
+      X-Ratelimit-Reset-Tokens-Minute:
+      - '54.08611536026001'
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      X-Content-Type-Options:
+      - nosniff
+      Strict-Transport-Security:
+      - max-age=3600; includeSubDomains
+      Cf-Cache-Status:
+      - DYNAMIC
+      Set-Cookie:
+      - __cf_bm=ZTOkJiTaeFl0EPbE8JlYPtoVpJ9hWlUpX4HrccUYRE8-1737137585-1.0.1.1-dgWPYNyeOOOYKtAm_eIBqrNst2qEFl3Kb6hoir5mE3h2FnTZDWAKulWmlfBY2sJZvcaFgwGqN8A5vVp.EtOzow;
+        path=/; expires=Fri, 17-Jan-25 18:43:05 GMT; domain=.api.cerebras.ai; HttpOnly;
+        Secure; SameSite=None
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 903851374f0cf7a7-LAX
+      Alt-Svc:
+      - h3=":443"; ma=86400
+    body:
+      encoding: ASCII-8BIT
+      string: '{"id":"chatcmpl-240729a5-8ae2-4bb8-9c8c-6095c3c5600b","choices":[{"finish_reason":"stop","index":0,"message":{"content":"Softly
+        glowing flame\nWarming heart and tender soul\nLove''s eternal kiss","role":"assistant"}}],"created":1737137585,"model":"llama-3.3-70b","system_fingerprint":"fp_6381a6c109","object":"chat.completion","usage":{"prompt_tokens":41,"completion_tokens":17,"total_tokens":58},"time_info":{"queue_time":7.981e-05,"prompt_time":0.00220202,"completion_time":0.014209401,"total_time":0.01777482032775879,"created":1737137585}}'
+  recorded_at: Fri, 17 Jan 2025 18:13:05 GMT
+recorded_with: VCR 6.3.1

@@ -1,14 +1,15 @@
 PATH
   remote: .
   specs:
-    boxcars (0.6.9)
-      anthropic (~> 0.1)
+    boxcars (0.7.1)
+      anthropic (~> 0.3)
       google_search_results (~> 2.2)
-      gpt4all (~> 0.0.4)
-      hnswlib (~> 0.8)
-      nokogiri (~> 1.16)
+      gpt4all (~> 0.0.5)
+      hnswlib (~> 0.9)
+      intelligence (>= 0.8)
+      nokogiri (~> 1.18)
       pgvector (~> 0.2)
-      ruby-openai (>= 7.1, < 8.0)
+      ruby-openai (>= 7.3)
 
 GEM
   remote: https://rubygems.org/
@@ -78,6 +79,7 @@ GEM
     domain_name (0.6.20240107)
     dotenv (3.1.7)
     drb (2.2.1)
+    dynamicschema (1.0.0.beta04)
     event_stream_parser (1.0.0)
     faraday (2.12.2)
       faraday-net_http (>= 2.0, < 3.5)
@@ -116,11 +118,17 @@ GEM
       domain_name (~> 0.5)
     i18n (1.14.6)
       concurrent-ruby (~> 1.0)
+    intelligence (0.8.0)
+      dynamicschema (~> 1.0.0.beta03)
+      faraday (~> 2.7)
+      json-repair (~> 0.2)
+      mime-types (~> 3.6)
     io-console (0.8.0)
     irb (1.14.3)
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
     json (2.9.1)
+    json-repair (0.2.0)
     language_server-protocol (3.17.0.3)
     logger (1.6.4)
     mime-types (3.6.0)
@@ -134,9 +142,7 @@ GEM
       uri
     netrc (0.11.0)
     nio4r (2.7.4)
-    nokogiri (1.17.2-arm64-darwin)
-      racc (~> 1.4)
-    nokogiri (1.17.2-x86_64-linux)
+    nokogiri (1.18.1-arm64-darwin)
       racc (~> 1.4)
     octokit (4.25.1)
       faraday (>= 1, < 3)
