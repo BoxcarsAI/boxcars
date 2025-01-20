@@ -58,7 +58,7 @@ module Boxcars
 
     # Get an answer from the engine
     def client(prompt:, inputs: {}, api_key: nil, **kwargs)
-      params = default_model_params.merge(kwargs)
+      params = all_params.merge(kwargs)
       api_key ||= lookup_provider_api_key(params: params)
       raise Error, "No API key found for #{provider}" unless api_key
 
@@ -93,11 +93,9 @@ module Boxcars
     end
 
     def check_response(response)
-      return if response.present? && response.key?("choices")
+      return if response.is_a?(Hash) && response.key?("choices")
 
-      raise KeyError, "#{provider} API_KEY not valid" if response&.reason_phrase == "Unauthorized"
-
-      raise ValueError, "#{provider} Error: #{response&.reason_phrase&.present? ? response.reason_phrase : response}"
+      raise Error, "Invalid response from #{provider}: #{response}"
     end
   end
 end
