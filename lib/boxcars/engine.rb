@@ -3,12 +3,18 @@
 module Boxcars
   # @abstract
   class Engine
+    attr_reader :prompts, :batch_size
+
     # An Engine is used by Boxcars to generate output from prompts
     # @param name [String] The name of the Engine. Defaults to classname.
     # @param description [String] A description of the Engine.
-    def initialize(description: 'Engine', name: nil)
+    # @param prompts [Array<Prompt>] The prompts to use for the Engine.
+    # @param batch_size [Integer] The number of prompts to send to the Engine at a time.
+    def initialize(description: 'Engine', name: nil, prompts: [], batch_size: 20)
       @name = name || self.class.name
       @description = description
+      @prompts = prompts
+      @batch_size = batch_size
     end
 
     # Get an answer from the Engine.
@@ -37,7 +43,7 @@ module Boxcars
       end
     end
 
-    # Call out to OpenAI's endpoint with k unique prompts.
+    # Call out to LLM's endpoint with k unique prompts.
     # @param prompts [Array<String>] The prompts to pass into the model.
     # @param inputs [Array<String>] The inputs to subsitite into the prompt.
     # @param stop [Array<String>] Optional list of stop words to use when generating.
@@ -80,4 +86,6 @@ require "boxcars/engine/openai"
 require "boxcars/engine/perplexityai"
 require "boxcars/engine/gpt4all_eng"
 require "boxcars/engine/gemini_ai"
+require "boxcars/engine/intelligence_base"
 require "boxcars/engine/cerebras"
+require "boxcars/engine/google"

@@ -24,7 +24,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Fri, 17 Jan 2025 20:45:36 GMT
+      - Mon, 20 Jan 2025 18:19:01 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -32,19 +32,19 @@ http_interactions:
       Connection:
       - keep-alive
       X-Request-Id:
-      - 903930a0ca11f7df-LAX
+      - 905112035db6f7bd-LAX
       X-Ratelimit-Limit-Requests-Day:
       - '14400'
       X-Ratelimit-Limit-Tokens-Minute:
       - '60000'
       X-Ratelimit-Remaining-Requests-Day:
-      - '14399'
+      - '14379'
       X-Ratelimit-Remaining-Tokens-Minute:
       - '60000'
       X-Ratelimit-Reset-Requests-Day:
-      - '11663.104269266129'
+      - '20458.83249258995'
       X-Ratelimit-Reset-Tokens-Minute:
-      - '23.10426926612854'
+      - '58.83249258995056'
       Referrer-Policy:
       - strict-origin-when-cross-origin
       X-Content-Type-Options:
@@ -54,18 +54,18 @@ http_interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Set-Cookie:
-      - __cf_bm=jvb2XNb9kEYn.wuCgaRTEsoaQh0uO_TBH8g9sySCjiw-1737146736-1.0.1.1-4CelpxC_dADDgX3u0hczXV__vT0YgyBkvMwORbL2BxsZ.APrAuhRbN7vW5skjWXBKOwDrLQhbmtxzoj.5wORMA;
-        path=/; expires=Fri, 17-Jan-25 21:15:36 GMT; domain=.api.cerebras.ai; HttpOnly;
+      - __cf_bm=PqkixmrXthxfxSW7oyUC1mj9tekPXdHYNhEjkd_Kgag-1737397141-1.0.1.1-CT8M.1WNWJLz3EErqgrAQ194mfQaAXff7JcI6IuaRUbL.T3edFjYiLiGU6n7Y2YIVkCMiOyNCOyTjpH.yZMfnw;
+        path=/; expires=Mon, 20-Jan-25 18:49:01 GMT; domain=.api.cerebras.ai; HttpOnly;
         Secure; SameSite=None
       Server:
       - cloudflare
       Cf-Ray:
-      - 903930a0ca11f7df-LAX
+      - 905112035db6f7bd-LAX
       Alt-Svc:
       - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
-      string: '{"id":"chatcmpl-e7d70ef5-97bf-4413-a0f7-63a3bccc17ac","choices":[{"finish_reason":"stop","index":0,"message":{"content":"Softly
-        glowing flame\nWarming heart and gentle soul\nLove''s eternal kiss","role":"assistant"}}],"created":1737146736,"model":"llama-3.3-70b","system_fingerprint":"fp_6381a6c109","object":"chat.completion","usage":{"prompt_tokens":41,"completion_tokens":17,"total_tokens":58},"time_info":{"queue_time":9.342e-05,"prompt_time":0.002241585,"completion_time":0.012910398,"total_time":0.01676177978515625,"created":1737146736}}'
-  recorded_at: Fri, 17 Jan 2025 20:45:36 GMT
+      string: '{"id":"chatcmpl-38cfbcfd-be33-42b8-8b1e-382cf08772d0","choices":[{"finish_reason":"stop","index":0,"message":{"content":"Softly
+        glowing flame\nWarming heart and gentle soul\nLove''s eternal kiss","role":"assistant"}}],"created":1737397141,"model":"llama-3.3-70b","system_fingerprint":"fp_6381a6c109","object":"chat.completion","usage":{"prompt_tokens":41,"completion_tokens":17,"total_tokens":58},"time_info":{"queue_time":9.54e-05,"prompt_time":0.002336415,"completion_time":0.01223732,"total_time":0.016140222549438477,"created":1737397141}}'
+  recorded_at: Mon, 20 Jan 2025 18:19:01 GMT
 recorded_with: VCR 6.3.1
