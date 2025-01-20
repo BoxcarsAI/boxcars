@@ -2,7 +2,7 @@
 
 module Boxcars
   # A engine that uses Google's API
-  class GoogleEngine < IntelligenceBase
+  class Google < IntelligenceBase
     # The default parameters to use when asking the engine
     DEFAULT_PARAMS = {
       model: "gemini-1.5-flash-latest",
