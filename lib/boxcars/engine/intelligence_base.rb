@@ -3,8 +3,8 @@
 require 'intelligence'
 
 module Boxcars
-  # A engine that uses Cerebras's API
-  class IntelligenceEngineBase < Engine
+  # A Base class for all Intelligence Engines
+  class IntelligenceBase < Engine
     attr_reader :provider, :all_params
 
     # The base Intelligence Engine is used by other engines to generate output from prompts

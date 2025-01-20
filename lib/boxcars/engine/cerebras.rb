@@ -2,7 +2,7 @@
 
 module Boxcars
   # A engine that uses Cerebras's API
-  class Cerebras < IntelligenceEngineBase
+  class Cerebras < IntelligenceBase
     # The default parameters to use when asking the engine
     DEFAULT_PARAMS = {
       model: "llama-3.3-70b",
