@@ -87,6 +87,8 @@ module Boxcars
       # Handle different response formats
       if response["choices"]
         response["choices"].map { |c| c.dig("message", "content") || c["text"] }.join("\n").strip
+      elsif response["candidates"]
+        response["candidates"].map { |c| c.dig("content", "parts", 0, "text") }.join("\n").strip
       else
         response["output"] || response.to_s
       end
