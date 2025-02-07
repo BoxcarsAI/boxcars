@@ -45,7 +45,9 @@ module Boxcars
     def self.open_ai_client(openai_access_token: nil)
       access_token = Boxcars.configuration.openai_access_token(openai_access_token: openai_access_token)
       organization_id = Boxcars.configuration.organization_id
-      ::OpenAI::Client.new(access_token: access_token, organization_id: organization_id, log_errors: true)
+      uri_base = Boxcars.configuration.uri_base
+      opts = { access_token: access_token, organization_id: organization_id, log_errors: true, uri_base: uri_base }.compact
+      ::OpenAI::Client.new(**opts)
     end
 
     def conversation_model?(model)

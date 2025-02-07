@@ -28,7 +28,7 @@ module Boxcars
   # Configuration contains gem settings
   class Configuration
     attr_writer :openai_access_token, :serpapi_api_key, :groq_api_key, :cerebras_api_key
-    attr_accessor :organization_id, :logger, :log_prompts, :log_generated, :default_train, :default_engine
+    attr_accessor :organization_id, :logger, :log_prompts, :log_generated, :default_train, :default_engine, :uri_base
 
     def initialize
       @organization_id = nil
