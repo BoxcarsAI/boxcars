@@ -13,14 +13,11 @@ module Boxcars
 
     # @param models [Array<ActiveRecord::Model>] The models to use for this boxcar. Will use all if nil.
     # @param except_models [Array<ActiveRecord::Model>] The models to exclude from this boxcar. Will exclude none if nil.
-    # @param read_only [Boolean] Whether to use read only models. Defaults to true unless you pass an approval function.
-    # @param approval_callback [Proc] A function to call to approve changes. Defaults to nil.
     # @param kwargs [Hash] Any other keyword arguments. These can include:
     #   :name, :description, :prompt, :except_models, :top_k, :stop, :code_only and :engine
-    def initialize(models: nil, except_models: nil, read_only: nil, approval_callback: nil, **kwargs)
+    def initialize(models: nil, except_models: nil, **kwargs)
       check_models(models, except_models)
-      @approval_callback = approval_callback
-      @read_only = read_only.nil? ? !approval_callback : read_only
+      @read_only = true
       @code_only = kwargs.delete(:code_only) || false
       kwargs[:name] ||= get_name
       kwargs[:description] ||= format(ARDESC, name: name)
@@ -146,36 +143,6 @@ module Boxcars
       eval_safe_wrapper code
     end
 
-    def change_count(changes_code)
-      return 0 if changes_code.nil? || changes_code.empty? || changes_code =~ %r{^(None|N/A)$}i
-
-      rollback_after_running do
-        Boxcars.debug "computing change count with: #{changes_code}", :yellow
-        evaluate_input changes_code
-      end
-    end
-
-    def approved?(changes_code, code)
-      # find out how many changes there are
-      changes = change_count(changes_code)
-      begin
-        return true unless changes&.positive?
-      rescue StandardError => e
-        Boxcars.error "Error while computing change count: #{e.message}", :red
-      end
-
-      Boxcars.debug "#{name}(Pending Changes): #{changes}", :yellow
-      if read_only?
-        change_str = "#{changes} change#{'s' if changes.to_i > 1}"
-        Boxcars.error("Can not run code that makes #{change_str} in read-only mode", :red)
-        return false
-      end
-
-      return approval_callback.call(changes, code) if approval_callback.is_a?(Proc)
-
-      true
-    end
-
     def run_active_record_code(code)
       code = ::Regexp.last_match(1) if code =~ /`(.+)`/
       Boxcars.debug code, :yellow
@@ -205,18 +172,8 @@ module Boxcars
     end
 
     def get_active_record_answer(text)
-      changes_code = extract_code text.split('ARCode:').first.split('ARChanges:').last.strip if text =~ /^ARChanges:/
       code = extract_code text.split('ARCode:').last.strip
-      return Result.new(status: :ok, explanation: "code to run", code: code, changes_code: changes_code) if code_only?
-
-      have_approval = false
-      begin
-        have_approval = approved?(changes_code, code)
-      rescue NameError, Error => e
-        return Result.new(status: :error, explanation: error_message(e, "ARChanges"), changes_code: changes_code)
-      end
-
-      raise SecurityError, "Permission to run code that makes changes denied" unless have_approval
+      return Result.new(status: :ok, explanation: "code to run", code: code) if code_only?
 
       begin
         output = clean_up_output(run_active_record_code(code))
@@ -236,7 +193,7 @@ module Boxcars
         Result.from_text(text)
       else
         Result.from_error("Error: Your answer wasn't formatted properly - try again. I expected your answer to " \
-                          "start with \"ARChanges:\" or \"ARCode:\"")
+                          "start with or \"ARCode:\"")
       end
     end
 
@@ -249,13 +206,11 @@ module Boxcars
            "When generating the code, ",
            "only use the following Active Record models: %<model_info>s\n",
            "Only use the attribute names that you can see in the model description.\n",
-           "Do not make up variable or attribute names, and do not share variables between the code in ARChanges and ARCode\n",
+           "Do not make up variable or attribute names, and do not share variables between the code in ARCode\n",
            "Do not query for attributes that do not exist.\n",
            "Finally, do not use print or puts in your code\n",
            "When your code generating task is complete, use the following format:\n",
            "Question: ${{Question here}}\n",
-           "ARChanges: ${{Active Record code to compute the number of records going to change}} - ",
-           "Only add this line if the ARCode on the next line will make data changes.\n",
            "ARCode: ${{Active Record code to run}} - make sure you use valid code\n",
            "Answer: ${{Final answer here}}\n\n"
           ),
