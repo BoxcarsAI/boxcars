@@ -72,15 +72,14 @@ module Boxcars
     # abstract method to get the output for the last query
     def get_output(code)
       connection&.exec_query(code)
+      code
     end
 
     def clean_up_output(code)
       output = get_output(code)
-      output = output.as_json if output.is_a?(::ActiveRecord::Result)
       output = 0 if output.is_a?(Array) && output.empty?
       output = output.first if output.is_a?(Array) && output.length == 1
       output = output[output.keys.first] if output.is_a?(Hash) && output.length == 1
-      output = output.as_json if output.is_a?(::ActiveRecord::Relation)
       output
     end
 
@@ -109,13 +108,14 @@ module Boxcars
     # The prompt to use for the engine.
     def my_prompt
       conv_template = [
-               Boxcar.syst("Given an input question, create a syntactically correct SQL query, ",
+        Boxcar.syst("Given an input question, create a syntactically correct SQL query, ",
                     "return the query as the answer.",
                     "You can order the results by a relevant column to return the most interesting examples in the database.\n",
                     "Do not query for all the columns from a specific table, only relevant columns given the question.\n",
                     "When building the sql query, use only the following schema description: #{schema}\n",
                     "When your task is complete, use the following format:\n",
                     "Question: 'Question here'\n",
+                    "SQLQuery: 'SQL Query to run'\n",
                     "Answer: 'Final answer here'"),
         Boxcar.user("Question: %<question>s")
       ]
