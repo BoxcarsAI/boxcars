@@ -186,7 +186,7 @@ module Boxcars
         Result.from_text(text)
       else
         Result.from_error("Error: Your answer wasn't formatted properly - try again. I expected your answer to " \
-                          "start with \"ARCode:\"")
+                          "start with \"ARCode:\" and do not add any explanation after the code.")
       end
     end
 
