@@ -116,7 +116,7 @@ module Boxcars
                     "When building the sql query, use only the following schema description: #{schema}\n",
                     "When your task is complete, use the following format:\n",
                     "Question: 'Question here'\n",
-                    "Answer: 'SQL Query to run'\n"),
+                    "Answer: 'Final answer here'"),
         Boxcar.user("Question: %<question>s")
       ]
       @conversation ||= Conversation.new(lines: conv_template)
