@@ -170,7 +170,6 @@ module Boxcars
     end
 
     def get_active_record_answer(text)
-      code = text[/^ARCode: (.*)/, 1]
       code = extract_code text.split('ARCode:').last.strip
       Boxcars.debug code, :yellow
       output = clean_up_output(code)
