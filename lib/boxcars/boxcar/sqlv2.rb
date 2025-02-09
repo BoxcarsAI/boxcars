@@ -109,15 +109,14 @@ module Boxcars
     # The prompt to use for the engine.
     def my_prompt
       conv_template = [
-        Boxcar.syst("Given an input question, create a syntactically correct SQL query, ",
+               Boxcar.syst("Given an input question, create a syntactically correct SQL query, ",
                     "return the query as the answer.",
                     "You can order the results by a relevant column to return the most interesting examples in the database.\n",
                     "Do not query for all the columns from a specific table, only relevant columns given the question.\n",
                     "When building the sql query, use only the following schema description: #{schema}\n",
                     "When your task is complete, use the following format:\n",
                     "Question: 'Question here'\n",
-                    "SQLQuery: 'SQL Query to run'\n",
-                    "Answer: 'Final answer here'"),
+                    "Answer: 'SQL Query to run'\n"),
         Boxcar.user("Question: %<question>s")
       ]
       @conversation ||= Conversation.new(lines: conv_template)
