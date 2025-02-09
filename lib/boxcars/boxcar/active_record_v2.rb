@@ -193,7 +193,7 @@ module Boxcars
         Result.from_text(text)
       else
         Result.from_error("Error: Your answer wasn't formatted properly - try again. I expected your answer to " \
-                          "start with or \"ARCode:\"")
+                          "start with \"ARCode:\"")
       end
     end
 
@@ -210,9 +210,9 @@ module Boxcars
            "Do not query for attributes that do not exist.\n",
            "Finally, do not use print or puts in your code\n",
            "When your task is complete, use the following format:\n",
-           "Question: 'Question here'''\n",
-           "ARCode: 'Active Record code to run'\n",
-           "Answer: '''Final answer here'"),
+           "Question: 'Question here'\n",
+           "ARCode: 'Active Record code to code'\n",
+           "Answer: 'Final answer here'"),
       user("Question: %<question>s")
     ].freeze
 
