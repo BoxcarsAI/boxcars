@@ -156,11 +156,9 @@ module Boxcars
     end
 
     def clean_up_output(output)
-      output = output.as_json if output.is_a?(::ActiveRecord::Result)
       output = 0 if output.is_a?(Array) && output.empty?
       output = output.first if output.is_a?(Array) && output.length == 1
       output = output[output.keys.first] if output.is_a?(Hash) && output.length == 1
-      output = output.as_json if output.is_a?(::ActiveRecord::Relation)
       output
     end
 
@@ -172,17 +170,13 @@ module Boxcars
     end
 
     def get_active_record_answer(text)
+      code = text[/^ARCode: (.*)/, 1]
       code = extract_code text.split('ARCode:').last.strip
-      return Result.new(status: :ok, explanation: "code to run", code: code) if code_only?
-
-      begin
-        output = clean_up_output(run_active_record_code(code))
-        Result.new(status: :ok, answer: output, explanation: "Answer: #{output.to_json}", code: code)
-      rescue SecurityError => e
-        raise e
-      rescue ::StandardError => e
-        Result.new(status: :error, answer: nil, explanation: error_message(e, "ARCode"), code: code)
-      end
+      Boxcars.debug code, :yellow
+      output = clean_up_output(code)
+      Result.new(status: :ok, answer: output, explanation: "Answer: #{output.to_json}", code: code)
+    rescue ::StandardError => e
+      Result.new(status: :error, answer: nil, explanation: error_message(e, "ARCode"), code: code)
     end
 
     def get_answer(text)
