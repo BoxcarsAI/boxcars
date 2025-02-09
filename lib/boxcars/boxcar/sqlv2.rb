@@ -5,7 +5,7 @@ module Boxcars
   # A Boxcar that interprets a prompt and executes SQL code to get answers
   # Use one of the subclasses for ActiveRecord or Sequel
   # @abstract
-  class SQLBaseV2 < EngineBoxcar
+  class SQLV2 < EngineBoxcar
     # the description of this engine boxcar
     SQLDESC = "useful for when you need to query a database for %<name>s."
     LOCKED_OUT_TABLES = %w[schema_migrations ar_internal_metadata].freeze
@@ -16,7 +16,7 @@ module Boxcars
     # @param except_tables [Array<String>] The tables to exclude from this boxcar. Will exclude none if nil.
     # @param kwargs [Hash] Any other keyword arguments to pass to the parent class. This can include
     #   :name, :description, :prompt, :top_k, :stop, and :engine
-    def initialize(connection: nil, tables: nil, except_tables: nil, **kwargs)
+    def initialize(connection: ::ActiveRecord::Base.connection, tables: nil, except_tables: nil, **kwargs)
       @connection = connection
       check_tables(tables, except_tables)
       kwargs[:name] ||= "Database"
@@ -55,23 +55,23 @@ module Boxcars
       connection&.tables
     end
 
-    # abstract method to get the prompt for this boxcar
-    def table_schema(table)
-      raise NotImplementedError
-    end
-
     def schema
-      the_tables.map(&method(:table_schema)).join("\n")
+      tb_schema_proc = lambda do |table|
+        ["CREATE TABLE #{table} (",
+         connection&.columns(table)&.map { |c| " #{c.name} #{c.sql_type} #{c.null ? "NULL" : "NOT NULL"}" }&.join(",\n"),
+         ");"].join("\n")
+      end
+      the_tables.map { |t| tb_schema_proc.call(t) }.join("\n")
     end
 
     # abstract method to get the prompt for this boxcar
     def dialect
-      raise NotImplementedError
+      connection.class.name.split("::").last.sub("Adapter", "")
     end
 
     # abstract method to get the output for the last query
     def get_output(code)
-      raise NotImplementedError
+      connection&.exec_query(code)
     end
 
     def clean_up_output(code)
