@@ -172,7 +172,7 @@ module Boxcars
     def get_active_record_answer(text)
       code = extract_code text.split('ARCode:').last.strip
       Boxcars.debug code, :yellow
-      output = clean_up_output(code)
+      output = clean_up_output(run_active_record_code(code))
       Result.new(status: :ok, answer: output, explanation: "Answer: #{output.to_json}", code: code)
     rescue ::StandardError => e
       Result.new(status: :error, answer: nil, explanation: error_message(e, "ARCode"), code: code)
