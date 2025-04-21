@@ -18,27 +18,6 @@ module Boxcars
       super(engine: engine, prompt: the_prompt, **kwargs)
     end
 
-    private
-
-    def get_embedded_ruby_answer(text)
-      code = text.split("```ruby\n").last.split("```").first.strip
-      # code = text[8..-4].split("```").first.strip
-      ruby_executor = Boxcars::RubyREPL.new
-      ruby_executor.call(code: code)
-    end
-
-    def get_answer(text)
-      case text
-      when /^```ruby/
-        get_embedded_ruby_answer(text)
-      when /^Answer:/
-        Result.from_text(text)
-      else
-        Result.new(status: :error,
-                   explanation: "Error: expecting your response to begin with '```ruby'. Try answering the question again.")
-      end
-    end
-
     # our template
     CTEMPLATE = [
       syst("You can do basic math, but for any hard calculations that a human could not do ",
@@ -61,6 +40,27 @@ module Boxcars
       syst("Begin."),
       user("%<question>s")
     ].freeze
+
+    private
+
+    def get_embedded_ruby_answer(text)
+      code = text.split("```ruby\n").last.split("```").first.strip
+      # code = text[8..-4].split("```").first.strip
+      ruby_executor = Boxcars::RubyREPL.new
+      ruby_executor.call(code: code)
+    end
+
+    def get_answer(text)
+      case text
+      when /^```ruby/
+        get_embedded_ruby_answer(text)
+      when /^Answer:/
+        Result.from_text(text)
+      else
+        Result.new(status: :error,
+                   explanation: "Error: expecting your response to begin with '```ruby'. Try answering the question again.")
+      end
+    end
 
     # The prompt to use for the engine.
     def my_prompt

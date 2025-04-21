@@ -32,6 +32,24 @@ module Boxcars
       { schema: schema, dialect: dialect }.merge super
     end
 
+    CTEMPLATE = [
+      syst("Given an input question, first create a syntactically correct %<dialect>s SQL query to run, ",
+           "then look at the results of the query and return the answer. Unless the user specifies ",
+           "in her question a specific number of examples he wishes to obtain, always limit your query ",
+           "to at most %<top_k>s results using a LIMIT clause. You can order the results by a relevant column ",
+           "to return the most interesting examples in the database.\n",
+           "Never query for all the columns from a specific table, only ask for the elevant columns given the question.\n",
+           "Pay attention to use only the column names that you can see in the schema description. Be careful to ",
+           "not query for columns that do not exist. Also, pay attention to which column is in which table.\n",
+           "Use the following format:\n",
+           "Question: 'Question here'\n",
+           "SQLQuery: 'SQL Query to run'\n",
+           "SQLResult: 'Result of the SQLQuery'\n",
+           "Answer: 'Final answer here'"),
+      syst("Only use the following tables:\n%<schema>s"),
+      user("Question: %<question>s")
+    ].freeze
+
     private
 
     def check_tables(rtables, exceptions)
@@ -105,24 +123,6 @@ module Boxcars
                           "start with \"SQLQuery:\".")
       end
     end
-
-    CTEMPLATE = [
-      syst("Given an input question, first create a syntactically correct %<dialect>s SQL query to run, ",
-           "then look at the results of the query and return the answer. Unless the user specifies ",
-           "in her question a specific number of examples he wishes to obtain, always limit your query ",
-           "to at most %<top_k>s results using a LIMIT clause. You can order the results by a relevant column ",
-           "to return the most interesting examples in the database.\n",
-           "Never query for all the columns from a specific table, only ask for the elevant columns given the question.\n",
-           "Pay attention to use only the column names that you can see in the schema description. Be careful to ",
-           "not query for columns that do not exist. Also, pay attention to which column is in which table.\n",
-           "Use the following format:\n",
-           "Question: 'Question here'\n",
-           "SQLQuery: 'SQL Query to run'\n",
-           "SQLResult: 'Result of the SQLQuery'\n",
-           "Answer: 'Final answer here'"),
-      syst("Only use the following tables:\n%<schema>s"),
-      user("Question: %<question>s")
-    ].freeze
 
     # The prompt to use for the engine.
     def my_prompt

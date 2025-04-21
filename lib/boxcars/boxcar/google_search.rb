@@ -41,8 +41,6 @@ module Boxcars
       answer
     end
 
-    private
-
     ANSWER_LOCATIONS = [
       %i[answer_box answer],
       %i[answer_box snippet],
@@ -53,6 +51,8 @@ module Boxcars
       [:organic_results, 0, :snippet_highlighted_words, 0],
       [:organic_results, 0, :title]
     ].freeze
+
+    private
 
     def find_answer(res)
       raise Error, "Got error from SerpAPI: #{res[:error]}" if res[:error]

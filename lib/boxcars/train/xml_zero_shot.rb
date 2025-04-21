@@ -22,8 +22,6 @@ module Boxcars
       super(engine: engine, boxcars: boxcars, prompt: prompt, name: name, description: description, **kwargs)
     end
 
-    private
-
     CTEMPLATE = [
       syst("<training>Answer the following questions as best you can. You have access to the following tools for actions:\n",
            "%<boxcars_xml>s",
@@ -46,6 +44,8 @@ module Boxcars
       user("<question>%<input>s</question>"),
       assi("%<agent_scratchpad>s")
     ].freeze
+
+    private
 
     # The prompt to use for the train.
     def my_prompt
