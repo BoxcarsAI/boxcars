@@ -72,6 +72,11 @@ module Boxcars
       key_lookup(:gemini_api_key, kwargs)
     end
 
+    # @return [String] The Together AI API key either from arg or env.
+    def together_api_key(**kwargs)
+      key_lookup(:together_api_key, kwargs)
+    end
+
     private
 
     def check_key(key, val)
