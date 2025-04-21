@@ -33,10 +33,34 @@ module Boxcars
       [:error, e.message]
     end
 
-    private
-
     # the final answer action string
     FINAL_ANSWER_ACTION = "Final Answer:"
+
+    CTEMPLATE = [
+      syst("Answer the following questions as best you can. You have access to the following actions:\n",
+           "%<boxcar_descriptions>s\n",
+           "Use the following format:\n",
+           "Question: the input question you must answer\n",
+           "Thought: you should always think about what to do\n",
+           "Action: the action to take, should be one from this list: %<boxcar_names>s\n",
+           "Action Input: an input question to the action\n",
+           "Observation: the result of the action\n",
+           "... (this Thought/Action/Action Input/Observation sequence can repeat N times)\n",
+           "Thought: I know the final answer\n",
+           "Final Answer: the final answer to the original input question\n",
+           "%<next_actions>s\n",
+           "Remember to start a line with \"Final Answer:\" to give me the final answer.\n",
+           "Also make sure to specify a question for the Action Input.\n",
+           "Finally, if you can deduct the answer from the question or observation, you can ",
+           "start with \"Final Answer:\" and give me the answer.\n",
+           "Begin!"),
+      # insert thoughts here from previous runs
+      hist,
+      user("Question: %<input>s"),
+      assi("Thought: %<agent_scratchpad>s")
+    ].freeze
+
+    private
 
     # Parse out the action and input from the engine output.
     # @param engine_output [String] The output from the engine.
@@ -69,30 +93,6 @@ module Boxcars
         [action, action_input]
       end
     end
-
-    CTEMPLATE = [
-      syst("Answer the following questions as best you can. You have access to the following actions:\n",
-           "%<boxcar_descriptions>s\n",
-           "Use the following format:\n",
-           "Question: the input question you must answer\n",
-           "Thought: you should always think about what to do\n",
-           "Action: the action to take, should be one from this list: %<boxcar_names>s\n",
-           "Action Input: an input question to the action\n",
-           "Observation: the result of the action\n",
-           "... (this Thought/Action/Action Input/Observation sequence can repeat N times)\n",
-           "Thought: I know the final answer\n",
-           "Final Answer: the final answer to the original input question\n",
-           "%<next_actions>s\n",
-           "Remember to start a line with \"Final Answer:\" to give me the final answer.\n",
-           "Also make sure to specify a question for the Action Input.\n",
-           "Finally, if you can deduct the answer from the question or observation, you can ",
-           "start with \"Final Answer:\" and give me the answer.\n",
-           "Begin!"),
-      # insert thoughts here from previous runs
-      hist,
-      user("Question: %<input>s"),
-      assi("Thought: %<agent_scratchpad>s")
-    ].freeze
 
     # The prompt to use for the train.
     def my_prompt

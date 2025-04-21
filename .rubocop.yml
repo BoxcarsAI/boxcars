@@ -1,6 +1,9 @@
 require:
-  - rubocop-rspec
   - rubocop-rake
+
+plugins:
+  - rubocop-rspec
+
 
 AllCops:
   TargetRubyVersion: 3
