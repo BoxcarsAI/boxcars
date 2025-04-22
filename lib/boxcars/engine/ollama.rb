@@ -27,6 +27,7 @@ module Boxcars
     #        useful for when you need to use AI to answer questions. You should ask targeted questions".
     # @param prompts [Array<String>] The prompts to use when asking the engine. Defaults to [].
     # @param batch_size [Integer] The number of prompts to send to the engine at once. Defaults to 2.
+    # @param uri_base [String] The base URL for connecting to an Ollama server. Defaults to http://localhost:11434.
     def initialize(name: DEFAULT_NAME, description: DEFAULT_DESCRIPTION, prompts: [], batch_size: 2, uri_base: DEFAULT_URI_BASE, **kwargs)
       @ollama_params = DEFAULT_PARAMS.merge(kwargs)
       @prompts = prompts
