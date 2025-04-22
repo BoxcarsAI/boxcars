@@ -66,10 +66,7 @@ module Boxcars
           params.delete(:response_format)
           params.delete(:stop)
         end
-        params = prompt.as_messages(inputs).merge(params)
-        if Boxcars.configuration.log_prompts
-          Boxcars.debug(params[:messages].last(2).map { |p| ">>>>>> Role: #{p[:role]} <<<<<<\n#{p[:content]}" }.join("\n"), :cyan)
-        end
+        params = get_params(prompt, inputs, params)
         clnt.chat(parameters: params)
       else
         params = prompt.as_prompt(inputs: inputs).merge(params)
@@ -150,5 +147,15 @@ module Boxcars
     # get max context size for model by name
     max_size = modelname_to_contextsize(model_name)
     max_size - num_tokens
+  end
+
+  def get_params(prompt, inputs, params)
+    params = prompt.as_messages(inputs).merge(params)
+    # Handle models like o1-mini that don't support the system role
+    params[:messages].first[:role] = :user if params[:model] =~ /^o/ && params[:messages].first&.fetch(:role) == :system
+    if Boxcars.configuration.log_prompts
+      Boxcars.debug(params[:messages].last(2).map { |p| ">>>>>> Role: #{p[:role]} <<<<<<\n#{p[:content]}" }.join("\n"), :cyan)
+    end
+    params
   end
 end

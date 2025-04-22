@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    boxcars (0.7.5)
+    boxcars (0.7.6)
       google_search_results (~> 2.2)
       gpt4all (~> 0.0.5)
       hnswlib (~> 0.9)
