@@ -29,6 +29,24 @@ module Boxcars
       { swagger_url: swagger_url, context: context }.merge super
     end
 
+    # our template
+    CTEMPLATE = [
+      syst("Study this Open API Swagger file %<swagger_url>s\n",
+           "and write a Ruby Program that prints the answer to the following questions using the appropriate API calls:\n",
+           "Additional context that you might need in the Ruby program: (%<context>s)\n",
+           "Use the following format:\n",
+           "${{Question needing API calls and code}}\n",
+           "reply only with the following format:\n",
+           "```ruby\n${{Ruby code with API calls and code that prints the answer}}\n```\n",
+           "```output\n${{Output of your code}}\n```\n\n",
+           "Otherwise, if you know the answer and do not need any API calls, you should use this simpler format:\n",
+           "${{Question not needing API calls}}\n",
+           "Answer: ${{Answer}}\n\n",
+           "Do not give an explanation of the answer and make sure your answer starts with either 'Answer:' or '```ruby'. ",
+           "Make use of the rest-client gem to make your requests to the API. Just print the answer."),
+      user("%<question>s")
+    ].freeze
+
     private
 
     def get_embedded_ruby_answer(text)
@@ -48,24 +66,6 @@ module Boxcars
                    explanation: "Error: expecting your response to begin with '```ruby'. Try answering the question again.")
       end
     end
-
-    # our template
-    CTEMPLATE = [
-      syst("Study this Open API Swagger file %<swagger_url>s\n",
-           "and write a Ruby Program that prints the answer to the following questions using the appropriate API calls:\n",
-           "Additional context that you might need in the Ruby program: (%<context>s)\n",
-           "Use the following format:\n",
-           "${{Question needing API calls and code}}\n",
-           "reply only with the following format:\n",
-           "```ruby\n${{Ruby code with API calls and code that prints the answer}}\n```\n",
-           "```output\n${{Output of your code}}\n```\n\n",
-           "Otherwise, if you know the answer and do not need any API calls, you should use this simpler format:\n",
-           "${{Question not needing API calls}}\n",
-           "Answer: ${{Answer}}\n\n",
-           "Do not give an explanation of the answer and make sure your answer starts with either 'Answer:' or '```ruby'. ",
-           "Make use of the rest-client gem to make your requests to the API. Just print the answer."),
-      user("%<question>s")
-    ].freeze
 
     # The prompt to use for the engine.
     def my_prompt

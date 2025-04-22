@@ -25,6 +25,7 @@ VCR.configure do |c|
   c.filter_sensitive_data("<ANTHROPIC_API_KEY>") { Boxcars.configuration.anthropic_api_key }
   c.filter_sensitive_data("<openai_access_token>") { Boxcars.configuration.openai_access_token }
   c.filter_sensitive_data("<OPENAI_ORGANIZATION_ID>") { Boxcars.configuration.organization_id }
+  c.filter_sensitive_data("<TOGETHER_API_KEY>") { Boxcars.configuration.together_api_key }
 end
 
 RSpec.configure do |c|
@@ -46,6 +47,7 @@ RSpec.configure do |c|
     gtoken = example.metadata[:skip_tokens] ? nil : ENV.fetch("GROQ_API_KEY", "abcdefgh")
     htoken = example.metadata[:skip_tokens] ? nil : ENV.fetch("GEMINI_API_KEY", "abcdefgh")
     btoken = example.metadata[:skip_tokens] ? nil : ENV.fetch("CEREBRAS_API_KEY", "abcdefgh")
+    ttoken = example.metadata[:skip_tokens] ? nil : ENV.fetch("TOGETHER_API_KEY", "abcdefgh")
     log_prompts = ENV.fetch("LOG_PROMPTS", false)
     log_generated = ENV.fetch("LOG_GEN", false)
     http_p = ENV.fetch('http_proxy', nil)
@@ -55,6 +57,7 @@ RSpec.configure do |c|
     allow(ENV).to receive(:fetch).with("COHERE_API_KEY", nil).and_return(ctoken)
     allow(ENV).to receive(:fetch).with("GROQ_API_KEY", nil).and_return(gtoken)
     allow(ENV).to receive(:fetch).with("CEREBRAS_API_KEY", nil).and_return(btoken)
+    allow(ENV).to receive(:fetch).with("TOGETHER_API_KEY", nil).and_return(ttoken)
     allow(ENV).to receive(:fetch).with("GEMINI_API_KEY", nil).and_return(htoken)
     allow(ENV).to receive(:fetch).with("LOG_PROMPTS", false).and_return(log_prompts)
     allow(ENV).to receive(:fetch).with("LOG_GEN", false).and_return(log_generated)

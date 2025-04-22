@@ -30,6 +30,14 @@ module Boxcars
       { search_content: get_search_content(inputs[:question]) }.merge super
     end
 
+    # our template
+    CTEMPLATE = [
+      syst("You are tasked with answering a question using these possibly relevant excerpts from a large volume of text:\n" \
+           "```text\n%<search_content>s\n```\n\n",
+           "Using the above, just answer the question as if you were answering directly."),
+      user("%<question>s")
+    ].freeze
+
     private
 
     # @param results [Array] The results from the vector search.
@@ -49,14 +57,6 @@ module Boxcars
       results = search.call query: question, count: count
       @search_content = get_results_content(results)
     end
-
-    # our template
-    CTEMPLATE = [
-      syst("You are tasked with answering a question using these possibly relevant excerpts from a large volume of text:\n" \
-           "```text\n%<search_content>s\n```\n\n",
-           "Using the above, just answer the question as if you were answering directly."),
-      user("%<question>s")
-    ].freeze
 
     # The prompt to use for the engine.
     def my_prompt

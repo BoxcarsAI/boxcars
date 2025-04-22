@@ -33,6 +33,30 @@ module Boxcars
       { model_info: model_info }.merge super
     end
 
+    CTEMPLATE = [
+      syst("You are a Ruby on Rails Active Record code generator"),
+      syst("Given an input question, first create a syntactically correct Rails Active Record code to run, ",
+           "then look at the results of the code and return the answer. Unless the user specifies ",
+           "in her question a specific number of examples she wishes to obtain, limit your code ",
+           "to at most %<top_k>s results.\n",
+           "Never query for all the columns from a specific model, ",
+           "only ask for the relevant attributes given the question.\n",
+           "Also, pay attention to which attribute is in which model.\n\n",
+           "Use the following format:\n",
+           "Question: ${{Question here}}\n",
+           "ARChanges: ${{Active Record code to compute the number of records going to change}} - ",
+           "Only add this line if the ARCode on the next line will make data changes.\n",
+           "ARCode: ${{Active Record code to run}} - make sure you use valid code\n",
+           "Answer: ${{Final answer here}}\n\n",
+           "Only use the following Active Record models: %<model_info>s\n",
+           "Pay attention to use only the attribute names that you can see in the model description.\n",
+           "Do not make up variable or attribute names, and do not share variables between the code in ARChanges and ARCode\n",
+           "Be careful to not query for attributes that do not exist, and to use the format specified above.\n",
+           "Finally, try not to use print or puts in your code"
+          ),
+      user("Question: %<question>s")
+    ].freeze
+
     private
 
     def get_name
@@ -239,30 +263,6 @@ module Boxcars
                           "start with \"ARChanges:\" or \"ARCode:\"")
       end
     end
-
-    CTEMPLATE = [
-      syst("You are a Ruby on Rails Active Record code generator"),
-      syst("Given an input question, first create a syntactically correct Rails Active Record code to run, ",
-           "then look at the results of the code and return the answer. Unless the user specifies ",
-           "in her question a specific number of examples she wishes to obtain, limit your code ",
-           "to at most %<top_k>s results.\n",
-           "Never query for all the columns from a specific model, ",
-           "only ask for the relevant attributes given the question.\n",
-           "Also, pay attention to which attribute is in which model.\n\n",
-           "Use the following format:\n",
-           "Question: ${{Question here}}\n",
-           "ARChanges: ${{Active Record code to compute the number of records going to change}} - ",
-           "Only add this line if the ARCode on the next line will make data changes.\n",
-           "ARCode: ${{Active Record code to run}} - make sure you use valid code\n",
-           "Answer: ${{Final answer here}}\n\n",
-           "Only use the following Active Record models: %<model_info>s\n",
-           "Pay attention to use only the attribute names that you can see in the model description.\n",
-           "Do not make up variable or attribute names, and do not share variables between the code in ARChanges and ARCode\n",
-           "Be careful to not query for attributes that do not exist, and to use the format specified above.\n",
-           "Finally, try not to use print or puts in your code"
-          ),
-      user("Question: %<question>s")
-    ].freeze
 
     # The prompt to use for the engine.
     def my_prompt
