@@ -1,5 +1,46 @@
 # Changelog
 
+## [v0.7.6](https://github.com/BoxcarsAI/boxcars/tree/v0.7.6) (2025-04-22)
+
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.7.5...v0.7.6)
+
+## [v0.7.5](https://github.com/BoxcarsAI/boxcars/tree/v0.7.5) (2025-04-21)
+
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.7.4...v0.7.5)
+
+**Merged pull requests:**
+
+- Together AI Engine [\#250](https://github.com/BoxcarsAI/boxcars/pull/250) ([francis](https://github.com/francis))
+
+## [v0.7.4](https://github.com/BoxcarsAI/boxcars/tree/v0.7.4) (2025-04-16)
+
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.7.3...v0.7.4)
+
+## [v0.7.3](https://github.com/BoxcarsAI/boxcars/tree/v0.7.3) (2025-01-20)
+
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.7.2...v0.7.3)
+
+**Merged pull requests:**
+
+- add cerebras tests [\#246](https://github.com/BoxcarsAI/boxcars/pull/246) ([francis](https://github.com/francis))
+
+## [v0.7.2](https://github.com/BoxcarsAI/boxcars/tree/v0.7.2) (2025-01-17)
+
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.7.1...v0.7.2)
+
+**Merged pull requests:**
+
+- cerebras bug fixes [\#245](https://github.com/BoxcarsAI/boxcars/pull/245) ([francis](https://github.com/francis))
+
+## [v0.7.1](https://github.com/BoxcarsAI/boxcars/tree/v0.7.1) (2025-01-17)
+
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.6.9...v0.7.1)
+
+**Merged pull requests:**
+
+- add Cerebras [\#244](https://github.com/BoxcarsAI/boxcars/pull/244) ([francis](https://github.com/francis))
+- \[infra\] Bump pg from 1.5.8 to 1.5.9 [\#231](https://github.com/BoxcarsAI/boxcars/pull/231) ([dependabot[bot]](https://github.com/apps/dependabot))
+
 ## [v0.6.9](https://github.com/BoxcarsAI/boxcars/tree/v0.6.9) (2024-12-19)
 
 [Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.6.8...v0.6.9)
