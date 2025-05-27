@@ -1,173 +1,213 @@
 # frozen_string_literal: true
 
-# Boxcars is a framework for running a series of tools to get an answer to a question.
+require 'faraday'
+require 'faraday/retry'
+require 'json'
+
 module Boxcars
-  # A engine that uses OpenAI's API.
+  # A engine that uses PerplexityAI's API.
+  # Stays inheriting from Engine
   class Perplexityai < Engine
     attr_reader :prompts, :perplexity_params, :model_kwargs, :batch_size
 
-    # The default parameters to use when asking the engine.
-    DEFAULT_PER_PARAMS = {
-      model: "'llama-3-sonar-large-32k-online'",
+    DEFAULT_PARAMS = { # Renamed from DEFAULT_PER_PARAMS for consistency
+      model: "llama-3-sonar-large-32k-online", # Removed extra quotes
       temperature: 0.1
+      # max_tokens can be part of kwargs if needed
     }.freeze
+    DEFAULT_NAME = "PerplexityAI engine" # Renamed from DEFAULT_PER_NAME
+    DEFAULT_DESCRIPTION = "useful for when you need to use Perplexity AI to answer questions. " \
+                          "You should ask targeted questions"
 
-    # the default name of the engine
-    DEFAULT_PER_NAME = "PerplexityAI engine"
-    # the default description of the engine
-    DEFAULT_PER_DESCRIPTION = "useful for when you need to use AI to answer questions. " \
-                              "You should ask targeted questions"
-
-    # A engine is a container for a single tool to run.
-    # @param name [String] The name of the engine. Defaults to "PerplexityAI engine".
-    # @param description [String] A description of the engine. Defaults to:
-    #        useful for when you need to use AI to answer questions. You should ask targeted questions".
-    # @param prompts [Array<String>] The prompts to use when asking the engine. Defaults to [].
-    # @param batch_size [Integer] The number of prompts to send to the engine at once. Defaults to 20.
-    def initialize(name: DEFAULT_PER_NAME, description: DEFAULT_PER_DESCRIPTION, prompts: [], batch_size: 20, **kwargs)
-      @perplexity_params = DEFAULT_PER_PARAMS.merge(kwargs)
+    def initialize(name: DEFAULT_NAME, description: DEFAULT_DESCRIPTION, prompts: [], batch_size: 20, **kwargs)
+      @perplexity_params = DEFAULT_PARAMS.merge(kwargs)
       @prompts = prompts
-      @batch_size = batch_size
+      @batch_size = batch_size # Retain if used by generate
       super(description: description, name: name)
     end
 
-    def conversation_model?(_model)
+    # Perplexity models are conversational.
+    def conversation_model?(_model_name)
       true
     end
 
-    def chat(parameters:)
-      conn = Faraday.new(url: "https://api.perplexity.ai/chat/completions") do |faraday|
-        faraday.request :json
-        faraday.response :json
-        faraday.response :raise_error
-        # faraday.options.timeout = 180 # 3 minutes
-      end
+    # Main client method for interacting with the Perplexity API
+    # rubocop:disable Metrics/PerceivedComplexity, Metrics/MethodLength
+    def client(prompt:, inputs: {}, perplexity_api_key: nil, **kwargs)
+      start_time = Time.now
+      response_data = { response_obj: nil, parsed_json: nil, success: false, error: nil, status_code: nil }
+      current_params = @perplexity_params.merge(kwargs)
+      api_request_params = nil # Parameters actually sent to Perplexity API
+      current_prompt_object = prompt.is_a?(Array) ? prompt.first : prompt
 
-      response = conn.post do |req|
-        req.headers['Authorization'] = "Bearer #{ENV.fetch('PERPLEXITY_API_KEY')}"
-        req.body = {
-          model: parameters[:model],
-          messages: parameters[:messages]
+      begin
+        api_key = perplexity_api_key || Boxcars.configuration.perplexity_api_key(**current_params.slice(:perplexity_api_key))
+        raise Boxcars::ConfigurationError, "Perplexity API key not set" if api_key.blank?
+
+        conn = Faraday.new(url: "https://api.perplexity.ai") do |faraday|
+          faraday.request :json
+          faraday.response :json # Parse JSON response
+          faraday.response :raise_error # Raise exceptions on 4xx/5xx
+          faraday.adapter Faraday.default_adapter
+        end
+
+        messages_for_api = current_prompt_object.as_messages(inputs)[:messages]
+        # Perplexity expects a 'model' and 'messages' structure.
+        # Other params like temperature, max_tokens are top-level.
+        api_request_params = {
+          model: current_params[:model],
+          messages: messages_for_api
+        }.merge(current_params.except(:model, :messages, :perplexity_api_key)) # Add other relevant params
+
+        log_messages_debug(api_request_params[:messages]) if Boxcars.configuration.log_prompts && api_request_params[:messages]
+
+        response = conn.post('/chat/completions') do |req|
+          req.headers['Authorization'] = "Bearer #{api_key}"
+          req.body = api_request_params
+        end
+
+        response_data[:response_obj] = response # Faraday response object
+        response_data[:parsed_json] = response.body # Faraday with :json middleware parses body
+        response_data[:status_code] = response.status
+
+        if response.success? && response.body && response.body["choices"]
+          response_data[:success] = true
+        else
+          response_data[:success] = false
+          err_details = response.body["error"] if response.body.is_a?(Hash)
+          msg = if err_details
+                  "#{err_details['type']}: #{err_details['message']}"
+                else
+                  "Unknown Perplexity API Error (status: #{response.status})"
+                end
+          response_data[:error] = StandardError.new(msg)
+        end
+      rescue Faraday::Error => e # Catch Faraday specific errors (includes connection, timeout, 4xx/5xx)
+        response_data[:error] = e
+        response_data[:success] = false
+        response_data[:status_code] = e.response_status if e.respond_to?(:response_status)
+        response_data[:response_obj] = e.response if e.respond_to?(:response) # Store Faraday response if available
+        response_data[:parsed_json] = e.response[:body] if e.respond_to?(:response) && e.response[:body].is_a?(Hash)
+      rescue StandardError => e # Catch other unexpected errors
+        response_data[:error] = e
+        response_data[:success] = false
+      ensure
+        duration_ms = ((Time.now - start_time) * 1000).round
+        request_context = {
+          prompt: current_prompt_object,
+          inputs: inputs,
+          conversation_for_api: api_request_params&.dig(:messages)
         }
+        properties = _perplexity_build_observability_properties(
+          duration_ms: duration_ms,
+          current_params: current_params,
+          api_request_params: api_request_params,
+          request_context: request_context,
+          response_data: response_data
+        )
+        Boxcars::Observability.track(event: 'llm_call', properties: properties.compact)
       end
 
-      response.body
+      _perplexity_handle_call_outcome(response_data: response_data)
     end
+    # rubocop:enable Metrics/PerceivedComplexity, Metrics/MethodLength
 
-    # Get an answer from the engine.
-    # @param prompt [String] The prompt to use when asking the engine.
-    # @param openai_access_token [String] The access token to use when asking the engine.
-    #   Defaults to Boxcars.configuration.openai_access_token.
-    # @param kwargs [Hash] Additional parameters to pass to the engine if wanted.
-    def client(prompt:, inputs: {}, **kwargs)
-      prompt = prompt.first if prompt.is_a?(Array)
-      params = prompt.as_messages(inputs).merge(default_params).merge(kwargs)
-      if Boxcars.configuration.log_prompts
-        Boxcars.debug(params[:messages].last(2).map { |p| ">>>>>> Role: #{p[:role]} <<<<<<\n#{p[:content]}" }.join("\n"), :cyan)
-      end
-      chat(parameters: params)
-    end
-
-    # get an answer from the engine for a question.
-    # @param question [String] The question to ask the engine.
-    # @param kwargs [Hash] Additional parameters to pass to the engine if wanted.
     def run(question, **kwargs)
       prompt = Prompt.new(template: question)
-      response = client(prompt: prompt, **kwargs)
-      raise Error, "PerplexityAI: No response from API" unless response
-      raise Error, "PerplexityAI: #{response['error']}" if response["error"]
-
-      answer = response["choices"].map { |c| c.dig("message", "content") || c["text"] }.join("\n").strip
+      answer = client(prompt: prompt, inputs: {}, **kwargs)
       Boxcars.debug("Answer: #{answer}", :cyan)
       answer
     end
 
-    # Get the default parameters for the engine.
     def default_params
-      perplexity_params
+      @perplexity_params
     end
 
-    # make sure we got a valid response
-    # @param response [Hash] The response to check.
-    # @param must_haves [Array<String>] The keys that must be in the response. Defaults to %w[choices].
-    # @raise [KeyError] if there is an issue with the access token.
-    # @raise [ValueError] if the response is not valid.
-    def check_response(response, must_haves: %w[choices])
-      if response['error']
-        code = response.dig('error', 'code')
-        msg = response.dig('error', 'message') || 'unknown error'
-        raise KeyError, "PERPLEXITY_API_KEY not valid" if code == 'invalid_api_key'
+    private
 
-        raise ValueError, "PerplexityAI error: #{msg}"
-      end
+    def log_messages_debug(messages)
+      return unless messages.is_a?(Array)
 
-      must_haves.each do |key|
-        raise ValueError, "Expecting key #{key} in response" unless response.key?(key)
-      end
+      Boxcars.debug(messages.last(2).map { |p| ">>>>>> Role: #{p[:role]} <<<<<<\n#{p[:content]}" }.join("\n"), :cyan)
     end
-  end
 
-  # the engine type
-  def engine_type
-    "perplexityai"
-  end
+    def _perplexity_extract_error_details(response_data:, properties:) # rubocop:disable Metrics/AbcSize, Metrics/PerceivedComplexity
+      error = response_data[:error]
+      return unless error
 
-  # calculate the number of tokens used
-  def get_num_tokens(text:)
-    text.split.length # TODO: hook up to token counting gem
-  end
+      properties[:error_message] = error.message
+      properties[:error_class] = error.class.name
+      properties[:error_backtrace] = error.backtrace&.join("\n")
 
-  # Calculate the maximum number of tokens possible to generate for a prompt.
-  # @param prompt_text [String] The prompt text to use.
-  # @return [Integer] the number of tokens possible to generate.
-  def max_tokens_for_prompt(_prompt_text)
-    8096
-  end
-
-  # Get generation informaton
-  # @param sub_choices [Array<Hash>] The choices to get generation info for.
-  # @return [Array<Generation>] The generation information.
-  def generation_info(sub_choices)
-    sub_choices.map do |choice|
-      Generation.new(
-        text: choice.dig("message", "content") || choice["text"],
-        generation_info: {
-          finish_reason: choice.fetch("finish_reason", nil),
-          logprobs: choice.fetch("logprobs", nil)
-        }
-      )
-    end
-  end
-
-  # Call out to endpoint with k unique prompts.
-  # @param prompts [Array<String>] The prompts to pass into the model.
-  # @param inputs [Array<String>] The inputs to subsitite into the prompt.
-  # @param stop [Array<String>] Optional list of stop words to use when generating.
-  # @return [EngineResult] The full engine output.
-  def generate(prompts:, stop: nil)
-    params = {}
-    params[:stop] = stop if stop
-    choices = []
-    token_usage = {}
-    # Get the token usage from the response.
-    # Includes prompt, completion, and total tokens used.
-    inkeys = %w[completion_tokens prompt_tokens total_tokens].freeze
-    prompts.each_slice(batch_size) do |sub_prompts|
-      sub_prompts.each do |sprompts, inputs|
-        response = client(prompt: sprompts, inputs: inputs, **params)
-        check_response(response)
-        choices.concat(response["choices"])
-        usage_keys = inkeys & response["usage"].keys
-        usage_keys.each { |key| token_usage[key] = token_usage[key].to_i + response["usage"][key] }
+      if error.is_a?(Faraday::Error)
+        properties[:status_code] ||= error.response_status if error.respond_to?(:response_status)
+        # If Faraday error has a response body with Perplexity error structure
+        if error.respond_to?(:response) && error.response&.body.is_a?(Hash)
+          err_details = error.response.body["error"]
+          if err_details.is_a?(Hash)
+            properties[:error_type] = err_details["type"]
+            properties[:error_message] = err_details["message"] # Overwrite generic Faraday message if more specific
+          end
+          properties[:response_raw_body] ||= JSON.pretty_generate(error.response.body)
+        end
+      elsif !response_data[:success] && response_data[:parsed_json] && response_data[:parsed_json]["error"]
+        err_details = response_data[:parsed_json]["error"]
+        properties[:error_message] ||= err_details['message']
+        properties[:error_type] ||= err_details['type']
+        properties[:error_class] ||= "Boxcars::Error"
       end
     end
 
-    n = params.fetch(:n, 1)
-    generations = []
-    prompts.each_with_index do |_prompt, i|
-      sub_choices = choices[i * n, (i + 1) * n]
-      generations.push(generation_info(sub_choices))
+    def _perplexity_build_observability_properties(duration_ms:, current_params:, api_request_params:, request_context:,
+                                                   response_data:)
+      properties = {
+        provider: :perplexity_ai,
+        model_name: api_request_params&.dig(:model) || current_params[:model],
+        prompt_content: request_context[:conversation_for_api],
+        inputs: request_context[:inputs],
+        api_call_parameters: current_params,
+        duration_ms: duration_ms,
+        success: response_data[:success]
+      }.merge(_perplexity_extract_response_properties(response_data))
+
+      _perplexity_extract_error_details(response_data: response_data, properties: properties)
+      properties
     end
-    EngineResult.new(generations: generations, engine_output: { token_usage: token_usage })
+
+    def _perplexity_extract_response_properties(response_data)
+      # response_obj is Faraday::Response, body is already parsed by middleware
+      raw_faraday_response = response_data[:response_obj]
+      parsed_body = response_data[:parsed_json] # This is response.body from Faraday
+      status_code = response_data[:status_code]
+      reason_phrase = raw_faraday_response&.reason_phrase
+
+      {
+        response_raw_body: parsed_body ? JSON.pretty_generate(parsed_body) : nil, # Store the parsed body as JSON string
+        response_parsed_body: response_data[:success] ? parsed_body : nil,
+        status_code: status_code,
+        reason_phrase: reason_phrase
+      }
+    end
+
+    def _perplexity_handle_call_outcome(response_data:)
+      if response_data[:error]
+        Boxcars.error("PerplexityAI Error: #{response_data[:error].message} (#{response_data[:error].class.name})", :red)
+        raise response_data[:error]
+      elsif !response_data[:success]
+        err_details = response_data.dig(:parsed_json, "error")
+        msg = err_details ? "#{err_details['type']}: #{err_details['message']}" : "Unknown error from PerplexityAI API"
+        raise Error, msg
+      else
+        choices = response_data.dig(:parsed_json, "choices")
+        raise Error, "PerplexityAI: No choices found in response" unless choices.is_a?(Array) && !choices.empty?
+
+        choices.map { |c| c.dig("message", "content") }.join("\n").strip
+      end
+    end
+    # rubocop:enable Metrics/AbcSize
+
+    # Methods like `check_response`, `generate`, `generation_info` are removed or would need significant rework.
+    # `check_response` logic is now part of `_perplexity_handle_call_outcome`.
+    # `generate` would need to be re-implemented carefully if batching is desired with direct Faraday.
   end
 end

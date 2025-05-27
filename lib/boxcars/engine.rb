@@ -78,6 +78,7 @@ module Boxcars
 end
 
 require "boxcars/engine/engine_result"
+require "boxcars/engine/intelligence_base"
 require "boxcars/engine/anthropic"
 require "boxcars/engine/cohere"
 require "boxcars/engine/groq"
@@ -86,7 +87,6 @@ require "boxcars/engine/openai"
 require "boxcars/engine/perplexityai"
 require "boxcars/engine/gpt4all_eng"
 require "boxcars/engine/gemini_ai"
-require "boxcars/engine/intelligence_base"
 require "boxcars/engine/cerebras"
 require "boxcars/engine/google"
 require "boxcars/engine/together"

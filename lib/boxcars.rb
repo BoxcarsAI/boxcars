@@ -212,6 +212,9 @@ module Boxcars
 end
 
 require "boxcars/version"
+require "boxcars/observability_backend"
+require "boxcars/observability"
+# If users want it, they can require 'boxcars/observability_backends/multi_backend'
 require "boxcars/x_node"
 require "boxcars/prompt"
 require "boxcars/conversation_prompt"
@@ -221,9 +224,3 @@ require "boxcars/ruby_repl"
 require "boxcars/engine"
 require "boxcars/boxcar"
 require "boxcars/train"
-require "boxcars/observability_backend"
-require "boxcars/observability"
-# Optional: require "boxcars/observability_backends/multi_backend"
-# Users can require specific backends as needed, or we can require common ones.
-# For now, let's not require multi_backend by default to keep it minimal.
-# If users want it, they can require 'boxcars/observability_backends/multi_backend'
