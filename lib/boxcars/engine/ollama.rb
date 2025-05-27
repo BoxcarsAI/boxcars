@@ -5,7 +5,6 @@ require 'json'
 
 module Boxcars
   # A engine that uses a local Ollama API (OpenAI-compatible).
-  # Stays inheriting from Engine
   class Ollama < Engine
     attr_reader :prompts, :model_kwargs, :batch_size, :ollama_params
 

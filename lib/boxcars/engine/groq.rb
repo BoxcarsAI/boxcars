@@ -5,9 +5,8 @@ require 'json'
 
 module Boxcars
   # A engine that uses Groq's API.
-  # Stays inheriting from Engine
   class Groq < Engine
-    attr_reader :prompts, :groq_params, :model_kwargs, :batch_size # Corrected typo groq_parmas to groq_params
+    attr_reader :prompts, :groq_params, :model_kwargs, :batch_size
 
     DEFAULT_PARAMS = {
       model: "llama3-70b-8192",

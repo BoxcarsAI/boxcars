@@ -6,7 +6,6 @@ require 'json'
 
 module Boxcars
   # A engine that uses PerplexityAI's API.
-  # Stays inheriting from Engine
   class Perplexityai < Engine
     attr_reader :prompts, :perplexity_params, :model_kwargs, :batch_size
 

@@ -5,7 +5,6 @@ require 'json' # For pretty_generate
 
 module Boxcars
   # A engine that uses local GPT4All API.
-  # Stays inheriting from Engine
   class Gpt4allEng < Engine
     attr_reader :prompts, :model_kwargs, :batch_size, :gpt4all_params # Added gpt4all_params
 

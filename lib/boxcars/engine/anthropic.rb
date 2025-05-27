@@ -8,7 +8,6 @@ require_relative 'anthropic_observability'
 # Boxcars is a framework for running a series of tools to get an answer to a question.
 module Boxcars
   # A engine that uses Anthropic's API.
-  # Stays inheriting from Engine
   class Anthropic < Engine
     include AnthropicApiFormatter
     include AnthropicObservability # Include the new module

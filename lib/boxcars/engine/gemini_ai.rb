@@ -5,7 +5,6 @@ require 'json'
 
 module Boxcars
   # A engine that uses GeminiAI's API via an OpenAI-compatible interface.
-  # Stays inheriting from Engine
   class GeminiAi < Engine
     attr_reader :prompts, :llm_params, :model_kwargs, :batch_size # Corrected typo llm_parmas to llm_params
 

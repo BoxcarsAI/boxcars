@@ -6,7 +6,6 @@ require_relative 'openai_observability'
 
 module Boxcars
   # A engine that uses OpenAI's API.
-  # Stays inheriting from Engine
   class Openai < Engine
     include OpenAIObservability
     attr_reader :prompts, :open_ai_params, :model_kwargs, :batch_size
