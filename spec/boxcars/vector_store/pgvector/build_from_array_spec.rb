@@ -5,6 +5,12 @@ require 'spec_helper'
 RSpec.describe Boxcars::VectorStore::Pgvector::BuildFromArray do
   subject(:result) { call_command }
 
+  before(:all) do
+    unless Gem.loaded_specs.key?('pgvector') && Gem.loaded_specs.key?('pg')
+      skip "pgvector and pg gems not available, skipping pgvector tests"
+    end
+  end
+
   let(:arguments) do
     {
       embedding_tool: embedding_tool,

@@ -149,6 +149,120 @@ Also, if you set this flag: `Boxcars.configuration.log_prompts = true`
 The actual prompts handed to the connected Engine will be logged. This is off by default because it is very wordy, but handy if you are debugging prompts.
 
 Otherwise, we print to standard out.
+
+### Observability
+
+Boxcars includes a comprehensive observability system that allows you to track and monitor AI operations across your application. The system provides insights into LLM calls, performance metrics, errors, and usage patterns.
+
+#### Core Components
+
+**Observability Class**: The central tracking interface that provides a simple `track` method for recording events.
+
+**ObservabilityBackend Module**: An interface that defines how tracking backends should be implemented. All backends must include this module and implement a `track` method.
+
+**Built-in Backends**:
+- **PosthogBackend**: Sends events to PostHog for analytics and user behavior tracking
+- **MultiBackend**: Allows sending events to multiple backends simultaneously
+
+#### Configuration
+
+Set up observability by configuring a backend:
+
+```ruby
+# Using PostHog backend
+require 'boxcars/observability_backends/posthog_backend'
+Boxcars::Observability.backend = Boxcars::PosthogBackend.new(
+  api_key: 'your_posthog_api_key',
+  host: 'https://app.posthog.com' # or your self-hosted instance
+)
+
+# Using multiple backends
+backend1 = Boxcars::PosthogBackend.new(api_key: 'key1')
+backend2 = YourCustomBackend.new
+Boxcars::Observability.backend = Boxcars::MultiBackend.new([backend1, backend2])
+```
+
+#### Automatic Tracking
+
+Boxcars automatically tracks LLM calls with detailed metrics:
+
+```ruby
+# This automatically generates observability events
+engine = Boxcars::Openai.new
+calc = Boxcars::Calculator.new(engine: engine)
+result = calc.run "what is 2 + 2?"
+```
+
+**Tracked Properties Include**:
+- `provider`: The LLM provider (e.g., "openai", "anthropic")
+- `model_name`: The specific model used
+- `prompt_content`: The conversation messages sent to the LLM
+- `inputs`: Any template inputs provided
+- `duration_ms`: Request duration in milliseconds
+- `success`: Whether the call succeeded
+- `status_code`: HTTP response status
+- `error_message`: Error details if the call failed
+- `response_raw_body`: Raw API response
+- `api_call_parameters`: Parameters sent to the API
+
+#### Manual Tracking
+
+You can also track custom events:
+
+```ruby
+Boxcars::Observability.track(
+  event: 'custom_operation',
+  properties: {
+    user_id: 'user_123',
+    operation_type: 'data_processing',
+    duration_ms: 150,
+    success: true
+  }
+)
+```
+
+#### Creating Custom Backends
+
+Implement your own backend by including the `ObservabilityBackend` module:
+
+```ruby
+class CustomBackend
+  include Boxcars::ObservabilityBackend
+  
+  def track(event:, properties:)
+    # Your custom tracking logic here
+    puts "Event: #{event}, Properties: #{properties}"
+  end
+end
+
+Boxcars::Observability.backend = CustomBackend.new
+```
+
+#### Error Handling
+
+The observability system is designed to fail silently to prevent tracking issues from disrupting your main application flow. If a backend raises an error, it will be caught and ignored, ensuring your AI operations continue uninterrupted.
+
+#### PostHog Integration
+
+The PostHog backend requires the `posthog-ruby` gem:
+
+```ruby
+# Add to your Gemfile
+gem 'posthog-ruby'
+
+# Configure the backend
+Boxcars::Observability.backend = Boxcars::PosthogBackend.new(
+  api_key: ENV['POSTHOG_API_KEY'],
+  host: 'https://app.posthog.com',
+  on_error: proc { |status, body| 
+    Rails.logger.warn "PostHog error: #{status} - #{body}" 
+  }
+)
+```
+
+Events are automatically associated with users when a `user_id` property is provided. Anonymous events use a default identifier.
+
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.

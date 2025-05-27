@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
   spec.description = "You simply set an OpenAI key, give a number of Boxcars to a Train, and magic ensues when you run it."
   spec.homepage = "https://github.com/BoxcarsAI/boxcars"
   spec.license = "MIT"
-  spec.required_ruby_version = ">= 3.0"
+  spec.required_ruby_version = ">= 3.1"
 
   spec.metadata["homepage_uri"] = spec.homepage
   spec.metadata["source_code_uri"] = spec.homepage
@@ -36,7 +36,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency "hnswlib", "~> 0.9"
   spec.add_dependency "intelligence", ">= 0.8"
   spec.add_dependency "nokogiri", "~> 1.18"
-  spec.add_dependency "pgvector", "~> 0.2"
   spec.add_dependency "ruby-anthropic", "~> 0.4"
   spec.add_dependency "ruby-openai", ">= 7.3"
 

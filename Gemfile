@@ -37,4 +37,6 @@ group :development, :test do
   gem "webmock", "~> 3.24.0"
   gem "rubocop-rake", "~> 0.6.0"
   gem "rubocop-rspec", "~> 3.2"
+
+  gem "posthog-ruby", require: false
 end
