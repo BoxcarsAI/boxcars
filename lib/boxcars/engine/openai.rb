@@ -22,7 +22,7 @@ module Boxcars
     def initialize(name: DEFAULT_NAME, description: DEFAULT_DESCRIPTION, prompts: [], batch_size: 20, **kwargs)
       @open_ai_params = DEFAULT_PARAMS.merge(kwargs)
       # Special handling for o1-mini model (deprecated?)
-      if @open_ai_params[:model] =~ /^o/ && @open_ai_params[:max_tokens].present?
+      if @open_ai_params[:model] =~ /^o/ && @open_ai_params[:max_tokens]
         @open_ai_params[:max_completion_tokens] = @open_ai_params.delete(:max_tokens)
         @open_ai_params.delete(:temperature) # o1-mini might not support temperature
       end

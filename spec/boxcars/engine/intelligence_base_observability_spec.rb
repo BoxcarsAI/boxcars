@@ -98,27 +98,32 @@ RSpec.describe Boxcars::IntelligenceBase do # rubocop:disable RSpec/SpecFilePath
     end
 
     context 'when API call is successful' do
-      it 'tracks an llm_call event with correct properties' do
+      it 'tracks a $ai_generation event with correct PostHog properties' do
         engine.client(prompt: prompt, inputs: inputs, api_key: api_key_param, temperature: 0.7)
 
         expect(dummy_observability_backend.tracked_events.size).to eq(1)
         tracked_event = dummy_observability_backend.tracked_events.first
-        expect(tracked_event[:event]).to eq('llm_call')
+        expect(tracked_event[:event]).to eq('$ai_generation')
 
         props = tracked_event[:properties]
-        expect(props[:provider]).to eq(:test_provider)
-        expect(props[:model_name]).to eq("test-default-model") # from default_model_params
-        expect(props[:success]).to be true
-        expect(props[:duration_ms]).to be_a(Integer).and be >= 0
-        expect(props[:status_code]).to eq(200)
-        expect(props[:reason_phrase]).to eq("OK")
-        expect(props[:inputs]).to eq(inputs)
-        expect(props[:api_call_parameters]).to include(model: "test-default-model", temperature: 0.7)
-        expect(props[:prompt_content]).to be_an(Array) # from prompt.as_intelligence_conversation
-        expect(props[:response_parsed_body]).to eq({ "choices" => [{ "message" => { "content" => "hola mundo" } }] })
-        expect(props[:response_raw_body]).to eq({ choices: [{ message: { content: "hola mundo" } }] }.to_json)
-        expect(props).not_to have_key(:error_message)
-        expect(props).not_to have_key(:error_class)
+        expect(props[:$ai_provider]).to eq("test_provider")
+        expect(props[:$ai_model]).to eq("test-default-model") # from default_model_params
+        expect(props[:$ai_is_error]).to be false
+        expect(props[:$ai_latency]).to be_a(Float).and be >= 0
+        expect(props[:$ai_http_status]).to eq(200)
+        expect(props[:$ai_base_url]).to eq("https://api.test_provider.com/v1")
+        expect(props[:$ai_trace_id]).to be_a(String)
+
+        # Check input format
+        ai_input = JSON.parse(props[:$ai_input])
+        expect(ai_input).to be_an(Array)
+
+        # Check output format
+        ai_output = JSON.parse(props[:$ai_output_choices])
+        expect(ai_output).to be_an(Array)
+        expect(ai_output.first).to include("role" => "assistant", "content" => "hola mundo")
+
+        expect(props).not_to have_key(:$ai_error)
       end
 
       context 'when engine has specific model params' do
@@ -127,15 +132,13 @@ RSpec.describe Boxcars::IntelligenceBase do # rubocop:disable RSpec/SpecFilePath
         it 'uses engine model params if not overridden in call' do
           engine.client(prompt: prompt, inputs: inputs) # No model in call
           props = dummy_observability_backend.tracked_events.first[:properties]
-          expect(props[:model_name]).to eq("engine-specific-model")
-          expect(props[:api_call_parameters]).to include(model: "engine-specific-model")
+          expect(props[:$ai_model]).to eq("engine-specific-model")
         end
 
         it 'uses call-specific model params if provided' do
           engine.client(prompt: prompt, inputs: inputs, model: "call-specific-model")
           props = dummy_observability_backend.tracked_events.first[:properties]
-          expect(props[:model_name]).to eq("call-specific-model")
-          expect(props[:api_call_parameters]).to include(model: "call-specific-model")
+          expect(props[:$ai_model]).to eq("call-specific-model")
         end
       end
     end
@@ -146,7 +149,7 @@ RSpec.describe Boxcars::IntelligenceBase do # rubocop:disable RSpec/SpecFilePath
         allow(engine).to receive(:lookup_provider_api_key).and_return(nil) # rubocop:disable RSpec/SubjectStub
       end
 
-      it 'tracks an llm_call event with failure details' do
+      it 'tracks a $ai_generation event with failure details' do
         expect do
           engine.client(prompt: prompt, inputs: inputs) # No api_key passed directly
         end.to raise_error(Boxcars::Error, /No API key found/)
@@ -155,11 +158,10 @@ RSpec.describe Boxcars::IntelligenceBase do # rubocop:disable RSpec/SpecFilePath
         tracked_event = dummy_observability_backend.tracked_events.first
         props = tracked_event[:properties]
 
-        expect(props[:success]).to be false
-        expect(props[:error_message]).to match(/No API key found/)
-        expect(props[:error_class]).to eq("Boxcars::Error")
-        expect(props[:provider]).to eq(:test_provider)
-        # Other fields like response_body might be nil
+        expect(props[:$ai_is_error]).to be true
+        expect(props[:$ai_error]).to match(/No API key found/)
+        expect(props[:$ai_provider]).to eq("test_provider")
+        expect(props[:$ai_http_status]).to eq(500) # Default for errors
       end
     end
 
@@ -169,7 +171,7 @@ RSpec.describe Boxcars::IntelligenceBase do # rubocop:disable RSpec/SpecFilePath
         allow(mock_intelligence_request).to receive(:chat).and_raise(StandardError.new("Network timeout"))
       end
 
-      it 'tracks an llm_call event with error details from raised exception' do
+      it 'tracks a $ai_generation event with error details from raised exception' do
         expect do
           engine.client(prompt: prompt, inputs: inputs, api_key: api_key_param)
         end.to raise_error(StandardError, "Network timeout")
@@ -178,11 +180,10 @@ RSpec.describe Boxcars::IntelligenceBase do # rubocop:disable RSpec/SpecFilePath
         tracked_event = dummy_observability_backend.tracked_events.first
         props = tracked_event[:properties]
 
-        expect(props[:success]).to be false
-        expect(props[:error_message]).to eq("Network timeout")
-        expect(props[:error_class]).to eq("StandardError")
-        expect(props[:error_backtrace]).to be_a(String)
-        expect(props[:provider]).to eq(:test_provider)
+        expect(props[:$ai_is_error]).to be true
+        expect(props[:$ai_error]).to eq("Network timeout")
+        expect(props[:$ai_provider]).to eq("test_provider")
+        expect(props[:$ai_http_status]).to eq(500) # Default for errors
       end
     end
 
@@ -193,7 +194,7 @@ RSpec.describe Boxcars::IntelligenceBase do # rubocop:disable RSpec/SpecFilePath
         allow(mock_intelligence_request).to receive(:chat).and_return(mock_chat_response)
       end
 
-      it 'tracks an llm_call event with failure details from response object' do
+      it 'tracks a $ai_generation event with failure details from response object' do
         expect do
           engine.client(prompt: prompt, inputs: inputs, api_key: api_key_param)
         end.to raise_error(Boxcars::Error, /Unauthorized/) # Or whatever IntelligenceBase raises
@@ -202,14 +203,10 @@ RSpec.describe Boxcars::IntelligenceBase do # rubocop:disable RSpec/SpecFilePath
         tracked_event = dummy_observability_backend.tracked_events.first
         props = tracked_event[:properties]
 
-        expect(props[:success]).to be false
-        expect(props[:status_code]).to eq(401)
-        expect(props[:reason_phrase]).to eq("Unauthorized")
-        expect(props[:response_raw_body]).to eq({ error: "Invalid API key" }.to_json)
-        expect(props[:response_parsed_body]).to be_nil # Since success? was false
-        expect(props[:error_message]).to eq("Unauthorized") # From response_obj.reason_phrase
-        expect(props[:error_class]).to eq("Boxcars::Error") # Generic error for API non-success
-        expect(props[:provider]).to eq(:test_provider)
+        expect(props[:$ai_is_error]).to be true
+        expect(props[:$ai_http_status]).to eq(401)
+        expect(props[:$ai_error]).to eq("Unauthorized")
+        expect(props[:$ai_provider]).to eq("test_provider")
       end
     end
   end

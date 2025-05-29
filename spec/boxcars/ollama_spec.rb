@@ -4,7 +4,7 @@ require 'spec_helper'
 require 'boxcars/engine/ollama'
 require 'boxcars/observability'
 require 'boxcars/prompt'
-require 'openai' # Ollama engine uses the OpenAI gem
+require 'openai'
 
 RSpec.describe Boxcars::Ollama do
   subject(:engine) { described_class.new(**engine_params) }

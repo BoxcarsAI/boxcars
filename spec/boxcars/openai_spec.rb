@@ -86,21 +86,14 @@ RSpec.describe Boxcars::Openai do
 
         expect(dummy_observability_backend.tracked_events.size).to eq(1)
         tracked_event = dummy_observability_backend.tracked_events.first
-        expect(tracked_event[:event]).to eq('llm_call')
+        expect(tracked_event[:event]).to eq("$ai_generation")
 
         props = tracked_event[:properties]
-        expect(props[:provider]).to eq(:openai)
-        expect(props[:model_name]).to eq("gpt-4o-mini")
-        expect(props[:success]).to be true
-        expect(props[:duration_ms]).to be_a(Integer).and be >= 0
-        expect(props[:inputs]).to eq(inputs)
-        expect(props[:api_call_parameters]).to include(model: "gpt-4o-mini", temperature: 0.7)
-        expect(props[:prompt_content]).to be_an(Array)
-        expect(props[:prompt_content].first[:role].to_s).to eq("user")
-        expect(props[:prompt_content].first[:content]).to include("Write a tagline for a coffee shop")
-        expect(props[:response_parsed_body]).to eq(openai_chat_success_response)
-        expect(props[:response_raw_body]).to eq(JSON.pretty_generate(openai_chat_success_response))
-        expect(props[:status_code]).to eq(200) # Inferred on success
+        puts props.inspect # Debugging output to see properties
+        expect(props[:$ai_provider]).to eq("openai")
+        expect(props[:$ai_model]).to eq("gpt-4o-mini")
+        expect(props[:$ai_is_error]).to be false
+        expect(props[:$ai_http_status]).to eq(200) # Inferred on success
         expect(props).not_to have_key(:error_message)
       end
     end
@@ -118,13 +111,10 @@ RSpec.describe Boxcars::Openai do
         expect(dummy_observability_backend.tracked_events.size).to eq(1)
         tracked_event = dummy_observability_backend.tracked_events.first
         props = tracked_event[:properties]
-
-        expect(props[:provider]).to eq(:openai)
-        expect(props[:model_name]).to eq("text-davinci-003")
-        expect(props[:success]).to be true
-        expect(props[:api_call_parameters]).to include(model: "text-davinci-003", max_tokens: 150)
-        expect(props[:prompt_content].first[:content]).to include("Write a tagline for a coffee shop") # For completion, it's a string
-        expect(props[:response_parsed_body]).to eq(openai_completion_success_response)
+        expect(props[:$ai_provider]).to eq("openai")
+        expect(props[:$ai_model]).to eq("text-davinci-003")
+        expect(props[:$ai_is_error]).to be false
+        expect(props[:$ai_input]).to match(/Write a tagline for a coffee shop/)
       end
     end
 
@@ -140,9 +130,9 @@ RSpec.describe Boxcars::Openai do
 
         expect(dummy_observability_backend.tracked_events.size).to eq(1)
         props = dummy_observability_backend.tracked_events.first[:properties]
-        expect(props[:success]).to be false
-        expect(props[:error_message]).to match(/OpenAI API key not set/)
-        expect(props[:error_class]).to eq("Boxcars::ConfigurationError")
+        expect(props[:$ai_is_error]).to be true
+        expect(props[:$ai_error]).to match(/OpenAI API key not set/)
+        expect(props[:$ai_provider]).to eq("openai")
       end
     end
 
@@ -161,11 +151,10 @@ RSpec.describe Boxcars::Openai do
 
         expect(dummy_observability_backend.tracked_events.size).to eq(1)
         props = dummy_observability_backend.tracked_events.first[:properties]
-        expect(props[:success]).to be false
-        expect(props[:error_message]).to eq("Rate limit reached for requests.")
-        expect(props[:error_class]).to eq("OpenAI::Error")
-        expect(props[:status_code]).to eq(429)
-        expect(props[:provider]).to eq(:openai)
+        expect(props[:$ai_is_error]).to be true
+        expect(props[:$ai_error]).to eq("Rate limit reached for requests.")
+        expect(props[:$ai_http_status]).to eq(429)
+        expect(props[:$ai_provider]).to eq("openai")
       end
     end
 
@@ -178,7 +167,7 @@ RSpec.describe Boxcars::Openai do
         expect(result).to eq("Your Daily Grind, Perfected.")
 
         expect(dummy_observability_backend.tracked_events.size).to eq(1)
-        expect(dummy_observability_backend.tracked_events.first[:event]).to eq('llm_call')
+        expect(dummy_observability_backend.tracked_events.first[:event]).to eq("$ai_generation")
       end
     end
   end

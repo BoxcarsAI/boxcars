@@ -31,7 +31,7 @@ module Boxcars
     end
 
     # Main client method for interacting with the Perplexity API
-    # rubocop:disable Metrics/PerceivedComplexity, Metrics/MethodLength
+    # rubocop:disable Metrics/MethodLength
     def client(prompt:, inputs: {}, perplexity_api_key: nil, **kwargs)
       start_time = Time.now
       response_data = { response_obj: nil, parsed_json: nil, success: false, error: nil, status_code: nil }
@@ -109,7 +109,7 @@ module Boxcars
 
       _perplexity_handle_call_outcome(response_data: response_data)
     end
-    # rubocop:enable Metrics/PerceivedComplexity, Metrics/MethodLength
+    # rubocop:enable Metrics/MethodLength
 
     def run(question, **kwargs)
       prompt = Prompt.new(template: question)
@@ -130,7 +130,7 @@ module Boxcars
       Boxcars.debug(messages.last(2).map { |p| ">>>>>> Role: #{p[:role]} <<<<<<\n#{p[:content]}" }.join("\n"), :cyan)
     end
 
-    def _perplexity_extract_error_details(response_data:, properties:) # rubocop:disable Metrics/AbcSize, Metrics/PerceivedComplexity
+    def _perplexity_extract_error_details(response_data:, properties:) # rubocop:disable Metrics/AbcSize
       error = response_data[:error]
       return unless error
 

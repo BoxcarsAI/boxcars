@@ -66,10 +66,7 @@ module Boxcars
       # Ensure properties is a hash, duplicate to avoid mutation by PostHog or other backends
       tracking_properties = properties.is_a?(Hash) ? properties.dup : {}
 
-      distinct_id = tracking_properties.delete(:user_id) || tracking_properties.delete('user_id')
-
-      # If no distinct_id is found, provide a default value since PostHog requires it
-      distinct_id ||= "anonymous_user"
+      distinct_id = tracking_properties.delete(:user_id) || tracking_properties.delete('user_id') || "anonymous_user"
 
       # The PostHog gem's capture method handles distinct_id and properties.
       # It's important that distinct_id is a string.

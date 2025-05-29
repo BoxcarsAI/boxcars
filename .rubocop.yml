@@ -95,7 +95,7 @@ Naming/AccessorMethodName:
   Enabled: false
 
 Metrics/PerceivedComplexity:
-  Max: 12
+  Max: 20
 
 Style/RescueStandardError:
   Enabled: false

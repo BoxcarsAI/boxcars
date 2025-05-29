@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'intelligence'
+require 'securerandom'
 
 module Boxcars
   # A Base class for all Intelligence Engines
@@ -84,7 +85,7 @@ module Boxcars
           request_context: request_context,
           response_data: response_data
         )
-        Boxcars::Observability.track(event: 'llm_call', properties: properties.compact)
+        Boxcars::Observability.track(event: '$ai_generation', properties: properties.compact)
       end
 
       _handle_call_outcome(response_data: response_data)
@@ -126,43 +127,54 @@ module Boxcars
       { response_obj: response_obj, parsed_json: parsed_json, success: success, error: nil }
     end
 
-    def _extract_error_details_for_observability(response_data:, properties:)
-      if response_data[:error]
-        properties[:error_message] = response_data[:error].message
-        properties[:error_class] = response_data[:error].class.name
-        properties[:error_backtrace] = response_data[:error].backtrace&.join("\n")
-      elsif !response_data[:success] && response_data[:response_obj] # API call made but was not successful
-        properties[:error_message] =
-          response_data[:response_obj].reason_phrase || "API call failed with status #{response_data[:response_obj].status}"
-        properties[:error_class] = "Boxcars::Error" # Generic error for API non-success
-      elsif !response_data[:success] # For errors before response_obj is set
-        properties[:error_message] ||= "Unknown error before API call completion"
-        properties[:error_class] ||= "Boxcars::Error"
-      end
-    end
-
     def _build_observability_properties(duration_ms:, current_params:, request_context:, response_data:)
-      properties = {
-        provider: @provider,
-        model_name: _extract_model_name(current_params),
-        prompt_content: _extract_prompt_content(request_context),
-        inputs: request_context[:inputs],
-        api_call_parameters: current_params,
-        duration_ms: duration_ms,
-        success: response_data[:success]
-      }.merge(_extract_response_properties(response_data))
+      # Convert duration from milliseconds to seconds for PostHog
+      duration_seconds = duration_ms / 1000.0
 
-      _extract_error_details_for_observability(response_data: response_data, properties: properties)
+      # Format input messages for PostHog
+      ai_input = _extract_prompt_content(request_context)
+
+      # Extract token counts from response if available
+      response_body = response_data[:parsed_json]
+      input_tokens = _extract_input_tokens(response_body)
+      output_tokens = _extract_output_tokens(response_body)
+
+      # Format output choices for PostHog
+      ai_output_choices = _extract_output_choices(response_body)
+
+      # Generate a trace ID (PostHog requires this)
+      trace_id = SecureRandom.uuid
+
+      properties = {
+        # PostHog standard LLM observability properties
+        '$ai_trace_id': trace_id,
+        '$ai_model': _extract_model_name(current_params),
+        '$ai_provider': @provider.to_s,
+        '$ai_input': ai_input.to_json,
+        '$ai_input_tokens': input_tokens,
+        '$ai_output_choices': ai_output_choices.to_json,
+        '$ai_output_tokens': output_tokens,
+        '$ai_latency': duration_seconds,
+        '$ai_http_status': _extract_status_code(response_data[:response_obj]) || (response_data[:success] ? 200 : 500),
+        '$ai_base_url': _get_base_url_for_provider(@provider),
+        '$ai_is_error': !response_data[:success]
+      }
+
+      # Add error details if present
+      if response_data[:error] || !response_data[:success]
+        properties[:$ai_error] = _extract_error_message_for_posthog(response_data)
+      end
+
       properties
     end
 
     def _extract_model_name(current_params)
-      current_params&.dig(:model) || current_params&.dig("model") || @provider
+      current_params&.dig(:model) || current_params&.dig("model") || @provider.to_s
     end
 
     def _extract_prompt_content(request_context)
       conv_messages = request_context[:conversation_for_api]&.messages
-      return request_context[:prompt].to_s unless conv_messages
+      return [{ role: "user", content: request_context[:prompt].to_s }] unless conv_messages
 
       conv_messages.map do |message|
         content_text = _extract_message_content(message)
@@ -171,20 +183,89 @@ module Boxcars
     end
 
     def _extract_message_content(message)
-      return message.to_s unless message.respond_to?(:parts) && message.parts&.first.respond_to?(:text)
-
-      message.parts&.first&.text || message.to_s
+      # Handle Intelligence::Message objects and extract text content
+      if message.respond_to?(:content)
+        message.content
+      elsif message.respond_to?(:parts) && message.parts&.first.respond_to?(:text)
+        message.parts&.first&.text
+      else
+        message.to_s
+      end
     end
 
-    def _extract_response_properties(response_data)
-      response_obj = response_data[:response_obj]
+    def _extract_input_tokens(response_body)
+      return 0 unless response_body
 
-      {
-        response_raw_body: response_obj&.body,
-        response_parsed_body: response_data[:success] ? response_data[:parsed_json] : nil,
-        status_code: _extract_status_code(response_obj),
-        reason_phrase: response_obj&.reason_phrase
-      }
+      # Try different token count locations based on provider
+      response_body.dig("usage", "prompt_tokens") ||
+        response_body.dig("meta", "tokens", "input_tokens") ||
+        response_body.dig("token_count", "prompt_tokens") ||
+        0
+    end
+
+    def _extract_output_tokens(response_body)
+      return 0 unless response_body
+
+      # Try different token count locations based on provider
+      response_body.dig("usage", "completion_tokens") ||
+        response_body.dig("meta", "tokens", "output_tokens") ||
+        response_body.dig("token_count", "completion_tokens") ||
+        0
+    end
+
+    def _extract_output_choices(response_body)
+      return [] unless response_body
+
+      # Handle different response formats
+      if response_body["choices"]
+        response_body["choices"].map do |choice|
+          if choice.dig("message", "content")
+            { role: "assistant", content: choice.dig("message", "content") }
+          elsif choice["text"]
+            { role: "assistant", content: choice["text"] }
+          else
+            choice
+          end
+        end
+      elsif response_body["text"]
+        [{ role: "assistant", content: response_body["text"] }]
+      elsif response_body["message"]
+        [{ role: "assistant", content: response_body["message"] }]
+      elsif response_body["candidates"]
+        response_body["candidates"].map do |candidate|
+          content = candidate.dig("content", "parts", 0, "text") || candidate.to_s
+          { role: "assistant", content: content }
+        end
+      else
+        []
+      end
+    end
+
+    def _get_base_url_for_provider(provider)
+      case provider.to_s
+      when 'cohere'
+        'https://api.cohere.ai/v1'
+      when 'anthropic'
+        'https://api.anthropic.com/v1'
+      when 'google', 'gemini'
+        'https://generativelanguage.googleapis.com/v1'
+      when 'groq'
+        'https://api.groq.com/openai/v1'
+      when 'cerebras'
+        'https://api.cerebras.ai/v1'
+      else
+        "https://api.#{provider}.com/v1"
+      end
+    end
+
+    def _extract_error_message_for_posthog(response_data)
+      if response_data[:error]
+        response_data[:error].message
+      elsif response_data[:response_obj]
+        response_data[:response_obj].reason_phrase || "API call failed with status #{response_data[:response_obj].status}"
+      else
+        "Unknown error"
+      end
     end
 
     def _extract_status_code(response_obj)
@@ -208,6 +289,8 @@ module Boxcars
         response["choices"].map { |c| c.dig("message", "content") || c["text"] }.join("\n").strip
       elsif response["candidates"]
         response["candidates"].map { |c| c.dig("content", "parts", 0, "text") }.join("\n").strip
+      elsif response["text"]
+        response["text"]
       else
         response["output"] || response.to_s
       end
