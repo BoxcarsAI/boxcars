@@ -198,9 +198,14 @@ module Boxcars
     end
 
     def extract_anthropic_output_choices(response_body)
+      # Handle both original Anthropic format and transformed format
       if response_body["content"].is_a?(Array)
+        # Original format from Anthropic API
         content_text = response_body["content"].map { |c| c["text"] }.join("\n")
         [{ role: "assistant", content: content_text }]
+      elsif response_body["completion"]
+        # Transformed format after Anthropic engine processing
+        [{ role: "assistant", content: response_body["completion"] }]
       else
         []
       end

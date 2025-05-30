@@ -62,26 +62,32 @@ RSpec.describe Boxcars::Anthropic do
 
         expect(dummy_observability_backend.tracked_events.size).to eq(1)
         tracked_event = dummy_observability_backend.tracked_events.first
-        expect(tracked_event[:event]).to eq('llm_call')
+        expect(tracked_event[:event]).to eq('$ai_generation')
 
         props = tracked_event[:properties]
-        expect(props[:provider]).to eq(:anthropic)
-        expect(props[:model_name]).to eq("claude-3-5-sonnet-20240620") # From DEFAULT_PARAMS or actual call
-        expect(props[:success]).to be true
-        expect(props[:duration_ms]).to be_a(Integer).and be >= 0
-        expect(props[:inputs]).to eq(inputs)
-        # api_call_parameters should reflect what was passed to client() before transformation
-        expect(props[:api_call_parameters]).to include(model: "claude-3-5-sonnet-20240620", temperature: 0.7, max_tokens: 100)
-        # anthropic_request_parameters could be checked if logged, e.g. to verify max_tokens_to_sample mapping
-        expect(props[:prompt_content]).to be_an(Array)
-        expect(props[:prompt_content].first[:role].to_s).to eq("user") # Or system if prompt starts that way
-        expect(props[:prompt_content].first[:content]).to include("Tell me a joke about {{topic}}")
+        expect(props[:$ai_provider]).to eq('anthropic')
+        expect(props[:$ai_model]).to eq("claude-3-5-sonnet-20240620") # From DEFAULT_PARAMS or actual call
+        expect(props[:$ai_is_error]).to be false
+        expect(props[:$ai_latency]).to be_a(Float).and be >= 0
+        expect(props[:$ai_input_tokens]).to eq(15)
+        expect(props[:$ai_output_tokens]).to eq(23)
+        expect(props[:$ai_http_status]).to eq(200)
+        expect(props[:$ai_base_url]).to eq('https://api.anthropic.com/v1')
 
-        expect(props[:response_parsed_body]).to eq(anthropic_success_response)
-        expect(props[:response_raw_body]).to eq(JSON.pretty_generate(anthropic_success_response))
-        expect(props[:status_code]).to be_nil # Anthropic gem abstracts HTTP status on success
-        expect(props).not_to have_key(:error_message)
-        expect(props).not_to have_key(:error_class)
+        # Check input format
+        ai_input = JSON.parse(props[:$ai_input])
+        expect(ai_input).to be_an(Array)
+        expect(ai_input.first['role']).to eq('user')
+        expect(ai_input.first['content']).to include('Tell me a joke about {{topic}}')
+
+        # Check output format
+        ai_output = JSON.parse(props[:$ai_output_choices])
+        expect(ai_output).to be_an(Array)
+        expect(ai_output.length).to be > 0
+        expect(ai_output.first['role']).to eq('assistant')
+        expect(ai_output.first['content']).to include('Why did the robot go to therapy?')
+
+        expect(props).not_to have_key(:$ai_error)
       end
     end
 
@@ -96,11 +102,14 @@ RSpec.describe Boxcars::Anthropic do
         end.to raise_error(Boxcars::ConfigurationError, /Anthropic API key not set/)
 
         expect(dummy_observability_backend.tracked_events.size).to eq(1)
-        props = dummy_observability_backend.tracked_events.first[:properties]
-        expect(props[:success]).to be false
-        expect(props[:error_message]).to match(/Anthropic API key not set/)
-        expect(props[:error_class]).to eq("Boxcars::ConfigurationError")
-        expect(props[:provider]).to eq(:anthropic)
+        tracked_event = dummy_observability_backend.tracked_events.first
+        expect(tracked_event[:event]).to eq('$ai_generation')
+
+        props = tracked_event[:properties]
+        expect(props[:$ai_is_error]).to be true
+        expect(props[:$ai_error]).to match(/Anthropic API key not set/)
+        expect(props[:$ai_provider]).to eq('anthropic')
+        expect(props[:$ai_http_status]).to eq(500)
       end
     end
 
@@ -115,12 +124,13 @@ RSpec.describe Boxcars::Anthropic do
         end.to raise_error(Anthropic::Error, "Invalid API Key")
 
         expect(dummy_observability_backend.tracked_events.size).to eq(1)
-        props = dummy_observability_backend.tracked_events.first[:properties]
-        expect(props[:success]).to be false
-        expect(props[:error_message]).to eq("Invalid API Key")
-        expect(props[:error_class]).to eq("Anthropic::Error")
-        expect(props[:status_code]).to eq(500) # From our mapping in client
-        expect(props[:provider]).to eq(:anthropic)
+        tracked_event = dummy_observability_backend.tracked_events.first
+        expect(tracked_event[:event]).to eq('$ai_generation')
+
+        props = tracked_event[:properties]
+        expect(props[:$ai_is_error]).to be true
+        expect(props[:$ai_error]).to eq("Invalid API Key")
+        expect(props[:$ai_provider]).to eq('anthropic')
       end
     end
 
@@ -137,12 +147,13 @@ RSpec.describe Boxcars::Anthropic do
         end.to raise_error(Anthropic::Error, "Rate limit exceeded")
 
         expect(dummy_observability_backend.tracked_events.size).to eq(1)
-        props = dummy_observability_backend.tracked_events.first[:properties]
-        expect(props[:success]).to be false
-        expect(props[:error_message]).to eq("Rate limit exceeded")
-        expect(props[:error_class]).to eq("Anthropic::Error")
-        expect(props[:status_code]).to eq(500) # From our mapping in client
-        expect(props[:provider]).to eq(:anthropic)
+        tracked_event = dummy_observability_backend.tracked_events.first
+        expect(tracked_event[:event]).to eq('$ai_generation')
+
+        props = tracked_event[:properties]
+        expect(props[:$ai_is_error]).to be true
+        expect(props[:$ai_error]).to eq("Rate limit exceeded")
+        expect(props[:$ai_provider]).to eq('anthropic')
       end
     end
 
@@ -157,11 +168,13 @@ RSpec.describe Boxcars::Anthropic do
         end.to raise_error(StandardError, "Generic network issue")
 
         expect(dummy_observability_backend.tracked_events.size).to eq(1)
-        props = dummy_observability_backend.tracked_events.first[:properties]
-        expect(props[:success]).to be false
-        expect(props[:error_message]).to eq("Generic network issue")
-        expect(props[:error_class]).to eq("StandardError")
-        expect(props[:provider]).to eq(:anthropic)
+        tracked_event = dummy_observability_backend.tracked_events.first
+        expect(tracked_event[:event]).to eq('$ai_generation')
+
+        props = tracked_event[:properties]
+        expect(props[:$ai_is_error]).to be true
+        expect(props[:$ai_error]).to eq("Generic network issue")
+        expect(props[:$ai_provider]).to eq('anthropic')
       end
     end
 
@@ -172,8 +185,9 @@ RSpec.describe Boxcars::Anthropic do
         expect(result).to eq("Why did the robot go to therapy? To de-stress and debug its feelings!")
 
         expect(dummy_observability_backend.tracked_events.size).to eq(1)
-        expect(dummy_observability_backend.tracked_events.first[:event]).to eq('llm_call')
-        expect(dummy_observability_backend.tracked_events.first[:properties][:provider]).to eq(:anthropic)
+        tracked_event = dummy_observability_backend.tracked_events.first
+        expect(tracked_event[:event]).to eq('$ai_generation')
+        expect(tracked_event[:properties][:$ai_provider]).to eq('anthropic')
       end
     end
   end
