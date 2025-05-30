@@ -2,7 +2,7 @@
 
 require 'intelligence'
 require 'securerandom'
-require_relative 'unified_observability'
+require_relative '../unified_observability'
 
 module Boxcars
   # A Base class for all Intelligence Engines
