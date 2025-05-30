@@ -150,6 +150,92 @@ The actual prompts handed to the connected Engine will be logged. This is off by
 
 Otherwise, we print to standard out.
 
+### Engine Factory (Engines)
+
+Boxcars provides a convenient factory class `Boxcars::Engines` that simplifies creating engine instances using model names and aliases instead of remembering full class names and model strings.
+
+#### Basic Usage
+
+```ruby
+# Using default model (gemini-2.5-flash-preview-05-20)
+engine = Boxcars::Engines.engine
+
+# Using specific models with convenient aliases
+gpt_engine = Boxcars::Engines.engine(model: "gpt-4o")
+claude_engine = Boxcars::Engines.engine(model: "sonnet")
+gemini_engine = Boxcars::Engines.engine(model: "flash")
+groq_engine = Boxcars::Engines.engine(model: "groq")
+```
+
+#### Supported Model Aliases
+
+**OpenAI Models:**
+- `"gpt-4o"`, `"gpt-3.5-turbo"`, `"o1-preview"` - Creates `Boxcars::Openai` engines
+
+**Anthropic Models:**
+- `"anthropic"`, `"sonnet"` - Creates `Boxcars::Anthropic` with Claude Sonnet
+- `"opus"` - Creates `Boxcars::Anthropic` with Claude Opus
+- `"claude-3-5-sonnet"`, etc. - Any model starting with "claude-"
+
+**Groq Models:**
+- `"groq"` - Creates `Boxcars::Groq` with Llama 3.3 70B
+- `"deepseek"` - Creates `Boxcars::Groq` with DeepSeek R1
+- `"mistral"` - Creates `Boxcars::Groq` with Mistral
+- Models starting with `"mistral-"`, `"meta-llama/"`, or `"deepseek-"`
+
+**Gemini Models:**
+- `"flash"`, `"gemini-flash"` - Creates `Boxcars::GeminiAi` with Gemini 2.5 Flash
+- `"gemini-pro"` - Creates `Boxcars::GeminiAi` with Gemini 2.5 Pro
+- Any model starting with `"gemini-"`
+
+**Perplexity Models:**
+- `"online"`, `"sonar"` - Creates `Boxcars::Perplexityai` with Sonar
+- `"sonar-pro"`, `"huge"` - Creates `Boxcars::Perplexityai` with Sonar Pro
+- Models containing `"-sonar-"`
+
+**Together AI Models:**
+- `"together-model-name"` - Creates `Boxcars::Together` (strips "together-" prefix)
+
+#### JSON-Optimized Engines
+
+For applications requiring JSON responses, use the `json_engine` method:
+
+```ruby
+# Creates engine optimized for JSON output
+json_engine = Boxcars::Engines.json_engine(model: "gpt-4o")
+
+# Automatically removes response_format for models that don't support it
+json_claude = Boxcars::Engines.json_engine(model: "sonnet")
+```
+
+#### Passing Additional Parameters
+
+```ruby
+# Pass any additional parameters to the underlying engine
+engine = Boxcars::Engines.engine(
+  model: "gpt-4o",
+  temperature: 0.7,
+  max_tokens: 1000,
+  top_p: 0.9
+)
+```
+
+#### Using with Boxcars
+
+```ruby
+# Use the factory with any Boxcar
+engine = Boxcars::Engines.engine(model: "sonnet")
+calc = Boxcars::Calculator.new(engine: engine)
+result = calc.run "What is 15 * 23?"
+
+# Or in a Train
+boxcars = [
+  Boxcars::Calculator.new(engine: Boxcars::Engines.engine(model: "gpt-4o")),
+  Boxcars::GoogleSearch.new(engine: Boxcars::Engines.engine(model: "flash"))
+]
+train = Boxcars.train.new(boxcars: boxcars)
+```
+
 ### Observability
 
 Boxcars includes a comprehensive observability system that allows you to track and monitor AI operations across your application. The system provides insights into LLM calls, performance metrics, errors, and usage patterns.

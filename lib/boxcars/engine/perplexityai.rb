@@ -41,7 +41,7 @@ module Boxcars
 
       begin
         api_key = perplexity_api_key || Boxcars.configuration.perplexity_api_key(**current_params.slice(:perplexity_api_key))
-        raise Boxcars::ConfigurationError, "Perplexity API key not set" if api_key.blank?
+        raise Boxcars::ConfigurationError, "Perplexity API key not set" if api_key.nil? || api_key.strip.empty?
 
         conn = Faraday.new(url: "https://api.perplexity.ai") do |faraday|
           faraday.request :json

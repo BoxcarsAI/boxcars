@@ -61,7 +61,7 @@ module Boxcars
         api_request_params = convert_to_anthropic(current_prompt_object.as_messages(inputs).merge(current_params))
 
         if Boxcars.configuration.log_prompts
-          if api_request_params[:messages].length < 2 && api_request_params[:system].present?
+          if api_request_params[:messages].length < 2 && api_request_params[:system] && !api_request_params[:system].empty?
             Boxcars.debug(">>>>>> Role: system <<<<<<\n#{api_request_params[:system]}")
           end
           Boxcars.debug(api_request_params[:messages].last(2).map do |p|
@@ -211,12 +211,14 @@ module Boxcars
     end
 
     # convert generic parameters to Anthopic specific ones
+    # rubocop:disable Metrics/AbcSize
     def convert_to_anthropic(params)
       params[:stop_sequences] = params.delete(:stop) if params.key?(:stop)
       params[:system] = params[:messages].shift[:content] if params.dig(:messages, 0, :role) == :system
-      params[:messages].pop if params[:messages].last[:content].blank?
+      params[:messages].pop if params[:messages].last[:content].nil? || params[:messages].last[:content].strip.empty?
       combine_assistant(params)
     end
+    # rubocop:enable Metrics/AbcSize
 
     def combine_assistant(params)
       params[:messages] = combine_assistant_entries(params[:messages])
