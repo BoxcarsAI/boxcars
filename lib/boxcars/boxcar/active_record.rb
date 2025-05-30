@@ -150,16 +150,15 @@ module Boxcars
     # run the code in a safe environment
     # @param code [String] The code to run
     # @return [Object] The result of the code
-    def eval_safe_wrapper(code)
+    def eval_safe_wrapper(code, binding = TOPLEVEL_BINDING)
       # if the code used ActiveRecord, we need to add :: in front of it to escape the module
       new_code = code.gsub(/\b(ActiveRecord::)/, '::\1')
-
       # sometimes the code will have a puts or print in it, which will miss. Remove them.
       new_code = new_code.gsub(/\b(puts|print)\b/, '')
+
       proc do
-        $SAFE = 4
         # rubocop:disable Security/Eval
-        eval new_code
+        eval(new_code, binding)
         # rubocop:enable Security/Eval
       end.call
     end
