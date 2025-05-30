@@ -21,7 +21,7 @@ module Boxcars
     def xn_get_answer(xnode)
       reply = xnode.xtext("//reply")
 
-      if reply.present?
+      if reply && !reply.to_s.strip.empty?
         Result.new(status: :ok, answer: reply, explanation: reply)
       else
         # we have an unexpected output from the engine

@@ -175,7 +175,9 @@ module Boxcars
     end
 
     def log_prompt_debug(params)
-      Boxcars.debug(">>>>>> Role: system <<<<<<\n#{params[:system]}") if params[:messages].length < 2 && params[:system].present?
+      if params[:messages].length < 2 && params[:system] && !params[:system].to_s.strip.empty?
+        Boxcars.debug(">>>>>> Role: system <<<<<<\n#{params[:system]}")
+      end
       # Log last two messages, or all if fewer than two
       messages_to_log = params[:messages].last(2)
       Boxcars.debug(messages_to_log.map { |p| ">>>>>> Role: #{p[:role]} <<<<<<\n#{p[:content]}" }.join("\n"), :cyan)

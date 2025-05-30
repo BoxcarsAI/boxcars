@@ -60,12 +60,15 @@ module Boxcars
 
     def _add_system_prompt_to_content(content, request_context)
       system_prompt_for_api = request_context.dig(:conversation_for_api, :system)
-      content << { role: "system", content: system_prompt_for_api } if system_prompt_for_api.present?
+      return unless system_prompt_for_api && !system_prompt_for_api.to_s.strip.empty?
+
+      content << { role: "system",
+                   content: system_prompt_for_api }
     end
 
     def _add_user_prompt_to_content(content, request_context)
       prompt = request_context[:prompt]
-      if prompt.is_a?(Boxcars::Prompt) && prompt.template.present?
+      if prompt.is_a?(Boxcars::Prompt) && prompt.template && !prompt.template.to_s.strip.empty?
         content << { role: "user", content: prompt.template }
       else
         _add_fallback_user_prompt_to_content(content, request_context)
@@ -86,7 +89,7 @@ module Boxcars
     def _process_api_messages(content, api_messages, system_prompt_for_api)
       api_messages.each do |msg|
         # Skip system messages if already added from the dedicated :system key
-        next if msg[:role].to_s == "system" && system_prompt_for_api.present?
+        next if msg[:role].to_s == "system" && system_prompt_for_api && !system_prompt_for_api.to_s.strip.empty?
 
         content << { role: msg[:role], content: _anthropic_extract_message_content_from_parts(msg[:content]) }
       end
