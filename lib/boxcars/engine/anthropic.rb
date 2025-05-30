@@ -90,9 +90,9 @@ module Boxcars
     # get an answer from the engine for a question.
     # @param question [String] The question to ask the engine.
     # @param kwargs [Hash] Additional parameters to pass to the engine if wanted.
-    def run(question, **kwargs)
+    def run(question, **)
       prompt = Prompt.new(template: question)
-      response = client(prompt: prompt, **kwargs)
+      response = client(prompt: prompt, **)
 
       raise Error, "Anthropic: No response from API" unless response
       raise Error, "Anthropic: #{response['error']}" if response['error']

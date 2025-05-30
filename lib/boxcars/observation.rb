@@ -23,8 +23,8 @@ module Boxcars
     end
 
     # @return [String] The result as a json string
-    def to_json(*args)
-      JSON.generate(to_h, *args)
+    def to_json(*)
+      JSON.generate(to_h, *)
     end
 
     # @return [String] An explanation of the result
@@ -41,16 +41,16 @@ module Boxcars
     # @param note [String] The text to use for the observation
     # @param added_context [Hash] Any additional context to add to the result
     # @return [Boxcars::Observation] The observation
-    def self.ok(note, **kwargs)
-      new(note: note, status: :ok, **kwargs)
+    def self.ok(note, **)
+      new(note: note, status: :ok, **)
     end
 
     # create a new Observaton from a text string with a status of :error
     # @param note [String] The text to use for the observation
     # @param added_context [Hash] Any additional context to add to the result
     # @return [Boxcars::Observation] The observation
-    def self.err(note, **kwargs)
-      new(note: note, status: :error, **kwargs)
+    def self.err(note, **)
+      new(note: note, status: :error, **)
     end
   end
 end

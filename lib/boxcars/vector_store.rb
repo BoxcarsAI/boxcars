@@ -6,8 +6,8 @@ module Boxcars
     module ClassMethods
       VectorStoreError = Class.new(StandardError)
 
-      def call(*args, **kw_args)
-        new(*args, **kw_args).call
+      def call(*, **kw_args)
+        new(*, **kw_args).call
       end
     end
 

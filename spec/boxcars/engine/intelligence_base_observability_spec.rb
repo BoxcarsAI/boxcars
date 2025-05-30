@@ -24,8 +24,8 @@ end
 
 # A minimal concrete class for testing IntelligenceBase
 class TestableIntelligenceEngine < Boxcars::IntelligenceBase
-  def initialize(**kwargs)
-    super(provider: :test_provider, name: "TestEngine", description: "Test Engine Desc", **kwargs)
+  def initialize(**)
+    super(provider: :test_provider, name: "TestEngine", description: "Test Engine Desc", **)
   end
 
   def lookup_provider_api_key(*)

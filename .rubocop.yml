@@ -6,7 +6,7 @@ plugins:
 
 
 AllCops:
-  TargetRubyVersion: 3.1
+  TargetRubyVersion: 3.2
   Exclude:
     - 'bin/{rails,rake}'
     - 'node_modules/**/*'

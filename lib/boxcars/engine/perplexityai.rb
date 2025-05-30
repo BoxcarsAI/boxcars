@@ -111,9 +111,9 @@ module Boxcars
     end
     # rubocop:enable Metrics/MethodLength
 
-    def run(question, **kwargs)
+    def run(question, **)
       prompt = Prompt.new(template: question)
-      answer = client(prompt: prompt, inputs: {}, **kwargs)
+      answer = client(prompt: prompt, inputs: {}, **)
       Boxcars.debug("Answer: #{answer}", :cyan)
       answer
     end

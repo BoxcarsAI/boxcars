@@ -63,8 +63,8 @@ module Boxcars
     # @param kwargs [Hash] The keyword arguments to pass to the boxcar.
     # you can pass one or the other, but not both.
     # @return [String] The answer to the question.
-    def run(*args, **kwargs)
-      rv = conduct(*args, **kwargs)
+    def run(*, **)
+      rv = conduct(*, **)
       rv = rv[:answer] if rv.is_a?(Hash) && rv.key?(:answer)
       return rv.answer if rv.is_a?(Result)
       return rv[output_keys[0]] if rv.is_a?(Hash)
@@ -77,9 +77,9 @@ module Boxcars
     # @param kwargs [Hash] The keyword arguments to pass to the boxcar.
     # you can pass one or the other, but not both.
     # @return [Boxcars::Result] The answer to the question.
-    def conduct(*args, **kwargs)
+    def conduct(*, **)
       Boxcars.info "> Entering #{name}#run", :gray, style: :bold
-      rv = depart(*args, **kwargs)
+      rv = depart(*, **)
       remember_history(rv)
       Boxcars.info "< Exiting #{name}#run", :gray, style: :bold
       rv

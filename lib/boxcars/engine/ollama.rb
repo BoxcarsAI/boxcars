@@ -64,9 +64,9 @@ module Boxcars
       _ollama_handle_call_outcome(response_data: response_data)
     end
 
-    def run(question, **kwargs)
+    def run(question, **)
       prompt = Prompt.new(template: question)
-      answer = client(prompt: prompt, inputs: {}, **kwargs) # Pass empty inputs hash
+      answer = client(prompt: prompt, inputs: {}, **) # Pass empty inputs hash
       Boxcars.debug("Answer: #{answer}", :cyan)
       answer
     end

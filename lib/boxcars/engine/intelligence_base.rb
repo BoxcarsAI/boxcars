@@ -58,7 +58,7 @@ module Boxcars
     end
 
     # Get an answer from the engine
-    def client(prompt:, inputs: {}, api_key: nil, **kwargs)
+    def client(prompt:, inputs: {}, api_key: nil, **)
       start_time = Time.now
       response_data = { response_obj: nil, parsed_json: nil, success: false, error: nil }
       current_params = nil
@@ -66,7 +66,7 @@ module Boxcars
 
       begin
         current_params, conversation_for_api, effective_api_key = _prepare_request_data(prompt: prompt, inputs: inputs,
-                                                                                        api_key: api_key, **kwargs)
+                                                                                        api_key: api_key, **)
         response_data = _execute_api_call(
           conversation_for_api: conversation_for_api,
           effective_api_key: effective_api_key
@@ -94,9 +94,9 @@ module Boxcars
     end
 
     # Run the engine with a question
-    def run(question, **kwargs)
+    def run(question, **)
       prompt = Prompt.new(template: question)
-      response = client(prompt: prompt, **kwargs)
+      response = client(prompt: prompt, **)
       extract_answer(response)
     end
 

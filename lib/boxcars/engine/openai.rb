@@ -137,10 +137,10 @@ module Boxcars
       true
     end
 
-    def run(question, **kwargs)
+    def run(question, **)
       prompt = Prompt.new(template: question)
       # client now returns the raw JSON response. We need to extract the answer.
-      raw_response = client(prompt: prompt, inputs: {}, **kwargs)
+      raw_response = client(prompt: prompt, inputs: {}, **)
       answer = _extract_openai_answer_from_choices(raw_response["choices"])
       Boxcars.debug("Answer: #{answer}", :cyan)
       answer

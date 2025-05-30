@@ -24,14 +24,14 @@ module Boxcars
     # @param prompts [Array<Boxcars::Prompt>] The prompts to use for the engine.
     # @param batch_size [Integer] The number of prompts to send to the engine at a time.
     # @param kwargs [Hash] Additional parameters to pass to the underlying Intelligence gem adapter.
-    def initialize(name: DEFAULT_NAME, description: DEFAULT_DESCRIPTION, prompts: [], batch_size: 20, **kwargs)
+    def initialize(name: DEFAULT_NAME, description: DEFAULT_DESCRIPTION, prompts: [], batch_size: 20, **)
       super(
         provider: :cohere,
         name: name,
         description: description,
         prompts: prompts,
         batch_size: batch_size,
-        **kwargs
+        **
       )
     end
 
