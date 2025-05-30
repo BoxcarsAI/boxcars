@@ -18,7 +18,7 @@ gem "pg", "~> 1.5"
 gem "pgvector", "~> 0.2.2"
 
 group :development, :test do
-  gem "debug", "~> 1.9" if RUBY_VERSION >= "3.2.0"
+  gem "debug", "~> 1.9"
   gem "rspec", "~> 3.13"
   gem "rubocop", "~> 1.67"
   gem "vcr", "~> 6.3.1"
