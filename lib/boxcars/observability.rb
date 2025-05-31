@@ -26,6 +26,16 @@ module Boxcars
         # Optionally, if Boxcars had a central logger:
         # Boxcars.logger.warn "Boxcars::Observability: Backend error during track: #{e.message} (#{e.class.name})"
       end
+
+      # Flushes any pending events if the backend supports it.
+      # This is useful for testing or when you need to ensure events are sent before the process exits.
+      def flush
+        return unless backend
+
+        backend.flush if backend.respond_to?(:flush)
+      rescue StandardError
+        # Fail silently as requested.
+      end
     end
   end
 end

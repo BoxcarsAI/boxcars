@@ -110,6 +110,10 @@ test_engines.each do |engine_config|
   sleep(1)
 end
 
+# Flush events to ensure they're sent (important for PostHog and testing)
+puts "\n=== FLUSHING EVENTS ==="
+Boxcars::Observability.flush
+
 puts "\n📊 Test Summary"
 puts "=" * 60
 puts "Total tests: #{total_tests}"

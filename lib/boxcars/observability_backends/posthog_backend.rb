@@ -79,5 +79,11 @@ module Boxcars
       # If immediate flushing is needed for testing or specific scenarios:
       # @posthog_client.flush
     end
+
+    # Flushes any pending events to PostHog immediately.
+    # This is useful for testing or when you need to ensure events are sent before the process exits.
+    def flush
+      @posthog_client.flush if @posthog_client.respond_to?(:flush)
+    end
   end
 end
