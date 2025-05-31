@@ -77,6 +77,7 @@ module Boxcars
   end
 end
 
+require 'boxcars/engine/unified_observability'
 require "boxcars/engine/engine_result"
 require "boxcars/engine/intelligence_base"
 require "boxcars/engine/anthropic"
