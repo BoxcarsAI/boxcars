@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'anthropic'
-require_relative '../unified_observability'
 # Boxcars is a framework for running a series of tools to get an answer to a question.
 module Boxcars
   # A engine that uses OpenAI's API.
