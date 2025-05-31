@@ -12,7 +12,7 @@ module Boxcars
     # @param kw_args [Hash] Additional arguments to pass to the engine
     # @return [Boxcars::Engine] An instance of the appropriate engine class
     def self.engine(model: nil, **kw_args)
-      model ||= DEFAULT_MODEL
+      model ||= Boxcars.configuration.default_model || DEFAULT_MODEL
       Boxcars.logger&.info { "running api with #{model}" }
 
       case model.to_s

@@ -236,6 +236,100 @@ boxcars = [
 train = Boxcars.train.new(boxcars: boxcars)
 ```
 
+### Overriding the Default Engine Model
+
+Boxcars provides several ways to override the default engine model used throughout your application. The default model is currently `"gemini-2.5-flash-preview-05-20"`, but you can customize this behavior.
+
+#### Global Configuration
+
+Set a global default model that will be used by `Boxcars::Engines.engine()` when no model is specified:
+
+```ruby
+# Set the default model globally
+Boxcars.configuration.default_model = "gpt-4o"
+
+# Now all engines created without specifying a model will use GPT-4o
+engine = Boxcars::Engines.engine  # Uses gpt-4o
+calc = Boxcars::Calculator.new    # Uses gpt-4o via default engine
+```
+
+#### Configuration Block
+
+Use a configuration block for more organized setup:
+
+```ruby
+Boxcars.configure do |config|
+  config.default_model = "sonnet"  # Use Claude Sonnet as default
+  config.logger = Rails.logger     # Set custom logger
+  config.log_prompts = true        # Enable prompt logging
+end
+```
+
+#### Per-Instance Override
+
+Override the model for specific engine instances:
+
+```ruby
+# Global default is gemini-flash, but use different models per boxcar
+default_engine = Boxcars::Engines.engine                    # Uses global default
+gpt_engine = Boxcars::Engines.engine(model: "gpt-4o")       # Uses GPT-4o
+claude_engine = Boxcars::Engines.engine(model: "sonnet")    # Uses Claude Sonnet
+
+# Use different engines for different boxcars
+calc = Boxcars::Calculator.new(engine: gpt_engine)
+search = Boxcars::GoogleSearch.new(engine: claude_engine)
+```
+
+#### Environment-Based Configuration
+
+Set the default model via environment variables or initialization:
+
+```ruby
+# In your application initialization (e.g., Rails initializer)
+if Rails.env.production?
+  Boxcars.configuration.default_model = "gpt-4o"      # Use GPT-4o in production
+elsif Rails.env.development?
+  Boxcars.configuration.default_model = "flash"       # Use faster Gemini Flash in development
+else
+  Boxcars.configuration.default_model = "groq"        # Use Groq for testing
+end
+```
+
+#### Model Resolution Priority
+
+The `Boxcars::Engines.engine()` method resolves the model in this order:
+
+1. **Explicit model parameter**: `Boxcars::Engines.engine(model: "gpt-4o")`
+2. **Global configuration**: `Boxcars.configuration.default_model`
+3. **Built-in default**: `"gemini-2.5-flash-preview-05-20"`
+
+#### Supported Model Aliases
+
+When setting `default_model`, you can use any of the supported model aliases:
+
+```ruby
+# These are all valid default_model values:
+Boxcars.configuration.default_model = "gpt-4o"        # OpenAI GPT-4o
+Boxcars.configuration.default_model = "sonnet"        # Claude Sonnet
+Boxcars.configuration.default_model = "flash"         # Gemini Flash
+Boxcars.configuration.default_model = "groq"          # Groq Llama
+Boxcars.configuration.default_model = "online"        # Perplexity Sonar
+```
+
+#### Legacy Engine Configuration
+
+You can also override the default engine class (though this is less common):
+
+```ruby
+# Override the default engine class entirely
+Boxcars.configuration.default_engine = Boxcars::Anthropic
+
+# Now Boxcars.engine returns Anthropic instead of OpenAI
+default_engine = Boxcars.engine  # Returns Boxcars::Anthropic instance
+```
+
+**Note**: When using `default_engine`, the `default_model` setting is ignored since you're specifying the engine class directly.
+
 ### Observability
 
 Boxcars includes a comprehensive observability system that allows you to track and monitor AI operations across your application. The system provides insights into LLM calls, performance metrics, errors, and usage patterns.
