@@ -68,6 +68,8 @@ module Boxcars
         extract_openai_input(request_context)
       when 'anthropic'
         extract_anthropic_input(request_context)
+      when 'cohere'
+        extract_cohere_input(request_context)
       else
         extract_generic_input(request_context)
       end
@@ -105,6 +107,26 @@ module Boxcars
       end
 
       content
+    end
+
+    def extract_cohere_input(request_context)
+      # Cohere uses a single message field
+      message_content = request_context.dig(:conversation_for_api, :message)
+      if message_content
+        [{ role: "user", content: message_content }]
+      elsif request_context[:prompt]
+        # Format the prompt with inputs if available
+        prompt_text = if request_context[:prompt].respond_to?(:format)
+                        request_context[:prompt].format(request_context[:inputs] || {})
+                      elsif request_context[:prompt].respond_to?(:template)
+                        request_context[:prompt].template
+                      else
+                        request_context[:prompt].to_s
+                      end
+        [{ role: "user", content: prompt_text }]
+      else
+        []
+      end
     end
 
     def extract_generic_input(request_context)
@@ -149,6 +171,12 @@ module Boxcars
         response_body.dig("usage", "input_tokens") || 0
       when 'openai'
         response_body.dig("usage", "prompt_tokens") || 0
+      when 'cohere'
+        response_body.dig("meta", "tokens", "input_tokens") ||
+          response_body.dig(:meta, :tokens, :input_tokens) ||
+          response_body.dig("meta", "billed_units", "input_tokens") ||
+          response_body.dig(:meta, :billed_units, :input_tokens) ||
+          response_body.dig("token_count", "prompt_tokens") || 0
       else
         # Try common locations
         response_body.dig("usage", "prompt_tokens") ||
@@ -170,6 +198,12 @@ module Boxcars
         response_body.dig("usage", "output_tokens") || 0
       when 'openai'
         response_body.dig("usage", "completion_tokens") || 0
+      when 'cohere'
+        response_body.dig("meta", "tokens", "output_tokens") ||
+          response_body.dig(:meta, :tokens, :output_tokens) ||
+          response_body.dig("meta", "billed_units", "output_tokens") ||
+          response_body.dig(:meta, :billed_units, :output_tokens) ||
+          response_body.dig("token_count", "completion_tokens") || 0
       else
         # Try common locations
         response_body.dig("usage", "completion_tokens") ||
@@ -239,8 +273,10 @@ module Boxcars
             choice
           end
         end
-      elsif response_body["text"]
-        [{ role: "assistant", content: response_body["text"] }]
+      elsif response_body["text"] || response_body[:text]
+        # Handle Cohere format (both string and symbol keys)
+        content = response_body["text"] || response_body[:text]
+        [{ role: "assistant", content: content }]
       elsif response_body["message"]
         [{ role: "assistant", content: response_body["message"] }]
       elsif response_body["candidates"]
@@ -267,6 +303,8 @@ module Boxcars
         'claude-3-5-sonnet-20240620'
       when 'cerebras'
         'llama-3.3-70b'
+      when 'cohere'
+        'command-r-plus'
       else
         provider.to_s
       end

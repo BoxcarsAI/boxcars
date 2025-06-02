@@ -5,37 +5,14 @@ require 'boxcars/engine/cohere'
 require 'boxcars/observability'
 require 'boxcars/prompt'
 
-# Stub Intelligence::ChatResponse if not already globally available in spec_helper
-# or if specific stubs are needed for Cohere adapter.
-unless defined?(Intelligence::ChatResponse)
-  module Intelligence
-    class ChatResponse
-      def success?
-      end
-
-      def body
-      end
-
-      def status
-      end
-
-      def reason_phrase
-      end
-    end
-  end
-end
-
 RSpec.describe Boxcars::Cohere do
   subject(:engine) { described_class.new(**engine_params) }
 
-  let(:prompt_template) { "Translate this: {{text}}" }
+  let(:prompt_template) { "Translate this: %<text>s" }
   let(:prompt) { Boxcars::Prompt.new(template: prompt_template) }
   let(:inputs) { { text: "hello world" } }
   let(:api_key_param) { "test_cohere_api_key" }
 
-  let(:mock_intelligence_adapter_class) { class_double(Intelligence::Adapter::Base).as_stubbed_const }
-  let(:mock_intelligence_adapter) { instance_double(Intelligence::Adapter::Base) }
-  let(:mock_intelligence_request) { instance_double(Intelligence::ChatRequest) }
   let(:cohere_success_response) do
     {
       "text" => "hola mundo",
@@ -47,14 +24,15 @@ RSpec.describe Boxcars::Cohere do
       }
     }
   end
-  let(:mock_chat_response) do
-    instance_double(Intelligence::ChatResponse,
-                    success?: true,
-                    body: cohere_success_response.to_json,
+
+  let(:mock_faraday_response) do
+    instance_double(Faraday::Response,
                     status: 200,
-                    reason_phrase: "OK")
+                    reason_phrase: "OK",
+                    body: cohere_success_response.to_json)
   end
 
+  let(:mock_faraday_connection) { instance_double(Faraday::Connection) }
   let(:engine_params) { {} }
 
   let(:dummy_observability_backend) do
@@ -79,11 +57,9 @@ RSpec.describe Boxcars::Cohere do
     # Mock Boxcars configuration for API key
     allow(Boxcars.configuration).to receive(:cohere_api_key).and_return(api_key_param)
 
-    # Mock the Intelligence gem interactions for :cohere provider
-    allow(Intelligence::Adapter).to receive(:[]).with(:cohere).and_return(mock_intelligence_adapter_class)
-    allow(mock_intelligence_adapter_class).to receive(:new).with(api_key_param).and_return(mock_intelligence_adapter)
-    allow(Intelligence::ChatRequest).to receive(:new).with(adapter: mock_intelligence_adapter).and_return(mock_intelligence_request)
-    allow(mock_intelligence_request).to receive(:chat).and_return(mock_chat_response)
+    # Mock Faraday connection and response
+    allow(Faraday).to receive(:new).and_return(mock_faraday_connection)
+    allow(mock_faraday_connection).to receive(:post).and_return(mock_faraday_response)
   end
 
   describe 'observability integration with PostHog standard format' do
@@ -106,11 +82,11 @@ RSpec.describe Boxcars::Cohere do
         expect(props[:$ai_latency]).to be_a(Float).and be >= 0
         expect(props[:$ai_trace_id]).to be_a(String)
 
-        # Check input format - be flexible about content since Intelligence::Message objects may not extract perfectly
+        # Check input format
         ai_input = JSON.parse(props[:$ai_input])
         expect(ai_input).to be_an(Array)
         expect(ai_input.first).to include("role" => "user")
-        expect(ai_input.first["content"]).to be_a(String) # Content should be a string, even if it's the object representation
+        expect(ai_input.first["content"]).to include("Translate this: hello world")
 
         # Check output format
         ai_output = JSON.parse(props[:$ai_output_choices])
@@ -135,14 +111,14 @@ RSpec.describe Boxcars::Cohere do
       it 'tracks a $ai_generation event with failure details' do
         expect do
           engine.client(prompt: prompt, inputs: inputs)
-        end.to raise_error(Boxcars::Error, /No API key found for cohere/)
+        end.to raise_error(Boxcars::Error, /Cohere API key not set/)
 
         expect(dummy_observability_backend.tracked_events.size).to eq(1)
         tracked_event = dummy_observability_backend.tracked_events.first
         props = tracked_event[:properties]
 
         expect(props[:$ai_is_error]).to be true
-        expect(props[:$ai_error]).to match(/No API key found for cohere/)
+        expect(props[:$ai_error]).to match(/Cohere API key not set/)
         expect(props[:$ai_provider]).to eq("cohere")
         expect(props[:$ai_http_status]).to eq(500) # Default for errors
       end
@@ -150,7 +126,7 @@ RSpec.describe Boxcars::Cohere do
 
     context 'when API call fails (e.g., network error or API error status)' do
       before do
-        allow(mock_intelligence_request).to receive(:chat).and_raise(StandardError.new("Cohere Network timeout"))
+        allow(mock_faraday_connection).to receive(:post).and_raise(StandardError.new("Cohere Network timeout"))
       end
 
       it 'tracks a $ai_generation event with error details from raised exception' do
@@ -171,19 +147,18 @@ RSpec.describe Boxcars::Cohere do
 
     context 'when API returns a non-successful status' do
       before do
-        allow(mock_chat_response).to receive_messages(
-          success?: false,
+        allow(mock_faraday_response).to receive_messages(
           status: 401,
           reason_phrase: "Unauthorized",
           body: { message: "Invalid API key" }.to_json
         )
-        allow(mock_intelligence_request).to receive(:chat).and_return(mock_chat_response)
+        allow(mock_faraday_connection).to receive(:post).and_return(mock_faraday_response)
       end
 
       it 'tracks a $ai_generation event with failure details from response object' do
         expect do
           engine.client(prompt: prompt, inputs: inputs)
-        end.to raise_error(Boxcars::Error, /Unauthorized/)
+        end.to raise_error(Boxcars::Error, /HTTP 401: Unauthorized/)
 
         expect(dummy_observability_backend.tracked_events.size).to eq(1)
         tracked_event = dummy_observability_backend.tracked_events.first
@@ -191,7 +166,7 @@ RSpec.describe Boxcars::Cohere do
 
         expect(props[:$ai_is_error]).to be true
         expect(props[:$ai_http_status]).to eq(401)
-        expect(props[:$ai_error]).to eq("Unauthorized")
+        expect(props[:$ai_error]).to eq("HTTP 401: Unauthorized")
         expect(props[:$ai_provider]).to eq("cohere")
       end
     end
