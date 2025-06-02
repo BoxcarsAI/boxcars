@@ -247,10 +247,10 @@ module Boxcars
     # Handle response body errors
     def _handle_cohere_response_body_error(response_obj)
       msg = "Unknown error from Cohere API"
-      if response_obj && response_obj.respond_to?(:body)
+      if response_obj.respond_to?(:body)
         begin
           parsed_body = JSON.parse(response_obj.body)
-          msg = parsed_body.dig("message") || parsed_body.dig("error") || msg
+          msg = parsed_body["message"] || parsed_body["error"] || msg
         rescue JSON::ParserError
           msg = "HTTP #{response_obj.status}: #{response_obj.reason_phrase}"
         end

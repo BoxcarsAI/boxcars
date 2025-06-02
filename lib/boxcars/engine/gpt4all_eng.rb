@@ -6,6 +6,7 @@ require 'json' # For pretty_generate
 module Boxcars
   # A engine that uses local GPT4All API.
   class Gpt4allEng < Engine
+    include UnifiedObservability
     attr_reader :prompts, :model_kwargs, :batch_size, :gpt4all_params # Added gpt4all_params
 
     DEFAULT_NAME = "Gpt4all engine"
@@ -70,14 +71,13 @@ module Boxcars
           conversation_for_api: api_request_params&.dig(:prompt) # The text prompt
         }
 
-        properties = _gpt4all_build_observability_properties(
+        track_ai_generation(
           duration_ms: duration_ms,
-          current_params: current_params, # User-intended and default params
-          api_request_params: api_request_params, # Actual params sent (the prompt text)
+          current_params: current_params,
           request_context: request_context,
-          response_data: response_data
+          response_data: response_data,
+          provider: :gpt4all
         )
-        Boxcars::Observability.track(event: 'llm_call', properties: properties.compact)
       end
 
       _gpt4all_handle_call_outcome(response_data: response_data)
@@ -96,47 +96,6 @@ module Boxcars
     end
 
     private
-
-    def _gpt4all_extract_error_details(response_data:, properties:)
-      error = response_data[:error]
-      return unless error
-
-      properties[:error_message] = error.message
-      properties[:error_class] = error.class.name
-      properties[:error_backtrace] = error.backtrace&.join("\n")
-      # No specific error types or codes from the gpt4all gem are typically exposed beyond StandardError.
-    end
-
-    def _gpt4all_build_observability_properties(duration_ms:, current_params:, api_request_params:, request_context:,
-                                                response_data:)
-      properties = {
-        provider: :gpt4all, # Specific provider name
-        model_name: current_params[:model_name], # From DEFAULT_PARAMS or overridden
-        prompt_content: [{ role: "user", content: request_context[:conversation_for_api] }], # GPT4All is a direct prompt
-        inputs: request_context[:inputs],
-        # Log relevant params, like prompt_length, excluding model_name which is already a top-level property
-        api_call_parameters: current_params.except(:model_name).merge(prompt_length: api_request_params&.dig(:prompt)&.length),
-        duration_ms: duration_ms,
-        success: response_data[:success]
-      }.merge(_gpt4all_extract_response_properties(response_data))
-
-      _gpt4all_extract_error_details(response_data: response_data, properties: properties)
-      properties
-    end
-
-    def _gpt4all_extract_response_properties(response_data)
-      raw_response_text = response_data[:response_obj] # String
-      parsed_response_hash = response_data[:parsed_json] # Hash like {"text": "..."}
-
-      {
-        # For gpt4all, raw_body and parsed_body might be similar if we consider the string as raw.
-        # Storing the hash version in parsed_body for consistency with other LLMs.
-        response_raw_body: raw_response_text,
-        response_parsed_body: response_data[:success] ? parsed_response_hash : nil,
-        status_code: response_data[:status_code] # Inferred 200 or nil
-        # reason_phrase not applicable for local gpt4all
-      }
-    end
 
     def _gpt4all_handle_call_outcome(response_data:)
       if response_data[:error]

@@ -6,6 +6,7 @@ require 'json'
 module Boxcars
   # A engine that uses Groq's API.
   class Groq < Engine
+    include UnifiedObservability
     attr_reader :prompts, :groq_params, :model_kwargs, :batch_size
 
     DEFAULT_PARAMS = {
@@ -55,7 +56,19 @@ module Boxcars
       rescue StandardError => e
         _handle_standard_error_for_groq(e, response_data)
       ensure
-        _track_groq_observability(start_time, current_prompt_object, inputs, api_request_params, current_params, response_data)
+        duration_ms = ((Time.now - start_time) * 1000).round
+        request_context = {
+          prompt: current_prompt_object,
+          inputs: inputs,
+          conversation_for_api: api_request_params&.dig(:messages)
+        }
+        track_ai_generation(
+          duration_ms: duration_ms,
+          current_params: current_params,
+          request_context: request_context,
+          response_data: response_data,
+          provider: :groq
+        )
       end
 
       _groq_handle_call_outcome(response_data: response_data)
@@ -112,93 +125,10 @@ module Boxcars
       response_data[:success] = false
     end
 
-    def _track_groq_observability(start_time, prompt_object, inputs, api_request_params, current_params, response_data)
-      duration_ms = ((Time.now - start_time) * 1000).round
-      request_context = {
-        prompt: prompt_object,
-        inputs: inputs,
-        conversation_for_api: api_request_params&.dig(:messages)
-      }
-
-      properties = _groq_build_observability_properties(
-        duration_ms: duration_ms,
-        current_params: current_params,
-        api_request_params: api_request_params,
-        request_context: request_context,
-        response_data: response_data
-      )
-      Boxcars::Observability.track(event: 'llm_call', properties: properties.compact)
-    end
-
-    # Helper methods for _groq_extract_error_details
-    def _extract_openai_error_details_for_groq(error, properties)
-      properties[:error_type] = error.type if error.respond_to?(:type)
-      properties[:error_code] = error.code if error.respond_to?(:code)
-      properties[:status_code] ||= error.http_status if error.respond_to?(:http_status)
-    end
-
-    def _is_groq_api_error_response?(response_data)
-      !response_data[:success] && response_data[:response_obj] && response_data[:response_obj]["error"]
-    end
-
-    def _extract_groq_api_error_details(err_details, properties)
-      if err_details.is_a?(Hash)
-        properties[:error_message] ||= err_details['message']
-        properties[:error_type] ||= err_details['type']
-        properties[:error_code] ||= err_details['code']
-      else
-        properties[:error_message] ||= err_details.to_s
-      end
-      properties[:error_class] ||= "Boxcars::Error"
-    end
-
     def log_messages_debug(messages)
       return unless messages.is_a?(Array)
 
       Boxcars.debug(messages.last(2).map { |p| ">>>>>> Role: #{p[:role]} <<<<<<\n#{p[:content]}" }.join("\n"), :cyan)
-    end
-
-    def _groq_extract_error_details(response_data:, properties:)
-      error = response_data[:error]
-      return unless error
-
-      properties[:error_message] = error.message
-      properties[:error_class] = error.class.name
-      properties[:error_backtrace] = error.backtrace&.join("\n")
-
-      if error.is_a?(::OpenAI::Error)
-        _extract_openai_error_details_for_groq(error, properties)
-      elsif _is_groq_api_error_response?(response_data)
-        err_details = response_data[:response_obj]["error"]
-        _extract_groq_api_error_details(err_details, properties)
-      end
-    end
-
-    def _groq_build_observability_properties(duration_ms:, current_params:, api_request_params:, request_context:, response_data:)
-      properties = {
-        provider: :groq, # Specific provider name
-        model_name: api_request_params&.dig(:model) || current_params[:model],
-        prompt_content: request_context[:conversation_for_api],
-        inputs: request_context[:inputs],
-        api_call_parameters: current_params,
-        duration_ms: duration_ms,
-        success: response_data[:success]
-      }.merge(_groq_extract_response_properties(response_data))
-
-      _groq_extract_error_details(response_data: response_data, properties: properties)
-      properties
-    end
-
-    def _groq_extract_response_properties(response_data)
-      raw_response_body = response_data[:response_obj]
-      parsed_response_body = response_data[:success] ? raw_response_body : nil
-      status_code = response_data[:status_code]
-
-      {
-        response_raw_body: raw_response_body ? JSON.pretty_generate(raw_response_body) : nil,
-        response_parsed_body: parsed_response_body,
-        status_code: status_code
-      }
     end
 
     def _groq_handle_call_outcome(response_data:)

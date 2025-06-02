@@ -6,6 +6,7 @@ require 'json'
 module Boxcars
   # A engine that uses GeminiAI's API via an OpenAI-compatible interface.
   class GeminiAi < Engine
+    include UnifiedObservability
     attr_reader :prompts, :llm_params, :model_kwargs, :batch_size # Corrected typo llm_parmas to llm_params
 
     DEFAULT_PARAMS = {
@@ -63,7 +64,19 @@ module Boxcars
         response_data[:error] = e
         response_data[:success] = false
       ensure
-        _handle_gemini_observability(start_time, current_prompt_object, inputs, current_params, api_request_params, response_data)
+        duration_ms = ((Time.now - start_time) * 1000).round
+        request_context = {
+          prompt: current_prompt_object,
+          inputs: inputs,
+          conversation_for_api: api_request_params&.dig(:messages) || []
+        }
+        track_ai_generation(
+          duration_ms: duration_ms,
+          current_params: current_params,
+          request_context: request_context,
+          response_data: response_data,
+          provider: :gemini
+        )
       end
 
       _gemini_handle_call_outcome(response_data: response_data)
@@ -108,25 +121,6 @@ module Boxcars
       end
     end
 
-    def _handle_gemini_observability(call_start_time, prompt_obj_for_context, call_inputs, engine_params, final_api_params,
-                                     call_response_data)
-      duration_ms = ((Time.now - call_start_time) * 1000).round
-      request_context = {
-        prompt: prompt_obj_for_context,
-        inputs: call_inputs,
-        conversation_for_api: final_api_params&.dig(:messages) # Assuming messages format
-      }
-
-      properties = _gemini_build_observability_properties(
-        duration_ms: duration_ms,
-        current_params: engine_params,
-        api_request_params: final_api_params,
-        request_context: request_context,
-        response_data: call_response_data
-      )
-      Boxcars::Observability.track(event: 'llm_call', properties: properties.compact)
-    end
-
     def _prepare_gemini_request_params(current_prompt, current_inputs, current_engine_params)
       # Gemini typically uses a chat-like interface.
       # Prepare messages for the API
@@ -147,63 +141,6 @@ module Boxcars
       return unless messages.is_a?(Array)
 
       Boxcars.debug(messages.last(2).map { |p| ">>>>>> Role: #{p[:role]} <<<<<<\n#{p[:content]}" }.join("\n"), :cyan)
-    end
-
-    def _gemini_extract_error_details(response_data:, properties:)
-      error = response_data[:error]
-      return unless error
-
-      properties[:error_message] = error.message
-      properties[:error_class] = error.class.name
-      properties[:error_backtrace] = error.backtrace&.join("\n")
-
-      if error.is_a?(::OpenAI::Error) # If error came through OpenAI gem compatibility layer
-        properties[:error_type] = error.type if error.respond_to?(:type)
-        properties[:error_code] = error.code if error.respond_to?(:code)
-        properties[:status_code] ||= error.http_status if error.respond_to?(:http_status)
-      elsif !response_data[:success] && (err_details = response_data.dig(:response_obj, "error"))
-        _extract_gemini_specific_error_details(err_details, properties)
-      end
-    end
-
-    def _extract_gemini_specific_error_details(err_details, properties)
-      # If err_details is a Hash, extract specific fields, otherwise use it as a string.
-      if err_details.is_a?(Hash)
-        properties[:error_message] ||= err_details['message']
-        properties[:error_type] ||= err_details['type']
-        properties[:error_code] ||= err_details['code']
-      else
-        properties[:error_message] ||= err_details.to_s
-      end
-      properties[:error_class] ||= "Boxcars::Error"
-    end
-
-    def _gemini_build_observability_properties(duration_ms:, current_params:, api_request_params:, request_context:,
-                                               response_data:)
-      properties = {
-        provider: :gemini_ai, # Specific provider name
-        model_name: api_request_params&.dig(:model) || current_params[:model],
-        prompt_content: request_context[:conversation_for_api], # Assuming messages array
-        inputs: request_context[:inputs],
-        api_call_parameters: current_params,
-        duration_ms: duration_ms,
-        success: response_data[:success]
-      }.merge(_gemini_extract_response_properties(response_data))
-
-      _gemini_extract_error_details(response_data: response_data, properties: properties)
-      properties
-    end
-
-    def _gemini_extract_response_properties(response_data)
-      raw_response_body = response_data[:response_obj]
-      parsed_response_body = response_data[:success] ? raw_response_body : nil
-      status_code = response_data[:status_code]
-
-      {
-        response_raw_body: raw_response_body ? JSON.pretty_generate(raw_response_body) : nil,
-        response_parsed_body: parsed_response_body,
-        status_code: status_code
-      }
     end
 
     def _gemini_handle_call_outcome(response_data:)

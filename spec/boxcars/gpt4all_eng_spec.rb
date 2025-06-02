@@ -45,32 +45,36 @@ RSpec.describe Boxcars::Gpt4allEng do
         allow(mock_gpt4all_conversational_ai).to receive(:prompt).and_return(gpt4all_success_response_text)
       end
 
-      it 'tracks an llm_call event with correct properties' do
+      it 'tracks an $ai_generation event with correct properties' do
         # Example of passing kwargs that might be stored in @gpt4all_params but not directly used by the gem's prompt method
         engine.client(prompt: prompt, inputs: inputs, some_local_param: "value")
 
         expect(dummy_observability_backend.tracked_events.size).to eq(1)
         tracked_event = dummy_observability_backend.tracked_events.first
-        expect(tracked_event[:event]).to eq('llm_call')
+        expect(tracked_event[:event]).to eq('$ai_generation')
 
         props = tracked_event[:properties]
-        expect(props[:provider]).to eq(:gpt4all)
-        expect(props[:model_name]).to eq("custom-gpt4all-model") # From engine_params
-        expect(props[:success]).to be true
-        expect(props[:duration_ms]).to be_a(Integer).and be >= 0
-        expect(props[:inputs]).to eq(inputs)
-        # api_call_parameters includes engine's params; prompt length is also added
-        expect(props[:api_call_parameters]).to include(some_local_param: "value")
-        expect(props[:api_call_parameters][:prompt_length]).to be_a(Integer)
+        expect(props[:$ai_provider]).to eq('gpt4all')
+        expect(props[:$ai_model]).to eq("custom-gpt4all-model") # From engine_params
+        expect(props[:$ai_is_error]).to be false
+        expect(props[:$ai_latency]).to be_a(Float).and be >= 0
+        expect(props[:$ai_trace_id]).to be_a(String)
+        expect(props[:$ai_http_status]).to eq(200) # Inferred
+        expect(props[:$ai_base_url]).to eq("https://api.gpt4all.com/v1")
 
-        expect(props[:prompt_content]).to be_an(Array)
-        expect(props[:prompt_content].first[:role].to_s).to eq("user")
-        expect(props[:prompt_content].first[:content]).to include("What is the main idea of existentialism?")
+        # Check input format
+        ai_input = JSON.parse(props[:$ai_input])
+        expect(ai_input).to be_an(Array)
+        expect(ai_input.first['role']).to eq("user")
+        expect(ai_input.first['content']).to include("What is the main idea of existentialism?")
 
-        expect(props[:response_parsed_body]).to eq({ "text" => gpt4all_success_response_text })
-        expect(props[:response_raw_body]).to eq(gpt4all_success_response_text)
-        expect(props[:status_code]).to eq(200) # Inferred
-        expect(props).not_to have_key(:error_message)
+        # Check output format
+        ai_output_choices = JSON.parse(props[:$ai_output_choices])
+        expect(ai_output_choices).to be_an(Array)
+        expect(ai_output_choices.first['role']).to eq("assistant")
+        expect(ai_output_choices.first['content']).to eq(gpt4all_success_response_text)
+
+        expect(props).not_to have_key(:$ai_error)
       end
     end
 
@@ -81,18 +85,17 @@ RSpec.describe Boxcars::Gpt4allEng do
         allow(mock_gpt4all_conversational_ai).to receive(:prompt).and_raise(gpt4all_error)
       end
 
-      it 'tracks an llm_call event with error details' do
+      it 'tracks an $ai_generation event with error details' do
         expect do
           engine.client(prompt: prompt, inputs: inputs)
         end.to raise_error(StandardError, "GPT4All model loading failed")
 
         expect(dummy_observability_backend.tracked_events.size).to eq(1)
         props = dummy_observability_backend.tracked_events.first[:properties]
-        expect(props[:success]).to be false
-        expect(props[:error_message]).to eq("GPT4All model loading failed")
-        expect(props[:error_class]).to eq("StandardError")
-        expect(props[:provider]).to eq(:gpt4all)
-        # No status_code for this kind of local error
+        expect(props[:$ai_is_error]).to be true
+        expect(props[:$ai_error]).to eq("GPT4All model loading failed")
+        expect(props[:$ai_provider]).to eq('gpt4all')
+        expect(props[:$ai_http_status]).to eq(500) # Error status
       end
     end
 
@@ -103,7 +106,7 @@ RSpec.describe Boxcars::Gpt4allEng do
         expect(result).to eq(gpt4all_success_response_text)
 
         expect(dummy_observability_backend.tracked_events.size).to eq(1)
-        expect(dummy_observability_backend.tracked_events.first[:event]).to eq('llm_call')
+        expect(dummy_observability_backend.tracked_events.first[:event]).to eq('$ai_generation')
       end
     end
   end

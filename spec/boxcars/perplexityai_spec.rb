@@ -75,28 +75,39 @@ RSpec.describe Boxcars::Perplexityai do
         allow(mock_faraday_connection).to receive(:post).with('/chat/completions').and_return(mock_faraday_response)
       end
 
-      it 'tracks an llm_call event with correct properties' do
+      it 'tracks an $ai_generation event with correct PostHog properties' do
         engine.client(prompt: prompt, inputs: inputs, temperature: 0.3)
 
         expect(dummy_observability_backend.tracked_events.size).to eq(1)
         tracked_event = dummy_observability_backend.tracked_events.first
-        expect(tracked_event[:event]).to eq('llm_call')
+        expect(tracked_event[:event]).to eq('$ai_generation')
 
         props = tracked_event[:properties]
-        expect(props[:provider]).to eq(:perplexity_ai)
-        expect(props[:model_name]).to eq("llama-3-sonar-large-32k-online")
-        expect(props[:success]).to be true
-        expect(props[:duration_ms]).to be_a(Integer).and be >= 0
-        expect(props[:inputs]).to eq(inputs)
-        expect(props[:api_call_parameters]).to include(model: "llama-3-sonar-large-32k-online", temperature: 0.3)
-        expect(props[:prompt_content]).to be_an(Array)
-        expect(props[:prompt_content].first[:role].to_s).to eq("user")
-        expect(props[:prompt_content].first[:content]).to include("Summarize the latest news about AI advancements.")
-        expect(props[:response_parsed_body]).to eq(mock_faraday_response.body)
-        expect(props[:response_raw_body]).to eq(JSON.pretty_generate(mock_faraday_response.body))
-        expect(props[:status_code]).to eq(200)
-        expect(props[:reason_phrase]).to eq("OK")
-        expect(props).not_to have_key(:error_message)
+        expect(props[:$ai_provider]).to eq('perplexity_ai')
+        expect(props[:$ai_model]).to eq("llama-3-sonar-large-32k-online")
+        expect(props[:$ai_is_error]).to be false
+        expect(props[:$ai_latency]).to be_a(Float).and be >= 0
+        expect(props[:$ai_trace_id]).to be_a(String)
+        expect(props[:$ai_base_url]).to eq('https://api.perplexity.ai')
+        expect(props[:$ai_http_status]).to eq(200)
+
+        # Check input format
+        ai_input = JSON.parse(props[:$ai_input])
+        expect(ai_input).to be_an(Array)
+        expect(ai_input.first['role']).to eq('user')
+        expect(ai_input.first['content']).to include('Summarize the latest news about AI advancements.')
+
+        # Check output format
+        ai_output = JSON.parse(props[:$ai_output_choices])
+        expect(ai_output).to be_an(Array)
+        expect(ai_output.first['role']).to eq('assistant')
+        expect(ai_output.first['content']).to eq('AI is advancing rapidly...')
+
+        # Check token counts
+        expect(props[:$ai_input_tokens]).to eq(10)
+        expect(props[:$ai_output_tokens]).to eq(50)
+
+        expect(props).not_to have_key(:$ai_error)
       end
     end
 
@@ -105,16 +116,17 @@ RSpec.describe Boxcars::Perplexityai do
         allow(Boxcars.configuration).to receive(:perplexity_api_key).and_return(nil)
       end
 
-      it 'tracks an llm_call event with failure details' do
+      it 'tracks an $ai_generation event with failure details' do
         expect do
           engine.client(prompt: prompt, inputs: inputs)
         end.to raise_error(Boxcars::ConfigurationError, /Perplexity API key not set/)
 
         expect(dummy_observability_backend.tracked_events.size).to eq(1)
         props = dummy_observability_backend.tracked_events.first[:properties]
-        expect(props[:success]).to be false
-        expect(props[:error_message]).to match(/Perplexity API key not set/)
-        expect(props[:error_class]).to eq("Boxcars::ConfigurationError")
+        expect(props[:$ai_is_error]).to be true
+        expect(props[:$ai_error]).to match(/Perplexity API key not set/)
+        expect(props[:$ai_provider]).to eq('perplexity_ai')
+        expect(props[:$ai_http_status]).to eq(500)
       end
     end
 
@@ -125,19 +137,18 @@ RSpec.describe Boxcars::Perplexityai do
         allow(mock_faraday_connection).to receive(:post).with('/chat/completions').and_raise(faraday_error)
       end
 
-      it 'tracks an llm_call event with Faraday error details' do
+      it 'tracks an $ai_generation event with Faraday error details' do
         expect do
           engine.client(prompt: prompt, inputs: inputs)
         end.to raise_error(Faraday::UnauthorizedError)
 
         expect(dummy_observability_backend.tracked_events.size).to eq(1)
         props = dummy_observability_backend.tracked_events.first[:properties]
-        expect(props[:success]).to be false
-        expect(props[:error_message]).to eq("Invalid API key") # From parsed error body
-        expect(props[:error_class]).to eq("Faraday::UnauthorizedError")
-        expect(props[:status_code]).to eq(401)
-        expect(props[:provider]).to eq(:perplexity_ai)
-        expect(props[:response_raw_body]).to eq(JSON.pretty_generate(mock_faraday_error_response.body))
+        expect(props[:$ai_is_error]).to be true
+        expect(props[:$ai_error]).to include('Unauthorized')
+        expect(props[:$ai_http_status]).to eq(401)
+        expect(props[:$ai_provider]).to eq('perplexity_ai')
+        expect(props[:$ai_base_url]).to eq('https://api.perplexity.ai')
       end
     end
 
@@ -148,7 +159,7 @@ RSpec.describe Boxcars::Perplexityai do
         expect(result).to eq("AI is advancing rapidly...")
 
         expect(dummy_observability_backend.tracked_events.size).to eq(1)
-        expect(dummy_observability_backend.tracked_events.first[:event]).to eq('llm_call')
+        expect(dummy_observability_backend.tracked_events.first[:event]).to eq('$ai_generation')
       end
     end
   end

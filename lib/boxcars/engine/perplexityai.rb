@@ -7,6 +7,7 @@ require 'json'
 module Boxcars
   # A engine that uses PerplexityAI's API.
   class Perplexityai < Engine
+    include UnifiedObservability
     attr_reader :prompts, :perplexity_params, :model_kwargs, :batch_size
 
     DEFAULT_PARAMS = { # Renamed from DEFAULT_PER_PARAMS for consistency
@@ -97,14 +98,13 @@ module Boxcars
           inputs: inputs,
           conversation_for_api: api_request_params&.dig(:messages)
         }
-        properties = _perplexity_build_observability_properties(
+        track_ai_generation(
           duration_ms: duration_ms,
           current_params: current_params,
-          api_request_params: api_request_params,
           request_context: request_context,
-          response_data: response_data
+          response_data: response_data,
+          provider: :perplexity_ai
         )
-        Boxcars::Observability.track(event: 'llm_call', properties: properties.compact)
       end
 
       _perplexity_handle_call_outcome(response_data: response_data)
@@ -130,64 +130,6 @@ module Boxcars
       Boxcars.debug(messages.last(2).map { |p| ">>>>>> Role: #{p[:role]} <<<<<<\n#{p[:content]}" }.join("\n"), :cyan)
     end
 
-    def _perplexity_extract_error_details(response_data:, properties:) # rubocop:disable Metrics/AbcSize
-      error = response_data[:error]
-      return unless error
-
-      properties[:error_message] = error.message
-      properties[:error_class] = error.class.name
-      properties[:error_backtrace] = error.backtrace&.join("\n")
-
-      if error.is_a?(Faraday::Error)
-        properties[:status_code] ||= error.response_status if error.respond_to?(:response_status)
-        # If Faraday error has a response body with Perplexity error structure
-        if error.respond_to?(:response) && error.response&.body.is_a?(Hash)
-          err_details = error.response.body["error"]
-          if err_details.is_a?(Hash)
-            properties[:error_type] = err_details["type"]
-            properties[:error_message] = err_details["message"] # Overwrite generic Faraday message if more specific
-          end
-          properties[:response_raw_body] ||= JSON.pretty_generate(error.response.body)
-        end
-      elsif !response_data[:success] && response_data[:parsed_json] && response_data[:parsed_json]["error"]
-        err_details = response_data[:parsed_json]["error"]
-        properties[:error_message] ||= err_details['message']
-        properties[:error_type] ||= err_details['type']
-        properties[:error_class] ||= "Boxcars::Error"
-      end
-    end
-
-    def _perplexity_build_observability_properties(duration_ms:, current_params:, api_request_params:, request_context:,
-                                                   response_data:)
-      properties = {
-        provider: :perplexity_ai,
-        model_name: api_request_params&.dig(:model) || current_params[:model],
-        prompt_content: request_context[:conversation_for_api],
-        inputs: request_context[:inputs],
-        api_call_parameters: current_params,
-        duration_ms: duration_ms,
-        success: response_data[:success]
-      }.merge(_perplexity_extract_response_properties(response_data))
-
-      _perplexity_extract_error_details(response_data: response_data, properties: properties)
-      properties
-    end
-
-    def _perplexity_extract_response_properties(response_data)
-      # response_obj is Faraday::Response, body is already parsed by middleware
-      raw_faraday_response = response_data[:response_obj]
-      parsed_body = response_data[:parsed_json] # This is response.body from Faraday
-      status_code = response_data[:status_code]
-      reason_phrase = raw_faraday_response&.reason_phrase
-
-      {
-        response_raw_body: parsed_body ? JSON.pretty_generate(parsed_body) : nil, # Store the parsed body as JSON string
-        response_parsed_body: response_data[:success] ? parsed_body : nil,
-        status_code: status_code,
-        reason_phrase: reason_phrase
-      }
-    end
-
     def _perplexity_handle_call_outcome(response_data:)
       if response_data[:error]
         Boxcars.error("PerplexityAI Error: #{response_data[:error].message} (#{response_data[:error].class.name})", :red)
@@ -203,7 +145,6 @@ module Boxcars
         choices.map { |c| c.dig("message", "content") }.join("\n").strip
       end
     end
-    # rubocop:enable Metrics/AbcSize
 
     # Methods like `check_response`, `generate`, `generation_info` are removed or would need significant rework.
     # `check_response` logic is now part of `_perplexity_handle_call_outcome`.

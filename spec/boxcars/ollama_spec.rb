@@ -58,27 +58,38 @@ RSpec.describe Boxcars::Ollama do
         allow(mock_ollama_client).to receive(:chat).and_return(ollama_chat_success_response)
       end
 
-      it 'tracks an llm_call event with correct properties' do
+      it 'tracks a $ai_generation event with correct properties' do
         engine.client(prompt: prompt, inputs: inputs, temperature: 0.6)
 
         expect(dummy_observability_backend.tracked_events.size).to eq(1)
         tracked_event = dummy_observability_backend.tracked_events.first
-        expect(tracked_event[:event]).to eq('llm_call')
+        expect(tracked_event[:event]).to eq('$ai_generation')
 
         props = tracked_event[:properties]
-        expect(props[:provider]).to eq(:ollama)
-        expect(props[:model_name]).to eq("llama3") # Default model
-        expect(props[:success]).to be true
-        expect(props[:duration_ms]).to be_a(Integer).and be >= 0
-        expect(props[:inputs]).to eq(inputs)
-        expect(props[:api_call_parameters]).to include(model: "llama3", temperature: 0.6)
-        expect(props[:prompt_content]).to be_an(Array)
-        expect(props[:prompt_content].first[:role].to_s).to eq("user")
-        expect(props[:prompt_content].first[:content]).to include("Explain quantum physics in simple terms.")
-        expect(props[:response_parsed_body]).to eq(ollama_chat_success_response)
-        expect(props[:response_raw_body]).to eq(JSON.pretty_generate(ollama_chat_success_response))
-        expect(props[:status_code]).to eq(200) # Inferred for local success
-        expect(props).not_to have_key(:error_message)
+        expect(props[:$ai_provider]).to eq('ollama')
+        expect(props[:$ai_model]).to eq("llama3") # Default model
+        expect(props[:$ai_is_error]).to be false
+        expect(props[:$ai_latency]).to be_a(Float).and be >= 0
+        expect(props[:$ai_http_status]).to eq(200) # Inferred for local success
+        expect(props[:$ai_base_url]).to eq('http://localhost:11434/v1')
+
+        # Check input format
+        ai_input = JSON.parse(props[:$ai_input])
+        expect(ai_input).to be_an(Array)
+        expect(ai_input.first['role']).to eq('user')
+        expect(ai_input.first['content']).to include('Explain quantum physics in simple terms.')
+
+        # Check output format
+        ai_output = JSON.parse(props[:$ai_output_choices])
+        expect(ai_output).to be_an(Array)
+        expect(ai_output.first['role']).to eq('assistant')
+        expect(ai_output.first['content']).to eq('Quantum physics is about tiny things acting weird.')
+
+        # Check token counts
+        expect(props[:$ai_input_tokens]).to eq(10)
+        expect(props[:$ai_output_tokens]).to eq(8)
+
+        expect(props).not_to have_key(:$ai_error)
       end
     end
 
@@ -92,18 +103,20 @@ RSpec.describe Boxcars::Ollama do
         allow(connection_error).to receive(:http_status).and_return(nil) # Or a specific code if applicable
       end
 
-      it 'tracks an llm_call event with connection error details' do
+      it 'tracks a $ai_generation event with connection error details' do
         expect do
           engine.client(prompt: prompt, inputs: inputs)
         end.to raise_error(OpenAI::Error, /Connection refused/)
 
         expect(dummy_observability_backend.tracked_events.size).to eq(1)
-        props = dummy_observability_backend.tracked_events.first[:properties]
-        expect(props[:success]).to be false
-        expect(props[:error_message]).to match(/Connection refused/)
-        expect(props[:error_class]).to eq("OpenAI::Error")
-        # status_code might be nil if the error doesn't provide it before HTTP exchange
-        expect(props[:provider]).to eq(:ollama)
+        tracked_event = dummy_observability_backend.tracked_events.first
+        expect(tracked_event[:event]).to eq('$ai_generation')
+
+        props = tracked_event[:properties]
+        expect(props[:$ai_is_error]).to be true
+        expect(props[:$ai_error]).to match(/Connection refused/)
+        expect(props[:$ai_provider]).to eq('ollama')
+        expect(props[:$ai_http_status]).to eq(500) # Default for errors
       end
     end
 
@@ -116,18 +129,20 @@ RSpec.describe Boxcars::Ollama do
         allow(mock_ollama_client).to receive(:chat).and_return(ollama_error_response)
       end
 
-      it 'tracks an llm_call event with error details from response' do
+      it 'tracks a $ai_generation event with error details from response' do
         expect do
           engine.client(prompt: prompt, inputs: inputs, model: "unknown_model")
         end.to raise_error(Boxcars::Error, /model 'unknown_model' not found/)
 
         expect(dummy_observability_backend.tracked_events.size).to eq(1)
-        props = dummy_observability_backend.tracked_events.first[:properties]
-        expect(props[:success]).to be false
-        expect(props[:error_message]).to eq("model 'unknown_model' not found, try pulling it first")
-        expect(props[:error_class]).to eq("Boxcars::Error") # As it's wrapped in client
-        expect(props[:response_parsed_body]).to eq(ollama_error_response) # The error response itself
-        expect(props[:provider]).to eq(:ollama)
+        tracked_event = dummy_observability_backend.tracked_events.first
+        expect(tracked_event[:event]).to eq('$ai_generation')
+
+        props = tracked_event[:properties]
+        expect(props[:$ai_is_error]).to be true
+        expect(props[:$ai_error]).to eq("model 'unknown_model' not found, try pulling it first")
+        expect(props[:$ai_provider]).to eq('ollama')
+        expect(props[:$ai_http_status]).to eq(500) # Default for errors
       end
     end
 
@@ -138,7 +153,7 @@ RSpec.describe Boxcars::Ollama do
         expect(result).to eq("Quantum physics is about tiny things acting weird.")
 
         expect(dummy_observability_backend.tracked_events.size).to eq(1)
-        expect(dummy_observability_backend.tracked_events.first[:event]).to eq('llm_call')
+        expect(dummy_observability_backend.tracked_events.first[:event]).to eq('$ai_generation')
       end
     end
   end

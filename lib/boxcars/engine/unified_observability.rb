@@ -64,8 +64,8 @@ module Boxcars
     # Provider-specific input extraction with fallbacks
     def extract_ai_input(request_context, provider)
       case provider.to_s
-      when 'openai'
-        extract_openai_input(request_context)
+      when 'openai', 'ollama', 'gemini', 'groq', 'perplexity_ai'
+        extract_openai_style_input(request_context)
       when 'anthropic'
         extract_anthropic_input(request_context)
       when 'cohere'
@@ -75,12 +75,25 @@ module Boxcars
       end
     end
 
-    def extract_openai_input(request_context)
+    # Handles OpenAI-style providers (openai, ollama, gemini, groq, perplexity_ai)
+    # All use the same message array format and prompt handling logic
+    def extract_openai_style_input(request_context)
       if request_context[:conversation_for_api].is_a?(Array)
         request_context[:conversation_for_api]
       else
-        formatted_prompt = request_context[:prompt]&.format(request_context[:inputs] || {})
-        [{ role: "user", content: formatted_prompt }]
+        # Handle case where prompt might be nil or format might fail
+        begin
+          formatted_prompt = request_context[:prompt]&.format(request_context[:inputs] || {})
+          [{ role: "user", content: formatted_prompt || "" }]
+        rescue
+          # If prompt formatting fails, try to get the template or convert to string
+          prompt_text = if request_context[:prompt].respond_to?(:template)
+                          request_context[:prompt].template
+                        else
+                          request_context[:prompt].to_s
+                        end
+          [{ role: "user", content: prompt_text || "" }]
+        end
       end
     end
 
@@ -109,6 +122,21 @@ module Boxcars
       content
     end
 
+    def get_prompt_text(prompt, inputs)
+      if prompt.respond_to?(:format)
+        begin
+          prompt.format(inputs || {})
+        rescue
+          # If prompt formatting fails, fall back to template or string
+          prompt.respond_to?(:template) ? prompt.template : prompt.to_s
+        end
+      elsif prompt.respond_to?(:template)
+        prompt.template
+      else
+        prompt.to_s
+      end
+    end
+
     def extract_cohere_input(request_context)
       # Cohere uses a single message field
       message_content = request_context.dig(:conversation_for_api, :message)
@@ -116,22 +144,22 @@ module Boxcars
         [{ role: "user", content: message_content }]
       elsif request_context[:prompt]
         # Format the prompt with inputs if available
-        prompt_text = if request_context[:prompt].respond_to?(:format)
-                        request_context[:prompt].format(request_context[:inputs] || {})
-                      elsif request_context[:prompt].respond_to?(:template)
-                        request_context[:prompt].template
-                      else
-                        request_context[:prompt].to_s
-                      end
-        [{ role: "user", content: prompt_text }]
+        prompt_text = get_prompt_text(request_context[:prompt], request_context[:inputs])
+        [{ role: "user", content: prompt_text || "" }]
       else
         []
       end
     end
 
     def extract_generic_input(request_context)
-      # For IntelligenceBase-style engines
-      conv_messages = request_context[:conversation_for_api]&.messages
+      # Handle different conversation_for_api formats
+      conversation_for_api = request_context[:conversation_for_api]
+
+      # If it's a string (like GPT4All), create a simple user message
+      return [{ role: "user", content: conversation_for_api }] if conversation_for_api.is_a?(String)
+
+      # For IntelligenceBase-style engines with messages method
+      conv_messages = conversation_for_api&.messages if conversation_for_api.respond_to?(:messages)
       return [{ role: "user", content: request_context[:prompt].to_s }] unless conv_messages
 
       conv_messages.map do |message|
@@ -292,6 +320,8 @@ module Boxcars
     def extract_model_name(current_params, provider)
       current_params&.dig(:model) ||
         current_params&.dig("model") ||
+        current_params&.dig(:model_name) ||
+        current_params&.dig("model_name") ||
         get_default_model_for_provider(provider)
     end
 
@@ -305,6 +335,10 @@ module Boxcars
         'llama-3.3-70b'
       when 'cohere'
         'command-r-plus'
+      when 'perplexity_ai'
+        'llama-3-sonar-large-32k-online'
+      when 'ollama'
+        'llama3'
       else
         provider.to_s
       end
@@ -324,6 +358,10 @@ module Boxcars
         'https://api.cerebras.ai/v1'
       when 'openai'
         'https://api.openai.com/v1'
+      when 'perplexity_ai'
+        'https://api.perplexity.ai'
+      when 'ollama'
+        'http://localhost:11434/v1'
       else
         "https://api.#{provider}.com/v1"
       end

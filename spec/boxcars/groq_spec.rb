@@ -60,27 +60,38 @@ RSpec.describe Boxcars::Groq do
         allow(mock_groq_client).to receive(:chat).and_return(groq_chat_success_response)
       end
 
-      it 'tracks an llm_call event with correct properties' do
+      it 'tracks an $ai_generation event with correct properties' do
         engine.client(prompt: prompt, inputs: inputs, temperature: 0.6)
 
         expect(dummy_observability_backend.tracked_events.size).to eq(1)
         tracked_event = dummy_observability_backend.tracked_events.first
-        expect(tracked_event[:event]).to eq('llm_call')
+        expect(tracked_event[:event]).to eq('$ai_generation')
 
         props = tracked_event[:properties]
-        expect(props[:provider]).to eq(:groq)
-        expect(props[:model_name]).to eq("llama3-70b-8192")
-        expect(props[:success]).to be true
-        expect(props[:duration_ms]).to be_a(Integer).and be >= 0
-        expect(props[:inputs]).to eq(inputs)
-        expect(props[:api_call_parameters]).to include(model: "llama3-70b-8192", temperature: 0.6)
-        expect(props[:prompt_content]).to be_an(Array)
-        expect(props[:prompt_content].first[:role].to_s).to eq("user")
-        expect(props[:prompt_content].first[:content]).to include("What is Groq and what makes it fast for inference?")
-        expect(props[:response_parsed_body]).to eq(groq_chat_success_response)
-        expect(props[:response_raw_body]).to eq(JSON.pretty_generate(groq_chat_success_response))
-        expect(props[:status_code]).to eq(200) # Inferred
-        expect(props).not_to have_key(:error_message)
+        expect(props[:$ai_provider]).to eq('groq')
+        expect(props[:$ai_model]).to eq("llama3-70b-8192")
+        expect(props[:$ai_is_error]).to be false
+        expect(props[:$ai_latency]).to be_a(Float).and be >= 0
+        expect(props[:$ai_http_status]).to eq(200)
+        expect(props[:$ai_base_url]).to eq('https://api.groq.com/openai/v1')
+
+        # Check input format
+        ai_input = JSON.parse(props[:$ai_input])
+        expect(ai_input).to be_an(Array)
+        expect(ai_input.first['role']).to eq('user')
+        expect(ai_input.first['content']).to include('What is Groq and what makes it fast for inference?')
+
+        # Check output format
+        ai_output = JSON.parse(props[:$ai_output_choices])
+        expect(ai_output).to be_an(Array)
+        expect(ai_output.first['role']).to eq('assistant')
+        expect(ai_output.first['content']).to eq('Groq is known for its LPU Inference Engine...')
+
+        # Check token counts
+        expect(props[:$ai_input_tokens]).to eq(15)
+        expect(props[:$ai_output_tokens]).to eq(50)
+
+        expect(props).not_to have_key(:$ai_error)
       end
     end
 
@@ -90,16 +101,20 @@ RSpec.describe Boxcars::Groq do
         allow(described_class).to receive(:groq_client).with(groq_api_key: nil).and_call_original
       end
 
-      it 'tracks an llm_call event with failure details' do
+      it 'tracks an $ai_generation event with failure details' do
         expect do
           engine.client(prompt: prompt, inputs: inputs)
         end.to raise_error(Boxcars::ConfigurationError, /Groq API key not set/)
 
         expect(dummy_observability_backend.tracked_events.size).to eq(1)
-        props = dummy_observability_backend.tracked_events.first[:properties]
-        expect(props[:success]).to be false
-        expect(props[:error_message]).to match(/Groq API key not set/)
-        expect(props[:error_class]).to eq("Boxcars::ConfigurationError")
+        tracked_event = dummy_observability_backend.tracked_events.first
+        expect(tracked_event[:event]).to eq('$ai_generation')
+
+        props = tracked_event[:properties]
+        expect(props[:$ai_is_error]).to be true
+        expect(props[:$ai_error]).to match(/Groq API key not set/)
+        expect(props[:$ai_provider]).to eq('groq')
+        expect(props[:$ai_http_status]).to eq(500)
       end
     end
 
@@ -110,18 +125,20 @@ RSpec.describe Boxcars::Groq do
         allow(mock_groq_client).to receive(:chat).and_raise(openai_error)
       end
 
-      it 'tracks an llm_call event with error details' do
+      it 'tracks an $ai_generation event with error details' do
         expect do
           engine.client(prompt: prompt, inputs: inputs)
         end.to raise_error(OpenAI::Error, "Groq service unavailable")
 
         expect(dummy_observability_backend.tracked_events.size).to eq(1)
-        props = dummy_observability_backend.tracked_events.first[:properties]
-        expect(props[:success]).to be false
-        expect(props[:error_message]).to eq("Groq service unavailable")
-        expect(props[:error_class]).to eq("OpenAI::Error")
-        expect(props[:status_code]).to eq(503)
-        expect(props[:provider]).to eq(:groq)
+        tracked_event = dummy_observability_backend.tracked_events.first
+        expect(tracked_event[:event]).to eq('$ai_generation')
+
+        props = tracked_event[:properties]
+        expect(props[:$ai_is_error]).to be true
+        expect(props[:$ai_error]).to eq("Groq service unavailable")
+        expect(props[:$ai_provider]).to eq('groq')
+        expect(props[:$ai_http_status]).to eq(503)
       end
     end
 
@@ -132,7 +149,7 @@ RSpec.describe Boxcars::Groq do
         expect(result).to eq("Groq is known for its LPU Inference Engine...")
 
         expect(dummy_observability_backend.tracked_events.size).to eq(1)
-        expect(dummy_observability_backend.tracked_events.first[:event]).to eq('llm_call')
+        expect(dummy_observability_backend.tracked_events.first[:event]).to eq('$ai_generation')
       end
     end
   end

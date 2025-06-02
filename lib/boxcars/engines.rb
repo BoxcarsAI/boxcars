@@ -48,7 +48,7 @@ module Boxcars
       when "cerebras"
         Boxcars::Cerebras.new(model: "llama-3.3-70b", **kw_args)
       when "qwen"
-        Boxcars::Together.new(model: "Qwen/Qwen3-32B", **kw_args)
+        Boxcars::Together.new(model: "Qwen/QwQ-32B", **kw_args)
       else
         raise Boxcars::ArgumentError, "Unknown model: #{model}"
       end

@@ -54,9 +54,9 @@ end
 # Define test engines to try
 test_engines = [
   # { name: "Perplexity AI", model: "sonar" },
-  { name: "Qwen", model: "qwen" },
+  # { name: "Qwen", model: "qwen" },
   # { name: "Mistral", model: "mistral" },
-  # { name: "Gemini Flash (Default)", model: "flash" },
+  { name: "Gemini Flash (Default)", model: "flash" },
   # { name: "GPT-4o", model: "gpt-4o" },
   # { name: "Claude Sonnet", model: "sonnet" },
   # { name: "Groq Llama", model: "groq" }
