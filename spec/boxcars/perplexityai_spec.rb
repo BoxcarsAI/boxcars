@@ -2,7 +2,6 @@
 
 require 'spec_helper'
 require 'boxcars/engine/perplexityai'
-require 'boxcars/observability'
 require 'boxcars/prompt'
 require 'faraday' # PerplexityAI engine uses Faraday
 
@@ -60,7 +59,7 @@ RSpec.describe Boxcars::Perplexityai do
   end
 
   before do
-    Boxcars::Observability.backend = dummy_observability_backend
+    Boxcars.configuration.observability_backend = dummy_observability_backend
     allow(Boxcars.configuration).to receive(:perplexity_api_key).and_return(api_key_param)
     allow(Faraday).to receive(:new).with(url: "https://api.perplexity.ai").and_yield(mock_faraday_connection).and_return(mock_faraday_connection)
     allow(mock_faraday_connection).to receive(:request).with(:json)

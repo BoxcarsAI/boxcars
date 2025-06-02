@@ -32,17 +32,17 @@ RSpec.describe Boxcars::Observability do
 
   before do
     # Reset backend before each test
-    described_class.backend = nil
+    Boxcars.configuration.observability_backend = nil
   end
 
   after do
     # Ensure backend is reset after tests if it was set
-    described_class.backend = nil
+    Boxcars.configuration.observability_backend = nil
   end
 
   describe '.backend' do
-    it 'can have a backend assigned' do
-      described_class.backend = dummy_backend
+    it 'can have a backend assigned via configuration' do
+      Boxcars.configuration.observability_backend = dummy_backend
       expect(described_class.backend).to eq(dummy_backend)
     end
 
@@ -54,7 +54,7 @@ RSpec.describe Boxcars::Observability do
   describe '.track' do
     context 'when a backend is configured' do
       before do
-        described_class.backend = dummy_backend
+        Boxcars.configuration.observability_backend = dummy_backend
       end
 
       it 'calls track on the configured backend with event and properties' do
@@ -70,7 +70,7 @@ RSpec.describe Boxcars::Observability do
       end
 
       it 'does not raise an error if the backend raises an error (fails silently)' do
-        described_class.backend = failing_backend
+        Boxcars.configuration.observability_backend = failing_backend
         event_name = :failing_event
         event_properties = { detail: 'this will fail' }
 

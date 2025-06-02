@@ -2,7 +2,6 @@
 
 require 'spec_helper'
 require 'boxcars/engine/intelligence_base'
-require 'boxcars/observability'
 require 'boxcars/prompt'
 
 # Stub Intelligence::ChatResponse to allow instance_double to work
@@ -66,7 +65,7 @@ RSpec.describe Boxcars::IntelligenceBase do # rubocop:disable RSpec/SpecFilePath
 
   before do
     # Reset observability backend
-    Boxcars::Observability.backend = nil
+    Boxcars.configuration.observability_backend = nil
 
     # Mock the Intelligence gem interactions
     allow(Intelligence::Adapter).to receive(:[]).with(:test_provider).and_return(mock_intelligence_adapter_class)
@@ -94,7 +93,7 @@ RSpec.describe Boxcars::IntelligenceBase do # rubocop:disable RSpec/SpecFilePath
     end
 
     before do
-      Boxcars::Observability.backend = dummy_observability_backend
+      Boxcars.configuration.observability_backend = dummy_observability_backend
     end
 
     context 'when API call is successful' do

@@ -2,7 +2,6 @@
 
 require 'spec_helper'
 require 'boxcars/engine/ollama'
-require 'boxcars/observability'
 require 'boxcars/prompt'
 require 'openai'
 
@@ -46,7 +45,7 @@ RSpec.describe Boxcars::Ollama do
   end
 
   before do
-    Boxcars::Observability.backend = dummy_observability_backend
+    Boxcars.configuration.observability_backend = dummy_observability_backend
     # Mock the self.ollama_client method to return our mock_ollama_client
     # No API key needed for Ollama usually, so no Boxcars.configuration mock for api_key.
     allow(described_class).to receive(:ollama_client).and_return(mock_ollama_client)

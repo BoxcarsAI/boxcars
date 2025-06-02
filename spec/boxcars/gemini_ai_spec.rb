@@ -2,7 +2,6 @@
 
 require 'spec_helper'
 require 'boxcars/engine/gemini_ai'
-require 'boxcars/observability'
 require 'boxcars/prompt'
 require 'openai' # Gemini engine uses the OpenAI gem
 
@@ -65,7 +64,7 @@ RSpec.describe Boxcars::GeminiAi do
   end
 
   before do
-    Boxcars::Observability.backend = dummy_observability_backend
+    Boxcars.configuration.observability_backend = dummy_observability_backend
     allow(Boxcars.configuration).to receive(:gemini_api_key).and_return(api_key_param)
     # Mock the self.gemini_client method to return our mock_gemini_client
     allow(described_class).to receive(:gemini_client).with(gemini_api_key: api_key_param).and_return(mock_gemini_client)

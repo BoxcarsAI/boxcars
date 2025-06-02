@@ -4,12 +4,15 @@ module Boxcars
   # to which events and their properties will be sent.
   class Observability
     class << self
-      # @!attribute [rw] backend
+      # @!attribute [r] backend
       #   @return [ObservabilityBackend, nil] The configured observability backend.
       #     This should be an object that includes the {Boxcars::ObservabilityBackend} module.
       #     It can be a single backend instance or an instance of {Boxcars::MultiBackend}.
       #     If `nil`, tracking calls will be no-ops.
-      attr_accessor :backend
+      #     The backend is retrieved from Boxcars.configuration.observability_backend.
+      def backend
+        Boxcars.configuration.observability_backend
+      end
 
       # Tracks an event if a backend is configured.
       # This method will silently ignore errors raised by the backend's `track` method

@@ -2,7 +2,6 @@
 
 require 'spec_helper'
 require 'boxcars/engine/openai'
-require 'boxcars/observability'
 require 'boxcars/prompt'
 require 'openai' # Ensure OpenAI gem types are available
 
@@ -66,7 +65,7 @@ RSpec.describe Boxcars::Openai do
   end
 
   before do
-    Boxcars::Observability.backend = dummy_observability_backend
+    Boxcars.configuration.observability_backend = dummy_observability_backend
     allow(Boxcars.configuration).to receive_messages(openai_access_token: api_key_param, organization_id: organization_id_param)
     allow(OpenAI::Client).to receive(:new)
       .with(access_token: api_key_param, organization_id: organization_id_param, log_errors: true)

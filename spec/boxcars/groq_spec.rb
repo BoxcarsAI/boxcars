@@ -2,7 +2,6 @@
 
 require 'spec_helper'
 require 'boxcars/engine/groq'
-require 'boxcars/observability'
 require 'boxcars/prompt'
 require 'openai' # Groq engine uses the OpenAI gem
 
@@ -48,7 +47,7 @@ RSpec.describe Boxcars::Groq do
   end
 
   before do
-    Boxcars::Observability.backend = dummy_observability_backend
+    Boxcars.configuration.observability_backend = dummy_observability_backend
     allow(Boxcars.configuration).to receive(:groq_api_key).and_return(api_key_param)
     allow(described_class).to receive(:groq_client).with(groq_api_key: api_key_param).and_return(mock_groq_client)
     allow(described_class).to receive(:groq_client).with(groq_api_key: nil).and_return(mock_groq_client)

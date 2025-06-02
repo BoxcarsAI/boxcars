@@ -2,7 +2,6 @@
 
 require 'spec_helper'
 require 'boxcars/engine/cohere'
-require 'boxcars/observability'
 require 'boxcars/prompt'
 
 RSpec.describe Boxcars::Cohere do
@@ -52,7 +51,7 @@ RSpec.describe Boxcars::Cohere do
 
   before do
     # Reset and set observability backend
-    Boxcars::Observability.backend = dummy_observability_backend
+    Boxcars.configuration.observability_backend = dummy_observability_backend
 
     # Mock Boxcars configuration for API key
     allow(Boxcars.configuration).to receive(:cohere_api_key).and_return(api_key_param)

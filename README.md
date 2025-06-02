@@ -351,15 +351,22 @@ Set up observability by configuring a backend:
 ```ruby
 # Using PostHog backend
 require 'boxcars/observability_backends/posthog_backend'
-Boxcars::Observability.backend = Boxcars::PosthogBackend.new(
-  api_key: 'your_posthog_api_key',
-  host: 'https://app.posthog.com' # or your self-hosted instance
-)
+
+Boxcars.configure do |config|
+  config.observability_backend = Boxcars::PosthogBackend.new(
+    api_key: ENV['POSTHOG_API_KEY'] || 'your_posthog_api_key',
+    host: 'https://app.posthog.com' # or your self-hosted instance
+  )
+end
 
 # Using multiple backends
-backend1 = Boxcars::PosthogBackend.new(api_key: 'key1')
+require 'boxcars/observability_backends/multi_backend'
+backend1 = Boxcars::PosthogBackend.new(api_key: ENV['POSTHOG_API_KEY'])
 backend2 = YourCustomBackend.new
-Boxcars::Observability.backend = Boxcars::MultiBackend.new([backend1, backend2])
+
+Boxcars.configure do |config|
+  config.observability_backend = Boxcars::MultiBackend.new([backend1, backend2])
+end
 ```
 
 #### Automatic Tracking
@@ -415,7 +422,9 @@ class CustomBackend
   end
 end
 
-Boxcars::Observability.backend = CustomBackend.new
+Boxcars.configure do |config|
+  config.observability_backend = CustomBackend.new
+end
 ```
 
 #### Error Handling
@@ -431,13 +440,15 @@ The PostHog backend requires the `posthog-ruby` gem:
 gem 'posthog-ruby'
 
 # Configure the backend
-Boxcars::Observability.backend = Boxcars::PosthogBackend.new(
-  api_key: ENV['POSTHOG_API_KEY'],
-  host: 'https://app.posthog.com',
-  on_error: proc { |status, body| 
-    Rails.logger.warn "PostHog error: #{status} - #{body}" 
-  }
-)
+Boxcars.configure do |config|
+  config.observability_backend = Boxcars::PosthogBackend.new(
+    api_key: ENV['POSTHOG_API_KEY'],
+    host: 'https://app.posthog.com',
+    on_error: proc { |status, body| 
+      Rails.logger.warn "PostHog error: #{status} - #{body}" 
+    }
+  )
+end
 ```
 
 Events are automatically associated with users when a `user_id` property is provided. Anonymous events use a default identifier.

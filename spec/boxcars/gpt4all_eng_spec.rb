@@ -2,7 +2,6 @@
 
 require 'spec_helper'
 require 'boxcars/engine/gpt4all_eng'
-require 'boxcars/observability'
 require 'boxcars/prompt'
 require 'gpt4all' # Ensure Gpt4all gem types are available for mocking
 
@@ -33,7 +32,7 @@ RSpec.describe Boxcars::Gpt4allEng do
   end
 
   before do
-    Boxcars::Observability.backend = dummy_observability_backend
+    Boxcars.configuration.observability_backend = dummy_observability_backend
     allow(Gpt4all::ConversationalAI).to receive(:new).and_return(mock_gpt4all_conversational_ai)
     allow(mock_gpt4all_conversational_ai).to receive(:prepare_resources).with(force_download: false).and_return(true)
     allow(mock_gpt4all_conversational_ai).to receive_messages(start_bot: true, stop_bot: true)

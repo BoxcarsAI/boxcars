@@ -2,7 +2,6 @@
 
 require 'spec_helper'
 require 'boxcars/engine/anthropic'
-require 'boxcars/observability'
 require 'boxcars/prompt'
 require 'anthropic' # Ensure the actual Anthropic gem types are available for mocking if needed
 
@@ -46,7 +45,7 @@ RSpec.describe Boxcars::Anthropic do
   end
 
   before do
-    Boxcars::Observability.backend = dummy_observability_backend
+    Boxcars.configuration.observability_backend = dummy_observability_backend
     allow(Boxcars.configuration).to receive(:anthropic_api_key).and_return(api_key_param)
     allow(Anthropic::Client).to receive(:new).with(access_token: api_key_param).and_return(mock_anthropic_client)
   end
