@@ -4,7 +4,6 @@ module Boxcars
   # Factory class for creating engine instances based on model names
   # Provides convenient shortcuts and aliases for different AI models
   class Engines
-    # DEFAULT_MODEL = "gpt-4o".freeze
     DEFAULT_MODEL = "gemini-2.5-flash-preview-05-20"
 
     # Create an engine instance based on the model name
@@ -46,6 +45,10 @@ module Boxcars
         Boxcars::Perplexityai.new(model:, **kw_args)
       when /^together-/
         Boxcars::Together.new(model: model[9..-1], **kw_args)
+      when "cerebras"
+        Boxcars::Cerebras.new(model: "llama-3.3-70b", **kw_args)
+      when "qwen"
+        Boxcars::Together.new(model: "Qwen/Qwen3-32B", **kw_args)
       else
         raise Boxcars::ArgumentError, "Unknown model: #{model}"
       end

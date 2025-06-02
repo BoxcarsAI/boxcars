@@ -27,7 +27,7 @@ module Boxcars
 
   # Configuration contains gem settings
   class Configuration
-    attr_writer :openai_access_token, :serpapi_api_key, :groq_api_key, :cerebras_api_key
+    attr_writer :openai_access_token, :serpapi_api_key, :groq_api_key, :cerebras_api_key, :perplexity_api_key
     attr_accessor :organization_id, :logger, :log_prompts, :log_generated, :default_train, :default_engine, :default_model
 
     def initialize
@@ -75,6 +75,11 @@ module Boxcars
     # @return [String] The Together AI API key either from arg or env.
     def together_api_key(**kwargs)
       key_lookup(:together_api_key, kwargs)
+    end
+
+    # @return [String] The Perplexity API key either from arg or env.
+    def perplexity_api_key(**kwargs)
+      key_lookup(:perplexity_api_key, kwargs)
     end
 
     private

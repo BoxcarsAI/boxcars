@@ -32,7 +32,7 @@ module Boxcars
     end
 
     def adapter(api_key:)
-      Intelligence::Adapter[provider].new(api_key)
+      Intelligence::Adapter[provider].new({ api_key: api_key })
     end
 
     # Process different content types

@@ -53,10 +53,13 @@ end
 
 # Define test engines to try
 test_engines = [
-  { name: "Gemini Flash (Default)", model: "flash" },
-  { name: "GPT-4o", model: "gpt-4o" },
-  { name: "Claude Sonnet", model: "sonnet" },
-  { name: "Groq Llama", model: "groq" }
+  # { name: "Perplexity AI", model: "sonar" },
+  { name: "Qwen", model: "qwen" },
+  # { name: "Mistral", model: "mistral" },
+  # { name: "Gemini Flash (Default)", model: "flash" },
+  # { name: "GPT-4o", model: "gpt-4o" },
+  # { name: "Claude Sonnet", model: "sonnet" },
+  # { name: "Groq Llama", model: "groq" }
 ]
 
 # Test prompts
@@ -103,7 +106,7 @@ test_engines.each do |engine_config|
     end
   rescue => e
     puts "❌ Error testing #{engine_config[:name]}: #{e.message}"
-    puts "   #{e.class}: #{e.backtrace.first}" if ENV['DEBUG']
+    puts "   #{e.class}: #{e.backtrace.join("\n   ")}" # Always show full backtrace
   end
 
   # Small delay between tests
