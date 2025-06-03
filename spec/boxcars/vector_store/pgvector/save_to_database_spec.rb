@@ -5,6 +5,12 @@ require 'spec_helper'
 RSpec.describe Boxcars::VectorStore::Pgvector::SaveToDatabase do
   subject(:save_to_database) { call_command }
 
+  before(:all) do
+    unless Gem.loaded_specs.key?('pgvector') && Gem.loaded_specs.key?('pg')
+      skip "pgvector and pg gems not available, skipping pgvector tests"
+    end
+  end
+
   let(:arguments) do
     {
       pg_vectors: pg_vectors,

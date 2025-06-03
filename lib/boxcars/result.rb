@@ -20,17 +20,12 @@ module Boxcars
 
     # @return [Hash] The result as a hash
     def to_h
-      {
-        status: status,
-        answer: answer,
-        explanation: explanation,
-        suggestions: suggestions
-      }.merge(added_context).compact
+      { status:, answer:, explanation:, suggestions: }.merge(added_context).compact
     end
 
     # @return [String] The result as a json string
-    def to_json(*args)
-      JSON.generate(to_h, *args)
+    def to_json(*)
+      JSON.generate(to_h, *)
     end
 
     # @return [String] An explanation of the result
@@ -47,22 +42,22 @@ module Boxcars
     # @param text [String] The text to use for the result
     # @param kwargs [Hash] Any additional kwargs to pass to the result
     # @return [Boxcars::Result] The result
-    def self.from_text(text, **kwargs)
+    def self.from_text(text, **)
       answer = text.delete_prefix('"').delete_suffix('"').strip
       answer = Regexp.last_match(:answer) if answer =~ /^Answer:\s*(?<answer>.*)$/
       explanation = "Answer: #{answer}"
-      new(status: :ok, answer: answer, explanation: explanation, **kwargs)
+      new(status: :ok, answer:, explanation:, **)
     end
 
     # create a new Result from an error string
     # @param error [String] The error to use for the result
     # @param kwargs [Hash] Any additional kwargs to pass to the result
     # @return [Boxcars::Result] The error result
-    def self.from_error(error, **kwargs)
+    def self.from_error(error, **)
       answer = error
       answer = Regexp.last_match(:answer) if answer =~ /^Error:\s*(?<answer>.*)$/
       explanation = "Error: #{answer}"
-      new(status: :error, answer: answer, explanation: explanation, **kwargs)
+      new(status: :error, answer:, explanation:, **)
     end
   end
 end

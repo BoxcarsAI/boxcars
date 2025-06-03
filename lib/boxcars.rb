@@ -27,8 +27,9 @@ module Boxcars
 
   # Configuration contains gem settings
   class Configuration
-    attr_writer :openai_access_token, :serpapi_api_key, :groq_api_key, :cerebras_api_key
-    attr_accessor :organization_id, :logger, :log_prompts, :log_generated, :default_train, :default_engine
+    attr_writer :openai_access_token, :serpapi_api_key, :groq_api_key, :cerebras_api_key, :perplexity_api_key
+    attr_accessor :organization_id, :logger, :log_prompts, :log_generated, :default_train, :default_engine, :default_model,
+                  :observability_backend
 
     def initialize
       @organization_id = nil
@@ -75,6 +76,11 @@ module Boxcars
     # @return [String] The Together AI API key either from arg or env.
     def together_api_key(**kwargs)
       key_lookup(:together_api_key, kwargs)
+    end
+
+    # @return [String] The Perplexity API key either from arg or env.
+    def perplexity_api_key(**kwargs)
+      key_lookup(:perplexity_api_key, kwargs)
     end
 
     private
@@ -155,8 +161,8 @@ module Boxcars
 
   # Logging system
   # debug log
-  def self.debug(msg, color = nil, **options)
-    msg = colorize(msg.to_s, color, **options) if color
+  def self.debug(msg, color = nil, **)
+    msg = colorize(msg.to_s, color, **) if color
     log << msg
     if logger
       logger.debug(msg)
@@ -166,8 +172,8 @@ module Boxcars
   end
 
   # info log
-  def self.info(msg, color = nil, **options)
-    msg = colorize(msg.to_s, color, **options) if color
+  def self.info(msg, color = nil, **)
+    msg = colorize(msg.to_s, color, **) if color
     log << msg
     if logger
       logger.info(msg)
@@ -177,8 +183,8 @@ module Boxcars
   end
 
   # warn log
-  def self.warn(msg, color = nil, **options)
-    msg = colorize(msg.to_s, color, **options) if color
+  def self.warn(msg, color = nil, **)
+    msg = colorize(msg.to_s, color, **) if color
     log << msg
     if logger
       logger.warn(msg)
@@ -188,8 +194,8 @@ module Boxcars
   end
 
   # error log
-  def self.error(msg, color = nil, **options)
-    msg = colorize(msg.to_s, color, **options) if color
+  def self.error(msg, color = nil, **)
+    msg = colorize(msg.to_s, color, **) if color
     log << msg
     if logger
       logger.error(msg)
@@ -211,13 +217,18 @@ module Boxcars
   end
 end
 
-require "boxcars/version"
-require "boxcars/x_node"
-require "boxcars/prompt"
-require "boxcars/conversation_prompt"
-require "boxcars/conversation"
-require "boxcars/generation"
-require "boxcars/ruby_repl"
-require "boxcars/engine"
-require "boxcars/boxcar"
-require "boxcars/train"
+require_relative "boxcars/version"
+require_relative "boxcars/observability_backend"
+require_relative "boxcars/observability"
+# If users want it, they can require 'boxcars/observability_backends/multi_backend'
+require_relative "boxcars/x_node"
+require_relative "boxcars/prompt"
+require_relative "boxcars/conversation_prompt"
+require_relative "boxcars/conversation"
+require_relative "boxcars/generation"
+require_relative "boxcars/ruby_repl"
+require_relative "boxcars/result"
+require_relative "boxcars/engine"
+require_relative "boxcars/boxcar"
+require_relative "boxcars/train"
+require_relative "boxcars/engines"

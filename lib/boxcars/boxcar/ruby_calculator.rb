@@ -30,7 +30,7 @@ module Boxcars
     def run(question)
       code = "puts(#{question})"
       ruby_executor = Boxcars::RubyREPL.new
-      rv = ruby_executor.call(code: code)
+      rv = ruby_executor.call(code:)
       puts "Question: #{question}"
       puts "Answer: #{rv}"
       rv

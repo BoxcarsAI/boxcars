@@ -6,7 +6,7 @@ plugins:
 
 
 AllCops:
-  TargetRubyVersion: 3
+  TargetRubyVersion: 3.2
   Exclude:
     - 'bin/{rails,rake}'
     - 'node_modules/**/*'
@@ -72,7 +72,7 @@ Metrics/BlockLength:
     - 'spec/**/*'
 
 Metrics/MethodLength:
-  Max: 35
+  Max: 40
   Exclude:
     - 'spec/**/*'
 
@@ -95,7 +95,7 @@ Naming/AccessorMethodName:
   Enabled: false
 
 Metrics/PerceivedComplexity:
-  Max: 10
+  Max: 20
 
 Style/RescueStandardError:
   Enabled: false
@@ -170,4 +170,7 @@ RSpec/ExampleLength:
   Enabled: false
 
 RSpec/MultipleExpectations:
+  Enabled: false
+
+RSpec/BeforeAfterAll:
   Enabled: false

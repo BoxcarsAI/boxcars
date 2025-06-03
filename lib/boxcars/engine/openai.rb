@@ -1,161 +1,244 @@
 # frozen_string_literal: true
 
 require 'openai'
-# Boxcars is a framework for running a series of tools to get an answer to a question.
+require 'json'
+require 'securerandom'
+
 module Boxcars
   # A engine that uses OpenAI's API.
   class Openai < Engine
+    include UnifiedObservability
     attr_reader :prompts, :open_ai_params, :model_kwargs, :batch_size
 
-    # The default parameters to use when asking the engine.
     DEFAULT_PARAMS = {
       model: "gpt-4o-mini",
       temperature: 0.1,
       max_tokens: 4096
     }.freeze
-
-    # the default name of the engine
     DEFAULT_NAME = "OpenAI engine"
-    # the default description of the engine
     DEFAULT_DESCRIPTION = "useful for when you need to use AI to answer questions. " \
                           "You should ask targeted questions"
 
-    # A engine is a container for a single tool to run.
-    # @param name [String] The name of the engine. Defaults to "OpenAI engine".
-    # @param description [String] A description of the engine. Defaults to:
-    #        useful for when you need to use AI to answer questions. You should ask targeted questions".
-    # @param prompts [Array<String>] The prompts to use when asking the engine. Defaults to [].
-    # @param batch_size [Integer] The number of prompts to send to the engine at once. Defaults to 20.
     def initialize(name: DEFAULT_NAME, description: DEFAULT_DESCRIPTION, prompts: [], batch_size: 20, **kwargs)
       @open_ai_params = DEFAULT_PARAMS.merge(kwargs)
-      if @open_ai_params[:model] =~ /^o/ && @open_ai_params[:max_tokens].present?
+      # Special handling for o1-mini model (deprecated?)
+      if @open_ai_params[:model] =~ /^o/ && @open_ai_params[:max_tokens]
         @open_ai_params[:max_completion_tokens] = @open_ai_params.delete(:max_tokens)
-        @open_ai_params.delete(:temperature)
+        @open_ai_params.delete(:temperature) # o1-mini might not support temperature
       end
 
       @prompts = prompts
       @batch_size = batch_size
-      super(description: description, name: name)
+      super(description:, name:)
     end
 
-    # Get the OpenAI API client
-    # @param openai_access_token [String] The access token to use when asking the engine.
-    #   Defaults to Boxcars.configuration.openai_access_token.
-    # @return [OpenAI::Client] The OpenAI API client.
     def self.open_ai_client(openai_access_token: nil)
-      access_token = Boxcars.configuration.openai_access_token(openai_access_token: openai_access_token)
+      access_token = Boxcars.configuration.openai_access_token(openai_access_token:)
       organization_id = Boxcars.configuration.organization_id
-      ::OpenAI::Client.new(access_token: access_token, organization_id: organization_id, log_errors: true)
+      # log_errors is good for the gem's own logging
+      ::OpenAI::Client.new(access_token:, organization_id:, log_errors: true)
     end
 
-    def conversation_model?(model)
-      !!(model =~ /(^gpt-4)|(-turbo\b)|(^o\d)/)
+    def conversation_model?(model_name)
+      !!(model_name =~ /(^gpt-4)|(-turbo\b)|(^o\d)|(gpt-3\.5-turbo)/) # Added gpt-3.5-turbo
     end
 
-    # Get an answer from the engine.
-    # @param prompt [String] The prompt to use when asking the engine.
-    # @param openai_access_token [String] The access token to use when asking the engine.
-    #   Defaults to Boxcars.configuration.openai_access_token.
-    # @param kwargs [Hash] Additional parameters to pass to the engine if wanted.
-    def client(prompt:, inputs: {}, openai_access_token: nil, **kwargs)
-      clnt = Openai.open_ai_client(openai_access_token: openai_access_token)
-      params = open_ai_params.merge(kwargs)
-      if conversation_model?(params[:model])
-        prompt = prompt.first if prompt.is_a?(Array)
-        if params[:model] =~ /^o/
-          params.delete(:response_format)
-          params.delete(:stop)
-        end
-        params = get_params(prompt, inputs, params)
-        clnt.chat(parameters: params)
+    def _prepare_openai_chat_request(prompt_object, inputs, current_params)
+      get_params(prompt_object, inputs, current_params.dup)
+    end
+
+    def _prepare_openai_completion_request(prompt_object, inputs, current_params)
+      prompt_text_for_api = prompt_object.as_prompt(inputs:)
+      prompt_text_for_api = prompt_text_for_api[:prompt] if prompt_text_for_api.is_a?(Hash) && prompt_text_for_api.key?(:prompt)
+      { prompt: prompt_text_for_api }.merge(current_params).tap { |p| p.delete(:messages) }
+    end
+
+    def _execute_openai_api_call(client, is_chat_model, api_request_params)
+      if is_chat_model
+        log_messages_debug(api_request_params[:messages]) if Boxcars.configuration.log_prompts && api_request_params[:messages]
+        client.chat(parameters: api_request_params)
       else
-        params = prompt.as_prompt(inputs: inputs).merge(params)
-        Boxcars.debug("Prompt after formatting:\n#{params[:prompt]}", :cyan) if Boxcars.configuration.log_prompts
-        clnt.completions(parameters: params)
+        Boxcars.debug("Prompt after formatting:\n#{api_request_params[:prompt]}", :cyan) if Boxcars.configuration.log_prompts
+        client.completions(parameters: api_request_params)
       end
-    rescue StandardError => e
-      err = e.respond_to?(:response) ? e.response[:body] : e
-      Boxcars.warn("OpenAI Error #{e.class.name}: #{err}", :red)
-      raise
     end
 
-    # get an answer from the engine for a question.
-    # @param question [String] The question to ask the engine.
-    # @param kwargs [Hash] Additional parameters to pass to the engine if wanted.
-    def run(question, **kwargs)
-      prompt = Prompt.new(template: question)
-      response = client(prompt: prompt, **kwargs)
-      raise Error, "OpenAI: No response from API" unless response
-      raise Error, "OpenAI: #{response['error']}" if response["error"]
+    def _process_openai_response(raw_response, response_data)
+      response_data[:response_obj] = raw_response
+      response_data[:parsed_json] = raw_response # Already parsed by OpenAI gem
 
-      answer = response["choices"].map { |c| c.dig("message", "content") || c["text"] }.join("\n").strip
+      if raw_response && !raw_response["error"]
+        response_data[:success] = true
+        response_data[:status_code] = 200 # Inferred
+      else
+        response_data[:success] = false
+        err_details = raw_response["error"] if raw_response
+        msg = err_details ? "#{err_details['type']}: #{err_details['message']}" : "Unknown OpenAI API Error"
+        response_data[:error] ||= StandardError.new(msg) # Use ||= to not overwrite existing exception
+      end
+    end
+
+    def _handle_openai_api_error(error, response_data)
+      response_data[:error] = error
+      response_data[:success] = false
+      response_data[:status_code] = error.http_status if error.respond_to?(:http_status)
+    end
+
+    def _handle_openai_standard_error(error, response_data)
+      response_data[:error] = error
+      response_data[:success] = false
+    end
+
+    def client(prompt:, inputs: {}, openai_access_token: nil, **kwargs)
+      start_time = Time.now
+      response_data = { response_obj: nil, parsed_json: nil, success: false, error: nil, status_code: nil }
+      current_params = open_ai_params.merge(kwargs)
+      current_prompt_object = prompt.is_a?(Array) ? prompt.first : prompt
+      api_request_params = nil
+      is_chat_model = conversation_model?(current_params[:model])
+
+      begin
+        clnt = Openai.open_ai_client(openai_access_token:)
+        api_request_params = if is_chat_model
+                               _prepare_openai_chat_request(current_prompt_object, inputs, current_params)
+                             else
+                               _prepare_openai_completion_request(current_prompt_object, inputs, current_params)
+                             end
+        raw_response = _execute_openai_api_call(clnt, is_chat_model, api_request_params)
+        _process_openai_response(raw_response, response_data)
+      rescue ::OpenAI::Error => e
+        _handle_openai_api_error(e, response_data)
+      rescue StandardError => e
+        _handle_openai_standard_error(e, response_data)
+      ensure
+        call_context = {
+          start_time:,
+          prompt_object: current_prompt_object,
+          inputs:,
+          api_request_params:,
+          current_params:,
+          is_chat_model:
+        }
+        _track_openai_observability(call_context, response_data)
+      end
+
+      _openai_handle_call_outcome(response_data:)
+    end
+
+    # Called by Engine#generate to check the response from the client.
+    # @param response [Hash] The parsed JSON response from the OpenAI API.
+    # @raise [Boxcars::Error] if the response contains an error.
+    def check_response(response)
+      if response.is_a?(Hash) && response["error"]
+        err_details = response["error"]
+        msg = err_details ? "#{err_details['type']}: #{err_details['message']}" : "Unknown OpenAI API Error in check_response"
+        raise Boxcars::Error, msg
+      end
+      true
+    end
+
+    def run(question, **)
+      prompt = Prompt.new(template: question)
+      # client now returns the raw JSON response. We need to extract the answer.
+      raw_response = client(prompt:, inputs: {}, **)
+      answer = _extract_openai_answer_from_choices(raw_response["choices"])
       Boxcars.debug("Answer: #{answer}", :cyan)
       answer
     end
 
-    # Get the default parameters for the engine.
     def default_params
       open_ai_params
     end
 
-    # make sure we got a valid response
-    # @param response [Hash] The response to check.
-    # @param must_haves [Array<String>] The keys that must be in the response. Defaults to %w[choices].
-    # @raise [KeyError] if there is an issue with the access token.
-    # @raise [ValueError] if the response is not valid.
-    def check_response(response, must_haves: %w[choices])
-      if response['error']
-        code = response.dig('error', 'code')
-        msg = response.dig('error', 'message') || 'unknown error'
-        raise KeyError, "OPENAI_ACCESS_TOKEN not valid" if code == 'invalid_api_key'
+    private
 
-        raise ValueError, "OpenAI error: #{msg}"
-      end
+    def log_messages_debug(messages)
+      return unless messages.is_a?(Array)
 
-      must_haves.each do |key|
-        raise ValueError, "Expecting key #{key} in response" unless response.key?(key)
-      end
+      Boxcars.debug(messages.last(2).map { |p| ">>>>>> Role: #{p[:role]} <<<<<<\n#{p[:content]}" }.join("\n"), :cyan)
     end
 
-    def get_params(prompt, inputs, params)
-      params = prompt.as_messages(inputs).merge(params)
+    def get_params(prompt_object, inputs, params)
+      # Ensure prompt_object is a Boxcars::Prompt
+      current_prompt_object = if prompt_object.is_a?(Boxcars::Prompt)
+                                prompt_object
+                              else
+                                Boxcars::Prompt.new(template: prompt_object.to_s)
+                              end
+
+      # Use as_messages for chat models
+      formatted_params = current_prompt_object.as_messages(inputs).merge(params)
+
       # Handle models like o1-mini that don't support the system role
-      params[:messages].first[:role] = :user if params[:model] =~ /^o/ && params[:messages].first&.fetch(:role) == :system
-      if Boxcars.configuration.log_prompts
-        Boxcars.debug(params[:messages].last(2).map { |p| ">>>>>> Role: #{p[:role]} <<<<<<\n#{p[:content]}" }.join("\n"), :cyan)
+      if formatted_params[:model] =~ /^o/ && formatted_params[:messages].first&.fetch(:role)&.to_s == 'system'
+        formatted_params[:messages].first[:role] = :user
       end
-      params
+      # o1-mini specific param adjustments (already in initialize, but good to ensure here if params are rebuilt)
+      if formatted_params[:model] =~ /^o/
+        formatted_params.delete(:response_format)
+        formatted_params.delete(:stop)
+        if formatted_params.key?(:max_tokens) && !formatted_params.key?(:max_completion_tokens)
+          formatted_params[:max_completion_tokens] = formatted_params.delete(:max_tokens)
+        end
+        formatted_params.delete(:temperature)
+      end
+      formatted_params
     end
-  end
 
-  # the engine type
-  def engine_type
-    "openai"
-  end
+    def _handle_openai_error_outcome(error_data)
+      detailed_error_message = error_data.message
+      if error_data.respond_to?(:json_body) && error_data.json_body
+        detailed_error_message += " - Details: #{error_data.json_body}"
+      end
+      Boxcars.error("OpenAI Error: #{detailed_error_message} (#{error_data.class.name})", :red)
+      raise error_data
+    end
 
-  # lookup the context size for a model by name
-  # @param modelname [String] The name of the model to lookup.
-  def modelname_to_contextsize(modelname)
-    model_lookup = {
-      'text-davinci-003': 4097,
-      'text-curie-001': 2048,
-      'text-babbage-001': 2048,
-      'text-ada-001': 2048,
-      'code-davinci-002': 8000,
-      'code-cushman-001': 2048,
-      'gpt-3.5-turbo-1': 4096
-    }.freeze
-    model_lookup[modelname] || 4097
-  end
+    def _handle_openai_response_body_error(response_obj)
+      err_details = response_obj&.dig("error")
+      msg = err_details ? "#{err_details['type']}: #{err_details['message']}" : "Unknown error from OpenAI API"
+      raise Error, msg
+    end
 
-  # Calculate the maximum number of tokens possible to generate for a prompt.
-  # @param prompt_text [String] The prompt text to use.
-  # @return [Integer] the number of tokens possible to generate.
-  def max_tokens_for_prompt(prompt_text)
-    num_tokens = get_num_tokens(prompt_text)
+    def _extract_openai_answer_from_choices(choices)
+      raise Error, "OpenAI: No choices found in response" unless choices.is_a?(Array) && !choices.empty?
 
-    # get max context size for model by name
-    max_size = modelname_to_contextsize(model_name)
-    max_size - num_tokens
+      if choices.first&.dig("message", "content")
+        choices.map { |c| c.dig("message", "content") }.join("\n").strip
+      elsif choices.first&.dig("text")
+        choices.map { |c| c["text"] }.join("\n").strip
+      else
+        raise Error, "OpenAI: Could not extract answer from choices"
+      end
+    end
+
+    def _openai_handle_call_outcome(response_data:)
+      if response_data[:error]
+        _handle_openai_error_outcome(response_data[:error])
+      elsif !response_data[:success] # e.g. raw_response["error"] was present
+        _handle_openai_response_body_error(response_data[:response_obj]) # Raises an error
+      else
+        response_data[:parsed_json] # Return the raw parsed JSON for Engine#generate
+      end
+    end
+
+    def _track_openai_observability(call_context, response_data)
+      duration_ms = ((Time.now - call_context[:start_time]) * 1000).round
+      is_chat_model = call_context[:is_chat_model]
+      api_request_params = call_context[:api_request_params] || {}
+      request_context = {
+        prompt: call_context[:prompt_object],
+        inputs: call_context[:inputs],
+        conversation_for_api: is_chat_model ? api_request_params[:messages] : api_request_params[:prompt]
+      }
+
+      track_ai_generation(
+        duration_ms:,
+        current_params: call_context[:current_params],
+        request_context:,
+        response_data:,
+        provider: :openai
+      )
+    end
   end
 end

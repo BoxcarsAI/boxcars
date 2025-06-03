@@ -56,18 +56,30 @@ module Boxcars
       conversation
     end
 
-    private
-
     # format the prompt with the input variables
     # @param inputs [Hash] The inputs to use for the prompt.
     # @return [String] The formatted prompt.
     # @raise [Boxcars::KeyError] if the template has extra keys.
     def format(inputs)
-      @template % inputs
+      # Ensure all input keys are symbols for consistent lookup
+      symbolized_inputs = inputs.transform_keys(&:to_sym)
+
+      # Use sprintf for templates like "hi %<name>s"
+      # Ensure that all keys expected by the template are present in symbolized_inputs
+      template_keys = @template.scan(/%<(\w+)>s/).flatten.map(&:to_sym)
+      missing_keys = template_keys - symbolized_inputs.keys
+      raise ::KeyError, "missing keys: #{missing_keys.join(', ')}" if missing_keys.any?
+
+      # Perform the substitution
+      @template % symbolized_inputs
     rescue ::KeyError => e
       first_line = e.message.to_s.split("\n").first
-      Boxcars.error "Missing prompt input key: #{first_line}"
+      Boxcars.error "Prompt format error: #{first_line}" # Changed message slightly for clarity
       raise KeyError, "Prompt format error: #{first_line}"
+    rescue ArgumentError => e # Catch sprintf errors e.g. "too many arguments for format string"
+      first_line = e.message.to_s.split("\n").first
+      Boxcars.error "Prompt format error: #{first_line}"
+      raise ArgumentError, "Prompt format error: #{first_line}"
     end
   end
 end

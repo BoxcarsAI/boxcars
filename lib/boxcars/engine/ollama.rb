@@ -1,80 +1,160 @@
 # frozen_string_literal: true
 
-# Boxcars is a framework for running a series of tools to get an answer to a question.
+require 'openai' # Ollama uses the OpenAI gem with a custom URI base
+require 'json'
+
 module Boxcars
-  # A engine that uses local GPT4All API.
+  # A engine that uses a local Ollama API (OpenAI-compatible).
   class Ollama < Engine
+    include UnifiedObservability
     attr_reader :prompts, :model_kwargs, :batch_size, :ollama_params
 
-    # The default parameters to use when asking the engine.
     DEFAULT_PARAMS = {
-      model: "llama3",
+      model: "llama3", # Default model for Ollama
       temperature: 0.1,
-      max_tokens: 4096
+      max_tokens: 4096 # Check if Ollama respects this or has its own limits
     }.freeze
-
-    # the default name of the engine
     DEFAULT_NAME = "Ollama engine"
-    # the default description of the engine
     DEFAULT_DESCRIPTION = "useful for when you need to use local AI to answer questions. " \
                           "You should ask targeted questions"
 
-    # A engine is a container for a single tool to run.
-    # @param name [String] The name of the engine. Defaults to "OpenAI engine".
-    # @param description [String] A description of the engine. Defaults to:
-    #        useful for when you need to use AI to answer questions. You should ask targeted questions".
-    # @param prompts [Array<String>] The prompts to use when asking the engine. Defaults to [].
-    # @param batch_size [Integer] The number of prompts to send to the engine at once. Defaults to 2.
     def initialize(name: DEFAULT_NAME, description: DEFAULT_DESCRIPTION, prompts: [], batch_size: 2, **kwargs)
       @ollama_params = DEFAULT_PARAMS.merge(kwargs)
       @prompts = prompts
-      @batch_size = batch_size
-      super(description: description, name: name)
+      @batch_size = batch_size # Retain if used by other methods
+      super(description:, name:)
     end
 
-    # Get the OpenAI API client
-    # @param groq_api_key [String] The access token to use when asking the engine.
-    #   Defaults to Boxcars.configuration.groq_api_key
-    # @return [OpenAI::Client] The OpenAI API gem client.
-    def self.open_ai_client
-      ::OpenAI::Client.new(uri_base: "http://localhost:11434")
+    # Renamed from open_ai_client to ollama_client for clarity
+    # Ollama doesn't use an API key by default.
+    def self.ollama_client
+      # The OpenAI gem requires an access_token, even if the local service doesn't.
+      # Provide a dummy one if not needed, or allow configuration if Ollama setup requires one.
+      ::OpenAI::Client.new(access_token: "ollama-dummy-key", uri_base: "http://localhost:11434/v1")
+      # Added /v1 to uri_base, as OpenAI-compatible endpoints often version this way.
+      # Verify Ollama's actual OpenAI-compatible endpoint path.
     end
 
-    def conversation_model?(_model)
+    # Ollama models are typically conversational.
+    def conversation_model?(_model_name)
       true
     end
 
-    # Get an answer from the engine.
-    # @param prompt [String] The prompt to use when asking the engine.
-    # @param groq_api_key [String] The access token to use when asking the engine.
-    #   Defaults to Boxcars.configuration.groq_api_key.
-    # @param kwargs [Hash] Additional parameters to pass to the engine if wanted.
     def client(prompt:, inputs: {}, **kwargs)
-      clnt = Ollama.open_ai_client
-      params = ollama_params.merge(kwargs)
-      prompt = prompt.first if prompt.is_a?(Array)
-      params = prompt.as_messages(inputs).merge(params)
-      if Boxcars.configuration.log_prompts
-        Boxcars.debug(params[:messages].last(2).map { |p| ">>>>>> Role: #{p[:role]} <<<<<<\n#{p[:content]}" }.join("\n"), :cyan)
+      start_time = Time.now
+      response_data = { response_obj: nil, parsed_json: nil, success: false, error: nil, status_code: nil }
+      current_params = @ollama_params.merge(kwargs)
+      current_prompt_object = prompt.is_a?(Array) ? prompt.first : prompt
+      api_request_params = nil # Initialize
+
+      begin
+        clnt = Ollama.ollama_client
+        api_request_params = _prepare_ollama_request_params(current_prompt_object, inputs, current_params)
+
+        log_messages_debug(api_request_params[:messages]) if Boxcars.configuration.log_prompts && api_request_params[:messages]
+
+        _execute_and_process_ollama_call(clnt, api_request_params, response_data)
+      rescue ::OpenAI::Error => e
+        _handle_openai_error_for_ollama(e, response_data)
+      rescue StandardError => e
+        _handle_standard_error_for_ollama(e, response_data)
+      ensure
+        duration_ms = ((Time.now - start_time) * 1000).round
+        request_context = {
+          prompt: current_prompt_object,
+          inputs:,
+          conversation_for_api: api_request_params&.dig(:messages)
+        }
+        track_ai_generation(
+          duration_ms:,
+          current_params:,
+          request_context:,
+          response_data:,
+          provider: :ollama
+        )
       end
-      ans = clnt.chat(parameters: params)
-      ans['choices'].pluck('message').pluck('content').join("\n")
-    rescue => e
-      Boxcars.error(e, :red)
-      raise
+
+      _ollama_handle_call_outcome(response_data:)
     end
 
-    # get an answer from the engine for a question.
-    # @param question [String] The question to ask the engine.
-    # @param kwargs [Hash] Additional parameters to pass to the engine if wanted.
-    def run(question, **kwargs)
+    def run(question, **)
       prompt = Prompt.new(template: question)
-      answer = client(prompt: prompt, **kwargs)
-      raise Error, "Ollama: No response from API" unless answer
-
-      # raise Error, "Ollama: #{response['error']}" if response["error"]
+      answer = client(prompt:, inputs: {}, **) # Pass empty inputs hash
       Boxcars.debug("Answer: #{answer}", :cyan)
       answer
+    end
+
+    def default_params
+      @ollama_params
+    end
+
+    private
+
+    # Helper methods for the client method
+    def _prepare_ollama_request_params(prompt_object, inputs, current_params)
+      # prompt_object.as_messages(inputs) returns a hash like { messages: [...] }
+      # We need to extract the array of messages for the API call.
+      actual_messages_array = prompt_object.as_messages(inputs)[:messages]
+      { messages: actual_messages_array }.merge(current_params)
+    end
+
+    def _execute_and_process_ollama_call(clnt, api_request_params, response_data)
+      raw_response = clnt.chat(parameters: api_request_params)
+      response_data[:response_obj] = raw_response
+      response_data[:parsed_json] = raw_response # OpenAI gem returns Hash
+
+      if raw_response && !raw_response["error"] && raw_response["choices"]
+        response_data[:success] = true
+        response_data[:status_code] = 200 # Inferred for local success
+      else
+        response_data[:success] = false
+        err_details = raw_response["error"] if raw_response
+        msg = if err_details
+                (err_details.is_a?(Hash) ? err_details['message'] : err_details).to_s
+              else
+                "Unknown Ollama API Error"
+              end
+        response_data[:error] ||= Error.new(msg) # Use ||= to not overwrite existing exception
+      end
+    end
+
+    def _handle_openai_error_for_ollama(error, response_data)
+      response_data[:error] = error
+      response_data[:success] = false
+      response_data[:status_code] = error.http_status if error.respond_to?(:http_status)
+    end
+
+    def _handle_standard_error_for_ollama(error, response_data)
+      response_data[:error] = error
+      response_data[:success] = false
+    end
+
+    def log_messages_debug(messages)
+      return unless messages.is_a?(Array)
+
+      Boxcars.debug(messages.last(2).map { |p| ">>>>>> Role: #{p[:role]} <<<<<<\n#{p[:content]}" }.join("\n"), :cyan)
+    end
+
+    def _ollama_handle_call_outcome(response_data:)
+      if response_data[:error]
+        Boxcars.error("Ollama Error: #{response_data[:error].message} (#{response_data[:error].class.name})", :red)
+        raise response_data[:error] # Re-raise the original error
+      elsif !response_data[:success]
+        # This case handles errors returned in the response body but not raised as OpenAI::Error
+        err_details = response_data.dig(:response_obj, "error")
+        msg = if err_details
+                err_details.is_a?(Hash) ? err_details['message'] : err_details.to_s
+              else
+                "Unknown error from Ollama API"
+              end
+        raise Error, msg
+      else
+        # Extract answer from successful response (assuming OpenAI-like structure)
+        choices = response_data.dig(:parsed_json, "choices")
+        raise Error, "Ollama: No choices found in response" unless choices.is_a?(Array) && !choices.empty?
+
+        choices.map { |c| c.dig("message", "content") }.join("\n").strip
+      end
     end
   end
 end

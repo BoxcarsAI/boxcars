@@ -24,7 +24,7 @@ module Boxcars
       init_prefixes
       kwargs[:stop] = ["\n#{observation_prefix}"] unless kwargs.key?(:stop)
 
-      super(prompt: prompt, engine: engine, **kwargs)
+      super(prompt:, engine:, **kwargs)
     end
 
     def init_prefixes

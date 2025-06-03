@@ -21,12 +21,12 @@ module Boxcars
       kwargs[:stop] ||= ["```output"]
       kwargs[:name] ||= "Swagger API"
       kwargs[:description] ||= DESC
-      super(engine: engine, prompt: the_prompt, **kwargs)
+      super(engine:, prompt: the_prompt, **kwargs)
     end
 
     # @return Hash The additional variables for this boxcar.
     def prediction_additional(_inputs)
-      { swagger_url: swagger_url, context: context }.merge super
+      { swagger_url:, context: }.merge super
     end
 
     # our template
@@ -52,7 +52,7 @@ module Boxcars
     def get_embedded_ruby_answer(text)
       code = text.split("```ruby\n").last.split("```").first.strip
       ruby_executor = Boxcars::RubyREPL.new
-      ruby_executor.call(code: code)
+      ruby_executor.call(code:)
     end
 
     def get_answer(text)

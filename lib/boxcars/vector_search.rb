@@ -42,7 +42,7 @@ module Boxcars
     def call(query:, count: 1)
       validate_query(query)
       query_vector = convert_query_to_vector(query)
-      @vector_search_instance.call(query_vector: query_vector, count: count)
+      @vector_search_instance.call(query_vector:, count:)
     end
 
     private
@@ -53,15 +53,15 @@ module Boxcars
       case vector_documents[:type]
       when :hnswlib
         Boxcars::VectorStore::Hnswlib::Search.new(
-          vector_documents: vector_documents
+          vector_documents:
         )
       when :in_memory
         Boxcars::VectorStore::InMemory::Search.new(
-          vector_documents: vector_documents
+          vector_documents:
         )
       when :pgvector
         Boxcars::VectorStore::Pgvector::Search.new(
-          vector_documents: vector_documents
+          vector_documents:
         )
       else
         raise_argument_error('Unsupported vector store provided')
@@ -69,7 +69,7 @@ module Boxcars
     end
 
     def default_connection(openai_access_token: nil)
-      Openai.open_ai_client(openai_access_token: openai_access_token)
+      Openai.open_ai_client(openai_access_token:)
     end
 
     def validate_query(query)

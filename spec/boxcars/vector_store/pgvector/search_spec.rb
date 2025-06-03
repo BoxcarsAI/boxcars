@@ -3,6 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe Boxcars::VectorStore::Pgvector::Search do
+  before(:all) do
+    unless Gem.loaded_specs.key?('pgvector') && Gem.loaded_specs.key?('pg')
+      skip "pgvector and pg gems not available, skipping pgvector tests"
+    end
+  end
+
   let(:search_result) do
     pgvector_search.call(
       query_vector: query_vector,

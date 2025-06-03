@@ -4,7 +4,9 @@ require 'anthropic'
 # Boxcars is a framework for running a series of tools to get an answer to a question.
 module Boxcars
   # A engine that uses OpenAI's API.
+  # rubocop:disable Metrics/ClassLength
   class Anthropic < Engine
+    include UnifiedObservability
     attr_reader :prompts, :llm_params, :model_kwargs, :batch_size
 
     # The default parameters to use when asking the engine.
@@ -29,7 +31,7 @@ module Boxcars
       @llm_params = DEFAULT_PARAMS.merge(kwargs)
       @prompts = prompts
       @batch_size = 20
-      super(description: description, name: name)
+      super(description:, name:)
     end
 
     def conversation_model?(_model)
@@ -46,33 +48,50 @@ module Boxcars
     #   Defaults to Boxcars.configuration.anthropic_api_key.
     # @param kwargs [Hash] Additional parameters to pass to the engine if wanted.
     def client(prompt:, inputs: {}, **kwargs)
-      model_params = llm_params.merge(kwargs)
-      api_key = Boxcars.configuration.anthropic_api_key(**kwargs)
-      aclient = anthropic_client(anthropic_api_key: api_key)
-      prompt = prompt.first if prompt.is_a?(Array)
-      params = convert_to_anthropic(prompt.as_messages(inputs).merge(model_params))
-      if Boxcars.configuration.log_prompts
-        if params[:messages].length < 2 && params[:system].present?
-          Boxcars.debug(">>>>>> Role: system <<<<<<\n#{params[:system]}")
+      start_time = Time.now
+      response_data = { response_obj: nil, parsed_json: nil, success: false, error: nil, status_code: nil }
+      current_params = llm_params.merge(kwargs)
+      current_prompt_object = prompt.is_a?(Array) ? prompt.first : prompt
+      api_request_params = nil
+
+      begin
+        api_key = Boxcars.configuration.anthropic_api_key(**kwargs)
+        aclient = anthropic_client(anthropic_api_key: api_key)
+        api_request_params = convert_to_anthropic(current_prompt_object.as_messages(inputs).merge(current_params))
+
+        if Boxcars.configuration.log_prompts
+          if api_request_params[:messages].length < 2 && api_request_params[:system] && !api_request_params[:system].empty?
+            Boxcars.debug(">>>>>> Role: system <<<<<<\n#{api_request_params[:system]}")
+          end
+          Boxcars.debug(api_request_params[:messages].last(2).map do |p|
+            ">>>>>> Role: #{p[:role]} <<<<<<\n#{p[:content]}"
+          end.join("\n"), :cyan)
         end
-        Boxcars.debug(params[:messages].last(2).map { |p| ">>>>>> Role: #{p[:role]} <<<<<<\n#{p[:content]}" }.join("\n"), :cyan)
+
+        raw_response = aclient.messages(parameters: api_request_params)
+        _process_anthropic_response(raw_response, response_data)
+      rescue StandardError => e
+        _handle_anthropic_error(e, response_data)
+      ensure
+        call_context = {
+          start_time:,
+          prompt_object: current_prompt_object,
+          inputs:,
+          api_request_params:,
+          current_params:
+        }
+        _track_anthropic_observability(call_context, response_data)
       end
-      response = aclient.messages(parameters: params)
-      response['completion'] = response.dig('content', 0, 'text')
-      response.delete('content')
-      response
-    rescue StandardError => e
-      err = e.respond_to?(:response) ? e.response[:body] : e
-      Boxcars.warn("Anthropic Error #{e.class.name}: #{err}", :red)
-      raise
+
+      _anthropic_handle_call_outcome(response_data:)
     end
 
     # get an answer from the engine for a question.
     # @param question [String] The question to ask the engine.
     # @param kwargs [Hash] Additional parameters to pass to the engine if wanted.
-    def run(question, **kwargs)
+    def run(question, **)
       prompt = Prompt.new(template: question)
-      response = client(prompt: prompt, **kwargs)
+      response = client(prompt:, **)
 
       raise Error, "Anthropic: No response from API" unless response
       raise Error, "Anthropic: #{response['error']}" if response['error']
@@ -134,7 +153,7 @@ module Boxcars
       # Includes prompt, completion, and total tokens used.
       prompts.each_slice(batch_size) do |sub_prompts|
         sub_prompts.each do |sprompts, inputs|
-          response = client(prompt: sprompts, inputs: inputs, **params)
+          response = client(prompt: sprompts, inputs:, **params)
           check_response(response)
           choices << response
         end
@@ -146,7 +165,7 @@ module Boxcars
         sub_choices = choices[i * n, (i + 1) * n]
         generations.push(generation_info(sub_choices))
       end
-      EngineResult.new(generations: generations, engine_output: { token_usage: {} })
+      EngineResult.new(generations:, engine_output: { token_usage: {} })
     end
     # rubocop:enable Metrics/AbcSize
 
@@ -191,12 +210,14 @@ module Boxcars
     end
 
     # convert generic parameters to Anthopic specific ones
+    # rubocop:disable Metrics/AbcSize
     def convert_to_anthropic(params)
       params[:stop_sequences] = params.delete(:stop) if params.key?(:stop)
       params[:system] = params[:messages].shift[:content] if params.dig(:messages, 0, :role) == :system
-      params[:messages].pop if params[:messages].last[:content].blank?
+      params[:messages].pop if params[:messages].last[:content].nil? || params[:messages].last[:content].strip.empty?
       combine_assistant(params)
     end
+    # rubocop:enable Metrics/AbcSize
 
     def combine_assistant(params)
       params[:messages] = combine_assistant_entries(params[:messages])
@@ -220,5 +241,82 @@ module Boxcars
     def default_prefixes
       { system: "Human: ", user: "Human: ", assistant: "Assistant: ", history: :history }
     end
+
+    private
+
+    # Process the raw response from Anthropic API
+    # rubocop:disable Metrics/AbcSize
+    def _process_anthropic_response(raw_response, response_data)
+      response_data[:response_obj] = raw_response
+      response_data[:parsed_json] = raw_response # Already parsed by Anthropic gem
+
+      if raw_response && !raw_response["error"]
+        response_data[:success] = true
+        response_data[:status_code] = 200 # Inferred
+        # Transform response to match expected format
+        raw_response['completion'] = raw_response.dig('content', 0, 'text')
+        raw_response.delete('content')
+      else
+        response_data[:success] = false
+        err_details = raw_response["error"] if raw_response
+        msg = err_details ? "#{err_details['type']}: #{err_details['message']}" : "Unknown Anthropic API Error"
+        response_data[:error] ||= StandardError.new(msg)
+      end
+    end
+    # rubocop:enable Metrics/AbcSize
+
+    # Handle errors from Anthropic API calls
+    def _handle_anthropic_error(error, response_data)
+      response_data[:error] = error
+      response_data[:success] = false
+      response_data[:status_code] = error.respond_to?(:http_status) ? error.http_status : nil
+    end
+
+    # Track observability using the unified system
+    def _track_anthropic_observability(call_context, response_data)
+      duration_ms = ((Time.now - call_context[:start_time]) * 1000).round
+      request_context = {
+        prompt: call_context[:prompt_object],
+        inputs: call_context[:inputs],
+        conversation_for_api: call_context[:api_request_params]
+      }
+
+      track_ai_generation(
+        duration_ms:,
+        current_params: call_context[:current_params],
+        request_context:,
+        response_data:,
+        provider: :anthropic
+      )
+    end
+
+    # Handle the final outcome of the API call
+    def _anthropic_handle_call_outcome(response_data:)
+      if response_data[:error]
+        _handle_anthropic_error_outcome(response_data[:error])
+      elsif !response_data[:success]
+        _handle_anthropic_response_body_error(response_data[:response_obj])
+      else
+        response_data[:parsed_json] # Return the raw parsed JSON
+      end
+    end
+
+    # Handle error outcomes
+    def _handle_anthropic_error_outcome(error_data)
+      detailed_error_message = error_data.message
+      if error_data.respond_to?(:response) && error_data.response
+        detailed_error_message += " - Details: #{error_data.response[:body]}"
+      end
+      Boxcars.error("Anthropic Error: #{detailed_error_message} (#{error_data.class.name})", :red)
+      raise error_data
+    end
+
+    # Handle response body errors
+    def _handle_anthropic_response_body_error(response_obj)
+      err_details = response_obj&.dig("error")
+      msg = err_details ? "#{err_details['type']}: #{err_details['message']}" : "Unknown error from Anthropic API"
+      raise Error, msg
+    end
   end
+  # rubocop:enable Metrics/ClassLength
 end

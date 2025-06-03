@@ -149,6 +149,311 @@ Also, if you set this flag: `Boxcars.configuration.log_prompts = true`
 The actual prompts handed to the connected Engine will be logged. This is off by default because it is very wordy, but handy if you are debugging prompts.
 
 Otherwise, we print to standard out.
+
+### Engine Factory (Engines)
+
+Boxcars provides a convenient factory class `Boxcars::Engines` that simplifies creating engine instances using model names and aliases instead of remembering full class names and model strings.
+
+#### Basic Usage
+
+```ruby
+# Using default model (gemini-2.5-flash-preview-05-20)
+engine = Boxcars::Engines.engine
+
+# Using specific models with convenient aliases
+gpt_engine = Boxcars::Engines.engine(model: "gpt-4o")
+claude_engine = Boxcars::Engines.engine(model: "sonnet")
+gemini_engine = Boxcars::Engines.engine(model: "flash")
+groq_engine = Boxcars::Engines.engine(model: "groq")
+```
+
+#### Supported Model Aliases
+
+**OpenAI Models:**
+- `"gpt-4o"`, `"gpt-3.5-turbo"`, `"o1-preview"` - Creates `Boxcars::Openai` engines
+
+**Anthropic Models:**
+- `"anthropic"`, `"sonnet"` - Creates `Boxcars::Anthropic` with Claude Sonnet
+- `"opus"` - Creates `Boxcars::Anthropic` with Claude Opus
+- `"claude-3-5-sonnet"`, etc. - Any model starting with "claude-"
+
+**Groq Models:**
+- `"groq"` - Creates `Boxcars::Groq` with Llama 3.3 70B
+- `"deepseek"` - Creates `Boxcars::Groq` with DeepSeek R1
+- `"mistral"` - Creates `Boxcars::Groq` with Mistral
+- Models starting with `"mistral-"`, `"meta-llama/"`, or `"deepseek-"`
+
+**Gemini Models:**
+- `"flash"`, `"gemini-flash"` - Creates `Boxcars::GeminiAi` with Gemini 2.5 Flash
+- `"gemini-pro"` - Creates `Boxcars::GeminiAi` with Gemini 2.5 Pro
+- Any model starting with `"gemini-"`
+
+**Perplexity Models:**
+- `"online"`, `"sonar"` - Creates `Boxcars::Perplexityai` with Sonar
+- `"sonar-pro"`, `"huge"` - Creates `Boxcars::Perplexityai` with Sonar Pro
+- Models containing `"-sonar-"`
+
+**Together AI Models:**
+- `"together-model-name"` - Creates `Boxcars::Together` (strips "together-" prefix)
+
+#### JSON-Optimized Engines
+
+For applications requiring JSON responses, use the `json_engine` method:
+
+```ruby
+# Creates engine optimized for JSON output
+json_engine = Boxcars::Engines.json_engine(model: "gpt-4o")
+
+# Automatically removes response_format for models that don't support it
+json_claude = Boxcars::Engines.json_engine(model: "sonnet")
+```
+
+#### Passing Additional Parameters
+
+```ruby
+# Pass any additional parameters to the underlying engine
+engine = Boxcars::Engines.engine(
+  model: "gpt-4o",
+  temperature: 0.7,
+  max_tokens: 1000,
+  top_p: 0.9
+)
+```
+
+#### Using with Boxcars
+
+```ruby
+# Use the factory with any Boxcar
+engine = Boxcars::Engines.engine(model: "sonnet")
+calc = Boxcars::Calculator.new(engine: engine)
+result = calc.run "What is 15 * 23?"
+
+# Or in a Train
+boxcars = [
+  Boxcars::Calculator.new(engine: Boxcars::Engines.engine(model: "gpt-4o")),
+  Boxcars::GoogleSearch.new(engine: Boxcars::Engines.engine(model: "flash"))
+]
+train = Boxcars.train.new(boxcars: boxcars)
+```
+
+### Overriding the Default Engine Model
+
+Boxcars provides several ways to override the default engine model used throughout your application. The default model is currently `"gemini-2.5-flash-preview-05-20"`, but you can customize this behavior.
+
+#### Global Configuration
+
+Set a global default model that will be used by `Boxcars::Engines.engine()` when no model is specified:
+
+```ruby
+# Set the default model globally
+Boxcars.configuration.default_model = "gpt-4o"
+
+# Now all engines created without specifying a model will use GPT-4o
+engine = Boxcars::Engines.engine  # Uses gpt-4o
+calc = Boxcars::Calculator.new    # Uses gpt-4o via default engine
+```
+
+#### Configuration Block
+
+Use a configuration block for more organized setup:
+
+```ruby
+Boxcars.configure do |config|
+  config.default_model = "sonnet"  # Use Claude Sonnet as default
+  config.logger = Rails.logger     # Set custom logger
+  config.log_prompts = true        # Enable prompt logging
+end
+```
+
+#### Per-Instance Override
+
+Override the model for specific engine instances:
+
+```ruby
+# Global default is gemini-flash, but use different models per boxcar
+default_engine = Boxcars::Engines.engine                    # Uses global default
+gpt_engine = Boxcars::Engines.engine(model: "gpt-4o")       # Uses GPT-4o
+claude_engine = Boxcars::Engines.engine(model: "sonnet")    # Uses Claude Sonnet
+
+# Use different engines for different boxcars
+calc = Boxcars::Calculator.new(engine: gpt_engine)
+search = Boxcars::GoogleSearch.new(engine: claude_engine)
+```
+
+#### Environment-Based Configuration
+
+Set the default model via environment variables or initialization:
+
+```ruby
+# In your application initialization (e.g., Rails initializer)
+if Rails.env.production?
+  Boxcars.configuration.default_model = "gpt-4o"      # Use GPT-4o in production
+elsif Rails.env.development?
+  Boxcars.configuration.default_model = "flash"       # Use faster Gemini Flash in development
+else
+  Boxcars.configuration.default_model = "groq"        # Use Groq for testing
+end
+```
+
+#### Model Resolution Priority
+
+The `Boxcars::Engines.engine()` method resolves the model in this order:
+
+1. **Explicit model parameter**: `Boxcars::Engines.engine(model: "gpt-4o")`
+2. **Global configuration**: `Boxcars.configuration.default_model`
+3. **Built-in default**: `"gemini-2.5-flash-preview-05-20"`
+
+#### Supported Model Aliases
+
+When setting `default_model`, you can use any of the supported model aliases:
+
+```ruby
+# These are all valid default_model values:
+Boxcars.configuration.default_model = "gpt-4o"        # OpenAI GPT-4o
+Boxcars.configuration.default_model = "sonnet"        # Claude Sonnet
+Boxcars.configuration.default_model = "flash"         # Gemini Flash
+Boxcars.configuration.default_model = "groq"          # Groq Llama
+Boxcars.configuration.default_model = "online"        # Perplexity Sonar
+```
+
+#### Legacy Engine Configuration
+
+You can also override the default engine class (though this is less common):
+
+```ruby
+# Override the default engine class entirely
+Boxcars.configuration.default_engine = Boxcars::Anthropic
+
+# Now Boxcars.engine returns Anthropic instead of OpenAI
+default_engine = Boxcars.engine  # Returns Boxcars::Anthropic instance
+```
+
+**Note**: When using `default_engine`, the `default_model` setting is ignored since you're specifying the engine class directly.
+
+### Observability
+
+Boxcars includes a comprehensive observability system that allows you to track and monitor AI operations across your application. The system provides insights into LLM calls, performance metrics, errors, and usage patterns.
+
+#### Core Components
+
+**Observability Class**: The central tracking interface that provides a simple `track` method for recording events.
+
+**ObservabilityBackend Module**: An interface that defines how tracking backends should be implemented. All backends must include this module and implement a `track` method.
+
+**Built-in Backends**:
+- **PosthogBackend**: Sends events to PostHog for analytics and user behavior tracking
+- **MultiBackend**: Allows sending events to multiple backends simultaneously
+
+#### Configuration
+
+Set up observability by configuring a backend:
+
+```ruby
+# Using PostHog backend
+require 'boxcars/observability_backends/posthog_backend'
+
+Boxcars.configure do |config|
+  config.observability_backend = Boxcars::PosthogBackend.new(
+    api_key: ENV['POSTHOG_API_KEY'] || 'your_posthog_api_key',
+    host: 'https://app.posthog.com' # or your self-hosted instance
+  )
+end
+
+# Using multiple backends
+require 'boxcars/observability_backends/multi_backend'
+backend1 = Boxcars::PosthogBackend.new(api_key: ENV['POSTHOG_API_KEY'])
+backend2 = YourCustomBackend.new
+
+Boxcars.configure do |config|
+  config.observability_backend = Boxcars::MultiBackend.new([backend1, backend2])
+end
+```
+
+#### Automatic Tracking
+
+Boxcars automatically tracks LLM calls with detailed metrics:
+
+```ruby
+# This automatically generates observability events
+engine = Boxcars::Openai.new
+calc = Boxcars::Calculator.new(engine: engine)
+result = calc.run "what is 2 + 2?"
+```
+
+**Tracked Properties Include**:
+- `provider`: The LLM provider (e.g., "openai", "anthropic")
+- `model_name`: The specific model used
+- `prompt_content`: The conversation messages sent to the LLM
+- `inputs`: Any template inputs provided
+- `duration_ms`: Request duration in milliseconds
+- `success`: Whether the call succeeded
+- `status_code`: HTTP response status
+- `error_message`: Error details if the call failed
+- `response_raw_body`: Raw API response
+- `api_call_parameters`: Parameters sent to the API
+
+#### Manual Tracking
+
+You can also track custom events:
+
+```ruby
+Boxcars::Observability.track(
+  event: 'custom_operation',
+  properties: {
+    user_id: 'user_123',
+    operation_type: 'data_processing',
+    duration_ms: 150,
+    success: true
+  }
+)
+```
+
+#### Creating Custom Backends
+
+Implement your own backend by including the `ObservabilityBackend` module:
+
+```ruby
+class CustomBackend
+  include Boxcars::ObservabilityBackend
+  
+  def track(event:, properties:)
+    # Your custom tracking logic here
+    puts "Event: #{event}, Properties: #{properties}"
+  end
+end
+
+Boxcars.configure do |config|
+  config.observability_backend = CustomBackend.new
+end
+```
+
+#### Error Handling
+
+The observability system is designed to fail silently to prevent tracking issues from disrupting your main application flow. If a backend raises an error, it will be caught and ignored, ensuring your AI operations continue uninterrupted.
+
+#### PostHog Integration
+
+The PostHog backend requires the `posthog-ruby` gem:
+
+```ruby
+# Add to your Gemfile
+gem 'posthog-ruby'
+
+# Configure the backend
+Boxcars.configure do |config|
+  config.observability_backend = Boxcars::PosthogBackend.new(
+    api_key: ENV['POSTHOG_API_KEY'],
+    host: 'https://app.posthog.com',
+    on_error: proc { |status, body| 
+      Rails.logger.warn "PostHog error: #{status} - #{body}" 
+    }
+  )
+end
+```
+
+Events are automatically associated with users when a `user_id` property is provided. Anonymous events use a default identifier.
+
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.

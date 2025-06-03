@@ -1,10 +1,12 @@
 # frozen_string_literal: true
 
 require 'intelligence'
+require_relative 'unified_observability'
 
 module Boxcars
   # A Base class for all Intelligence Engines
   class IntelligenceBase < Engine
+    include Boxcars::UnifiedObservability
     attr_reader :provider, :all_params
 
     # The base Intelligence Engine is used by other engines to generate output from prompts
@@ -16,8 +18,9 @@ module Boxcars
     # @param kwargs [Hash] Additional parameters to pass to the Engine.
     def initialize(provider:, description:, name:, prompts: [], batch_size: 20, **kwargs)
       @provider = provider
+      # Start with defaults, merge other kwargs, then explicitly set model if provided in initialize
       @all_params = default_model_params.merge(kwargs)
-      super(description: description, name: name, prompts: prompts, batch_size: batch_size)
+      super(description:, name:, prompts:, batch_size:)
     end
 
     # can be overridden by provider subclass
@@ -30,9 +33,10 @@ module Boxcars
     end
 
     def adapter(params:, api_key:)
-      Intelligence::Adapter[provider].new(
-        { key: api_key, chat_options: params }
-      )
+      Intelligence::Adapter.build! @provider do |config|
+        config.key api_key
+        config.chat_options params
+      end
     end
 
     # Process different content types
@@ -59,25 +63,56 @@ module Boxcars
     # Get an answer from the engine
     def client(prompt:, inputs: {}, api_key: nil, **kwargs)
       params = all_params.merge(kwargs)
-      api_key ||= lookup_provider_api_key(params: params)
+      api_key ||= lookup_provider_api_key(params:)
       raise Error, "No API key found for #{provider}" unless api_key
 
-      adapter = adapter(api_key: api_key, params: params)
-      convo = prompt.as_intelligence_conversation(inputs: inputs)
-      request = Intelligence::ChatRequest.new(adapter: adapter)
-      response = request.chat(convo)
-      return JSON.parse(response.body) if response.success?
+      adapter = adapter(api_key:, params:)
+      convo = prompt.as_intelligence_conversation(inputs:)
+      request_context = { prompt: prompt&.as_prompt(inputs:)&.[](:prompt), inputs:, conversation_for_api: convo.to_h }
+      request = Intelligence::ChatRequest.new(adapter:)
 
-      raise Error, (response&.reason_phrase || "No response from API #{provider}")
-    rescue StandardError => e
-      Boxcars.error("#{provider} Error: #{e.message}", :red)
-      raise
+      start_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+      response_obj = nil
+
+      begin
+        response_obj = request.chat(convo)
+        duration_ms = (Process.clock_gettime(Process::CLOCK_MONOTONIC) - start_time) * 1000
+
+        if response_obj.success?
+          success = true
+          parsed_json_response = JSON.parse(response_obj.body)
+          response_data = { success:, parsed_json: parsed_json_response, response_obj:,
+                            status_code: response_obj.status }
+          track_ai_generation(duration_ms:, current_params: params, request_context:, response_data:, provider:)
+          parsed_json_response
+        else
+          success = false
+          error_message = response_obj&.reason_phrase || "No response from API #{provider}"
+          response_data = { success:, error: StandardError.new(error_message), response_obj:,
+                            status_code: response_obj.status }
+          track_ai_generation(duration_ms:, current_params: params, request_context:, response_data:, provider:)
+          raise Error, error_message
+        end
+      rescue Error => e
+        # Re-raise Error exceptions (like the one above) without additional tracking
+        # since they were already tracked in the else branch
+        Boxcars.error("#{provider} Error: #{e.message}", :red)
+        raise
+      rescue StandardError => e
+        duration_ms = (Process.clock_gettime(Process::CLOCK_MONOTONIC) - start_time) * 1000
+        success = false
+        error_obj = e
+        response_data = { success:, error: error_obj, response_obj:, status_code: response_obj&.status }
+        track_ai_generation(duration_ms:, current_params: params, request_context:, response_data:, provider:)
+        Boxcars.error("#{provider} Error: #{e.message}", :red)
+        raise
+      end
     end
 
     # Run the engine with a question
-    def run(question, **kwargs)
+    def run(question, **)
       prompt = Prompt.new(template: question)
-      response = client(prompt: prompt, **kwargs)
+      response = client(prompt:, **)
       extract_answer(response)
     end
 

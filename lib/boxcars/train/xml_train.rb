@@ -38,7 +38,7 @@ module Boxcars
 
     # @return Hash The additional variables for this boxcar.
     def prediction_additional(_inputs)
-      { boxcars_xml: boxcars_xml, next_actions: next_actions }.merge super
+      { boxcars_xml:, next_actions: }.merge super
     end
 
     def build_output(text)
@@ -87,11 +87,11 @@ module Boxcars
       # the thought should be the frist line here if it doesn't start with "Action:"
       Boxcars.debug("Thought: #{thought}", :yellow)
 
-      if final_answer.present?
+      if final_answer && !final_answer.to_s.strip.empty?
         Result.new(status: :ok, answer: final_answer, explanation: final_answer)
       else
         # we have an unexpected output from the engine
-        unless action.present? && action_input.present?
+        unless action && !action.to_s.strip.empty? && action_input && !action_input.to_s.strip.empty?
           return [:error, "You gave me an improperly formatted answer or didn't use tags."]
         end
 

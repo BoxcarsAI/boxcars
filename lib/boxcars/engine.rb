@@ -58,7 +58,7 @@ module Boxcars
       inkeys = %w[completion_tokens prompt_tokens total_tokens].freeze
       prompts.each_slice(batch_size) do |sub_prompts|
         sub_prompts.each do |sprompts, inputs|
-          response = client(prompt: sprompts, inputs: inputs, **params)
+          response = client(prompt: sprompts, inputs:, **params)
           check_response(response)
           choices.concat(response["choices"])
           usage_keys = inkeys & response["usage"].keys
@@ -72,12 +72,14 @@ module Boxcars
         sub_choices = choices[i * n, (i + 1) * n]
         generations.push(generation_info(sub_choices))
       end
-      EngineResult.new(generations: generations, engine_output: { token_usage: token_usage })
+      EngineResult.new(generations:, engine_output: { token_usage: })
     end
   end
 end
 
+require 'boxcars/engine/unified_observability'
 require "boxcars/engine/engine_result"
+require "boxcars/engine/intelligence_base"
 require "boxcars/engine/anthropic"
 require "boxcars/engine/cohere"
 require "boxcars/engine/groq"
@@ -86,7 +88,6 @@ require "boxcars/engine/openai"
 require "boxcars/engine/perplexityai"
 require "boxcars/engine/gpt4all_eng"
 require "boxcars/engine/gemini_ai"
-require "boxcars/engine/intelligence_base"
 require "boxcars/engine/cerebras"
 require "boxcars/engine/google"
 require "boxcars/engine/together"

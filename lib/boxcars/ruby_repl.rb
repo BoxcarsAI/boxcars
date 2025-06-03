@@ -19,7 +19,7 @@ module Boxcars
       if output =~ /^Error: /
         Boxcars.debug output, :red
         Result.from_error(output, code: code)
-      elsif output.blank?
+      elsif output.nil? || output.strip.empty?
         Result.from_error("The code you gave me did not print a result", code: code)
       else
         output = ::Regexp.last_match(1) if output =~ /^\s*Answer:\s*(.*)$/m

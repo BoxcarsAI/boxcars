@@ -15,7 +15,7 @@ module Boxcars
       kwargs[:stop] ||= ["```output"]
       kwargs[:name] ||= "Calculator"
       kwargs[:description] ||= CALCDESC
-      super(engine: engine, prompt: the_prompt, **kwargs)
+      super(engine:, prompt: the_prompt, **kwargs)
     end
 
     # our template
@@ -47,7 +47,7 @@ module Boxcars
       code = text.split("```ruby\n").last.split("```").first.strip
       # code = text[8..-4].split("```").first.strip
       ruby_executor = Boxcars::RubyREPL.new
-      ruby_executor.call(code: code)
+      ruby_executor.call(code:)
     end
 
     def get_answer(text)

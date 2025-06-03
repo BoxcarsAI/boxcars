@@ -21,8 +21,8 @@ module Boxcars
     # @param prompts [Array<Prompt>] The prompts to use for the Engine.
     # @param batch_size [Integer] The number of prompts to send to the Engine at a time.
     # @param kwargs [Hash] Additional parameters to pass to the Engine.
-    def initialize(name: DEFAULT_NAME, description: DEFAULT_DESCRIPTION, prompts: [], batch_size: 20, **kwargs)
-      super(provider: :together_ai, description: description, name: name, prompts: prompts, batch_size: batch_size, **kwargs)
+    def initialize(name: DEFAULT_NAME, description: DEFAULT_DESCRIPTION, prompts: [], batch_size: 20, **)
+      super(provider: :together_ai, description:, name:, prompts:, batch_size:, **)
     end
 
     def default_model_params
