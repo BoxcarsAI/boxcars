@@ -1,5 +1,22 @@
 # Changelog
 
+## [v0.8.0](https://github.com/BoxcarsAI/boxcars/tree/v0.8.0) (2025-06-03)
+
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.7.7...v0.8.0)
+
+**Closed issues:**
+
+- ActiveRecord translations [\#249](https://github.com/BoxcarsAI/boxcars/issues/249)
+- Any chance of getting AWS Bedrock as a provider? [\#239](https://github.com/BoxcarsAI/boxcars/issues/239)
+
+**Merged pull requests:**
+
+- Add observability hooks [\#251](https://github.com/BoxcarsAI/boxcars/pull/251) ([francis](https://github.com/francis))
+
+## [v0.7.7](https://github.com/BoxcarsAI/boxcars/tree/v0.7.7) (2025-04-23)
+
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.7.6...v0.7.7)
+
 ## [v0.7.6](https://github.com/BoxcarsAI/boxcars/tree/v0.7.6) (2025-04-22)
 
 [Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.7.5...v0.7.6)

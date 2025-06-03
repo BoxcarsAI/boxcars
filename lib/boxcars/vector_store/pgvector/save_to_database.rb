@@ -155,8 +155,7 @@ else
     module VectorStore
       module Pgvector
         class PgvectorNotAvailableError < StandardError
-          DEFAULT_MESSAGE = "The 'pgvector' and 'pg' gems are required. Please add them to your Gemfile."
-          def initialize(message = DEFAULT_MESSAGE)
+          def initialize(message = "The 'pgvector' and 'pg' gems are required. Please add them to your Gemfile.")
             super
           end
         end
