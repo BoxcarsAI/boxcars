@@ -23,7 +23,7 @@ module Boxcars
       def track(event:, properties:)
         return unless backend
 
-        backend.track(event: event, properties: properties)
+        backend.track(event:, properties:)
       rescue StandardError
         # Fail silently as requested.
         # Optionally, if Boxcars had a central logger:

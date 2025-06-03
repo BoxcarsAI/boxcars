@@ -46,7 +46,7 @@ module Boxcars
       stop = input_list[0][:stop]
       the_prompt = current_conversation ? prompt.with_conversation(current_conversation) : prompt
       prompts = input_list.map { |inputs| [the_prompt, inputs] }
-      engine.generate(prompts: prompts, stop: stop)
+      engine.generate(prompts:, stop:)
     end
 
     # apply a response from the engine
@@ -54,7 +54,7 @@ module Boxcars
     # @param current_conversation [Boxcars::Conversation] Optional ongoing conversation to use for the prompt.
     # @return [Hash] A hash of the output key and the output value.
     def apply(input_list:, current_conversation: nil)
-      response = generate(input_list: input_list, current_conversation: current_conversation)
+      response = generate(input_list:, current_conversation:)
       response.generations.to_h do |generation|
         [output_key, generation[0].text]
       end
@@ -65,7 +65,7 @@ module Boxcars
     # @param kwargs [Hash] A hash of input values to use for the prompt.
     # @return [String] The output value.
     def predict(current_conversation: nil, **kwargs)
-      prediction = apply(current_conversation: current_conversation, input_list: [kwargs])[output_key]
+      prediction = apply(current_conversation:, input_list: [kwargs])[output_key]
       Boxcars.debug(prediction, :white) if Boxcars.configuration.log_generated
       prediction
     end
@@ -115,7 +115,7 @@ module Boxcars
 
     # @return Hash The additional variables for this boxcar.
     def prediction_additional(_inputs)
-      { stop: stop, top_k: top_k }
+      { stop:, top_k: }
     end
 
     # @param inputs [Hash] The inputs to the boxcar.

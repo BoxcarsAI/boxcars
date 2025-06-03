@@ -23,7 +23,7 @@ module Boxcars
       @perplexity_params = DEFAULT_PARAMS.merge(kwargs)
       @prompts = prompts
       @batch_size = batch_size # Retain if used by generate
-      super(description: description, name: name)
+      super(description:, name:)
     end
 
     # Perplexity models are conversational.
@@ -95,25 +95,25 @@ module Boxcars
         duration_ms = ((Time.now - start_time) * 1000).round
         request_context = {
           prompt: current_prompt_object,
-          inputs: inputs,
+          inputs:,
           conversation_for_api: api_request_params&.dig(:messages)
         }
         track_ai_generation(
-          duration_ms: duration_ms,
-          current_params: current_params,
-          request_context: request_context,
-          response_data: response_data,
+          duration_ms:,
+          current_params:,
+          request_context:,
+          response_data:,
           provider: :perplexity_ai
         )
       end
 
-      _perplexity_handle_call_outcome(response_data: response_data)
+      _perplexity_handle_call_outcome(response_data:)
     end
     # rubocop:enable Metrics/MethodLength
 
     def run(question, **)
       prompt = Prompt.new(template: question)
-      answer = client(prompt: prompt, inputs: {}, **)
+      answer = client(prompt:, inputs: {}, **)
       Boxcars.debug("Answer: #{answer}", :cyan)
       answer
     end

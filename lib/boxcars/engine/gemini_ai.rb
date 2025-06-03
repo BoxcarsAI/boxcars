@@ -22,15 +22,15 @@ module Boxcars
       @llm_params = DEFAULT_PARAMS.merge(kwargs) # Corrected typo here
       @prompts = prompts
       @batch_size = batch_size
-      super(description: description, name: name)
+      super(description:, name:)
     end
 
     # Renamed from open_ai_client to gemini_client for clarity
     def self.gemini_client(gemini_api_key: nil)
-      access_token = Boxcars.configuration.gemini_api_key(gemini_api_key: gemini_api_key)
+      access_token = Boxcars.configuration.gemini_api_key(gemini_api_key:)
       # NOTE: The OpenAI gem might not support `log_errors: true` for custom uri_base.
       # It's a param for OpenAI::Client specific to their setup.
-      ::OpenAI::Client.new(access_token: access_token, uri_base: "https://generativelanguage.googleapis.com/v1beta/")
+      ::OpenAI::Client.new(access_token:, uri_base: "https://generativelanguage.googleapis.com/v1beta/")
       # Removed /openai from uri_base as it's usually for OpenAI-specific paths on custom domains.
       # The Gemini endpoint might be directly at /v1beta/models/gemini...:generateContent
       # This might need adjustment based on how the OpenAI gem forms the full URL.
@@ -51,7 +51,7 @@ module Boxcars
       current_prompt_object = prompt.is_a?(Array) ? prompt.first : prompt
 
       begin
-        clnt = GeminiAi.gemini_client(gemini_api_key: gemini_api_key)
+        clnt = GeminiAi.gemini_client(gemini_api_key:)
         api_request_params = _prepare_gemini_request_params(current_prompt_object, inputs, current_params)
 
         log_messages_debug(api_request_params[:messages]) if Boxcars.configuration.log_prompts && api_request_params[:messages]
@@ -67,24 +67,24 @@ module Boxcars
         duration_ms = ((Time.now - start_time) * 1000).round
         request_context = {
           prompt: current_prompt_object,
-          inputs: inputs,
+          inputs:,
           conversation_for_api: api_request_params&.dig(:messages) || []
         }
         track_ai_generation(
-          duration_ms: duration_ms,
-          current_params: current_params,
-          request_context: request_context,
-          response_data: response_data,
+          duration_ms:,
+          current_params:,
+          request_context:,
+          response_data:,
           provider: :gemini
         )
       end
 
-      _gemini_handle_call_outcome(response_data: response_data)
+      _gemini_handle_call_outcome(response_data:)
     end
 
     def run(question, **)
       prompt = Prompt.new(template: question)
-      answer = client(prompt: prompt, inputs: {}, **)
+      answer = client(prompt:, inputs: {}, **)
       Boxcars.debug("Answer: #{answer}", :cyan)
       answer
     end

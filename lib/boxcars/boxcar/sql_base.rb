@@ -20,7 +20,7 @@ module Boxcars
       @connection = connection
       check_tables(tables, except_tables)
       kwargs[:name] ||= "Database"
-      kwargs[:description] ||= format(SQLDESC, name: name)
+      kwargs[:description] ||= format(SQLDESC, name:)
       kwargs[:prompt] ||= my_prompt
       kwargs[:stop] ||= ["SQLResult:"]
 
@@ -29,7 +29,7 @@ module Boxcars
 
     # @return Hash The additional variables for this boxcar.
     def prediction_additional(_inputs)
-      { schema: schema, dialect: dialect }.merge super
+      { schema:, dialect: }.merge super
     end
 
     CTEMPLATE = [
@@ -107,9 +107,9 @@ module Boxcars
       code = extract_code text.split('SQLQuery:').last.strip
       Boxcars.debug code, :yellow
       output = clean_up_output(code)
-      Result.new(status: :ok, answer: output, explanation: "Answer: #{output.to_json}", code: code)
+      Result.new(status: :ok, answer: output, explanation: "Answer: #{output.to_json}", code:)
     rescue StandardError => e
-      Result.new(status: :error, answer: nil, explanation: "Error: #{e.message}", code: code)
+      Result.new(status: :error, answer: nil, explanation: "Error: #{e.message}", code:)
     end
 
     def get_answer(text)

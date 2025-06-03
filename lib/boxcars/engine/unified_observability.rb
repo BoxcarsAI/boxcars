@@ -13,11 +13,11 @@ module Boxcars
     # Main tracking method that all engines should call
     def track_ai_generation(duration_ms:, current_params:, request_context:, response_data:, provider:)
       properties = build_unified_observability_properties(
-        duration_ms: duration_ms,
-        current_params: current_params,
-        request_context: request_context,
-        response_data: response_data,
-        provider: provider
+        duration_ms:,
+        current_params:,
+        request_context:,
+        response_data:,
+        provider:
       )
       Boxcars::Observability.track(event: '$ai_generation', properties: properties.compact)
     end
@@ -304,13 +304,13 @@ module Boxcars
       elsif response_body["text"] || response_body[:text]
         # Handle Cohere format (both string and symbol keys)
         content = response_body["text"] || response_body[:text]
-        [{ role: "assistant", content: content }]
+        [{ role: "assistant", content: }]
       elsif response_body["message"]
         [{ role: "assistant", content: response_body["message"] }]
       elsif response_body["candidates"]
         response_body["candidates"].map do |candidate|
           content = candidate.dig("content", "parts", 0, "text") || candidate.to_s
-          { role: "assistant", content: content }
+          { role: "assistant", content: }
         end
       else
         []

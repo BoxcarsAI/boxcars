@@ -16,12 +16,12 @@ module Boxcars
     def initialize(boxcars:, engine: nil, name: 'Zero Shot', description: 'Zero Shot Train', prompt: nil, **kwargs)
       @wants_next_actions = kwargs.fetch(:wants_next_actions, false)
       prompt ||= my_prompt
-      super(engine: engine, boxcars: boxcars, prompt: prompt, name: name, description: description, **kwargs)
+      super(engine:, boxcars:, prompt:, name:, description:, **kwargs)
     end
 
     # @return Hash The additional variables for this boxcar.
     def prediction_additional(_inputs)
-      { boxcar_names: boxcar_names, boxcar_descriptions: boxcar_descriptions, next_actions: next_actions }.merge super
+      { boxcar_names:, boxcar_descriptions:, next_actions: }.merge super
     end
 
     # Extract the boxcar and input from the engine output.
@@ -72,7 +72,7 @@ module Boxcars
       #   with "Action Input:" should be separated by a newline.
       if engine_output.include?(FINAL_ANSWER_ACTION)
         answer = engine_output.split(FINAL_ANSWER_ACTION).last.strip
-        Result.new(status: :ok, answer: answer, explanation: engine_output)
+        Result.new(status: :ok, answer:, explanation: engine_output)
       else
         # the thought should be the frist line here if it doesn't start with "Action:"
         thought = engine_output.split(/\n+/).reject(&:empty?).first

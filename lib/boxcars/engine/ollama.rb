@@ -22,7 +22,7 @@ module Boxcars
       @ollama_params = DEFAULT_PARAMS.merge(kwargs)
       @prompts = prompts
       @batch_size = batch_size # Retain if used by other methods
-      super(description: description, name: name)
+      super(description:, name:)
     end
 
     # Renamed from open_ai_client to ollama_client for clarity
@@ -62,24 +62,24 @@ module Boxcars
         duration_ms = ((Time.now - start_time) * 1000).round
         request_context = {
           prompt: current_prompt_object,
-          inputs: inputs,
+          inputs:,
           conversation_for_api: api_request_params&.dig(:messages)
         }
         track_ai_generation(
-          duration_ms: duration_ms,
-          current_params: current_params,
-          request_context: request_context,
-          response_data: response_data,
+          duration_ms:,
+          current_params:,
+          request_context:,
+          response_data:,
           provider: :ollama
         )
       end
 
-      _ollama_handle_call_outcome(response_data: response_data)
+      _ollama_handle_call_outcome(response_data:)
     end
 
     def run(question, **)
       prompt = Prompt.new(template: question)
-      answer = client(prompt: prompt, inputs: {}, **) # Pass empty inputs hash
+      answer = client(prompt:, inputs: {}, **) # Pass empty inputs hash
       Boxcars.debug("Answer: #{answer}", :cyan)
       answer
     end

@@ -22,7 +22,7 @@ module Boxcars
     # @param log [String] The log of the action.
     # @return [Boxcars::TrainAction] The train action.
     def self.from_result(result:, boxcar:, log:)
-      new(boxcar: boxcar, boxcar_input: result.to_answer, log: log)
+      new(boxcar:, boxcar_input: result.to_answer, log:)
     end
   end
 end

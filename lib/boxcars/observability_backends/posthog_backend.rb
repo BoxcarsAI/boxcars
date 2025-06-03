@@ -45,8 +45,8 @@ module Boxcars
 
       # The posthog-ruby gem uses a simpler API
       @posthog_client = PostHog::Client.new(
-        api_key: api_key,
-        host: host,
+        api_key:,
+        host:,
         on_error: @on_error_proc
       )
     end

@@ -21,7 +21,7 @@ module Boxcars
       kwargs[:stop] ||= ["```output"]
       kwargs[:name] ||= "VectorAnswer"
       kwargs[:description] ||= DESC
-      super(engine: engine, prompt: the_prompt, **kwargs)
+      super(engine:, prompt: the_prompt, **kwargs)
     end
 
     # @param inputs [Hash] The inputs to use for the prediction.
@@ -53,8 +53,8 @@ module Boxcars
     # @params count [Integer] The number of results to return.
     # @return [String] The content of the search results.
     def get_search_content(question, count: 1)
-      search = Boxcars::VectorSearch.new(embeddings: embeddings, vector_documents: vector_documents)
-      results = search.call query: question, count: count
+      search = Boxcars::VectorSearch.new(embeddings:, vector_documents:)
+      results = search.call(query: question, count:)
       @search_content = get_results_content(results)
     end
 

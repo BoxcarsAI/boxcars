@@ -31,7 +31,7 @@ module Boxcars
       @llm_params = DEFAULT_PARAMS.merge(kwargs)
       @prompts = prompts
       @batch_size = 20
-      super(description: description, name: name)
+      super(description:, name:)
     end
 
     def conversation_model?(_model)
@@ -74,16 +74,16 @@ module Boxcars
         _handle_anthropic_error(e, response_data)
       ensure
         call_context = {
-          start_time: start_time,
+          start_time:,
           prompt_object: current_prompt_object,
-          inputs: inputs,
-          api_request_params: api_request_params,
-          current_params: current_params
+          inputs:,
+          api_request_params:,
+          current_params:
         }
         _track_anthropic_observability(call_context, response_data)
       end
 
-      _anthropic_handle_call_outcome(response_data: response_data)
+      _anthropic_handle_call_outcome(response_data:)
     end
 
     # get an answer from the engine for a question.
@@ -91,7 +91,7 @@ module Boxcars
     # @param kwargs [Hash] Additional parameters to pass to the engine if wanted.
     def run(question, **)
       prompt = Prompt.new(template: question)
-      response = client(prompt: prompt, **)
+      response = client(prompt:, **)
 
       raise Error, "Anthropic: No response from API" unless response
       raise Error, "Anthropic: #{response['error']}" if response['error']
@@ -153,7 +153,7 @@ module Boxcars
       # Includes prompt, completion, and total tokens used.
       prompts.each_slice(batch_size) do |sub_prompts|
         sub_prompts.each do |sprompts, inputs|
-          response = client(prompt: sprompts, inputs: inputs, **params)
+          response = client(prompt: sprompts, inputs:, **params)
           check_response(response)
           choices << response
         end
@@ -165,7 +165,7 @@ module Boxcars
         sub_choices = choices[i * n, (i + 1) * n]
         generations.push(generation_info(sub_choices))
       end
-      EngineResult.new(generations: generations, engine_output: { token_usage: {} })
+      EngineResult.new(generations:, engine_output: { token_usage: {} })
     end
     # rubocop:enable Metrics/AbcSize
 
@@ -282,10 +282,10 @@ module Boxcars
       }
 
       track_ai_generation(
-        duration_ms: duration_ms,
+        duration_ms:,
         current_params: call_context[:current_params],
-        request_context: request_context,
-        response_data: response_data,
+        request_context:,
+        response_data:,
         provider: :anthropic
       )
     end

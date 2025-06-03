@@ -23,14 +23,14 @@ module Boxcars
       @read_only = read_only.nil? ? !approval_callback : read_only
       @code_only = kwargs.delete(:code_only) || false
       kwargs[:name] ||= get_name
-      kwargs[:description] ||= format(ARDESC, name: name)
+      kwargs[:description] ||= format(ARDESC, name:)
       kwargs[:prompt] ||= my_prompt
       super(**kwargs)
     end
 
     # @return Hash The additional variables for this boxcar.
     def prediction_additional(_inputs)
-      { model_info: model_info }.merge super
+      { model_info: }.merge super
     end
 
     CTEMPLATE = [
@@ -230,24 +230,24 @@ module Boxcars
     def get_active_record_answer(text)
       changes_code = extract_code text.split('ARCode:').first.split('ARChanges:').last.strip if text =~ /^ARChanges:/
       code = extract_code text.split('ARCode:').last.strip
-      return Result.new(status: :ok, explanation: "code to run", code: code, changes_code: changes_code) if code_only?
+      return Result.new(status: :ok, explanation: "code to run", code:, changes_code:) if code_only?
 
       have_approval = false
       begin
         have_approval = approved?(changes_code, code)
       rescue NameError, Error => e
-        return Result.new(status: :error, explanation: error_message(e, "ARChanges"), changes_code: changes_code)
+        return Result.new(status: :error, explanation: error_message(e, "ARChanges"), changes_code:)
       end
 
       raise SecurityError, "Permission to run code that makes changes denied" unless have_approval
 
       begin
         output = clean_up_output(run_active_record_code(code))
-        Result.new(status: :ok, answer: output, explanation: "Answer: #{output.to_json}", code: code)
+        Result.new(status: :ok, answer: output, explanation: "Answer: #{output.to_json}", code:)
       rescue SecurityError => e
         raise e
       rescue ::StandardError => e
-        Result.new(status: :error, answer: nil, explanation: error_message(e, "ARCode"), code: code)
+        Result.new(status: :error, answer: nil, explanation: error_message(e, "ARCode"), code:)
       end
     end
 

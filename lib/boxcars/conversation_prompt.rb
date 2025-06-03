@@ -11,7 +11,7 @@ module Boxcars
     # @param output_variables [Array<Symbol>] The output vars to use for the prompt. Defaults to [:output]
     def initialize(conversation:, input_variables: nil, other_inputs: nil, output_variables: nil)
       @conversation = conversation
-      super(template: template, input_variables: input_variables, other_inputs: other_inputs, output_variables: output_variables)
+      super(template:, input_variables:, other_inputs:, output_variables:)
     end
 
     # prompt for chatGPT params
@@ -25,7 +25,7 @@ module Boxcars
     # @param inputs [Hash] The inputs to use for the prompt.
     # @return [Hash] The formatted prompt.
     def as_prompt(inputs:, prefixes: default_prefixes, show_roles: false)
-      { prompt: conversation.as_prompt(inputs: inputs, prefixes: prefixes, show_roles: show_roles) }
+      { prompt: conversation.as_prompt(inputs:, prefixes:, show_roles:) }
     end
 
     # tack on the ongoing conversation if present to the prompt
@@ -56,7 +56,7 @@ module Boxcars
     # @param inputs [Hash] The inputs to use for the prompt
     # @return [Intelligence::Conversation] The converted conversation
     def as_intelligence_conversation(inputs: nil)
-      conversation.as_intelligence_conversation(inputs: inputs)
+      conversation.as_intelligence_conversation(inputs:)
     end
   end
 end

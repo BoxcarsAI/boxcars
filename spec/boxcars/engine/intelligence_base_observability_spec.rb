@@ -52,6 +52,7 @@ RSpec.describe Boxcars::IntelligenceBase do # rubocop:disable RSpec/SpecFilePath
 
   let(:mock_intelligence_adapter_class) { class_double(Intelligence::Adapter::Base).as_stubbed_const }
   let(:mock_intelligence_adapter) { instance_double(Intelligence::Adapter::Base) }
+  let(:mock_adapter_configurator) { double("adapter_configurator") } # rubocop:disable RSpec/VerifiedDoubles
   let(:mock_intelligence_request) { instance_double(Intelligence::ChatRequest) }
   let(:mock_chat_response) do
     instance_double(Intelligence::ChatResponse,
@@ -68,9 +69,18 @@ RSpec.describe Boxcars::IntelligenceBase do # rubocop:disable RSpec/SpecFilePath
     Boxcars.configuration.observability_backend = nil
 
     # Mock the Intelligence gem interactions
-    allow(Intelligence::Adapter).to receive(:[]).with(:test_provider).and_return(mock_intelligence_adapter_class)
-    # Expect only a string (api_key)
-    allow(mock_intelligence_adapter_class).to receive(:new).with(an_instance_of(String)).and_return(mock_intelligence_adapter)
+
+    # Setup flexible expectations for the configurator that build! will yield to
+    # Allow any API key since different tests use different keys
+    allow(mock_adapter_configurator).to receive(:key)
+    allow(mock_adapter_configurator).to receive(:chat_options).with(an_instance_of(Hash))
+
+    # Mock Intelligence::Adapter.build! to yield the configurator and return the adapter instance
+    allow(Intelligence::Adapter).to receive(:build!).with(:test_provider)
+                                                    .and_yield(mock_adapter_configurator)
+                                                    .and_return(mock_intelligence_adapter)
+
+    # This expectation for ChatRequest.new remains the same, as it should receive an instance
     allow(Intelligence::ChatRequest).to receive(:new).with(adapter: mock_intelligence_adapter).and_return(mock_intelligence_request)
 
     allow(mock_request_chat_call) # Define the default mock for chat
@@ -148,19 +158,12 @@ RSpec.describe Boxcars::IntelligenceBase do # rubocop:disable RSpec/SpecFilePath
         allow(engine).to receive(:lookup_provider_api_key).and_return(nil) # rubocop:disable RSpec/SubjectStub
       end
 
-      it 'tracks a $ai_generation event with failure details' do
+      it 'raises an error and does not track an event before API call' do
         expect do
           engine.client(prompt: prompt, inputs: inputs) # No api_key passed directly
         end.to raise_error(Boxcars::Error, /No API key found/)
 
-        expect(dummy_observability_backend.tracked_events.size).to eq(1)
-        tracked_event = dummy_observability_backend.tracked_events.first
-        props = tracked_event[:properties]
-
-        expect(props[:$ai_is_error]).to be true
-        expect(props[:$ai_error]).to match(/No API key found/)
-        expect(props[:$ai_provider]).to eq("test_provider")
-        expect(props[:$ai_http_status]).to eq(500) # Default for errors
+        expect(dummy_observability_backend.tracked_events.size).to eq(0)
       end
     end
 
@@ -182,12 +185,32 @@ RSpec.describe Boxcars::IntelligenceBase do # rubocop:disable RSpec/SpecFilePath
         expect(props[:$ai_is_error]).to be true
         expect(props[:$ai_error]).to eq("Network timeout")
         expect(props[:$ai_provider]).to eq("test_provider")
-        expect(props[:$ai_http_status]).to eq(500) # Default for errors
+        expect(props[:$ai_model]).to eq("test-default-model") # from default_model_params
+        # $ai_http_status might be nil if response_obj is nil, or the status from a partially failed response_obj
+        # The UnifiedObservability module handles defaulting this to 500 if response_data[:success] is false and no status is found.
+        expect(props[:$ai_http_status]).to eq(500) # Default for errors when response_obj might be nil
       end
     end
 
     context 'when API returns a non-successful status' do
+      let(:fresh_observability_backend) do
+        Class.new do
+          include Boxcars::ObservabilityBackend
+          attr_reader :tracked_events
+
+          def initialize
+            @tracked_events = []
+          end
+
+          def track(event:, properties:)
+            @tracked_events << { event: event, properties: properties }
+          end
+        end.new
+      end
+
       before do
+        # Use a fresh backend for this context
+        Boxcars.configuration.observability_backend = fresh_observability_backend
         allow(mock_chat_response).to receive_messages(success?: false, status: 401, reason_phrase: "Unauthorized", body: { error: "Invalid API key" }.to_json)
         # Redefine mock_request_chat_call for this context
         allow(mock_intelligence_request).to receive(:chat).and_return(mock_chat_response)
@@ -198,14 +221,15 @@ RSpec.describe Boxcars::IntelligenceBase do # rubocop:disable RSpec/SpecFilePath
           engine.client(prompt: prompt, inputs: inputs, api_key: api_key_param)
         end.to raise_error(Boxcars::Error, /Unauthorized/) # Or whatever IntelligenceBase raises
 
-        expect(dummy_observability_backend.tracked_events.size).to eq(1)
-        tracked_event = dummy_observability_backend.tracked_events.first
+        expect(fresh_observability_backend.tracked_events.size).to eq(1)
+        tracked_event = fresh_observability_backend.tracked_events.first
         props = tracked_event[:properties]
 
         expect(props[:$ai_is_error]).to be true
         expect(props[:$ai_http_status]).to eq(401)
         expect(props[:$ai_error]).to eq("Unauthorized")
         expect(props[:$ai_provider]).to eq("test_provider")
+        expect(props[:$ai_model]).to eq("test-default-model") # from default_model_params
       end
     end
   end

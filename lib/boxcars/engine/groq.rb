@@ -22,13 +22,13 @@ module Boxcars
       @groq_params = DEFAULT_PARAMS.merge(kwargs) # Corrected typo here
       @prompts = prompts
       @batch_size = batch_size
-      super(description: description, name: name)
+      super(description:, name:)
     end
 
     # Renamed from open_ai_client to groq_client for clarity
     def self.groq_client(groq_api_key: nil)
-      access_token = Boxcars.configuration.groq_api_key(groq_api_key: groq_api_key)
-      ::OpenAI::Client.new(access_token: access_token, uri_base: "https://api.groq.com/openai/v1")
+      access_token = Boxcars.configuration.groq_api_key(groq_api_key:)
+      ::OpenAI::Client.new(access_token:, uri_base: "https://api.groq.com/openai/v1")
       # Adjusted uri_base to include /v1 as is common for OpenAI-compatible APIs
     end
 
@@ -45,7 +45,7 @@ module Boxcars
       api_request_params = nil # Initialize
 
       begin
-        clnt = Groq.groq_client(groq_api_key: groq_api_key)
+        clnt = Groq.groq_client(groq_api_key:)
         api_request_params = _prepare_groq_request_params(current_prompt_object, inputs, current_params)
 
         log_messages_debug(api_request_params[:messages]) if Boxcars.configuration.log_prompts && api_request_params[:messages]
@@ -59,24 +59,24 @@ module Boxcars
         duration_ms = ((Time.now - start_time) * 1000).round
         request_context = {
           prompt: current_prompt_object,
-          inputs: inputs,
+          inputs:,
           conversation_for_api: api_request_params&.dig(:messages)
         }
         track_ai_generation(
-          duration_ms: duration_ms,
-          current_params: current_params,
-          request_context: request_context,
-          response_data: response_data,
+          duration_ms:,
+          current_params:,
+          request_context:,
+          response_data:,
           provider: :groq
         )
       end
 
-      _groq_handle_call_outcome(response_data: response_data)
+      _groq_handle_call_outcome(response_data:)
     end
 
     def run(question, **)
       prompt = Prompt.new(template: question)
-      answer = client(prompt: prompt, inputs: {}, **)
+      answer = client(prompt:, inputs: {}, **)
       Boxcars.debug("Answer: #{answer}", :cyan)
       answer
     end

@@ -37,7 +37,7 @@ module Boxcars
       SYSPR
       stock_prompt += "\n\nImportant:\n#{important}\n" unless important.to_s.empty?
 
-      sprompt = format(stock_prompt, wanted_data: wanted_data, data_description: data_description)
+      sprompt = format(stock_prompt, wanted_data:, data_description:)
       ctemplate = [
         Boxcar.syst(sprompt),
         Boxcar.user("%<input>s")

@@ -58,7 +58,7 @@ module Boxcars
       inkeys = %w[completion_tokens prompt_tokens total_tokens].freeze
       prompts.each_slice(batch_size) do |sub_prompts|
         sub_prompts.each do |sprompts, inputs|
-          response = client(prompt: sprompts, inputs: inputs, **params)
+          response = client(prompt: sprompts, inputs:, **params)
           check_response(response)
           choices.concat(response["choices"])
           usage_keys = inkeys & response["usage"].keys
@@ -72,7 +72,7 @@ module Boxcars
         sub_choices = choices[i * n, (i + 1) * n]
         generations.push(generation_info(sub_choices))
       end
-      EngineResult.new(generations: generations, engine_output: { token_usage: token_usage })
+      EngineResult.new(generations:, engine_output: { token_usage: })
     end
   end
 end

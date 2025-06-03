@@ -30,7 +30,7 @@ module Boxcars
       @llm_params = DEFAULT_PARAMS.merge(kwargs)
       @prompts = prompts
       @batch_size = 20
-      super(description: description, name: name)
+      super(description:, name:)
     end
 
     def conversation_model?(_model)
@@ -68,7 +68,7 @@ module Boxcars
 
       begin
         api_key = Boxcars.configuration.cohere_api_key(**kwargs)
-        api_request_params = current_prompt_object.as_prompt(inputs: inputs, prefixes: default_prefixes,
+        api_request_params = current_prompt_object.as_prompt(inputs:, prefixes: default_prefixes,
                                                              show_roles: true).merge(current_params)
         api_request_params[:message] = api_request_params.delete(:prompt)
         api_request_params[:stop_sequences] = api_request_params.delete(:stop) if api_request_params.key?(:stop)
@@ -81,16 +81,16 @@ module Boxcars
         _handle_cohere_error(e, response_data)
       ensure
         call_context = {
-          start_time: start_time,
+          start_time:,
           prompt_object: current_prompt_object,
-          inputs: inputs,
-          api_request_params: api_request_params,
-          current_params: current_params
+          inputs:,
+          api_request_params:,
+          current_params:
         }
         _track_cohere_observability(call_context, response_data)
       end
 
-      _cohere_handle_call_outcome(response_data: response_data)
+      _cohere_handle_call_outcome(response_data:)
     end
 
     # get an answer from the engine for a question.
@@ -98,7 +98,7 @@ module Boxcars
     # @param kwargs [Hash] Additional parameters to pass to the engine if wanted.
     def run(question, **)
       prompt = Prompt.new(template: question)
-      response = client(prompt: prompt, **)
+      response = client(prompt:, **)
 
       raise Error, "Cohere: No response from API" unless response
       raise Error, "Cohere: #{response[:error]}" if response[:error]
@@ -215,10 +215,10 @@ module Boxcars
       }
 
       track_ai_generation(
-        duration_ms: duration_ms,
+        duration_ms:,
         current_params: call_context[:current_params],
-        request_context: request_context,
-        response_data: response_data,
+        request_context:,
+        response_data:,
         provider: :cohere
       )
     end

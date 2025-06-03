@@ -17,8 +17,8 @@ module Boxcars
     # @return [Hash] The result as a hash
     def to_h
       {
-        note: note,
-        status: status
+        note:,
+        status:
       }.merge(added_context).compact
     end
 
@@ -42,7 +42,7 @@ module Boxcars
     # @param added_context [Hash] Any additional context to add to the result
     # @return [Boxcars::Observation] The observation
     def self.ok(note, **)
-      new(note: note, status: :ok, **)
+      new(note:, status: :ok, **)
     end
 
     # create a new Observaton from a text string with a status of :error
@@ -50,7 +50,7 @@ module Boxcars
     # @param added_context [Hash] Any additional context to add to the result
     # @return [Boxcars::Observation] The observation
     def self.err(note, **)
-      new(note: note, status: :error, **)
+      new(note:, status: :error, **)
     end
   end
 end

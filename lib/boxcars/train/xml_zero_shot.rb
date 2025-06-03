@@ -19,7 +19,7 @@ module Boxcars
       @engine_prefix = ''
       @wants_next_actions = kwargs.fetch(:wants_next_actions, false)
       prompt ||= my_prompt
-      super(engine: engine, boxcars: boxcars, prompt: prompt, name: name, description: description, **kwargs)
+      super(engine:, boxcars:, prompt:, name:, description:, **kwargs)
     end
 
     CTEMPLATE = [

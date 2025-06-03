@@ -31,7 +31,7 @@ module Boxcars
     def track(event:, properties:)
       @backends.each do |backend_instance|
         # Pass a duplicated properties hash to prevent mutation issues across backends
-        backend_instance.track(event: event, properties: properties.dup)
+        backend_instance.track(event:, properties: properties.dup)
       rescue StandardError
         # Silently ignore errors from individual backends.
         # Optionally, log:

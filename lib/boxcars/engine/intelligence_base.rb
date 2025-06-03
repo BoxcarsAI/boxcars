@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 require 'intelligence'
-require 'securerandom'
+require_relative 'unified_observability'
 
 module Boxcars
   # A Base class for all Intelligence Engines
   class IntelligenceBase < Engine
-    include UnifiedObservability
+    include Boxcars::UnifiedObservability
     attr_reader :provider, :all_params
 
     # The base Intelligence Engine is used by other engines to generate output from prompts
@@ -18,8 +18,9 @@ module Boxcars
     # @param kwargs [Hash] Additional parameters to pass to the Engine.
     def initialize(provider:, description:, name:, prompts: [], batch_size: 20, **kwargs)
       @provider = provider
+      # Start with defaults, merge other kwargs, then explicitly set model if provided in initialize
       @all_params = default_model_params.merge(kwargs)
-      super(description: description, name: name, prompts: prompts, batch_size: batch_size)
+      super(description:, name:, prompts:, batch_size:)
     end
 
     # can be overridden by provider subclass
@@ -31,8 +32,11 @@ module Boxcars
       raise NotImplementedError, "lookup_provider_api_key method must be implemented by subclass"
     end
 
-    def adapter(api_key:)
-      Intelligence::Adapter[provider].new(api_key:)
+    def adapter(params:, api_key:)
+      Intelligence::Adapter.build! @provider do |config|
+        config.key api_key
+        config.chat_options params
+      end
     end
 
     # Process different content types
@@ -57,87 +61,62 @@ module Boxcars
     end
 
     # Get an answer from the engine
-    def client(prompt:, inputs: {}, api_key: nil, **)
-      start_time = Time.now
-      response_data = { response_obj: nil, parsed_json: nil, success: false, error: nil }
-      current_params = nil
-      conversation_for_api = nil
+    def client(prompt:, inputs: {}, api_key: nil, **kwargs)
+      params = all_params.merge(kwargs)
+      api_key ||= lookup_provider_api_key(params:)
+      raise Error, "No API key found for #{provider}" unless api_key
+
+      adapter = adapter(api_key:, params:)
+      convo = prompt.as_intelligence_conversation(inputs:)
+      request_context = { prompt: prompt&.as_prompt(inputs:)&.[](:prompt), inputs:, conversation_for_api: convo.to_h }
+      request = Intelligence::ChatRequest.new(adapter:)
+
+      start_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+      response_obj = nil
 
       begin
-        current_params, conversation_for_api, effective_api_key = _prepare_request_data(prompt: prompt, inputs: inputs,
-                                                                                        api_key: api_key, **)
-        response_data = _execute_api_call(
-          conversation_for_api: conversation_for_api,
-          effective_api_key: effective_api_key
-        )
-      rescue StandardError => e
-        response_data[:error] = e
-        response_data[:success] = false
-      ensure
-        duration_ms = ((Time.now - start_time) * 1000).round
-        request_context = {
-          prompt: prompt,
-          inputs: inputs,
-          conversation_for_api: conversation_for_api
-        }
-        track_ai_generation(
-          duration_ms: duration_ms,
-          current_params: current_params,
-          request_context: request_context,
-          response_data: response_data,
-          provider: @provider
-        )
-      end
+        response_obj = request.chat(convo)
+        duration_ms = (Process.clock_gettime(Process::CLOCK_MONOTONIC) - start_time) * 1000
 
-      _handle_call_outcome(response_data: response_data)
+        if response_obj.success?
+          success = true
+          parsed_json_response = JSON.parse(response_obj.body)
+          response_data = { success:, parsed_json: parsed_json_response, response_obj:,
+                            status_code: response_obj.status }
+          track_ai_generation(duration_ms:, current_params: params, request_context:, response_data:, provider:)
+          parsed_json_response
+        else
+          success = false
+          error_message = response_obj&.reason_phrase || "No response from API #{provider}"
+          response_data = { success:, error: StandardError.new(error_message), response_obj:,
+                            status_code: response_obj.status }
+          track_ai_generation(duration_ms:, current_params: params, request_context:, response_data:, provider:)
+          raise Error, error_message
+        end
+      rescue Error => e
+        # Re-raise Error exceptions (like the one above) without additional tracking
+        # since they were already tracked in the else branch
+        Boxcars.error("#{provider} Error: #{e.message}", :red)
+        raise
+      rescue StandardError => e
+        duration_ms = (Process.clock_gettime(Process::CLOCK_MONOTONIC) - start_time) * 1000
+        success = false
+        error_obj = e
+        response_data = { success:, error: error_obj, response_obj:, status_code: response_obj&.status }
+        track_ai_generation(duration_ms:, current_params: params, request_context:, response_data:, provider:)
+        Boxcars.error("#{provider} Error: #{e.message}", :red)
+        raise
+      end
     end
 
     # Run the engine with a question
     def run(question, **)
       prompt = Prompt.new(template: question)
-      response = client(prompt: prompt, **)
+      response = client(prompt:, **)
       extract_answer(response)
     end
 
     private
-
-    def _prepare_request_data(prompt:, inputs:, api_key:, **kwargs)
-      current_params = all_params.merge(kwargs)
-      effective_api_key = api_key || lookup_provider_api_key(params: current_params)
-      raise Error, "No API key found for #{provider}" unless effective_api_key
-
-      conversation_for_api = prompt.as_intelligence_conversation(inputs: inputs)
-      [current_params, conversation_for_api, effective_api_key]
-    end
-
-    def _execute_api_call(conversation_for_api:, effective_api_key:)
-      parsed_json = nil
-      success = false
-
-      adapter = adapter(api_key: effective_api_key)
-      request = Intelligence::ChatRequest.new(adapter:)
-      response_obj = request.chat(conversation_for_api) # Actual API call
-
-      if response_obj.success?
-        parsed_json = JSON.parse(response_obj.body)
-        success = true
-      else
-        success = false
-        # Error will be handled by _handle_call_outcome
-      end
-      { response_obj: response_obj, parsed_json: parsed_json, success: success, error: nil }
-    end
-
-    def _handle_call_outcome(response_data:)
-      if response_data[:error]
-        Boxcars.error("#{provider} Error: #{response_data[:error].message}", :red)
-        raise response_data[:error]
-      elsif !response_data[:success]
-        raise Error, (response_data[:response_obj]&.reason_phrase || "No response or error from API #{provider}")
-      else
-        response_data[:parsed_json]
-      end
-    end
 
     def extract_answer(response)
       # Handle different response formats
@@ -145,8 +124,6 @@ module Boxcars
         response["choices"].map { |c| c.dig("message", "content") || c["text"] }.join("\n").strip
       elsif response["candidates"]
         response["candidates"].map { |c| c.dig("content", "parts", 0, "text") }.join("\n").strip
-      elsif response["text"]
-        response["text"]
       else
         response["output"] || response.to_s
       end

@@ -29,14 +29,14 @@ module Boxcars
 
       @prompts = prompts
       @batch_size = batch_size
-      super(description: description, name: name)
+      super(description:, name:)
     end
 
     def self.open_ai_client(openai_access_token: nil)
-      access_token = Boxcars.configuration.openai_access_token(openai_access_token: openai_access_token)
+      access_token = Boxcars.configuration.openai_access_token(openai_access_token:)
       organization_id = Boxcars.configuration.organization_id
       # log_errors is good for the gem's own logging
-      ::OpenAI::Client.new(access_token: access_token, organization_id: organization_id, log_errors: true)
+      ::OpenAI::Client.new(access_token:, organization_id:, log_errors: true)
     end
 
     def conversation_model?(model_name)
@@ -48,7 +48,7 @@ module Boxcars
     end
 
     def _prepare_openai_completion_request(prompt_object, inputs, current_params)
-      prompt_text_for_api = prompt_object.as_prompt(inputs: inputs)
+      prompt_text_for_api = prompt_object.as_prompt(inputs:)
       prompt_text_for_api = prompt_text_for_api[:prompt] if prompt_text_for_api.is_a?(Hash) && prompt_text_for_api.key?(:prompt)
       { prompt: prompt_text_for_api }.merge(current_params).tap { |p| p.delete(:messages) }
     end
@@ -98,7 +98,7 @@ module Boxcars
       is_chat_model = conversation_model?(current_params[:model])
 
       begin
-        clnt = Openai.open_ai_client(openai_access_token: openai_access_token)
+        clnt = Openai.open_ai_client(openai_access_token:)
         api_request_params = if is_chat_model
                                _prepare_openai_chat_request(current_prompt_object, inputs, current_params)
                              else
@@ -112,17 +112,17 @@ module Boxcars
         _handle_openai_standard_error(e, response_data)
       ensure
         call_context = {
-          start_time: start_time,
+          start_time:,
           prompt_object: current_prompt_object,
-          inputs: inputs,
-          api_request_params: api_request_params,
-          current_params: current_params,
-          is_chat_model: is_chat_model
+          inputs:,
+          api_request_params:,
+          current_params:,
+          is_chat_model:
         }
         _track_openai_observability(call_context, response_data)
       end
 
-      _openai_handle_call_outcome(response_data: response_data)
+      _openai_handle_call_outcome(response_data:)
     end
 
     # Called by Engine#generate to check the response from the client.
@@ -140,7 +140,7 @@ module Boxcars
     def run(question, **)
       prompt = Prompt.new(template: question)
       # client now returns the raw JSON response. We need to extract the answer.
-      raw_response = client(prompt: prompt, inputs: {}, **)
+      raw_response = client(prompt:, inputs: {}, **)
       answer = _extract_openai_answer_from_choices(raw_response["choices"])
       Boxcars.debug("Answer: #{answer}", :cyan)
       answer
@@ -233,10 +233,10 @@ module Boxcars
       }
 
       track_ai_generation(
-        duration_ms: duration_ms,
+        duration_ms:,
         current_params: call_context[:current_params],
-        request_context: request_context,
-        response_data: response_data,
+        request_context:,
+        response_data:,
         provider: :openai
       )
     end

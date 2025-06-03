@@ -20,12 +20,7 @@ module Boxcars
 
     # @return [Hash] The result as a hash
     def to_h
-      {
-        status: status,
-        answer: answer,
-        explanation: explanation,
-        suggestions: suggestions
-      }.merge(added_context).compact
+      { status:, answer:, explanation:, suggestions: }.merge(added_context).compact
     end
 
     # @return [String] The result as a json string
@@ -51,7 +46,7 @@ module Boxcars
       answer = text.delete_prefix('"').delete_suffix('"').strip
       answer = Regexp.last_match(:answer) if answer =~ /^Answer:\s*(?<answer>.*)$/
       explanation = "Answer: #{answer}"
-      new(status: :ok, answer: answer, explanation: explanation, **)
+      new(status: :ok, answer:, explanation:, **)
     end
 
     # create a new Result from an error string
@@ -62,7 +57,7 @@ module Boxcars
       answer = error
       answer = Regexp.last_match(:answer) if answer =~ /^Error:\s*(?<answer>.*)$/
       explanation = "Error: #{answer}"
-      new(status: :error, answer: answer, explanation: explanation, **)
+      new(status: :error, answer:, explanation:, **)
     end
   end
 end

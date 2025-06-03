@@ -163,7 +163,7 @@ module Boxcars
       inputs = our_inputs(inputs)
       output = nil
       begin
-        output = call(inputs: inputs)
+        output = call(inputs:)
       rescue StandardError => e
         Boxcars.error "Error in #{name} boxcar#call: #{e}\nbt:#{e.backtrace[0..5].join("\n   ")}", :red
         Boxcars.error("Response Body: #{e.response[:body]}", :red) if e.respond_to?(:response) && !e.response.nil?
@@ -199,7 +199,7 @@ module Boxcars
         end
         inputs = { input_keys.first => inputs }
       end
-      validate_inputs(inputs: inputs)
+      validate_inputs(inputs:)
     end
 
     # the default answer is the text passed in
