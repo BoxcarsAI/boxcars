@@ -9,10 +9,13 @@ module Boxcars
   #
   # Example Usage:
   #   require 'boxcars/observability_backends/posthog_backend'
-  #   Boxcars::Observability.backend = Boxcars::PosthogBackend.new(
+  #   require 'posthog'
+  #
+  #   client = PostHog::Client.new(
   #     api_key: 'YOUR_POSTHOG_API_KEY',
   #     host: 'https://app.posthog.com' # or your self-hosted instance
   #   )
+  #   Boxcars::Observability.backend = Boxcars::PosthogBackend.new(client: client)
   #
   #   # To track user-specific events, ensure :user_id is present in properties
   #   Boxcars::Observability.track(
@@ -23,32 +26,18 @@ module Boxcars
     include Boxcars::ObservabilityBackend
 
     # Initializes the PosthogBackend.
-    # Configures the PostHog client with the provided API key and host.
+    # Accepts a pre-configured PostHog client instance.
     #
-    # @param api_key [String] Your PostHog project API key.
-    # @param host [String] The PostHog API host. Defaults to 'https://app.posthog.com'.
-    # @param _personal_api_key [String, nil] Optional: A personal API key for server-side operations if needed.
-    # @param on_error [Proc, nil] Optional: A lambda/proc to call when an error occurs during event capture.
-    #   It receives the error code and error body as arguments.
-    #   Defaults to a proc that logs the error to stderr.
+    # @param client [PostHog::Client] A configured PostHog client instance.
     # @raise [LoadError] if the 'posthog-ruby' gem is not available.
-    def initialize(api_key:, host: 'https://app.posthog.com', _personal_api_key: nil, on_error: nil)
+    def initialize(client:)
       begin
         require 'posthog'
       rescue LoadError
         raise LoadError, "The 'posthog-ruby' gem is required to use PosthogBackend. Please add it to your Gemfile."
       end
 
-      @on_error_proc = on_error || proc do |status, body|
-        Boxcars.error("PostHog error: Status #{status}, Body: #{body}", :red)
-      end
-
-      # The posthog-ruby gem uses a simpler API
-      @posthog_client = PostHog::Client.new(
-        api_key:,
-        host:,
-        on_error: @on_error_proc
-      )
+      @posthog_client = client
     end
 
     # Tracks an event with PostHog.

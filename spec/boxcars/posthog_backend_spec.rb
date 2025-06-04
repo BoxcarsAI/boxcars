@@ -4,8 +4,8 @@ require 'spec_helper'
 # We will conditionally require the real PosthogBackend to test LoadError,
 # and then define it for other tests if 'posthog-ruby' is not available.
 
-# Mock PostHog module and Client class if the gem isn't available
-# OR if we need to use the mock PosthogBackend class
+# Mock PostHog module and Client class for testing
+# We always define the mock for testing purposes
 posthog_gem_available = begin
   Gem::Specification.find_by_name('posthog-ruby')
   true
@@ -13,47 +13,46 @@ rescue Gem::LoadError
   false
 end
 
-unless posthog_gem_available
-  module PostHog
-    class Client
-      attr_reader :api_key, :host, :on_error_proc, :captured_events
+# Always define the mock PostHog for testing
+module PostHog
+  class Client
+    attr_reader :api_key, :host, :on_error_proc, :captured_events
 
-      def initialize(api_key:, host:, on_error:)
-        @api_key = api_key
-        @host = host
-        @on_error_proc = on_error
-        @captured_events = []
-      end
-
-      def capture(distinct_id:, event:, properties:)
-        @captured_events << { distinct_id: distinct_id, event: event, properties: properties }
-      end
-
-      # Mock flush
-      def flush
-      end
+    def initialize(api_key:, host:, on_error:)
+      @api_key = api_key
+      @host = host
+      @on_error_proc = on_error
+      @captured_events = []
     end
 
-    def self.configure = yield self
-
-    def self.api_key=(val)
-      @api_key = val
+    def capture(distinct_id:, event:, properties:)
+      @captured_events << { distinct_id: distinct_id, event: event, properties: properties }
     end
 
-    def self.api_key = @api_key
-
-    def self.host=(val)
-      @host = val
+    # Mock flush
+    def flush
     end
-
-    def self.host = @host
-
-    def self.personal_api_key=(val)
-      @personal_api_key = val
-    end
-
-    def self.personal_api_key = @personal_api_key
   end
+
+  def self.configure = yield self
+
+  def self.api_key=(val)
+    @api_key = val
+  end
+
+  def self.api_key = @api_key
+
+  def self.host=(val)
+    @host = val
+  end
+
+  def self.host = @host
+
+  def self.personal_api_key=(val)
+    @personal_api_key = val
+  end
+
+  def self.personal_api_key = @personal_api_key
 end
 
 # Define Boxcars::PosthogBackend manually if 'posthog-ruby' is not installed,
@@ -64,24 +63,24 @@ unless posthog_gem_available
     class PosthogBackend
       include Boxcars::ObservabilityBackend
 
-      def initialize(api_key:, host: 'https://app.posthog.com', personal_api_key: nil, on_error: nil)
+      def initialize(client:)
         # This is a simplified init for testing purposes if posthog-ruby is not present.
         # The real one has gem loading logic.
-        @posthog_client = PostHog::Client.new(api_key: api_key, host: host, on_error: on_error || proc {})
-        # Simulate PostHog.configure block
-        PostHog.api_key = api_key
-        PostHog.host = host
-        PostHog.personal_api_key = personal_api_key
+        @posthog_client = client
       end
 
       def track(event:, properties:)
         tracking_properties = properties.is_a?(Hash) ? properties.dup : {}
-        distinct_id = tracking_properties.delete(:user_id) || tracking_properties.delete('user_id')
+        distinct_id = tracking_properties.delete(:user_id) || tracking_properties.delete('user_id') || "anonymous_user"
         @posthog_client.capture(
           distinct_id: distinct_id.to_s,
           event: event.to_s,
           properties: tracking_properties
         )
+      end
+
+      def flush
+        @posthog_client.flush if @posthog_client.respond_to?(:flush)
       end
 
       # Helper for tests to access the mock client
@@ -164,37 +163,41 @@ RSpec.describe Boxcars::PosthogBackend do
         gem_available = false
       end
 
+      client = PostHog::Client.new(api_key: api_key, host: host, on_error: proc {})
       if gem_available
         # If gem is present, this test is less meaningful for LoadError but checks normal init
-        expect { described_class.new(api_key: api_key, host: host) }.not_to raise_error
+        expect { described_class.new(client: client) }.not_to raise_error
       else
         expect do
-          described_class.new(api_key: api_key, host: host)
+          described_class.new(client: client)
         end.to raise_error(LoadError, /The 'posthog-ruby' gem is required to use PosthogBackend/)
       end
     end
   end
 
   context "when 'posthog-ruby' gem (or mock) is available" do
-    subject(:backend) { described_class.new(api_key: api_key, host: host, on_error: on_error_spy) }
+    subject(:backend) { described_class.new(client: posthog_client) }
 
-    let(:posthog_client_mock) { backend.instance_variable_get(:@posthog_client) }
     let(:on_error_spy) { instance_double(Proc, 'on_error_proc') }
+    let(:posthog_client_mock) { backend.instance_variable_get(:@posthog_client) }
+    let(:posthog_client) { PostHog::Client.new(api_key: api_key, host: host, on_error: on_error_spy) }
 
     describe '#initialize' do
-      it 'initializes a PostHog::Client instance' do
+      it 'initializes with the provided PostHog::Client instance' do
         expect(posthog_client_mock).to be_a(PostHog::Client)
+        expect(posthog_client_mock).to eq(posthog_client)
       end
 
-      it 'uses the provided on_error proc' do
+      it 'uses the provided client without raising errors' do
         # Since the real PostHog client may not expose the on_error proc directly,
         # we'll just verify that initialization doesn't raise an error
         expect { backend }.not_to raise_error
       end
 
-      it 'defaults on_error proc if not provided' do
-        backend_with_default_on_error = described_class.new(api_key: api_key, host: host)
-        expect(backend_with_default_on_error.instance_variable_get(:@posthog_client)).to be_a(PostHog::Client)
+      it 'works with a client that has default configuration' do
+        default_client = PostHog::Client.new(api_key: api_key, host: host, on_error: proc {})
+        backend_with_default_client = described_class.new(client: default_client)
+        expect(backend_with_default_client.instance_variable_get(:@posthog_client)).to be_a(PostHog::Client)
       end
     end
 

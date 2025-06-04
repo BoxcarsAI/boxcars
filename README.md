@@ -351,17 +351,30 @@ Set up observability by configuring a backend:
 ```ruby
 # Using PostHog backend
 require 'boxcars/observability_backends/posthog_backend'
+require 'posthog'
+
+# Create a PostHog client with your desired configuration
+posthog_client = PostHog::Client.new(
+  api_key: ENV['POSTHOG_API_KEY'] || 'your_posthog_api_key',
+  host: 'https://app.posthog.com', # or your self-hosted instance
+  on_error: proc { |status, body| 
+    Rails.logger.warn "PostHog error: #{status} - #{body}" 
+  }
+)
 
 Boxcars.configure do |config|
-  config.observability_backend = Boxcars::PosthogBackend.new(
-    api_key: ENV['POSTHOG_API_KEY'] || 'your_posthog_api_key',
-    host: 'https://app.posthog.com' # or your self-hosted instance
-  )
+  config.observability_backend = Boxcars::PosthogBackend.new(client: posthog_client)
 end
 
 # Using multiple backends
 require 'boxcars/observability_backends/multi_backend'
-backend1 = Boxcars::PosthogBackend.new(api_key: ENV['POSTHOG_API_KEY'])
+
+# Create PostHog client
+posthog_client = PostHog::Client.new(
+  api_key: ENV['POSTHOG_API_KEY'],
+  host: 'https://app.posthog.com'
+)
+backend1 = Boxcars::PosthogBackend.new(client: posthog_client)
 backend2 = YourCustomBackend.new
 
 Boxcars.configure do |config|
@@ -440,14 +453,18 @@ The PostHog backend requires the `posthog-ruby` gem:
 gem 'posthog-ruby'
 
 # Configure the backend
+require 'posthog'
+
+posthog_client = PostHog::Client.new(
+  api_key: ENV['POSTHOG_API_KEY'],
+  host: 'https://app.posthog.com',
+  on_error: proc { |status, body| 
+    Rails.logger.warn "PostHog error: #{status} - #{body}" 
+  }
+)
+
 Boxcars.configure do |config|
-  config.observability_backend = Boxcars::PosthogBackend.new(
-    api_key: ENV['POSTHOG_API_KEY'],
-    host: 'https://app.posthog.com',
-    on_error: proc { |status, body| 
-      Rails.logger.warn "PostHog error: #{status} - #{body}" 
-    }
-  )
+  config.observability_backend = Boxcars::PosthogBackend.new(client: posthog_client)
 end
 ```
 
