@@ -152,4 +152,51 @@ RSpec.describe Boxcars::Groq do
       end
     end
   end
+
+  # Test for the generate method interaction with Engine#generate
+  describe '#generate method (interaction with Engine#generate)' do
+    let(:prompts_for_generate) { [[prompt, inputs]] } # Helper for generate's expected prompt format
+
+    context 'when Groq#client processes the API response to a string' do
+      before do
+        # This setup ensures that when engine.client is called (by Engine#generate),
+        # it will internally use mock_groq_client.chat, get groq_chat_success_response,
+        # and Groq#client will process it into a string, which is the current behavior.
+        allow(mock_groq_client).to receive(:chat)
+          .with(parameters: hash_including(
+            model: "llama3-70b-8192", # from DEFAULT_PARAMS
+            messages: an_instance_of(Array)
+          ))
+          .and_return(groq_chat_success_response)
+      end
+
+      it 'no longer fails in Engine#generate after the fix' do
+        # This test verifies that the fix works.
+        # Engine#generate calls engine.client, which now returns response_data hash.
+        # Engine#generate extracts the API response from response_data[:parsed_json],
+        # passes that to check_response (which works), and processes choices/usage correctly.
+        expect do
+          engine.generate(prompts: prompts_for_generate)
+        end.not_to raise_error
+      end
+
+      it 'successfully returns an EngineResult with correct data after the fix' do
+        # This test verifies that generate works end-to-end and returns the expected data structure.
+        result = engine.generate(prompts: prompts_for_generate)
+
+        expect(result).to be_a(Boxcars::EngineResult)
+        expect(result.generations).to be_an(Array)
+        expect(result.generations.size).to eq(1) # One prompt
+        expect(result.generations.first).to be_an(Array)
+        expect(result.generations.first.first).to be_a(Boxcars::Generation)
+        expect(result.generations.first.first.text).to eq("Groq is known for its LPU Inference Engine...")
+
+        # Check token usage
+        expect(result.engine_output[:token_usage]).to be_a(Hash)
+        expect(result.engine_output[:token_usage]["total_tokens"]).to eq(65)
+        expect(result.engine_output[:token_usage]["prompt_tokens"]).to eq(15)
+        expect(result.engine_output[:token_usage]["completion_tokens"]).to eq(50)
+      end
+    end
+  end
 end

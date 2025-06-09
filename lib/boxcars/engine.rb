@@ -57,12 +57,39 @@ module Boxcars
       # Includes prompt, completion, and total tokens used.
       inkeys = %w[completion_tokens prompt_tokens total_tokens].freeze
       prompts.each_slice(batch_size) do |sub_prompts|
-        sub_prompts.each do |sprompts, inputs|
-          response = client(prompt: sprompts, inputs:, **params)
-          check_response(response)
-          choices.concat(response["choices"])
-          usage_keys = inkeys & response["usage"].keys
-          usage_keys.each { |key| token_usage[key] = token_usage[key].to_i + response["usage"][key] }
+        sub_prompts.each do |sprompt, inputs|
+          client_response = client(prompt: sprompt, inputs:, **params)
+
+          # Handle different response formats:
+          # - New format: response_data hash with :parsed_json key (Groq, Gemini)
+          # - Legacy format: direct API response hash (OpenAI, others)
+          api_response_hash = if client_response.is_a?(Hash) && client_response.key?(:parsed_json)
+                                client_response[:parsed_json]
+                              else
+                                client_response
+                              end
+
+          # Ensure we have a hash to work with
+          unless api_response_hash.is_a?(Hash)
+            raise TypeError, "Expected Hash from client method, got #{api_response_hash.class}: #{api_response_hash.inspect}"
+          end
+
+          check_response(api_response_hash)
+
+          current_choices = api_response_hash["choices"]
+          if current_choices.is_a?(Array)
+            choices.concat(current_choices)
+          else
+            Boxcars.logger&.warn "No 'choices' found in API response: #{api_response_hash.inspect}"
+          end
+
+          api_usage = api_response_hash["usage"]
+          if api_usage.is_a?(Hash)
+            usage_keys = inkeys & api_usage.keys
+            usage_keys.each { |key| token_usage[key] = token_usage[key].to_i + api_usage[key] }
+          else
+            Boxcars.logger&.warn "No 'usage' data found in API response: #{api_response_hash.inspect}"
+          end
         end
       end
 

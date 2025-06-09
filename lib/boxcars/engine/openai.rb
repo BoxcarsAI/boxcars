@@ -128,6 +128,7 @@ module Boxcars
     # Called by Engine#generate to check the response from the client.
     # @param response [Hash] The parsed JSON response from the OpenAI API.
     # @raise [Boxcars::Error] if the response contains an error.
+    # rubocop:disable Naming/PredicateMethod
     def check_response(response)
       if response.is_a?(Hash) && response["error"]
         err_details = response["error"]
@@ -136,6 +137,7 @@ module Boxcars
       end
       true
     end
+    # rubocop:enable Naming/PredicateMethod
 
     def run(question, **)
       prompt = Prompt.new(template: question)

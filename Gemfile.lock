@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    boxcars (0.8.2)
+    boxcars (0.8.3)
       faraday-retry (~> 2.0)
       google_search_results (~> 2.2)
       gpt4all (~> 0.0.5)
@@ -56,10 +56,10 @@ GEM
       async (>= 1.25)
     base64 (0.3.0)
     benchmark (0.4.1)
-    bigdecimal (3.2.1)
+    bigdecimal (3.2.2)
     concurrent-ruby (1.3.5)
     connection_pool (2.5.3)
-    console (1.30.2)
+    console (1.31.0)
       fiber-annotation
       fiber-local (~> 1.1)
       json
@@ -74,7 +74,7 @@ GEM
     domain_name (0.6.20240107)
     dotenv (3.1.8)
     drb (2.2.3)
-    dynamicschema (1.0.0.beta04)
+    dynamicschema (1.0.0)
     erb (5.0.1)
     event_stream_parser (1.0.0)
     faraday (2.13.1)
@@ -132,7 +132,7 @@ GEM
     mime-types (3.7.0)
       logger
       mime-types-data (~> 3.2025, >= 3.2025.0507)
-    mime-types-data (3.2025.0527)
+    mime-types-data (3.2025.0603)
     minitest (5.25.5)
     multi_json (1.15.0)
     multipart-post (2.4.1)
@@ -211,7 +211,7 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.13.0)
     rspec-support (3.13.4)
-    rubocop (1.75.8)
+    rubocop (1.76.1)
       json (~> 2.3)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.1.0)
@@ -219,10 +219,10 @@ GEM
       parser (>= 3.3.0.2)
       rainbow (>= 2.2.2, < 4.0)
       regexp_parser (>= 2.9.3, < 3.0)
-      rubocop-ast (>= 1.44.0, < 2.0)
+      rubocop-ast (>= 1.45.0, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 2.4.0, < 4.0)
-    rubocop-ast (1.44.1)
+    rubocop-ast (1.45.1)
       parser (>= 3.3.7.2)
       prism (~> 1.4)
     rubocop-rake (0.6.0)

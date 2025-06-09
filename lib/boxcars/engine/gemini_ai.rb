@@ -79,12 +79,16 @@ module Boxcars
         )
       end
 
-      _gemini_handle_call_outcome(response_data:)
+      # If there's an error, raise it to maintain backward compatibility with existing tests
+      raise response_data[:error] if response_data[:error]
+
+      response_data
     end
 
     def run(question, **)
       prompt = Prompt.new(template: question)
-      answer = client(prompt:, inputs: {}, **)
+      response_data = client(prompt:, inputs: {}, **)
+      answer = _gemini_handle_call_outcome(response_data:)
       Boxcars.debug("Answer: #{answer}", :cyan)
       answer
     end
