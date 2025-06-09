@@ -60,14 +60,8 @@ module Boxcars
         sub_prompts.each do |sprompt, inputs|
           client_response = client(prompt: sprompt, inputs:, **params)
 
-          # Handle different response formats:
-          # - New format: response_data hash with :parsed_json key (Groq, Gemini)
-          # - Legacy format: direct API response hash (OpenAI, others)
-          api_response_hash = if client_response.is_a?(Hash) && client_response.key?(:parsed_json)
-                                client_response[:parsed_json]
-                              else
-                                client_response
-                              end
+          # All engines now return the parsed API response hash directly
+          api_response_hash = client_response
 
           # Ensure we have a hash to work with
           unless api_response_hash.is_a?(Hash)

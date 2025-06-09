@@ -74,22 +74,33 @@ module Boxcars
       # If there's an error, raise it to maintain backward compatibility with existing tests
       raise response_data[:error] if response_data[:error]
 
-      response_data
+      response_data[:parsed_json]
     end
 
     def run(question, **)
       prompt = Prompt.new(template: question)
-      response_data = client(prompt:, inputs: {}, **)
-      answer = _groq_handle_call_outcome(response_data:)
+      response = client(prompt:, inputs: {}, **)
+      answer = extract_answer(response)
       Boxcars.debug("Answer: #{answer}", :cyan)
       answer
+    end
+
+    private
+
+    def extract_answer(response)
+      # Handle different response formats
+      if response["choices"]
+        response["choices"].map { |c| c.dig("message", "content") || c["text"] }.join("\n").strip
+      elsif response["candidates"]
+        response["candidates"].map { |c| c.dig("content", "parts", 0, "text") }.join("\n").strip
+      else
+        response["output"] || response.to_s
+      end
     end
 
     def default_params
       @groq_params # Use instance variable
     end
-
-    private
 
     # Helper methods for the client method
     def _prepare_groq_request_params(prompt_object, inputs, current_params)
