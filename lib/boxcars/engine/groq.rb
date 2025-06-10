@@ -89,19 +89,8 @@ module Boxcars
 
     private
 
-    def extract_answer(response)
-      # Handle different response formats
-      if response["choices"]
-        response["choices"].map { |c| c.dig("message", "content") || c["text"] }.join("\n").strip
-      elsif response["candidates"]
-        response["candidates"].map { |c| c.dig("content", "parts", 0, "text") }.join("\n").strip
-      else
-        response["output"] || response.to_s
-      end
-    end
-
     def default_params
-      @groq_params # Use instance variable
+      @groq_params
     end
 
     # Helper methods for the client method
