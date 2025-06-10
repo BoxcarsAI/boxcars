@@ -52,27 +52,22 @@ module Boxcars
     # @param properties [Hash] A hash of properties for the event.
     #   It's recommended to include a `:user_id` for user-specific tracking.
     def track(event:, properties:)
-      # Ensure properties is a hash, duplicate to avoid mutation by PostHog or other backends
-      tracking_properties = properties.is_a?(Hash) ? properties.dup : {}
-
-      distinct_id = tracking_properties.delete(:user_id) || tracking_properties.delete('user_id') || "anonymous_user"
-
-      # The PostHog gem's capture method handles distinct_id and properties.
-      # It's important that distinct_id is a string.
-      @posthog_client.capture(
-        distinct_id: distinct_id.to_s, # Ensure distinct_id is a string
-        event: event.to_s, # Ensure event name is a string
-        properties: tracking_properties
-      )
-      # The posthog-ruby client handles flushing events asynchronously.
-      # If immediate flushing is needed for testing or specific scenarios:
-      # @posthog_client.flush
+      properties = {} unless properties.is_a?(Hash)
+      distinct_id = properties.delete(:user_id) || current_user_id || "anonymous_user"
+      @posthog_client.capture(distinct_id:, event:, properties:)
     end
 
     # Flushes any pending events to PostHog immediately.
     # This is useful for testing or when you need to ensure events are sent before the process exits.
     def flush
       @posthog_client.flush if @posthog_client.respond_to?(:flush)
+    end
+
+    # in Rails, this is a way to find the current user id
+    def current_user_id
+      return unless defined?(::Current) && ::Current.respond_to?(:user)
+
+      ::Current.user&.id
     end
   end
 end

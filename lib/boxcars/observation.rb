@@ -52,5 +52,45 @@ module Boxcars
     def self.err(note, **)
       new(note:, status: :error, **)
     end
+
+    # create a new Observation with user context
+    # @param note [String] The text to use for the observation
+    # @param user_context [Hash] User information (e.g., { id: 123, email: "user@example.com", role: "admin" })
+    # @param status [Symbol] :ok or :error
+    # @param added_context [Hash] Any additional context to add to the result
+    # @return [Boxcars::Observation] The observation
+    def self.with_user(note, user_context:, status: :ok, **)
+      new(note:, status:, user_context:, **)
+    end
+
+    # create a new Observation with user context and status :ok
+    # @param note [String] The text to use for the observation
+    # @param user_context [Hash] User information (e.g., { id: 123, email: "user@example.com", role: "admin" })
+    # @param added_context [Hash] Any additional context to add to the result
+    # @return [Boxcars::Observation] The observation
+    def self.ok_with_user(note, user_context:, **)
+      with_user(note, user_context:, status: :ok, **)
+    end
+
+    # create a new Observation with user context and status :error
+    # @param note [String] The text to use for the observation
+    # @param user_context [Hash] User information (e.g., { id: 123, email: "user@example.com", role: "admin" })
+    # @param added_context [Hash] Any additional context to add to the result
+    # @return [Boxcars::Observation] The observation
+    def self.err_with_user(note, user_context:, **)
+      with_user(note, user_context:, status: :error, **)
+    end
+
+    # Extract user context from the observation
+    # @return [Hash, nil] The user context if present
+    def user_context
+      added_context[:user_context]
+    end
+
+    # Check if this observation has user context
+    # @return [Boolean] true if user context is present
+    def user_context?
+      !user_context.nil?
+    end
   end
 end

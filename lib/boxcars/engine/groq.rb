@@ -19,10 +19,11 @@ module Boxcars
                           "You should ask targeted questions"
 
     def initialize(name: DEFAULT_NAME, description: DEFAULT_DESCRIPTION, prompts: [], batch_size: 20, **kwargs)
+      user_id = kwargs.delete(:user_id)
       @groq_params = DEFAULT_PARAMS.merge(kwargs) # Corrected typo here
       @prompts = prompts
       @batch_size = batch_size
-      super(description:, name:)
+      super(description:, name:, user_id:)
     end
 
     # Renamed from open_ai_client to groq_client for clarity
@@ -60,7 +61,8 @@ module Boxcars
         request_context = {
           prompt: current_prompt_object,
           inputs:,
-          conversation_for_api: api_request_params&.dig(:messages)
+          conversation_for_api: api_request_params&.dig(:messages),
+          user_id:
         }
         track_ai_generation(
           duration_ms:,
@@ -74,22 +76,22 @@ module Boxcars
       # If there's an error, raise it to maintain backward compatibility with existing tests
       raise response_data[:error] if response_data[:error]
 
-      response_data
+      response_data[:parsed_json]
     end
 
     def run(question, **)
       prompt = Prompt.new(template: question)
-      response_data = client(prompt:, inputs: {}, **)
-      answer = _groq_handle_call_outcome(response_data:)
+      response = client(prompt:, inputs: {}, **)
+      answer = extract_answer(response)
       Boxcars.debug("Answer: #{answer}", :cyan)
       answer
     end
 
-    def default_params
-      @groq_params # Use instance variable
-    end
-
     private
+
+    def default_params
+      @groq_params
+    end
 
     # Helper methods for the client method
     def _prepare_groq_request_params(prompt_object, inputs, current_params)

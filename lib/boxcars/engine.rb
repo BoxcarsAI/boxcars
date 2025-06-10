@@ -3,18 +3,20 @@
 module Boxcars
   # @abstract
   class Engine
-    attr_reader :prompts, :batch_size
+    attr_reader :prompts, :batch_size, :user_id
 
     # An Engine is used by Boxcars to generate output from prompts
     # @param name [String] The name of the Engine. Defaults to classname.
     # @param description [String] A description of the Engine.
     # @param prompts [Array<Prompt>] The prompts to use for the Engine.
     # @param batch_size [Integer] The number of prompts to send to the Engine at a time.
-    def initialize(description: 'Engine', name: nil, prompts: [], batch_size: 20)
+    # @param user_id [String, Integer] The ID of the user using this Engine (optional for observability).
+    def initialize(description: 'Engine', name: nil, prompts: [], batch_size: 20, user_id: nil)
       @name = name || self.class.name
       @description = description
       @prompts = prompts
       @batch_size = batch_size
+      @user_id = user_id
     end
 
     # Get an answer from the Engine.
@@ -60,14 +62,8 @@ module Boxcars
         sub_prompts.each do |sprompt, inputs|
           client_response = client(prompt: sprompt, inputs:, **params)
 
-          # Handle different response formats:
-          # - New format: response_data hash with :parsed_json key (Groq, Gemini)
-          # - Legacy format: direct API response hash (OpenAI, others)
-          api_response_hash = if client_response.is_a?(Hash) && client_response.key?(:parsed_json)
-                                client_response[:parsed_json]
-                              else
-                                client_response
-                              end
+          # All engines now return the parsed API response hash directly
+          api_response_hash = client_response
 
           # Ensure we have a hash to work with
           unless api_response_hash.is_a?(Hash)
@@ -100,6 +96,17 @@ module Boxcars
         generations.push(generation_info(sub_choices))
       end
       EngineResult.new(generations:, engine_output: { token_usage: })
+    end
+
+    def extract_answer(response)
+      # Handle different response formats
+      if response["choices"]
+        response["choices"].map { |c| c.dig("message", "content") || c["text"] }.join("\n").strip
+      elsif response["candidates"]
+        response["candidates"].map { |c| c.dig("content", "parts", 0, "text") }.join("\n").strip
+      else
+        response["output"] || response.to_s
+      end
     end
   end
 end

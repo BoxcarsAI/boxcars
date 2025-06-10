@@ -388,7 +388,7 @@ Boxcars automatically tracks LLM calls with detailed metrics:
 
 ```ruby
 # This automatically generates observability events
-engine = Boxcars::Openai.new
+engine = Boxcars::Openai.new(user_id: USER_ID) # optional user_id. All engines take this.
 calc = Boxcars::Calculator.new(engine: engine)
 result = calc.run "what is 2 + 2?"
 ```
@@ -404,6 +404,7 @@ result = calc.run "what is 2 + 2?"
 - `error_message`: Error details if the call failed
 - `response_raw_body`: Raw API response
 - `api_call_parameters`: Parameters sent to the API
+- `distinct_id`: If you specify a user_id to your engine, it will be passed up.
 
 #### Manual Tracking
 

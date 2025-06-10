@@ -28,10 +28,11 @@ module Boxcars
     #        useful for when you need to use AI to answer questions. You should ask targeted questions".
     # @param prompts [Array<String>] The prompts to use when asking the engine. Defaults to [].
     def initialize(name: DEFAULT_NAME, description: DEFAULT_DESCRIPTION, prompts: [], **kwargs)
+      user_id = kwargs.delete(:user_id)
       @llm_params = DEFAULT_PARAMS.merge(kwargs)
       @prompts = prompts
       @batch_size = 20
-      super(description:, name:)
+      super(description:, name:, user_id:)
     end
 
     def conversation_model?(_model)
@@ -278,7 +279,8 @@ module Boxcars
       request_context = {
         prompt: call_context[:prompt_object],
         inputs: call_context[:inputs],
-        conversation_for_api: call_context[:api_request_params]
+        conversation_for_api: call_context[:api_request_params],
+        user_id:
       }
 
       track_ai_generation(

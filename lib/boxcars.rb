@@ -218,6 +218,7 @@ module Boxcars
 end
 
 require_relative "boxcars/version"
+require_relative "boxcars/observation"
 require_relative "boxcars/observability_backend"
 require_relative "boxcars/observability"
 # If users want it, they can require 'boxcars/observability_backends/multi_backend'

@@ -20,10 +20,11 @@ module Boxcars
                           "You should ask targeted questions"
 
     def initialize(name: DEFAULT_NAME, description: DEFAULT_DESCRIPTION, prompts: [], batch_size: 20, **kwargs)
+      user_id = kwargs.delete(:user_id)
       @perplexity_params = DEFAULT_PARAMS.merge(kwargs)
       @prompts = prompts
       @batch_size = batch_size # Retain if used by generate
-      super(description:, name:)
+      super(description:, name:, user_id:)
     end
 
     # Perplexity models are conversational.
@@ -96,6 +97,7 @@ module Boxcars
         request_context = {
           prompt: current_prompt_object,
           inputs:,
+          user_id:,
           conversation_for_api: api_request_params&.dig(:messages)
         }
         track_ai_generation(
