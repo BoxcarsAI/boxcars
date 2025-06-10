@@ -20,6 +20,7 @@ module Boxcars
                           "You should ask targeted questions"
 
     def initialize(name: DEFAULT_NAME, description: DEFAULT_DESCRIPTION, prompts: [], batch_size: 20, **kwargs)
+      user_id = kwargs.delete(:user_id)
       @open_ai_params = DEFAULT_PARAMS.merge(kwargs)
       # Special handling for o1-mini model (deprecated?)
       if @open_ai_params[:model] =~ /^o/ && @open_ai_params[:max_tokens]
@@ -29,7 +30,7 @@ module Boxcars
 
       @prompts = prompts
       @batch_size = batch_size
-      super(description:, name:)
+      super(description:, name:, user_id:)
     end
 
     def self.open_ai_client(openai_access_token: nil)
@@ -231,6 +232,7 @@ module Boxcars
       request_context = {
         prompt: call_context[:prompt_object],
         inputs: call_context[:inputs],
+        user_id:,
         conversation_for_api: is_chat_model ? api_request_params[:messages] : api_request_params[:prompt]
       }
 

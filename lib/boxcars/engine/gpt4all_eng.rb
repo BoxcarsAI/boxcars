@@ -19,10 +19,11 @@ module Boxcars
     }.freeze
 
     def initialize(name: DEFAULT_NAME, description: DEFAULT_DESCRIPTION, prompts: [], batch_size: 2, **kwargs)
+      user_id = kwargs.delete(:user_id)
       @gpt4all_params = DEFAULT_PARAMS.merge(kwargs) # Store merged params
       @prompts = prompts
       @batch_size = batch_size # Retain if used by other methods
-      super(description:, name:)
+      super(description:, name:, user_id:)
     end
 
     def client(prompt:, inputs: {}, **kwargs)
@@ -31,10 +32,8 @@ module Boxcars
       # current_params are the effective parameters for this call, including defaults and overrides
       current_params = @gpt4all_params.merge(kwargs)
       # api_request_params for GPT4All is just the input text.
-      api_request_params = nil
+      api_request_params, gpt4all_instance = nil
       current_prompt_object = prompt.is_a?(Array) ? prompt.first : prompt
-      gpt4all_instance = nil # To ensure it's in scope for ensure block
-
       begin
         gpt4all_instance = Gpt4all::ConversationalAI.new
         # prepare_resources might download models, could take time.
@@ -68,7 +67,8 @@ module Boxcars
         request_context = {
           prompt: current_prompt_object,
           inputs:,
-          conversation_for_api: api_request_params&.dig(:prompt) # The text prompt
+          conversation_for_api: api_request_params&.dig(:prompt),
+          user_id:
         }
 
         track_ai_generation(

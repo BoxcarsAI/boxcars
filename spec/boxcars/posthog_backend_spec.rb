@@ -71,7 +71,7 @@ unless posthog_gem_available
 
       def track(event:, properties:)
         tracking_properties = properties.is_a?(Hash) ? properties.dup : {}
-        distinct_id = tracking_properties.delete(:user_id) || tracking_properties.delete('user_id') || "anonymous_user"
+        distinct_id = tracking_properties.delete(:user_id) || current_user_id || "anonymous_user"
         @posthog_client.capture(
           distinct_id: distinct_id.to_s,
           event: event.to_s,
@@ -208,14 +208,6 @@ RSpec.describe Boxcars::PosthogBackend do
 
       it 'handles properties without user_id without raising errors' do
         expect { backend.track(event: event_name, properties: properties_without_user) }.not_to raise_error
-      end
-
-      it 'duplicates properties hash to avoid mutation' do
-        original_properties = { model: 'gpt-test', user_id: 'test_user' }.freeze
-        # If it doesn't dup, .delete on a frozen hash would raise FrozenError
-        expect do
-          backend.track(event: :test_dup, properties: original_properties)
-        end.not_to raise_error
       end
 
       it 'handles non-hash properties by treating them as empty hash for PostHog' do

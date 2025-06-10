@@ -52,7 +52,8 @@ module Boxcars
         '$ai_latency': duration_seconds,
         '$ai_http_status': extract_status_code(response_data) || (response_data[:success] ? 200 : 500),
         '$ai_base_url': get_base_url_for_provider(provider),
-        '$ai_is_error': !response_data[:success]
+        '$ai_is_error': !response_data[:success],
+        user_id:
       }
 
       # Add error details if present

@@ -17,10 +17,11 @@ module Boxcars
     # @param batch_size [Integer] The number of prompts to send to the Engine at a time.
     # @param kwargs [Hash] Additional parameters to pass to the Engine.
     def initialize(provider:, description:, name:, prompts: [], batch_size: 20, **kwargs)
+      user_id = kwargs.delete(:user_id)
       @provider = provider
       # Start with defaults, merge other kwargs, then explicitly set model if provided in initialize
       @all_params = default_model_params.merge(kwargs)
-      super(description:, name:, prompts:, batch_size:)
+      super(description:, name:, prompts:, batch_size:, user_id:)
     end
 
     # can be overridden by provider subclass
@@ -68,7 +69,7 @@ module Boxcars
 
       adapter = adapter(api_key:, params:)
       convo = prompt.as_intelligence_conversation(inputs:)
-      request_context = { prompt: prompt&.as_prompt(inputs:)&.[](:prompt), inputs:, conversation_for_api: convo.to_h }
+      request_context = { user_id:, prompt: prompt&.as_prompt(inputs:)&.[](:prompt), inputs:, conversation_for_api: convo.to_h }
       request = Intelligence::ChatRequest.new(adapter:)
 
       start_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
