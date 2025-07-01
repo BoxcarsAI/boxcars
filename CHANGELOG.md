@@ -1,5 +1,21 @@
 # Changelog
 
+## [v0.8.5](https://github.com/BoxcarsAI/boxcars/tree/v0.8.5) (2025-07-01)
+
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.8.4...v0.8.5)
+
+## [v0.8.4](https://github.com/BoxcarsAI/boxcars/tree/v0.8.4) (2025-06-10)
+
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.8.3...v0.8.4)
+
+**Merged pull requests:**
+
+- add user\_id to observability context data [\#252](https://github.com/BoxcarsAI/boxcars/pull/252) ([francis](https://github.com/francis))
+
+## [v0.8.3](https://github.com/BoxcarsAI/boxcars/tree/v0.8.3) (2025-06-09)
+
+[Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.8.2...v0.8.3)
+
 ## [v0.8.2](https://github.com/BoxcarsAI/boxcars/tree/v0.8.2) (2025-06-04)
 
 [Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.8.1...v0.8.2)
