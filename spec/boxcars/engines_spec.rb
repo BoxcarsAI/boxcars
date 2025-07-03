@@ -179,6 +179,42 @@ RSpec.describe Boxcars::Engines do
       )
     end
 
+    it "removes response_format for sonar models" do
+      allow(Boxcars::Perplexityai).to receive(:new)
+      described_class.json_engine(model: "sonar")
+      expect(Boxcars::Perplexityai).to have_received(:new).with(
+        model: "sonar",
+        temperature: 0.1
+      )
+    end
+
+    it "removes response_format for sonar-pro models" do
+      allow(Boxcars::Perplexityai).to receive(:new)
+      described_class.json_engine(model: "sonar-pro")
+      expect(Boxcars::Perplexityai).to have_received(:new).with(
+        model: "sonar-pro",
+        temperature: 0.1
+      )
+    end
+
+    it "removes response_format for sonar_pro models" do
+      allow(Boxcars::Perplexityai).to receive(:new)
+      described_class.json_engine(model: "sonar_pro")
+      expect(Boxcars::Perplexityai).to have_received(:new).with(
+        model: "sonar-pro",
+        temperature: 0.1
+      )
+    end
+
+    it "removes response_format for llama-sonar models" do
+      allow(Boxcars::Perplexityai).to receive(:new)
+      described_class.json_engine(model: "llama-3.1-sonar-small-128k-online")
+      expect(Boxcars::Perplexityai).to have_received(:new).with(
+        model: "llama-3.1-sonar-small-128k-online",
+        temperature: 0.1
+      )
+    end
+
     it "merges additional options" do
       allow(Boxcars::Openai).to receive(:new)
       described_class.json_engine(model: "gpt-4o", temperature: 0.5, max_tokens: 100)

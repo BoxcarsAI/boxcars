@@ -60,7 +60,7 @@ module Boxcars
     # @return [Boxcars::Engine] An instance of the appropriate engine class
     def self.json_engine(model: nil, **kw_args)
       options = { temperature: 0.1, response_format: { type: "json_object" } }.merge(kw_args)
-      options.delete(:response_format) if model.to_s =~ /sonnet|opus/ || model.to_s.start_with?("llama")
+      options.delete(:response_format) if model.to_s =~ /sonnet|opus|sonar/ || model.to_s.start_with?("llama")
       engine(model:, **options)
     end
 

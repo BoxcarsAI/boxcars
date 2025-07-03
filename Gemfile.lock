@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    boxcars (0.8.5)
+    boxcars (0.8.6)
       faraday-retry (~> 2.0)
       google_search_results (~> 2.2)
       gpt4all (~> 0.0.5)
@@ -132,7 +132,7 @@ GEM
     mime-types (3.7.0)
       logger
       mime-types-data (~> 3.2025, >= 3.2025.0507)
-    mime-types-data (3.2025.0624)
+    mime-types-data (3.2025.0701)
     minitest (5.25.5)
     multi_json (1.15.0)
     multipart-post (2.4.1)
