@@ -119,10 +119,8 @@ module Boxcars
 
     private
 
-    def check_response(response)
-      return if response.is_a?(Hash) && response.key?("choices")
-
-      raise Error, "Invalid response from #{provider}: #{response}"
+    def validate_response!(response, must_haves: %w[choices])
+      super
     end
   end
 end

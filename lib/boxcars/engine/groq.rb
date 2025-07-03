@@ -157,20 +157,9 @@ module Boxcars
       end
     end
 
-    # Retaining check_response if run method or other parts still use it.
-    def check_response(response, must_haves: %w[choices])
-      if response['error'].is_a?(Hash)
-        code = response.dig('error', 'code')
-        msg = response.dig('error', 'message') || 'unknown error'
-        # GROQ_API_TOKEN is not standard, usually it's an API key.
-        raise KeyError, "Groq API Key not valid or permission issue" if ['invalid_api_key', 'permission_denied'].include?(code)
-
-        raise ValueError, "Groq error: #{msg}"
-      end
-
-      must_haves.each do |key|
-        raise ValueError, "Expecting key #{key} in response" unless response.key?(key) && !response[key].empty?
-      end
+    # validate_response! method uses the base implementation with Groq-specific must_haves
+    def validate_response!(response, must_haves: %w[choices])
+      super
     end
   end
 end

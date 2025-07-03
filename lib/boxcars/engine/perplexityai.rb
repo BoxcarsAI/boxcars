@@ -55,10 +55,12 @@ module Boxcars
         messages_for_api = current_prompt_object.as_messages(inputs)[:messages]
         # Perplexity expects a 'model' and 'messages' structure.
         # Other params like temperature, max_tokens are top-level.
+        # Filter out parameters that Perplexity doesn't support
+        supported_params = filter_supported_params(current_params)
         api_request_params = {
-          model: current_params[:model],
+          model: supported_params[:model],
           messages: messages_for_api
-        }.merge(current_params.except(:model, :messages, :perplexity_api_key)) # Add other relevant params
+        }.merge(supported_params.except(:model, :messages, :perplexity_api_key))
 
         log_messages_debug(api_request_params[:messages]) if Boxcars.configuration.log_prompts && api_request_params[:messages]
 
@@ -115,16 +117,51 @@ module Boxcars
 
     def run(question, **)
       prompt = Prompt.new(template: question)
-      answer = client(prompt:, inputs: {}, **)
+      response = client(prompt:, inputs: {}, **)
+      # Extract the content from the response for the run method
+      answer = extract_answer(response)
       Boxcars.debug("Answer: #{answer}", :cyan)
       answer
+    end
+
+    # Extract answer content from the API response
+    def extract_answer(response)
+      if response.is_a?(Hash) && response["choices"]
+        response["choices"].map { |c| c.dig("message", "content") }.join("\n").strip
+      else
+        response.to_s
+      end
     end
 
     def default_params
       @perplexity_params
     end
 
+    # validate_response! method uses the base implementation
+    def validate_response!(response, must_haves: %w[choices])
+      super
+    end
+
     private
+
+    # Filter out parameters that Perplexity doesn't support
+    def filter_supported_params(params)
+      # Perplexity supports these parameters based on their API documentation
+      supported_keys = %i[
+        model
+        messages
+        temperature
+        max_tokens
+        top_p
+        top_k
+        stream
+        presence_penalty
+        frequency_penalty
+      ]
+
+      # Remove unsupported parameters like stop, response_format, etc.
+      params.select { |key, _| supported_keys.include?(key.to_sym) }
+    end
 
     def log_messages_debug(messages)
       return unless messages.is_a?(Array)
@@ -141,10 +178,14 @@ module Boxcars
         msg = err_details ? "#{err_details['type']}: #{err_details['message']}" : "Unknown error from PerplexityAI API"
         raise Error, msg
       else
-        choices = response_data.dig(:parsed_json, "choices")
-        raise Error, "PerplexityAI: No choices found in response" unless choices.is_a?(Array) && !choices.empty?
+        parsed_response = response_data[:parsed_json]
+        unless parsed_response["choices"].is_a?(Array) && !parsed_response["choices"].empty?
+          raise Error,
+                "PerplexityAI: No choices found in response"
+        end
 
-        choices.map { |c| c.dig("message", "content") }.join("\n").strip
+        # Return the full parsed JSON response (Hash) as expected by the base Engine class
+        parsed_response
       end
     end
 

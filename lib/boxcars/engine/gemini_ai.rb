@@ -178,22 +178,9 @@ module Boxcars
       end
     end
 
-    # check_response method might be partially covered by _gemini_handle_call_outcome
-    # Retaining it if run method still uses it explicitly.
-    def check_response(response, must_haves: %w[choices candidates])
-      if response['error'].is_a?(Hash)
-        code = response.dig('error', 'code')
-        msg = response.dig('error', 'message') || 'unknown error'
-        # GEMINI_API_TOKEN is not standard, usually it's an API key.
-        # This check might need to align with actual error codes from Gemini.
-        raise KeyError, "Gemini API Key not valid or permission issue" if ['invalid_api_key', 'permission_denied'].include?(code)
-
-        raise ValueError, "GeminiAI error: #{msg}"
-      end
-
-      # Check for either 'choices' (OpenAI style) or 'candidates' (Gemini native style)
-      has_valid_content = must_haves.any? { |key| response.key?(key) && !response[key].empty? }
-      raise ValueError, "Expecting key like 'choices' or 'candidates' in response" unless has_valid_content
+    # validate_response! method uses the base implementation with Gemini-specific must_haves
+    def validate_response!(response, must_haves: %w[choices candidates])
+      super
     end
   end
 end

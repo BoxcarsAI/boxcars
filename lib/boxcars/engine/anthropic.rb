@@ -122,23 +122,9 @@ module Boxcars
       end
     end
 
-    # make sure we got a valid response
-    # @param response [Hash] The response to check.
-    # @param must_haves [Array<String>] The keys that must be in the response. Defaults to %w[choices].
-    # @raise [KeyError] if there is an issue with the access token.
-    # @raise [ValueError] if the response is not valid.
-    def check_response(response, must_haves: %w[completion])
-      if response['error']
-        code = response.dig('error', 'code')
-        msg = response.dig('error', 'message') || 'unknown error'
-        raise KeyError, "ANTHOPIC_API_KEY not valid" if code == 'invalid_api_key'
-
-        raise ValueError, "Anthropic error: #{msg}"
-      end
-
-      must_haves.each do |key|
-        raise ValueError, "Expecting key #{key} in response" unless response.key?(key)
-      end
+    # validate_response! method uses the base implementation with Anthropic-specific must_haves
+    def validate_response!(response, must_haves: %w[completion])
+      super
     end
 
     # Call out to OpenAI's endpoint with k unique prompts.
@@ -155,7 +141,7 @@ module Boxcars
       prompts.each_slice(batch_size) do |sub_prompts|
         sub_prompts.each do |sprompts, inputs|
           response = client(prompt: sprompts, inputs:, **params)
-          check_response(response)
+          validate_response!(response)
           choices << response
         end
       end

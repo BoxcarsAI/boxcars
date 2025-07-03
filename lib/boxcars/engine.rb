@@ -70,7 +70,7 @@ module Boxcars
             raise TypeError, "Expected Hash from client method, got #{api_response_hash.class}: #{api_response_hash.inspect}"
           end
 
-          check_response(api_response_hash)
+          validate_response!(api_response_hash)
 
           current_choices = api_response_hash["choices"]
           if current_choices.is_a?(Array)
@@ -107,6 +107,34 @@ module Boxcars
       else
         response["output"] || response.to_s
       end
+    end
+
+    # Validate API response and raise appropriate errors
+    # @param response [Hash] The response to validate.
+    # @param must_haves [Array<String>] The keys that must be in the response.
+    # @raise [KeyError] if there is an issue with the API key.
+    # @raise [Boxcars::Error] if the response is not valid.
+    def validate_response!(response, must_haves: %w[choices])
+      # Check for API errors first
+      if response['error']
+        error_details = response['error']
+        raise Boxcars::Error, "API error: #{error_details}" unless error_details.is_a?(Hash)
+
+        code = error_details['code']
+        message = error_details['message'] || 'unknown error'
+
+        # Handle common API key errors
+        raise KeyError, "API key not valid or permission denied" if ['invalid_api_key', 'permission_denied'].include?(code)
+
+        raise Boxcars::Error, "API error: #{message}"
+
+      end
+
+      # Check for required keys in response
+      has_required_content = must_haves.any? { |key| response.key?(key) && !response[key].nil? }
+      return if has_required_content
+
+      raise Boxcars::Error, "Response missing required keys. Expected one of: #{must_haves.join(', ')}"
     end
   end
 end

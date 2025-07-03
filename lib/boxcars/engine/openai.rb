@@ -100,14 +100,10 @@ module Boxcars
     end
 
     # -- Public helper -------------------------------------------------------------
-    # Some callers outside this class still invoke `check_response` directly.
+    # Some callers outside this class still invoke `validate_response!` directly.
     # It simply raises if the JSON body contains an "error" payload.
-    def check_response(response) # rubocop:disable Naming/PredicateMethod
-      if (msg = openai_error_message(response))
-        raise Boxcars::Error, msg
-      end
-
-      true
+    def validate_response!(response, must_haves: %w[choices])
+      super
     end
 
     private
