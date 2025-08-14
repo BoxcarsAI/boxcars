@@ -7,7 +7,7 @@ gemspec
 
 gem "dotenv", "~> 3.1"
 gem "rake", "~> 13.2"
-gem "sqlite3", "~> 2.0"
+gem "sqlite3", "~> 2.7"
 gem "async", "~>1.32.1"
 gem "activerecord", "~> 7.1"
 gem "faraday-retry", "~> 2.0"
