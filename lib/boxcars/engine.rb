@@ -75,8 +75,12 @@ module Boxcars
           current_choices = api_response_hash["choices"]
           if current_choices.is_a?(Array)
             choices.concat(current_choices)
+          elsif api_response_hash["output"]
+            # Synthesize a choice from non-Chat providers (e.g., OpenAI Responses API for GPT-5)
+            synthesized_text = extract_answer(api_response_hash)
+            choices << { "message" => { "content" => synthesized_text }, "finish_reason" => "stop" }
           else
-            Boxcars.logger&.warn "No 'choices' found in API response: #{api_response_hash.inspect}"
+            Boxcars.logger&.warn "No 'choices' or 'output' found in API response: #{api_response_hash.inspect}"
           end
 
           api_usage = api_response_hash["usage"]
