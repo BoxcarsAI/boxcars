@@ -8,6 +8,7 @@ module Boxcars
   # A engine that uses PerplexityAI's API.
   class Perplexityai < Engine
     include UnifiedObservability
+
     attr_reader :prompts, :perplexity_params, :model_kwargs, :batch_size
 
     DEFAULT_PARAMS = { # Renamed from DEFAULT_PER_PARAMS for consistency

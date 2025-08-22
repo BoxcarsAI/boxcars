@@ -4,7 +4,7 @@ module Boxcars
   # Factory class for creating engine instances based on model names
   # Provides convenient shortcuts and aliases for different AI models
   class Engines
-    DEFAULT_MODEL = "gemini-2.5-flash-preview-05-20"
+    DEFAULT_MODEL = "gemini-2.5-flash"
 
     # Create an engine instance based on the model name
     # @param model [String] The model name or alias
@@ -36,9 +36,9 @@ module Boxcars
       when "huge", "online_huge", "sonar-huge", "sonar-pro", "sonar_pro"
         Boxcars::Perplexityai.new(model: "sonar-pro", **kw_args)
       when "flash", "gemini-flash"
-        Boxcars::GeminiAi.new(model: "gemini-2.5-flash-preview-05-20", **kw_args)
+        Boxcars::GeminiAi.new(model: "gemini-2.5-flash", **kw_args)
       when "gemini-pro"
-        Boxcars::GeminiAi.new(model: "gemini-2.5-pro-preview-05-06", **kw_args)
+        Boxcars::GeminiAi.new(model: "gemini-2.5-pro", **kw_args)
       when /gemini-/
         Boxcars::GeminiAi.new(model:, **kw_args)
       when /-sonar-/
@@ -59,8 +59,11 @@ module Boxcars
     # @param kw_args [Hash] Additional arguments to pass to the engine
     # @return [Boxcars::Engine] An instance of the appropriate engine class
     def self.json_engine(model: nil, **kw_args)
-      options = { temperature: 0.1, response_format: { type: "json_object" } }.merge(kw_args)
-      options.delete(:response_format) if model.to_s =~ /sonnet|opus|sonar/ || model.to_s.start_with?("llama")
+      default_options = { temperature: 0.1 }
+      name = model.to_s
+      blocked = name.start_with?("gpt-5", "llama") || name.match?(/sonnet|opus|sonar/)
+      default_options[:response_format] = { type: "json_object" } unless blocked
+      options = default_options.merge(kw_args)
       engine(model:, **options)
     end
 

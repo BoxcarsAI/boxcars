@@ -37,6 +37,7 @@ RSpec.describe Boxcars::Cohere do
   let(:dummy_observability_backend) do
     Class.new do
       include Boxcars::ObservabilityBackend
+
       attr_reader :tracked_events
 
       def initialize

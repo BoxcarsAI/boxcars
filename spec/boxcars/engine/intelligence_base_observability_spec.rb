@@ -90,6 +90,7 @@ RSpec.describe Boxcars::IntelligenceBase do # rubocop:disable RSpec/SpecFilePath
     let(:dummy_observability_backend) do
       Class.new do
         include Boxcars::ObservabilityBackend
+
         attr_reader :tracked_events
 
         def initialize
@@ -196,6 +197,7 @@ RSpec.describe Boxcars::IntelligenceBase do # rubocop:disable RSpec/SpecFilePath
       let(:fresh_observability_backend) do
         Class.new do
           include Boxcars::ObservabilityBackend
+
           attr_reader :tracked_events
 
           def initialize
