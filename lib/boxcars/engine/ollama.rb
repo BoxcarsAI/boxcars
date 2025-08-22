@@ -7,6 +7,7 @@ module Boxcars
   # A engine that uses a local Ollama API (OpenAI-compatible).
   class Ollama < Engine
     include UnifiedObservability
+
     attr_reader :prompts, :model_kwargs, :batch_size, :ollama_params
 
     DEFAULT_PARAMS = {

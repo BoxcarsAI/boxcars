@@ -32,7 +32,7 @@ module Boxcars
 
         Output Format:
           {
-            %<wanted_data>s
+          %<wanted_data>s
           }
       SYSPR
       stock_prompt += "\n\nImportant:\n#{important}\n" unless important.to_s.empty?

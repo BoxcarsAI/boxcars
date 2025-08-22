@@ -7,6 +7,7 @@ module Boxcars
   # A engine that uses GeminiAI's API via an OpenAI-compatible interface.
   class GeminiAi < Engine
     include UnifiedObservability
+
     attr_reader :prompts, :llm_params, :model_kwargs, :batch_size # Corrected typo llm_parmas to llm_params
 
     DEFAULT_PARAMS = {

@@ -8,6 +8,7 @@ RSpec.describe Boxcars::Observability do
   let(:dummy_backend) do
     Class.new do
       include Boxcars::ObservabilityBackend
+
       attr_reader :tracked_events
 
       def initialize
@@ -23,6 +24,7 @@ RSpec.describe Boxcars::Observability do
   let(:failing_backend) do
     Class.new do
       include Boxcars::ObservabilityBackend
+
       def track(event:, properties:)
         Rails.logger.debug "Dummy backend: #{event} with properties: #{properties}"
         raise StandardError, "Backend failed!"

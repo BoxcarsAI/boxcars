@@ -6,11 +6,13 @@ require "securerandom"
 
 module Boxcars
   # Engine that talks to OpenAI’s REST API.
-  class Openai < Engine
+  class Openai < Engine # rubocop:disable Metrics/ClassLength
+    # include Boxcars::EngineHelpers
     include UnifiedObservability
 
     CHAT_MODEL_REGEX = /(^gpt-4)|(-turbo\b)|(^o\d)|(gpt-3\.5-turbo)/
     O_SERIES_REGEX   = /^o/
+    GPT5_MODEL_REGEX = /\Agpt-[56].*/
 
     DEFAULT_PARAMS = {
       model: "gpt-4o-mini",
@@ -80,9 +82,9 @@ module Boxcars
     def run(question, **)
       prompt      = Prompt.new(template: question)
       raw_json    = client(prompt:, inputs: {}, **)
-      extract_answer_from_choices(raw_json["choices"]).tap do |ans|
-        Boxcars.debug("Answer: #{ans}", :cyan)
-      end
+      ans         = extract_answer(raw_json)
+      Boxcars.debug("Answer: #{ans}", :cyan)
+      ans
     end
 
     # Expose the defaults so callers can introspect or dup/merge them
@@ -103,14 +105,20 @@ module Boxcars
     # Some callers outside this class still invoke `validate_response!` directly.
     # It simply raises if the JSON body contains an "error" payload.
     def validate_response!(response, must_haves: %w[choices])
-      super
+      if response.is_a?(Hash) && response.key?("output")
+        super(response, must_haves: %w[output])
+      else
+        super
+      end
     end
 
     private
 
     # -- Request construction ---------------------------------------------------
     def build_api_request(prompt_object, inputs, params, chat:)
-      if chat
+      if gpt5_model?(params[:model])
+        build_responses_params(prompt_object, inputs, params.dup)
+      elsif chat
         build_chat_params(prompt_object, inputs, params.dup)
       else
         build_completion_params(prompt_object, inputs, params.dup)
@@ -133,9 +141,51 @@ module Boxcars
       { prompt: prompt_txt }.merge(params).tap { |h| h.delete(:messages) }
     end
 
+    def build_responses_params(prompt_object, inputs, params)
+      po = if prompt_object.is_a?(Boxcars::Prompt)
+             prompt_object
+           else
+             Boxcars::Prompt.new(template: prompt_object.to_s)
+           end
+
+      msg_hash  = po.as_messages(inputs)
+      messages  = msg_hash[:messages].is_a?(Array) ? msg_hash[:messages] : []
+      input_str = messages_to_input(messages)
+
+      p = params.dup
+      p.delete(:messages)
+      p.delete(:response_format)
+      p.delete(:stop)
+      p.delete(:temperature)
+      p[:max_output_tokens] = p.delete(:max_tokens) if p.key?(:max_tokens) && !p.key?(:max_output_tokens)
+      if (effort = p.delete(:reasoning_effort))
+        p[:reasoning] = { effort: effort }
+      end
+
+      formatted = { model: p[:model], input: input_str, _use_responses_api: true }
+      p.each { |k, v| formatted[k] = v unless k == :model }
+      formatted
+    end
+
+    def messages_to_input(messages)
+      return "" unless messages.is_a?(Array)
+
+      messages.map { |m| "#{m[:role]}: #{m[:content]}" }.join("\n")
+    end
+
     # -- API call / response ----------------------------------------------------
     def execute_api_call(client, chat_mode, api_request)
-      if chat_mode
+      if api_request[:_use_responses_api]
+        call_params = api_request.dup
+        call_params.delete(:_use_responses_api)
+        Boxcars.debug("Input after formatting:\n#{call_params[:input]}", :cyan) if Boxcars.configuration.log_prompts
+        unless client.respond_to?(:responses)
+          raise StandardError,
+                "OpenAI Responses API not supported by installed ruby-openai gem. Upgrade ruby-openai to >7.0 version."
+        end
+
+        client.responses.create(parameters: call_params)
+      elsif chat_mode
         log_messages_debug(api_request[:messages]) if Boxcars.configuration.log_prompts
         client.chat(parameters: api_request)
       else
@@ -187,8 +237,117 @@ module Boxcars
       raise Error, "OpenAI: Could not extract answer from choices"
     end
 
+    def extract_answer_from_output(output_items) # rubocop:disable Metrics/PerceivedComplexity,Metrics/MethodLength
+      return nil unless output_items.is_a?(Array) && output_items.any?
+
+      texts = []
+
+      output_items.each do |i| # rubocop:disable Metrics/BlockLength
+        next unless i.is_a?(Hash)
+
+        case i["type"]
+        when "output_text"
+          content = i["content"]
+          if content.is_a?(Array)
+            # rubocop:disable Metrics/BlockNesting
+            texts << content.filter_map { |c|
+              if c.is_a?(Hash)
+                if c["text"].is_a?(String)
+                  c["text"]
+                else
+                  (c["text"].is_a?(Hash) ? (c["text"]["value"] || c["text"]["text"]) : nil)
+                end
+              end
+            }.join
+            # rubocop:enable Metrics/BlockNesting
+          elsif content.is_a?(String)
+            texts << content
+          end
+          # Some Responses payloads may include a direct "text" field.
+          if i["text"].is_a?(String)
+            texts << i["text"]
+          elsif i["text"].is_a?(Hash)
+            texts << (i["text"]["value"] || i["text"]["text"])
+          end
+        when "message"
+          content = i["content"]
+          if content.is_a?(Array)
+            parts = content.filter_map do |c|
+              next unless c.is_a?(Hash) && ["output_text", "text"].include?(c["type"])
+
+              t = c["text"]
+              if t.is_a?(String)
+                t
+              elsif t.is_a?(Hash)
+                t["value"] || t["text"]
+              elsif c["content"].is_a?(String)
+                c["content"]
+              end
+            end
+            texts << parts.join
+          end
+        end
+      end
+
+      return nil if texts.empty?
+
+      texts.join("\n").strip
+    end
+
+    def extract_answer(json)
+      if json.is_a?(Hash)
+        if json["output_text"].is_a?(String) && !json["output_text"].strip.empty?
+          return json["output_text"].strip
+        elsif json["output_text"].is_a?(Array)
+          joined = json["output_text"].map do |t|
+            if t.is_a?(String)
+              t
+            elsif t.is_a?(Hash)
+              t["value"] || t["text"] || t["content"]
+            end
+          end.compact.join("\n").strip
+          return joined unless joined.empty?
+        end
+
+        if json["output"].is_a?(Array)
+          out = extract_answer_from_output(json["output"])
+          return out unless out.nil? || out.strip.empty?
+        end
+      end
+
+      choices = json["choices"]
+      return extract_answer_from_choices(choices) if choices
+
+      # Fallback: attempt to find any text in nested Responses payloads
+      fallback = deep_extract_texts(json)
+      return fallback unless fallback.nil? || fallback.strip.empty?
+
+      raise Error, "OpenAI: Could not extract answer"
+    end
+
+    def deep_extract_texts(obj)
+      texts = []
+      stack = [obj]
+      while (cur = stack.pop)
+        case cur
+        when Hash
+          texts << cur["output_text"] if cur["output_text"].is_a?(String)
+          texts << cur["text"] if cur["text"].is_a?(String)
+          texts << cur["content"] if cur["content"].is_a?(String)
+          cur.each_value do |v|
+            stack << v if v.is_a?(Hash) || v.is_a?(Array)
+          end
+        when Array
+          cur.each { |v| stack << v if v.is_a?(Hash) || v.is_a?(Array) }
+        end
+      end
+      aggregated = texts.map { |t| t.to_s.strip }.reject(&:empty?).join("\n")
+      aggregated.empty? ? nil : aggregated
+    end
+
     # -- Utility helpers --------------------------------------------------------
     def chat_model?(model_name) = CHAT_MODEL_REGEX.match?(model_name)
+    def gpt5_model?(model_name) = GPT5_MODEL_REGEX.match?(model_name.to_s)
 
     def openai_error_message(json)
       err = json&.dig("error")
@@ -244,7 +403,13 @@ module Boxcars
           prompt: call_ctx[:prompt_object],
           inputs: call_ctx[:inputs],
           user_id: user_id,
-          conversation_for_api: call_ctx[:is_chat_model] ? api_req[:messages] : api_req[:prompt]
+          conversation_for_api: if api_req.key?(:input)
+                                  api_req[:input]
+                                elsif call_ctx[:is_chat_model]
+                                  api_req[:messages]
+                                else
+                                  api_req[:prompt]
+                                end
         },
         response_data: response_data,
         provider: :openai

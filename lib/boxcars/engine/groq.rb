@@ -7,6 +7,7 @@ module Boxcars
   # A engine that uses Groq's API.
   class Groq < Engine
     include UnifiedObservability
+
     attr_reader :prompts, :groq_params, :model_kwargs, :batch_size
 
     DEFAULT_PARAMS = {

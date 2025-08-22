@@ -7,7 +7,7 @@ RSpec.describe Boxcars::Engines do
     it "returns default model when no model specified" do
       allow(Boxcars::GeminiAi).to receive(:new)
       described_class.engine
-      expect(Boxcars::GeminiAi).to have_received(:new).with(model: "gemini-2.5-flash-preview-05-20")
+      expect(Boxcars::GeminiAi).to have_received(:new).with(model: "gemini-2.5-flash")
     end
 
     it "creates OpenAI engine for GPT models" do
@@ -103,19 +103,19 @@ RSpec.describe Boxcars::Engines do
     it "creates GeminiAi engine for flash alias" do
       allow(Boxcars::GeminiAi).to receive(:new)
       described_class.engine(model: "flash")
-      expect(Boxcars::GeminiAi).to have_received(:new).with(model: "gemini-2.5-flash-preview-05-20")
+      expect(Boxcars::GeminiAi).to have_received(:new).with(model: "gemini-2.5-flash")
     end
 
     it "creates GeminiAi engine for gemini-flash alias" do
       allow(Boxcars::GeminiAi).to receive(:new)
       described_class.engine(model: "gemini-flash")
-      expect(Boxcars::GeminiAi).to have_received(:new).with(model: "gemini-2.5-flash-preview-05-20")
+      expect(Boxcars::GeminiAi).to have_received(:new).with(model: "gemini-2.5-flash")
     end
 
     it "creates GeminiAi engine for gemini-pro alias" do
       allow(Boxcars::GeminiAi).to receive(:new)
       described_class.engine(model: "gemini-pro")
-      expect(Boxcars::GeminiAi).to have_received(:new).with(model: "gemini-2.5-pro-preview-05-06")
+      expect(Boxcars::GeminiAi).to have_received(:new).with(model: "gemini-2.5-pro")
     end
 
     it "creates GeminiAi engine for gemini models" do

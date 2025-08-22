@@ -7,6 +7,7 @@ module Boxcars
   # rubocop:disable Metrics/ClassLength
   class Anthropic < Engine
     include UnifiedObservability
+
     attr_reader :prompts, :llm_params, :model_kwargs, :batch_size
 
     # The default parameters to use when asking the engine.

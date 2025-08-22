@@ -7,6 +7,7 @@ module Boxcars
   # A Base class for all Intelligence Engines
   class IntelligenceBase < Engine
     include Boxcars::UnifiedObservability
+
     attr_reader :provider, :all_params
 
     # The base Intelligence Engine is used by other engines to generate output from prompts

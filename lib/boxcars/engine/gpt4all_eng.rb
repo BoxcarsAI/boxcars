@@ -7,6 +7,7 @@ module Boxcars
   # A engine that uses local GPT4All API.
   class Gpt4allEng < Engine
     include UnifiedObservability
+
     attr_reader :prompts, :model_kwargs, :batch_size, :gpt4all_params # Added gpt4all_params
 
     DEFAULT_NAME = "Gpt4all engine"

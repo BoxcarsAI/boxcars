@@ -5,6 +5,7 @@ module Boxcars
   # A engine that uses Cohere's API.
   class Cohere < Engine
     include UnifiedObservability
+
     attr_reader :prompts, :llm_params, :model_kwargs, :batch_size
 
     # The default parameters to use when asking the engine.

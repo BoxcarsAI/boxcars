@@ -8,6 +8,7 @@ RSpec.describe Boxcars::MultiBackend do
   let(:dummy_backend_one) do
     Class.new do
       include Boxcars::ObservabilityBackend
+
       attr_reader :tracked_events
 
       def initialize
@@ -23,6 +24,7 @@ RSpec.describe Boxcars::MultiBackend do
   let(:dummy_backend_two) do
     Class.new do
       include Boxcars::ObservabilityBackend
+
       attr_reader :tracked_events
 
       def initialize
@@ -38,6 +40,7 @@ RSpec.describe Boxcars::MultiBackend do
   let(:failing_backend) do
     Class.new do
       include Boxcars::ObservabilityBackend
+
       # rubocop: disable Lint/UnusedMethodArgument
       def track(event:, properties:)
         raise StandardError, "This backend intentionally fails."
