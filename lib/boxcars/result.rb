@@ -43,7 +43,8 @@ module Boxcars
     # @param kwargs [Hash] Any additional kwargs to pass to the result
     # @return [Boxcars::Result] The result
     def self.from_text(text, **)
-      answer = text.delete_prefix('"').delete_suffix('"').strip
+      str = text.to_s
+      answer = str.delete_prefix('"').delete_suffix('"').strip
       answer = Regexp.last_match(:answer) if answer =~ /^Answer:\s*(?<answer>.*)$/
       explanation = "Answer: #{answer}"
       new(status: :ok, answer:, explanation:, **)

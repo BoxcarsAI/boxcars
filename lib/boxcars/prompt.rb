@@ -36,9 +36,12 @@ module Boxcars
     def with_conversation(conversation)
       return self unless conversation
 
-      new_prompt = dup
-      new_prompt.template += "\n\n#{conversation.message_text}"
-      new_prompt
+      Prompt.new(
+        template: "#{template}\n\n#{conversation.message_text}",
+        input_variables: input_variables,
+        other_inputs: other_inputs,
+        output_variables: output_variables
+      )
     end
 
     def default_prefixes
