@@ -15,7 +15,7 @@ gem "activesupport", "~> 7.1"
 gem "rest-client", "~> 2.1"
 gem "hnswlib", "~> 0.9.0"
 gem "pg", "~> 1.5"
-gem "pgvector", "~> 0.2.2"
+gem "pgvector", "~> 0.3.2"
 
 group :development, :test do
   gem "debug", "~> 1.9"
