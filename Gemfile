@@ -23,7 +23,7 @@ group :development, :test do
   gem "rubocop", "~> 1.67"
   gem "vcr", "~> 6.3.1"
   gem "webmock", "~> 3.24.0"
-  gem "rubocop-rake", "~> 0.6.0"
+  gem "rubocop-rake", "~> 0.7.1"
   gem "rubocop-rspec", "~> 3.2"
   gem "posthog-ruby", require: false
   gem "github_changelog_generator", "~> 1.16", require: false
