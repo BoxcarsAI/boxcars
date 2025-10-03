@@ -116,7 +116,8 @@ module Boxcars
 
     # -- Request construction ---------------------------------------------------
     def build_api_request(prompt_object, inputs, params, chat:)
-      if gpt5_model?(params[:model])
+      use_responses = params.delete(:use_responses_api) || gpt5_model?(params[:model])
+      if use_responses
         build_responses_params(prompt_object, inputs, params.dup)
       elsif chat
         build_chat_params(prompt_object, inputs, params.dup)
