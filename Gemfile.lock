@@ -35,10 +35,12 @@ GEM
     addressable (2.8.7)
       public_suffix (>= 2.0.2, < 7.0)
     ast (2.4.3)
-    async (1.32.1)
-      console (~> 1.10)
-      nio4r (~> 2.3)
-      timers (~> 4.1)
+    async (2.33.0)
+      console (~> 1.29)
+      fiber-annotation
+      io-event (~> 1.11)
+      metrics (~> 0.12)
+      traces (~> 0.18)
     async-http (0.64.2)
       async (>= 1.25)
       async-io (>= 1.28)
@@ -120,6 +122,7 @@ GEM
       json-repair (~> 0.2)
       mime-types (~> 3.6)
     io-console (0.8.1)
+    io-event (1.14.0)
     irb (1.15.2)
       pp (>= 0.6.0)
       rdoc (>= 4.0.0)
@@ -129,6 +132,7 @@ GEM
     language_server-protocol (3.17.0.5)
     lint_roller (1.1.0)
     logger (1.7.0)
+    metrics (0.15.0)
     mime-types (3.7.0)
       logger
       mime-types-data (~> 3.2025, >= 3.2025.0507)
@@ -139,7 +143,6 @@ GEM
     net-http (0.6.0)
       uri
     netrc (0.11.0)
-    nio4r (2.7.4)
     nokogiri (1.18.10-aarch64-linux-gnu)
       racc (~> 1.4)
     nokogiri (1.18.10-aarch64-linux-musl)
@@ -260,7 +263,6 @@ GEM
     stringio (3.1.7)
     strings-ansi (0.2.0)
     timeout (0.4.3)
-    timers (4.4.0)
     traces (0.18.2)
     tty-cursor (0.7.1)
     tty-progressbar (0.18.3)
@@ -293,7 +295,7 @@ PLATFORMS
 DEPENDENCIES
   activerecord (~> 7.1)
   activesupport (~> 7.1)
-  async (~> 1.32.1)
+  async (~> 2.33.0)
   boxcars!
   debug (~> 1.9)
   dotenv (~> 3.1)
