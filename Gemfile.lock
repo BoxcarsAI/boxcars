@@ -275,7 +275,7 @@ GEM
     uri (1.0.3)
     vcr (6.3.1)
       base64
-    webmock (3.24.0)
+    webmock (3.25.1)
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
@@ -311,7 +311,7 @@ DEPENDENCIES
   rubocop-rspec (~> 3.2)
   sqlite3 (~> 2.0)
   vcr (~> 6.3.1)
-  webmock (~> 3.24.0)
+  webmock (~> 3.25.1)
 
 BUNDLED WITH
    2.5.20
