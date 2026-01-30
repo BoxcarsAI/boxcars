@@ -171,7 +171,7 @@ GEM
     pg (1.6.2-x86_64-darwin)
     pg (1.6.2-x86_64-linux)
     pg (1.6.2-x86_64-linux-musl)
-    pgvector (0.2.2)
+    pgvector (0.3.2)
     posthog-ruby (3.3.2)
       concurrent-ruby (~> 1)
     pp (0.6.2)
@@ -301,7 +301,7 @@ DEPENDENCIES
   github_changelog_generator (~> 1.16)
   hnswlib (~> 0.9.0)
   pg (~> 1.5)
-  pgvector (~> 0.2.2)
+  pgvector (~> 0.3.2)
   posthog-ruby
   rake (~> 13.2)
   rest-client (~> 2.1)
