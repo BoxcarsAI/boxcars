@@ -56,7 +56,7 @@ module Boxcars
     def apply(input_list:, current_conversation: nil)
       response = generate(input_list:, current_conversation:)
       response.generations.to_h do |generation|
-        [output_key, generation[0].text]
+        [output_key, generation[0]&.text.to_s]
       end
     end
 
@@ -86,8 +86,12 @@ module Boxcars
       conversation = nil
       answer = nil
       4.times do
-        text = predict(current_conversation: conversation, **prediction_variables(inputs)).strip
-        answer = get_answer(text)
+        text = predict(current_conversation: conversation, **prediction_variables(inputs)).to_s.strip
+        answer = if text.empty?
+                   Result.from_error("Empty response from engine")
+                 else
+                   get_answer(text)
+                 end
         if answer.status == :error
           Boxcars.debug "have error, trying again: #{answer.answer}", :red
           conversation ||= Conversation.new

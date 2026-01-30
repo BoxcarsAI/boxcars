@@ -36,7 +36,7 @@ module Boxcars
     def generation_info(sub_choices)
       sub_choices.map do |choice|
         Generation.new(
-          text: choice.dig("message", "content") || choice["text"],
+          text: (choice.dig("message", "content") || choice["text"]).to_s,
           generation_info: {
             finish_reason: choice.fetch("finish_reason", nil),
             logprobs: choice.fetch("logprobs", nil)
