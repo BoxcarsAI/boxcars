@@ -55,41 +55,21 @@ module Boxcars
       params[:stop] = stop if stop
       choices = []
       token_usage = {}
+      token_usage_details = {}
+      raw_usage = []
       # Get the token usage from the response.
       # Includes prompt, completion, and total tokens used.
       inkeys = %w[completion_tokens prompt_tokens total_tokens].freeze
       prompts.each_slice(batch_size) do |sub_prompts|
         sub_prompts.each do |sprompt, inputs|
-          client_response = client(prompt: sprompt, inputs:, **params)
-
-          # All engines now return the parsed API response hash directly
-          api_response_hash = client_response
-
-          # Ensure we have a hash to work with
-          unless api_response_hash.is_a?(Hash)
-            raise TypeError, "Expected Hash from client method, got #{api_response_hash.class}: #{api_response_hash.inspect}"
-          end
-
-          validate_response!(api_response_hash)
-
-          current_choices = api_response_hash["choices"]
-          if current_choices.is_a?(Array)
-            choices.concat(current_choices)
-          elsif api_response_hash["output"]
-            # Synthesize a choice from non-Chat providers (e.g., OpenAI Responses API for GPT-5)
-            synthesized_text = extract_answer(api_response_hash)
-            choices << { "message" => { "content" => synthesized_text }, "finish_reason" => "stop" }
-          else
-            Boxcars.logger&.warn "No 'choices' or 'output' found in API response: #{api_response_hash.inspect}"
-          end
-
-          api_usage = api_response_hash["usage"]
-          if api_usage.is_a?(Hash)
-            usage_keys = inkeys & api_usage.keys
-            usage_keys.each { |key| token_usage[key] = token_usage[key].to_i + api_usage[key] }
-          else
-            Boxcars.logger&.warn "No 'usage' data found in API response: #{api_response_hash.inspect}"
-          end
+          process_generate_response!(
+            api_response_hash: client(prompt: sprompt, inputs:, **params),
+            choices:,
+            token_usage:,
+            token_usage_details:,
+            raw_usage:,
+            inkeys:
+          )
         end
       end
 
@@ -99,7 +79,79 @@ module Boxcars
         sub_choices = choices[i * n, (i + 1) * n]
         generations.push(generation_info(sub_choices))
       end
-      EngineResult.new(generations:, engine_output: { token_usage: })
+      EngineResult.new(generations:, engine_output: { token_usage:, token_usage_details:, raw_usage: })
+    end
+
+    def process_generate_response!(api_response_hash:, choices:, token_usage:, token_usage_details:, raw_usage:, inkeys:)
+      unless api_response_hash.is_a?(Hash)
+        raise TypeError, "Expected Hash from client method, got #{api_response_hash.class}: #{api_response_hash.inspect}"
+      end
+
+      validate_response!(api_response_hash)
+      append_generate_choices!(choices:, api_response_hash:)
+      aggregate_generate_usage!(api_response_hash:, token_usage:, token_usage_details:, raw_usage:, inkeys:)
+    end
+
+    def append_generate_choices!(choices:, api_response_hash:)
+      current_choices = api_response_hash["choices"]
+      if current_choices.is_a?(Array)
+        choices.concat(current_choices)
+      elsif api_response_hash["output"]
+        # Synthesize a choice from non-Chat providers (e.g., OpenAI Responses API for GPT-5)
+        synthesized_text = extract_answer(api_response_hash)
+        choices << { "message" => { "content" => synthesized_text }, "finish_reason" => "stop" }
+      else
+        Boxcars.logger&.warn "No 'choices' or 'output' found in API response: #{api_response_hash.inspect}"
+      end
+    end
+
+    def aggregate_generate_usage!(api_response_hash:, token_usage:, token_usage_details:, raw_usage:, inkeys:)
+      api_usage = api_response_hash["usage"]
+      unless api_usage.is_a?(Hash)
+        Boxcars.logger&.warn "No 'usage' data found in API response: #{api_response_hash.inspect}"
+        return
+      end
+
+      raw_usage << api_usage.dup
+      usage_keys = inkeys & api_usage.keys
+      usage_keys.each { |key| token_usage[key] = token_usage[key].to_i + api_usage[key] }
+      aggregate_token_usage_details!(token_usage_details:, api_usage:)
+    end
+
+    def aggregate_token_usage_details!(token_usage_details:, api_usage:)
+      input_tokens = usage_token_value(api_usage, "input_tokens") || usage_token_value(api_usage, "prompt_tokens")
+      output_tokens = usage_token_value(api_usage, "output_tokens") || usage_token_value(api_usage, "completion_tokens")
+      total_tokens = usage_token_value(api_usage, "total_tokens")
+      total_tokens ||= input_tokens + output_tokens if input_tokens && output_tokens
+
+      add_usage_detail!(token_usage_details, :input_tokens, input_tokens)
+      add_usage_detail!(token_usage_details, :output_tokens, output_tokens)
+      add_usage_detail!(token_usage_details, :total_tokens, total_tokens)
+
+      cached_input_tokens = usage_nested_token_value(api_usage, "input_tokens_details", "cached_tokens")
+      cached_input_tokens ||= usage_nested_token_value(api_usage, "prompt_tokens_details", "cached_tokens")
+      add_usage_detail!(token_usage_details, :cached_input_tokens, cached_input_tokens)
+
+      return unless input_tokens && !cached_input_tokens.nil?
+
+      add_usage_detail!(token_usage_details, :uncached_input_tokens, [input_tokens - cached_input_tokens, 0].max)
+    end
+
+    def add_usage_detail!(token_usage_details, key, value)
+      return if value.nil?
+
+      token_usage_details[key] = token_usage_details.fetch(key, 0) + value.to_i
+    end
+
+    def usage_token_value(usage_hash, key)
+      usage_hash[key] || usage_hash[key.to_sym]
+    end
+
+    def usage_nested_token_value(usage_hash, parent_key, key)
+      parent = usage_hash[parent_key] || usage_hash[parent_key.to_sym]
+      return nil unless parent.is_a?(Hash)
+
+      parent[key] || parent[key.to_sym]
     end
 
     def extract_answer(response)

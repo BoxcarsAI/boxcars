@@ -33,6 +33,16 @@ RSpec.describe Boxcars::Openai do
       "usage" => { "prompt_tokens" => 9, "completion_tokens" => 12, "total_tokens" => 21 }
     }
   end
+  let(:openai_chat_cached_success_response) do
+    openai_chat_success_response.merge(
+      "usage" => {
+        "prompt_tokens" => 9,
+        "completion_tokens" => 12,
+        "total_tokens" => 21,
+        "prompt_tokens_details" => { "cached_tokens" => 4 }
+      }
+    )
+  end
   let(:openai_completion_success_response) do
     {
       "id" => "cmpl-123",
@@ -46,6 +56,30 @@ RSpec.describe Boxcars::Openai do
         "finish_reason" => "stop"
       }],
       "usage" => { "prompt_tokens" => 5, "completion_tokens" => 7, "total_tokens" => 12 }
+    }
+  end
+  let(:openai_responses_cached_success_response) do
+    {
+      "id" => "resp_123",
+      "object" => "response",
+      "model" => "gpt-5-mini",
+      "output" => [
+        {
+          "type" => "message",
+          "content" => [
+            {
+              "type" => "output_text",
+              "text" => { "value" => "Cached response output" }
+            }
+          ]
+        }
+      ],
+      "usage" => {
+        "input_tokens" => 30,
+        "output_tokens" => 10,
+        "total_tokens" => 40,
+        "input_tokens_details" => { "cached_tokens" => 18 }
+      }
     }
   end
 
@@ -95,6 +129,41 @@ RSpec.describe Boxcars::Openai do
         expect(props[:$ai_is_error]).to be false
         expect(props[:$ai_http_status]).to eq(200) # Inferred on success
         expect(props).not_to have_key(:error_message)
+      end
+
+      it 'tracks cached input token observability fields when prompt cache details are present' do
+        allow(mock_openai_client).to receive(:chat).and_return(openai_chat_cached_success_response)
+
+        engine.client(prompt: prompt, inputs: inputs)
+
+        props = dummy_observability_backend.tracked_events.first[:properties]
+        expect(props[:$ai_input_tokens]).to eq(9)
+        expect(props[:$ai_output_tokens]).to eq(12)
+        expect(props[:$ai_input_cached_tokens]).to eq(4)
+        expect(props[:$ai_input_uncached_tokens]).to eq(5)
+      end
+    end
+
+    context 'when using the Responses API (e.g. gpt-5-mini)' do
+      let(:engine_params) { { model: "gpt-5-mini" } }
+      let(:mock_openai_responses_resource) { double("OpenAIResponsesResource") } # rubocop:disable RSpec/VerifiedDoubles
+
+      before do
+        allow(mock_openai_client).to receive(:responses).and_return(mock_openai_responses_resource)
+        allow(mock_openai_responses_resource).to receive(:create).and_return(openai_responses_cached_success_response)
+      end
+
+      it 'tracks cached input token observability fields from Responses API usage' do
+        engine.client(prompt: prompt, inputs: inputs)
+
+        expect(dummy_observability_backend.tracked_events.size).to eq(1)
+        props = dummy_observability_backend.tracked_events.first[:properties]
+        expect(props[:$ai_provider]).to eq("openai")
+        expect(props[:$ai_model]).to eq("gpt-5-mini")
+        expect(props[:$ai_input_tokens]).to eq(30)
+        expect(props[:$ai_output_tokens]).to eq(10)
+        expect(props[:$ai_input_cached_tokens]).to eq(18)
+        expect(props[:$ai_input_uncached_tokens]).to eq(12)
       end
     end
 
@@ -169,6 +238,93 @@ RSpec.describe Boxcars::Openai do
         expect(dummy_observability_backend.tracked_events.size).to eq(1)
         expect(dummy_observability_backend.tracked_events.first[:event]).to eq("$ai_generation")
       end
+    end
+  end
+
+  describe '#generate method (usage aggregation + caching)' do
+    let(:prompts_for_generate) do
+      [
+        [prompt, { product: "coffee shop" }],
+        [prompt, { product: "tea house" }]
+      ]
+    end
+    let(:responses_usage_payload) do
+      {
+        "id" => "resp_agg_1",
+        "object" => "response",
+        "output" => [
+          {
+            "type" => "message",
+            "content" => [
+              {
+                "type" => "output_text",
+                "text" => { "value" => "Responses API answer" }
+              }
+            ]
+          }
+        ],
+        "usage" => {
+          "input_tokens" => 100,
+          "output_tokens" => 20,
+          "total_tokens" => 120,
+          "input_tokens_details" => { "cached_tokens" => 60 }
+        }
+      }
+    end
+    let(:chat_usage_payload) do
+      {
+        "choices" => [
+          {
+            "message" => { "role" => "assistant", "content" => "Chat Completions answer" },
+            "finish_reason" => "stop"
+          }
+        ],
+        "usage" => {
+          "prompt_tokens" => 15,
+          "completion_tokens" => 5,
+          "total_tokens" => 20,
+          "prompt_tokens_details" => { "cached_tokens" => 3 }
+        }
+      }
+    end
+    let(:aggregating_engine_class) do
+      Class.new(described_class) do
+        def initialize(mock_responses:, **kwargs)
+          @mock_responses = mock_responses.dup
+          super(**kwargs)
+        end
+
+        def client(*, **)
+          @mock_responses.shift
+        end
+      end
+    end
+    let(:aggregating_engine) do
+      aggregating_engine_class.new(
+        mock_responses: [responses_usage_payload, chat_usage_payload],
+        model: "gpt-5-mini",
+        batch_size: 1
+      )
+    end
+
+    it 'keeps token_usage and adds normalized cached usage details across OpenAI formats' do
+      result = aggregating_engine.generate(prompts: prompts_for_generate)
+
+      expect(result.engine_output[:token_usage]).to eq(
+        "prompt_tokens" => 15,
+        "completion_tokens" => 5,
+        "total_tokens" => 140
+      )
+      expect(result.engine_output[:token_usage_details]).to eq(
+        input_tokens: 115,
+        output_tokens: 25,
+        total_tokens: 140,
+        cached_input_tokens: 63,
+        uncached_input_tokens: 52
+      )
+      expect(result.engine_output[:raw_usage]).to eq(
+        [responses_usage_payload["usage"], chat_usage_payload["usage"]]
+      )
     end
   end
 end

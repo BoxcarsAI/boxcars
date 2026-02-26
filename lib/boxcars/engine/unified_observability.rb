@@ -33,6 +33,7 @@ module Boxcars
       # Extract token counts from response if available
       input_tokens = extract_input_tokens(response_data, provider)
       output_tokens = extract_output_tokens(response_data, provider)
+      cached_input_tokens = extract_cached_input_tokens(response_data, provider)
 
       # Format output choices for PostHog
       ai_output_choices = extract_output_choices(response_data, provider)
@@ -55,6 +56,11 @@ module Boxcars
         '$ai_is_error': !response_data[:success],
         user_id:
       }
+
+      unless cached_input_tokens.nil?
+        properties[:$ai_input_cached_tokens] = cached_input_tokens
+        properties[:$ai_input_uncached_tokens] = [input_tokens.to_i - cached_input_tokens.to_i, 0].max
+      end
 
       # Add error details if present
       properties[:$ai_error] = extract_error_message(response_data, provider) if response_data[:error] || !response_data[:success]
@@ -199,7 +205,8 @@ module Boxcars
       when 'anthropic'
         response_body.dig("usage", "input_tokens") || 0
       when 'openai'
-        response_body.dig("usage", "prompt_tokens") || 0
+        usage_value(response_body, %w[usage input_tokens], %i[usage input_tokens],
+                    %w[usage prompt_tokens], %i[usage prompt_tokens]) || 0
       when 'cohere'
         response_body.dig("meta", "tokens", "input_tokens") ||
           response_body.dig(:meta, :tokens, :input_tokens) ||
@@ -226,7 +233,8 @@ module Boxcars
       when 'anthropic'
         response_body.dig("usage", "output_tokens") || 0
       when 'openai'
-        response_body.dig("usage", "completion_tokens") || 0
+        usage_value(response_body, %w[usage output_tokens], %i[usage output_tokens],
+                    %w[usage completion_tokens], %i[usage completion_tokens]) || 0
       when 'cohere'
         response_body.dig("meta", "tokens", "output_tokens") ||
           response_body.dig(:meta, :tokens, :output_tokens) ||
@@ -241,6 +249,41 @@ module Boxcars
           response_body.dig("token_count", "completion_tokens") ||
           0
       end
+    end
+
+    def extract_cached_input_tokens(response_data, provider)
+      return nil unless response_data[:parsed_json]
+
+      response_body = response_data[:parsed_json]
+
+      case provider.to_s
+      when 'openai'
+        usage_value(response_body,
+                    %w[usage input_tokens_details cached_tokens],
+                    %i[usage input_tokens_details cached_tokens],
+                    %w[usage prompt_tokens_details cached_tokens],
+                    %i[usage prompt_tokens_details cached_tokens])
+      end
+    end
+
+    def usage_value(payload, *paths)
+      paths.each do |path|
+        current = payload
+        found = true
+
+        path.each do |key|
+          unless current.is_a?(Hash) && current.key?(key)
+            found = false
+            break
+          end
+
+          current = current[key]
+        end
+
+        return current if found
+      end
+
+      nil
     end
 
     # Provider-specific output extraction with fallbacks

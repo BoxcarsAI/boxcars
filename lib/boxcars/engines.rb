@@ -46,7 +46,7 @@ module Boxcars
       when /^together-/
         Boxcars::Together.new(model: model[9..-1], **kw_args)
       when "cerebras"
-        Boxcars::Cerebras.new(model: "llama-3.3-70b", **kw_args)
+        Boxcars::Cerebras.new(model: "gpt-oss-120b", **kw_args)
       when "qwen"
         Boxcars::Together.new(model: "Qwen/Qwen2.5-VL-72B-Instruct", **kw_args)
       else
