@@ -51,7 +51,7 @@ module Boxcars
       reject_deprecated_backend_kwargs!(kwargs)
       current_params   = open_ai_params.merge(kwargs)
       is_chat_model    = chat_model?(current_params[:model])
-      prompt_object    = normalize_prompt_object(prompt)
+      prompt_object    = prompt
       api_request      = build_api_request(prompt_object, inputs, current_params, chat: is_chat_model)
 
       begin

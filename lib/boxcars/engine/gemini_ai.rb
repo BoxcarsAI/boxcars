@@ -39,7 +39,7 @@ module Boxcars
       response_data = { response_obj: nil, parsed_json: nil, success: false, error: nil, status_code: nil }
       current_params = @llm_params.merge(kwargs)
       api_request_params = nil
-      current_prompt_object = normalize_prompt_object(prompt)
+      current_prompt_object = prompt
 
       begin
         clnt = self.class.provider_client(gemini_api_key:)

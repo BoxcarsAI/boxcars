@@ -48,7 +48,7 @@ module Boxcars
       start_time = Time.now
       response_data = { response_obj: nil, parsed_json: nil, success: false, error: nil, status_code: nil }
       current_params = llm_params.merge(kwargs)
-      current_prompt_object = normalize_prompt_object(prompt)
+      current_prompt_object = prompt
       api_request_params = nil
 
       begin
