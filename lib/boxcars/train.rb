@@ -129,25 +129,6 @@ module Boxcars
       final_output
     end
 
-    # validate the prompt
-    # @param values [Hash] The values to validate.
-    # @return [Hash] The validated values.
-    # @raise [RuntimeError] If the prompt is invalid.
-    def validate_prompt(values:)
-      prompt = values["engine_chain"].prompt
-      unless prompt.input_variables.include?(:agent_scratchpad)
-        logger.warning("`agent_scratchpad` should be a variable in prompt.input_variables. Not found, adding it at the end.")
-        prompt.input_variables.append(:agent_scratchpad)
-        case prompt
-        when Prompt
-          prompt.template += "\n%<agent_scratchpad>s"
-        else
-          raise ValueError, "Got unexpected prompt type #{type(prompt)}"
-        end
-      end
-      values
-    end
-
     # get the stopped response
     # @param early_stopping_method [String] The early stopping method.
     # @param intermediate_steps [Array] The intermediate steps.
@@ -249,10 +230,6 @@ module Boxcars
     # this is for the scratchpad
     def observation_text(observation)
       key_and_value_text(observation_prefix, observation)
-    end
-
-    def question_text(question)
-      key_and_value_text(question_prefix, question)
     end
 
     def boxcar_names
