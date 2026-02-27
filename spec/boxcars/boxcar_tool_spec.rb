@@ -202,5 +202,21 @@ RSpec.describe Boxcars::Boxcar do
         boxcar.run("hello")
       end.to raise_error(Boxcars::Error, /#call must return a Hash/)
     end
+
+    it "returns a ConductResult from #conduct" do
+      boxcar = result_boxcar_class.new(description: "Result wrapper")
+      expect(boxcar.conduct("hello")).to be_a(Boxcars::ConductResult)
+    end
+
+    it "supports legacy result[:answer].answer with a deprecation warning" do
+      Boxcars::ConductResult.reset_deprecation_warnings!
+      allow(Boxcars).to receive(:warn)
+
+      boxcar = result_boxcar_class.new(description: "Result wrapper")
+      result = boxcar.conduct("hello")
+
+      expect(result[:answer].answer).to eq("echo: hello")
+      expect(Boxcars).to have_received(:warn).once
+    end
   end
 end

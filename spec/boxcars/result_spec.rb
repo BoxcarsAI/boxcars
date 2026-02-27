@@ -25,6 +25,15 @@ RSpec.describe Boxcars::Result do
     it "returns nil for non-hash, non-result values" do
       expect(described_class.extract("hello")).to be_nil
     end
+
+    it "extracts from ConductResult without triggering legacy hash access warnings" do
+      Boxcars::ConductResult.reset_deprecation_warnings!
+      allow(Boxcars).to receive(:warn)
+
+      conduct_result = Boxcars::ConductResult.new(answer: result, input: "hello")
+      expect(described_class.extract(conduct_result)).to eq(result)
+      expect(Boxcars).not_to have_received(:warn)
+    end
   end
 
   describe ".valid_conduct_payload?" do

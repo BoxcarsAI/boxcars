@@ -57,6 +57,8 @@ if result&.ok?
 end
 ```
 
+Legacy `result[:answer].answer` still works for now, but emits a one-time deprecation warning.
+
 ## 1. Model Alias Migration (Do This First)
 
 Deprecated aliases still work in v0.9, but emit one-time warnings.

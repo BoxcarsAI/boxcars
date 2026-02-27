@@ -90,8 +90,8 @@ module Boxcars
     #   this method returns `result.answer`.
     def run(*, **)
       rv = conduct(*, **)
-      rv = rv[:answer] if rv.is_a?(Hash) && rv.key?(:answer)
-      return rv.answer if rv.is_a?(Result)
+      result = Result.extract(rv)
+      return result.answer if result
       return rv[output_keys[0]] if rv.is_a?(Hash)
 
       rv
@@ -313,7 +313,7 @@ module Boxcars
       validate_outputs(outputs: output.keys)
       return output if return_only_outputs
 
-      inputs.merge(output)
+      ConductResult.new(inputs.merge(output))
     end
 
     # line up parameters and run boxcar
@@ -352,6 +352,7 @@ end
 
 require "boxcars/observation"
 require "boxcars/result"
+require "boxcars/conduct_result"
 require "boxcars/boxcar/engine_boxcar"
 require "boxcars/boxcar/json_engine_boxcar"
 require "boxcars/boxcar/xml_engine_boxcar"

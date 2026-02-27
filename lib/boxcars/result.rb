@@ -76,6 +76,10 @@ module Boxcars
     # @return [Boxcars::Result,nil] Extracted result when present.
     def self.extract(value)
       return value if value.is_a?(Result)
+      if value.respond_to?(:answer_result)
+        candidate = value.answer_result
+        return candidate if candidate.is_a?(Result)
+      end
       return nil unless value.is_a?(Hash)
 
       candidate = value[:answer] || value["answer"]
