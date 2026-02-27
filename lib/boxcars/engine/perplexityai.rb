@@ -6,6 +6,7 @@ module Boxcars
   # A engine that uses PerplexityAI's API.
   class Perplexityai < Engine
     include UnifiedObservability
+    include OpenAICompatibleChatHelpers
 
     attr_reader :prompts, :perplexity_params, :model_kwargs, :batch_size
 
@@ -86,8 +87,7 @@ module Boxcars
           response_data[:error] = StandardError.new(msg)
         end
       rescue StandardError => e
-        response_data[:error] = e
-        response_data[:success] = false
+        handle_openai_compatible_standard_error(e, response_data)
         if defined?(Faraday::Error) && e.is_a?(Faraday::Error)
           response_data[:status_code] = e.response_status if e.respond_to?(:response_status)
           response_data[:response_obj] = e.response if e.respond_to?(:response)
@@ -160,12 +160,6 @@ module Boxcars
 
       # Remove unsupported parameters like stop, response_format, etc.
       params.select { |key, _| supported_keys.include?(key.to_sym) }
-    end
-
-    def log_messages_debug(messages)
-      return unless messages.is_a?(Array)
-
-      Boxcars.debug(messages.last(2).map { |p| ">>>>>> Role: #{p[:role]} <<<<<<\n#{p[:content]}" }.join("\n"), :cyan)
     end
 
     def _perplexity_handle_call_outcome(response_data:)

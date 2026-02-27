@@ -47,6 +47,10 @@ module Boxcars
     def openai_compatible_error_status_code(error)
       return error.http_status if error.respond_to?(:http_status) && error.http_status
       return error.status if error.respond_to?(:status) && error.status
+      if error.respond_to?(:response) && error.response.is_a?(Hash)
+        response_status = error.response[:status] || error.response["status"]
+        return response_status if response_status
+      end
 
       500
     end

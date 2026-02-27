@@ -5,6 +5,7 @@ module Boxcars
   # A engine that uses Cohere's API.
   class Cohere < Engine
     include UnifiedObservability
+    include OpenAICompatibleChatHelpers
 
     attr_reader :prompts, :llm_params, :model_kwargs, :batch_size
 
@@ -41,20 +42,13 @@ module Boxcars
 
     def chat(params, cohere_api_key)
       Boxcars::OptionalDependency.require!("faraday", feature: "Boxcars::Cohere")
-      raise Boxcars::ConfigurationError('Cohere API key not set') if cohere_api_key.to_s.strip.empty?
+      ensure_cohere_api_key!(
+        cohere_api_key,
+        error_class: Boxcars::ConfigurationError,
+        message: "Cohere API key not set"
+      )
 
-      # Define the API endpoint and parameters
-      api_endpoint = 'https://api.cohere.ai/v1/chat'
-
-      connection = Faraday.new(api_endpoint) do |faraday|
-        faraday.request :url_encoded
-        faraday.headers['Authorization'] = "Bearer #{cohere_api_key}"
-        faraday.headers['Content-Type'] = 'application/json'
-      end
-
-      # Make the API call
-      response = connection.post { |req| req.body = params.to_json }
-      JSON.parse(response.body, symbolize_names: true)
+      parse_cohere_response_body(post_cohere_chat(params, cohere_api_key).body)
     end
 
     # Get an answer from the engine.
@@ -152,19 +146,8 @@ module Boxcars
     # Make the actual API call to Cohere
     def _cohere_api_call(params, api_key)
       Boxcars::OptionalDependency.require!("faraday", feature: "Boxcars::Cohere")
-      raise Boxcars::Error, 'Cohere API key not set' if api_key.to_s.strip.empty?
-
-      # Define the API endpoint and parameters
-      api_endpoint = 'https://api.cohere.ai/v1/chat'
-
-      connection = Faraday.new(api_endpoint) do |faraday|
-        faraday.request :url_encoded
-        faraday.headers['Authorization'] = "Bearer #{api_key}"
-        faraday.headers['Content-Type'] = 'application/json'
-      end
-
-      # Make the API call
-      connection.post { |req| req.body = params.to_json }
+      ensure_cohere_api_key!(api_key, error_class: Boxcars::Error, message: "Cohere API key not set")
+      post_cohere_chat(params, api_key)
     end
 
     # Process the raw response from Cohere API
@@ -192,7 +175,7 @@ module Boxcars
     def _handle_cohere_error(error, response_data)
       response_data[:error] = error
       response_data[:success] = false
-      response_data[:status_code] = error.respond_to?(:response) && error.response ? error.response[:status] : nil
+      response_data[:status_code] = openai_compatible_error_status_code(error)
     end
 
     # Track observability using the unified system
@@ -247,6 +230,28 @@ module Boxcars
         end
       end
       raise Error, msg
+    end
+
+    def post_cohere_chat(params, api_key)
+      cohere_connection(api_key).post { |req| req.body = params.to_json }
+    end
+
+    def cohere_connection(api_key)
+      Faraday.new('https://api.cohere.ai/v1/chat') do |faraday|
+        faraday.request :url_encoded
+        faraday.headers['Authorization'] = "Bearer #{api_key}"
+        faraday.headers['Content-Type'] = 'application/json'
+      end
+    end
+
+    def ensure_cohere_api_key!(api_key, error_class:, message:)
+      return unless api_key.to_s.strip.empty?
+
+      raise error_class, message
+    end
+
+    def parse_cohere_response_body(body)
+      JSON.parse(body, symbolize_names: true)
     end
   end
 end
