@@ -7,7 +7,7 @@ module Boxcars
     include UnifiedObservability
     include OpenAICompatibleChatHelpers
 
-    attr_reader :llm_params, :model_kwargs
+    attr_reader :llm_params
 
     # The default parameters to use when asking the engine.
     DEFAULT_PARAMS = {

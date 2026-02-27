@@ -13,7 +13,7 @@ module Boxcars
   class Gpt4allEng < Engine
     include UnifiedObservability
 
-    attr_reader :model_kwargs, :gpt4all_params
+    attr_reader :gpt4all_params
 
     DEFAULT_NAME = "Gpt4all engine"
     DEFAULT_DESCRIPTION = "useful for when you need to use local AI to answer questions. " \

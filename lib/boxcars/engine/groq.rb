@@ -8,7 +8,7 @@ module Boxcars
     include UnifiedObservability
     include OpenAICompatibleChatHelpers
 
-    attr_reader :groq_params, :model_kwargs
+    attr_reader :groq_params
 
     DEFAULT_PARAMS = {
       model: "llama3-70b-8192",
