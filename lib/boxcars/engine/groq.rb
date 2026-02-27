@@ -96,9 +96,5 @@ module Boxcars
     def default_params
       @groq_params
     end
-
-    def validate_response!(response, must_haves: %w[choices])
-      super
-    end
   end
 end

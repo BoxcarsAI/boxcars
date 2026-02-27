@@ -119,20 +119,8 @@ module Boxcars
       answer
     end
 
-    def extract_answer(response)
-      if response.is_a?(Hash) && response["choices"]
-        response["choices"].map { |c| c.dig("message", "content") }.join("\n").strip
-      else
-        response.to_s
-      end
-    end
-
     def default_params
       @perplexity_params
-    end
-
-    def validate_response!(response, must_haves: %w[choices])
-      super
     end
 
     private
