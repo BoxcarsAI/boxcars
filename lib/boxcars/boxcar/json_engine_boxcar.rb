@@ -247,7 +247,6 @@ module Boxcars
     def native_json_schema_generation_supported?
       return false unless json_schema.is_a?(Hash)
       return false unless engine.respond_to?(:supports?) && engine.supports?(:structured_output_json_schema)
-      return false if engine.respond_to?(:supports?) && engine.supports?(:responses_api)
 
       true
     end

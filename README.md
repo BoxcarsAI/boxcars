@@ -396,6 +396,7 @@ json_claude = Boxcars::Engines.json_engine(model: "sonnet")
 `JSONEngineBoxcar` is designed for application code paths where you want structured fields instead of prompt-parsing strings.
 In real-world `apiserver` usage, this wrapper has been a major time saver for keeping LLM responses predictable.
 With JSON Schema support, it can now validate output contracts directly in the boxcar layer.
+When the selected engine supports native structured outputs, Boxcars sends the schema directly to the provider API (including OpenAI Responses models like `gpt-5-*`).
 
 ```ruby
 schema = {

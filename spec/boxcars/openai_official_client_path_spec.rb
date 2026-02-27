@@ -97,4 +97,47 @@ RSpec.describe "Boxcars::Openai official client path" do
     engine = Boxcars::Openai.new(model: "gpt-5-mini")
     expect(engine.run("Write a short tagline")).to eq("Responses answer")
   end
+
+  it "maps chat-style response_format json_schema to Responses text.format" do
+    responses_resource = double("OfficialResponsesResource") # rubocop:disable RSpec/VerifiedDoubles
+    response_object = double( # rubocop:disable RSpec/VerifiedDoubles
+      "OfficialResponsesResponse",
+      to_h: {
+        id: "resp_124",
+        output_text: "{\"share_count\":\"12,321,999\"}"
+      }
+    )
+    schema = {
+      type: "object",
+      properties: { share_count: { type: "string" } },
+      required: ["share_count"],
+      additionalProperties: false
+    }
+
+    allow(official_client).to receive(:respond_to?).with(:responses).and_return(true)
+    allow(official_client).to receive(:responses).and_return(responses_resource)
+    expect(responses_resource).to receive(:create).with(hash_including(
+      model: "gpt-5-mini",
+      input: kind_of(String),
+      text: {
+        format: {
+          type: "json_schema",
+          name: "boxcars_json_output",
+          strict: true,
+          schema: {
+            "type" => "object",
+            "properties" => { "share_count" => { "type" => "string" } },
+            "required" => ["share_count"],
+            "additionalProperties" => false
+          }
+        }
+      }
+    )).and_return(response_object)
+
+    boxcar = Boxcars::JSONEngineBoxcar.new(
+      engine: Boxcars::Openai.new(model: "gpt-5-mini"),
+      json_schema: schema
+    )
+    expect(boxcar.run("extract shares")).to eq({ "share_count" => "12,321,999" })
+  end
 end

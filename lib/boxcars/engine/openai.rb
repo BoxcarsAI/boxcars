@@ -169,18 +169,55 @@ module Boxcars
 
       p = params.dup
       explicit_response_input = p.delete(:response_input)
+      response_format = p.delete(:response_format)
       p.delete(:messages)
-      p.delete(:response_format)
       p.delete(:stop)
       p.delete(:temperature)
       p[:max_output_tokens] = p.delete(:max_tokens) if p.key?(:max_tokens) && !p.key?(:max_output_tokens)
       if (effort = p.delete(:reasoning_effort))
         p[:reasoning] = { effort: effort }
       end
+      if response_format
+        p[:text] = merge_responses_text_format(text: p[:text], response_format: response_format)
+      end
 
       formatted = { model: p[:model], input: explicit_response_input || input_str, _use_responses_api: true }
       p.each { |k, v| formatted[k] = v unless k == :model }
       formatted
+    end
+
+    def merge_responses_text_format(text:, response_format:)
+      existing_text = text.is_a?(Hash) ? symbolize_keys_shallow(text) : {}
+      normalized_format = normalize_responses_text_format(response_format)
+      existing_text.merge(format: normalized_format)
+    end
+
+    def normalize_responses_text_format(response_format)
+      return response_format unless response_format.is_a?(Hash)
+
+      format = symbolize_keys_shallow(response_format)
+      return format unless format[:type].to_s == "json_schema"
+
+      schema_payload = if format[:json_schema].is_a?(Hash)
+                         symbolize_keys_shallow(format[:json_schema])
+                       else
+                         format
+                       end
+
+      {
+        type: "json_schema",
+        name: schema_payload[:name],
+        description: schema_payload[:description],
+        strict: schema_payload[:strict],
+        schema: schema_payload[:schema]
+      }.compact
+    end
+
+    def symbolize_keys_shallow(hash)
+      hash.each_with_object({}) do |(key, value), out|
+        normalized_key = key.is_a?(String) || key.is_a?(Symbol) ? key.to_sym : key
+        out[normalized_key] = value
+      end
     end
 
     def messages_to_input(messages)

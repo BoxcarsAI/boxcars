@@ -36,6 +36,30 @@ RSpec.describe Boxcars::JSONEngineBoxcar do
     end
   end
 
+  let(:responses_structured_engine_class) do
+    Class.new(Boxcars::Engine) do
+      attr_reader :calls
+
+      def initialize
+        @calls = []
+        super(description: "responses structured fake")
+      end
+
+      def capabilities
+        super.merge(structured_output_json_schema: true, responses_api: true)
+      end
+
+      def client(prompt:, inputs: {}, **kwargs)
+        @calls << { prompt:, inputs:, kwargs: }
+        { "output_text" => '{"share_count":"12,321,999"}' }
+      end
+
+      def run(_question)
+        raise NotImplementedError
+      end
+    end
+  end
+
   describe "#get_answer with json_schema" do
     let(:schema) do
       {
@@ -96,6 +120,37 @@ RSpec.describe Boxcars::JSONEngineBoxcar do
 
       response_format = engine.calls.first[:kwargs][:response_format]
       expect(response_format).to eq(
+        {
+          type: "json_schema",
+          json_schema: {
+            name: "boxcars_json_output",
+            strict: true,
+            schema: {
+              "type" => "object",
+              "properties" => { "share_count" => { "type" => "string" } },
+              "required" => ["share_count"],
+              "additionalProperties" => false
+            }
+          }
+        }
+      )
+    end
+
+    it "also uses native response_format for responses-capable engines" do
+      schema = {
+        type: "object",
+        properties: { share_count: { type: "string" } },
+        required: ["share_count"],
+        additionalProperties: false
+      }
+      engine = responses_structured_engine_class.new
+      boxcar = described_class.new(engine:, json_schema: schema)
+
+      result = boxcar.run("extract shares")
+
+      expect(result).to eq({ "share_count" => "12,321,999" })
+      expect(engine.calls.length).to eq(1)
+      expect(engine.calls.first[:kwargs][:response_format]).to eq(
         {
           type: "json_schema",
           json_schema: {
