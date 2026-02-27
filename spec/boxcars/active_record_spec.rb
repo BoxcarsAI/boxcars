@@ -20,6 +20,10 @@ RSpec.describe Boxcars::ActiveRecord do
   context "with sample helpdesk app all models" do
     boxcar = described_class.new
 
+    it "declares :model_info as a prompt dependency" do
+      expect(boxcar.prompt.other_inputs).to include(:model_info)
+    end
+
     it "can count comments from john" do
       VCR.use_cassette("ar1") do
         expect(boxcar.run("count how many comments are there from John?")).to eq(2)
