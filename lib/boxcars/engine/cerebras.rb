@@ -1,36 +1,45 @@
 # frozen_string_literal: true
 
 module Boxcars
-  # A engine that uses Cerebras's API
-  class Cerebras < IntelligenceBase
+  # Engine that uses Cerebras's OpenAI-compatible API.
+  class Cerebras < Openai
     # The default parameters to use when asking the engine
     DEFAULT_PARAMS = {
       model: "llama-3.3-70b",
-      temperature: 0.1
+      temperature: 0.1,
+      max_tokens: 4096
     }.freeze
 
-    # the default name of the engine
+    URI_BASE = "https://api.cerebras.ai/v1"
+
     DEFAULT_NAME = "Cerebras engine"
-    # the default description of the engine
     DEFAULT_DESCRIPTION = "useful for when you need to use Cerebras to process complex content. " \
                           "Supports text, images, and other content types"
 
-    # A Cerebras Engine is used by Boxcars to generate output from prompts
-    # @param name [String] The name of the Engine. Defaults to classname.
-    # @param description [String] A description of the Engine.
-    # @param prompts [Array<Prompt>] The prompts to use for the Engine.
-    # @param batch_size [Integer] The number of prompts to send to the Engine at a time.
-    # @param kwargs [Hash] Additional parameters to pass to the Engine.
-    def initialize(name: DEFAULT_NAME, description: DEFAULT_DESCRIPTION, prompts: [], batch_size: 20, **)
-      super(provider: :cerebras, description:, name:, prompts:, batch_size:, **)
+    def initialize(name: DEFAULT_NAME, description: DEFAULT_DESCRIPTION, prompts: [], batch_size: 20, **kwargs)
+      super(name:, description:, prompts:, batch_size:, **DEFAULT_PARAMS.merge(kwargs))
     end
 
-    def default_model_params
-      DEFAULT_PARAMS
+    def client(prompt:, inputs: {}, cerebras_api_key: nil, **kwargs)
+      kwargs = kwargs.dup
+      kwargs.delete(:openai_client_backend)
+      kwargs.delete(:client_backend)
+      super(prompt:, inputs:, openai_access_token: cerebras_api_key, openai_client_backend: :ruby_openai, **kwargs)
     end
 
-    def lookup_provider_api_key(params:)
-      Boxcars.configuration.cerebras_api_key(**params)
+    def self.open_ai_client(openai_access_token: nil, backend: nil)
+      access_token = Boxcars.configuration.cerebras_api_key(cerebras_api_key: openai_access_token)
+      Boxcars::OpenAIClientAdapter.build(
+        access_token:,
+        uri_base: URI_BASE,
+        backend: backend || :ruby_openai
+      )
+    end
+
+    private
+
+    def chat_model?(_model_name)
+      true
     end
   end
 end

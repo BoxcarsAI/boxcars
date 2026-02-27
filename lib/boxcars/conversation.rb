@@ -96,6 +96,12 @@ module Boxcars
     end
 
     def as_intelligence_conversation(inputs: nil)
+      unless defined?(::Intelligence::Conversation) && defined?(::Intelligence::Message) && defined?(::Intelligence::MessageContent::Text)
+        raise Boxcars::ConfigurationError,
+              "Intelligence conversation conversion requires the `intelligence` gem. " \
+              "Add `gem \"intelligence\"` to your application."
+      end
+
       conversation = Intelligence::Conversation.new
       no_history.each do |ln|
         message = Intelligence::Message.new(ln[0])

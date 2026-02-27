@@ -1,7 +1,12 @@
 # frozen_string_literal: true
 
-require 'intelligence'
 require_relative 'unified_observability'
+
+begin
+  require "intelligence"
+rescue LoadError
+  # Optional dependency: kept for backward compatibility with custom engines.
+end
 
 module Boxcars
   # A Base class for all Intelligence Engines
@@ -35,6 +40,7 @@ module Boxcars
     end
 
     def adapter(params:, api_key:)
+      ensure_intelligence_available!
       Intelligence::Adapter.build! @provider do |config|
         config.key api_key
         config.chat_options params
@@ -64,6 +70,7 @@ module Boxcars
 
     # Get an answer from the engine
     def client(prompt:, inputs: {}, api_key: nil, **kwargs)
+      ensure_intelligence_available!
       params = all_params.merge(kwargs)
       api_key ||= lookup_provider_api_key(params:)
       raise Error, "No API key found for #{provider}" unless api_key
@@ -119,6 +126,17 @@ module Boxcars
     end
 
     private
+
+    def ensure_intelligence_available!
+      return if intelligence_available?
+
+      raise Boxcars::ConfigurationError,
+            "IntelligenceBase requires the `intelligence` gem. Add `gem \"intelligence\"` to your application to use it."
+    end
+
+    def intelligence_available?
+      defined?(::Intelligence::Adapter) && defined?(::Intelligence::ChatRequest)
+    end
 
     def validate_response!(response, must_haves: %w[choices])
       super

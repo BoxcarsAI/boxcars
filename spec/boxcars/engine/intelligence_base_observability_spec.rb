@@ -6,6 +6,64 @@ require 'boxcars/prompt'
 
 # Stub Intelligence::ChatResponse to allow instance_double to work
 module Intelligence
+  module Adapter
+    class Base
+      def initialize(*)
+      end
+    end
+  end
+
+  class Conversation
+    attr_reader :messages
+
+    def initialize
+      @messages = []
+    end
+
+    def to_h
+      { messages: messages.map(&:to_h) }
+    end
+  end
+
+  class Message
+    attr_reader :role, :content
+
+    def initialize(role)
+      @role = role
+      @content = []
+    end
+
+    def <<(item)
+      @content << item
+    end
+
+    def to_h
+      {
+        role: role,
+        content: content.map(&:to_h)
+      }
+    end
+  end
+
+  module MessageContent
+    class Text
+      attr_reader :text
+
+      def initialize(text:)
+        @text = text
+      end
+
+      def to_h
+        { type: "text", text: text }
+      end
+    end
+  end
+
+  class ChatRequest
+    def chat(*)
+    end
+  end
+
   class ChatResponse
     def success?
     end

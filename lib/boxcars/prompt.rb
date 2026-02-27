@@ -51,6 +51,12 @@ module Boxcars
     # @param inputs [Hash] The inputs to use for the prompt
     # @return [Intelligence::Conversation] The converted conversation
     def as_intelligence_conversation(inputs: nil)
+      unless defined?(::Intelligence::Conversation) && defined?(::Intelligence::Message) && defined?(::Intelligence::MessageContent::Text)
+        raise Boxcars::ConfigurationError,
+              "Intelligence prompt conversion requires the `intelligence` gem. " \
+              "Add `gem \"intelligence\"` to your application."
+      end
+
       conversation = Intelligence::Conversation.new
       user_msg = Intelligence::Message.new(:user)
       user_msg << Intelligence::MessageContent::Text.new(text: format(inputs))

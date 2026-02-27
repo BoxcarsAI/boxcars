@@ -4,6 +4,9 @@ require "spec_helper"
 require "boxcars/engine/groq"
 require "boxcars/engine/gemini_ai"
 require "boxcars/engine/ollama"
+require "boxcars/engine/google"
+require "boxcars/engine/cerebras"
+require "boxcars/engine/together"
 
 RSpec.describe "OpenAI-compatible provider backend pinning" do
   around do |example|
@@ -46,5 +49,41 @@ RSpec.describe "OpenAI-compatible provider backend pinning" do
     )
 
     Boxcars::Ollama.ollama_client
+  end
+
+  it "pins Google to ruby_openai regardless of global backend" do
+    allow(Boxcars.configuration).to receive(:gemini_api_key).with(gemini_api_key: nil).and_return("google-key")
+
+    expect(Boxcars::OpenAICompatibleClient).to receive(:build).with(hash_including(
+                                                                      access_token: "google-key",
+                                                                      uri_base: "https://generativelanguage.googleapis.com/v1beta/",
+                                                                      backend: :ruby_openai
+                                                                    ))
+
+    Boxcars::Google.open_ai_client
+  end
+
+  it "pins Cerebras to ruby_openai regardless of global backend" do
+    allow(Boxcars.configuration).to receive(:cerebras_api_key).with(cerebras_api_key: nil).and_return("cerebras-key")
+
+    expect(Boxcars::OpenAICompatibleClient).to receive(:build).with(hash_including(
+                                                                      access_token: "cerebras-key",
+                                                                      uri_base: "https://api.cerebras.ai/v1",
+                                                                      backend: :ruby_openai
+                                                                    ))
+
+    Boxcars::Cerebras.open_ai_client
+  end
+
+  it "pins Together to ruby_openai regardless of global backend" do
+    allow(Boxcars.configuration).to receive(:together_api_key).with(together_api_key: nil).and_return("together-key")
+
+    expect(Boxcars::OpenAICompatibleClient).to receive(:build).with(hash_including(
+                                                                      access_token: "together-key",
+                                                                      uri_base: "https://api.together.xyz/v1",
+                                                                      backend: :ruby_openai
+                                                                    ))
+
+    Boxcars::Together.open_ai_client
   end
 end
