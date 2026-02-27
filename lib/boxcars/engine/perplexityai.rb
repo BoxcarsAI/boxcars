@@ -8,7 +8,7 @@ module Boxcars
     include UnifiedObservability
     include OpenAICompatibleChatHelpers
 
-    attr_reader :prompts, :perplexity_params, :model_kwargs, :batch_size
+    attr_reader :perplexity_params, :model_kwargs
 
     DEFAULT_PARAMS = {
       model: "llama-3-sonar-large-32k-online",

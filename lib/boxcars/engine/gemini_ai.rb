@@ -8,7 +8,7 @@ module Boxcars
     include UnifiedObservability
     include OpenAICompatibleChatHelpers
 
-    attr_reader :prompts, :llm_params, :model_kwargs, :batch_size
+    attr_reader :llm_params, :model_kwargs
 
     DEFAULT_PARAMS = {
       model: "gemini-2.5-flash",

@@ -8,7 +8,7 @@ module Boxcars
     include UnifiedObservability
     include OpenAICompatibleChatHelpers
 
-    attr_reader :prompts, :model_kwargs, :batch_size, :ollama_params
+    attr_reader :model_kwargs, :ollama_params
 
     DEFAULT_PARAMS = {
       model: "llama3",

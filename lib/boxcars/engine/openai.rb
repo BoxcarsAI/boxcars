@@ -23,7 +23,7 @@ module Boxcars
     DEFAULT_NAME        = "OpenAI engine"
     DEFAULT_DESCRIPTION = "Useful when you need AI to answer questions. Ask targeted questions."
 
-    attr_reader :prompts, :open_ai_params, :batch_size
+    attr_reader :open_ai_params
 
     # --------------------------------------------------------------------------
     #  Construction
