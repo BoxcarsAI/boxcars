@@ -15,7 +15,7 @@ module Boxcars
     GPT5_MODEL_REGEX = /\Agpt-[56].*/
 
     DEFAULT_PARAMS = {
-      model: "gpt-5-mini",
+      model: "gpt-4o-mini",
       temperature: 0.1,
       max_tokens: 4096
     }.freeze
@@ -23,7 +23,7 @@ module Boxcars
     DEFAULT_NAME        = "OpenAI engine"
     DEFAULT_DESCRIPTION = "Useful when you need AI to answer questions. Ask targeted questions."
 
-    attr_reader :prompts, :open_ai_params, :batch_size, :openai_client_backend
+    attr_reader :prompts, :open_ai_params, :batch_size
 
     # --------------------------------------------------------------------------
     #  Construction
@@ -34,7 +34,8 @@ module Boxcars
                    batch_size: 20,
                    **kwargs)
       user_id          = kwargs.delete(:user_id)
-      @openai_client_backend = kwargs.delete(:openai_client_backend) || kwargs.delete(:client_backend)
+      kwargs.delete(:openai_client_backend)
+      kwargs.delete(:client_backend)
       @open_ai_params  = adjust_for_o_series!(DEFAULT_PARAMS.merge(kwargs))
       @prompts         = prompts
       @batch_size      = batch_size
@@ -48,7 +49,8 @@ module Boxcars
       start_time       = Time.now
       response_data    = { response_obj: nil, parsed_json: nil,
                            success: false, error: nil, status_code: nil }
-      openai_backend   = kwargs.delete(:openai_client_backend) || kwargs.delete(:client_backend) || openai_client_backend
+      kwargs.delete(:openai_client_backend)
+      kwargs.delete(:client_backend)
       current_params   = open_ai_params.merge(kwargs)
       is_chat_model    = chat_model?(current_params[:model])
       prompt_object    = prompt.is_a?(Array) ? prompt.first : prompt
@@ -56,12 +58,12 @@ module Boxcars
 
       begin
         raw_response = execute_api_call(
-          self.class.open_ai_client(openai_access_token:, backend: openai_backend),
+          self.class.open_ai_client(openai_access_token:),
           is_chat_model,
           api_request
         )
         process_response(raw_response, response_data)
-      rescue ::OpenAI::Error, StandardError => e
+      rescue StandardError => e
         handle_error(e, response_data)
       ensure
         track_openai_observability(
@@ -107,12 +109,11 @@ module Boxcars
     # --------------------------------------------------------------------------
     #  Class helpers
     # --------------------------------------------------------------------------
-    def self.open_ai_client(openai_access_token: nil, backend: nil)
-      Boxcars::OpenAIClientAdapter.build(
+    def self.open_ai_client(openai_access_token: nil)
+      Boxcars::OpenAICompatibleClient.build(
         access_token: Boxcars.configuration.openai_access_token(openai_access_token:),
         organization_id: Boxcars.configuration.organization_id,
-        log_errors: true,
-        backend: backend
+        log_errors: true
       )
     end
 
@@ -223,7 +224,14 @@ module Boxcars
     def handle_error(error, data)
       data[:error]        = error
       data[:success]      = false
-      data[:status_code]  = error.respond_to?(:http_status) ? error.http_status : 500
+      data[:status_code]  = error_status_code(error)
+    end
+
+    def error_status_code(error)
+      return error.http_status if error.respond_to?(:http_status) && error.http_status
+      return error.status if error.respond_to?(:status) && error.status
+
+      500
     end
 
     def handle_call_outcome(response_data:)
@@ -363,9 +371,24 @@ module Boxcars
 
     def openai_error_message(json)
       err = json&.dig("error")
-      return unless err
+      return if err.nil?
 
-      err.is_a?(Hash) ? "#{err['type']}: #{err['message']}" : err.to_s
+      if err.is_a?(Hash)
+        type = err["type"] || err[:type]
+        message = err["message"] || err[:message]
+        code = err["code"] || err[:code]
+        param = err["param"] || err[:param]
+
+        # Some SDK objects serialize a null error as a hash with all-nil fields.
+        return if [type, message, code, param].all?(&:nil?)
+
+        return "#{type}: #{message}" if !type.nil? || !message.nil?
+
+        return err.to_s
+      end
+
+      msg = err.to_s
+      msg.empty? ? nil : msg
     end
 
     def adjust_for_o_series!(params)

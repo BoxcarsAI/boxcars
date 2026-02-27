@@ -175,7 +175,7 @@ These areas are still evolving and may receive further changes before v1.0:
 
 ## 8. OpenAI SDK Migration (Planned / In Progress)
 
-For maintainers/contributors working on the SDK swap itself, see `OPENAI_SDK_MIGRATION_PLAN.md` for the adapter contract, rollout phases, and regression matrix.
+For maintainers/contributors working on the SDK swap itself, see `OPENAI_SDK_MIGRATION_PLAN.md` for the internal client contract, rollout phases, and regression matrix.
 
 Boxcars currently uses an internal OpenAI-compatible client factory to create clients for:
 
@@ -184,7 +184,7 @@ Boxcars currently uses an internal OpenAI-compatible client factory to create cl
 - Gemini (OpenAI-compatible endpoint path used by current engine)
 - Ollama
 
-This factory is the migration seam that allows Boxcars to move toward the official OpenAI Ruby SDK for OpenAI itself without forcing a simultaneous rewrite of Groq/Gemini/Ollama engine integrations.
+This shared factory seam is the migration path for all OpenAI-compatible engines, so backend wiring can evolve without changing public engine APIs.
 
 ### What users should do now
 
@@ -194,26 +194,20 @@ This factory is the migration seam that allows Boxcars to move toward the offici
 
 ### OpenAI backend defaults (v0.9+)
 
-`Boxcars::Openai` now defaults to `:official_openai`. You can still opt back to `:ruby_openai` globally, per engine, or per call:
+`Boxcars::Openai` now uses `:official_openai` only.
 
 ```ruby
-# global/process opt-out
-# OPENAI_CLIENT_BACKEND=ruby_openai
 # optional strict mode: fail unless native official wiring is available
 # OPENAI_OFFICIAL_REQUIRE_NATIVE=true
 
 engine = Boxcars::Openai.new(
-  model: "gpt-5-mini",
-  openai_client_backend: :ruby_openai
+  model: "gpt-5-mini"
 )
 
 engine.run("Write a one-line summary")
-
-# per-call override
-engine.run("Write another one-line summary", openai_client_backend: :official_openai)
 ```
 
-Groq/Gemini/Ollama remain pinned to `:ruby_openai` during this migration phase.
+Groq/Gemini/Ollama/Google/Cerebras/Together are pinned to `:official_openai`.
 
 ### Notebook compatibility matrix (v0.9+)
 
@@ -223,8 +217,8 @@ The example notebooks under `notebooks/` were updated with an "OpenAI Backend (M
 | --- | --- | --- |
 | `notebooks/boxcars_examples.ipynb` | Uses `Boxcars::Engines`/Boxcars abstractions; follows default backend behavior. | None. |
 | `notebooks/swagger_examples.ipynb` | Uses `Boxcars::Swagger`; unaffected by OpenAI backend wiring details. | None. |
-| `notebooks/vector_search_examples.ipynb` | Uses `Boxcars::Openai.open_ai_client` for embeddings/vector search. Adapter path now supports embeddings in both backends. | None (keep migration setup cell if you want backend pinning). |
-| `notebooks/embeddings/embeddings_example.ipynb` | Uses `Boxcars::Openai.open_ai_client` for embeddings/vector search. Adapter path now supports embeddings in both backends. | None (keep migration setup cell if you want backend pinning). |
+| `notebooks/vector_search_examples.ipynb` | Uses `Boxcars::Openai.open_ai_client` for embeddings/vector search. Official client path supports embeddings. | None (keep migration setup cell if you want backend pinning). |
+| `notebooks/embeddings/embeddings_example.ipynb` | Uses `Boxcars::Openai.open_ai_client` for embeddings/vector search. Official client path supports embeddings. | None (keep migration setup cell if you want backend pinning). |
 
 If you enable strict native mode (`OPENAI_OFFICIAL_REQUIRE_NATIVE=true` or `config.openai_official_require_native = true`), ensure native official OpenAI SDK wiring is available; otherwise notebook runs that initialize the OpenAI client will fail early by design.
 
@@ -237,10 +231,9 @@ If you enable strict native mode (`OPENAI_OFFICIAL_REQUIRE_NATIVE=true` or `conf
   - `OPENAI_OFFICIAL_REQUIRE_NATIVE=true` (Boxcars fail-fast behavior)
   - or `NOTEBOOKS_LIVE_REQUIRE_NATIVE=true` (script-level assertion)
 
-Note: during this migration window, both SDK families use `OpenAI::Client` naming, so Boxcars keeps `ruby-openai` as the baseline for OpenAI-compatible providers and exposes the official path through the backend/builder seam. If only `ruby-openai` is loaded, Boxcars can auto-configure an official-backend compatibility builder.
-When this compatibility bridge is used, Boxcars emits a one-time warning so rollout logs clearly show the runtime path.
+Note: Boxcars now targets the official OpenAI Ruby SDK directly for OpenAI-compatible engines. `:ruby_openai` is no longer supported.
 
-If you want strict native behavior instead of bridge fallback:
+If you want strict native behavior:
 
 ```ruby
 Boxcars.configure do |config|
@@ -248,17 +241,10 @@ Boxcars.configure do |config|
 end
 ```
 
-You can also set the process default with an environment variable:
-
-```bash
-OPENAI_CLIENT_BACKEND=ruby_openai bundle exec your_command
-```
-
 When enabling `:official_openai`, you can provide a builder in config:
 
 ```ruby
 Boxcars.configure do |config|
-  config.openai_client_backend = :official_openai
   config.openai_official_client_builder = lambda do |access_token:, uri_base:, organization_id:, log_errors:|
     OpenAI::Client.new(
       api_key: access_token,
@@ -275,7 +261,7 @@ Optional startup preflight:
 Boxcars::OpenAICompatibleClient.validate_backend_configuration!
 ```
 
-This preflight validates both the selected backend and the loaded `OpenAI::Client` shape, so backend/client mismatches fail early.
+This preflight validates official client wiring, so client-shape mismatches fail early.
 
 If you are validating migration behavior in CI or locally, run:
 

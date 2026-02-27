@@ -16,14 +16,11 @@ This section tracks the modernization work that is being added in v0.9 with a co
   - `Boxcars::MCP.boxcars_from_client(...)` to wrap MCP tools as Boxcars
   - `Boxcars::MCP.tool_calling_train(...)` to combine local Boxcars + MCP tools into a `ToolCallingTrain`
 - OpenAI backend migration controls added:
-  - Default `openai_client_backend` switched to `:official_openai` (with `:ruby_openai` opt-out)
-  - `openai_client_backend` config default (with `OPENAI_CLIENT_BACKEND` env support)
+  - `Boxcars::Openai` now runs on the official OpenAI client path only (`:ruby_openai` is unsupported)
   - `openai_official_client_builder` config hook for official client injection
-  - `Boxcars::Openai` per-instance/per-call backend override (`openai_client_backend:`)
-  - One-time warning when `:official_openai` falls back to ruby-openai compatibility bridge
-  - `openai_official_require_native` toggle to fail fast instead of bridge fallback
+  - `openai_official_require_native` toggle to fail fast unless native official wiring is available
   - Backend/client compatibility preflight checks in `OpenAICompatibleClient.validate_backend_configuration!`
-  - OpenAI-compatible provider pinning to `:ruby_openai` during migration (Groq/Gemini/Ollama)
+  - OpenAI-compatible provider pinning to `:official_openai` during migration (OpenAI/Groq/Gemini/Ollama/Google/Cerebras/Together)
   - CI parity lanes via `spec:openai_backend_parity` and `spec:openai_backend_parity_official`
   - Consolidated modernization regression lane via `spec:modernization`
   - Notebook migration setup cells added under `notebooks/` for explicit backend pinning during rollout
@@ -41,6 +38,7 @@ This section tracks the modernization work that is being added in v0.9 with a co
 - Runtime dependency upgrades:
   - ActiveRecord and ActiveSupport moved to `~> 8.1`.
   - `pgvector` updated to `~> 0.3.2`.
+  - Official `openai` Ruby SDK replaces `ruby-openai` as the runtime dependency.
   - `vcr`, `webmock`, and `rubocop-rake` updated.
 - Swagger modernization:
   - Swagger prompt/cassette/notebook guidance now uses Faraday.
@@ -51,8 +49,8 @@ This section tracks the modernization work that is being added in v0.9 with a co
   - `gpt4all` removed as a hard runtime dependency.
     - `Boxcars::Gpt4allEng` remains supported and now fails with a clear setup error if the gem is missing.
 - Provider runtime convergence:
-  - `Boxcars::Google`, `Boxcars::Cerebras`, and `Boxcars::Together` migrated off `IntelligenceBase` to the OpenAI-compatible adapter path.
-  - OpenAI-compatible backend pinning coverage expanded to include Google/Cerebras/Together (in addition to Groq/Gemini/Ollama).
+  - `Boxcars::Google`, `Boxcars::Cerebras`, and `Boxcars::Together` migrated off `IntelligenceBase` to the OpenAI-compatible official client path.
+  - OpenAI-compatible engines now pin to `:official_openai` via the client factory seam.
 - Current remaining `bundle outdated` item after this pass:
   - `diff-lcs` (`2.x` blocked by RSpec 3.x dependency constraint `< 2.0`).
 

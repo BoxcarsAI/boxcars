@@ -19,34 +19,21 @@ end
 token = ENV.fetch("OPENAI_ACCESS_TOKEN", "").to_s.strip
 raise "OPENAI_ACCESS_TOKEN is required for notebook live checks" if token.empty?
 
-backend = ENV.fetch("OPENAI_CLIENT_BACKEND", "official_openai").to_sym
 embedding_model = ENV.fetch("OPENAI_EMBEDDING_MODEL", "text-embedding-3-small")
 
 Boxcars.configure do |config|
   config.openai_access_token = token
-  config.openai_client_backend = backend
 end
 
-log "backend=#{backend}"
-openai_client = Boxcars::Openai.open_ai_client(openai_access_token: token, backend: backend)
-raw_client = openai_client.respond_to?(:raw_client) ? openai_client.raw_client : openai_client
-
-bridge_mode =
-  if Boxcars::OpenAICompatibleClient.send(:official_client_class?, raw_client.class)
-    false
-  else
-    Boxcars::OpenAICompatibleClient.send(:ruby_openai_client_class?, raw_client.class)
-  end
-
-runtime_mode = bridge_mode ? "ruby-openai-compatibility-bridge" : "native-official-or-custom-builder"
-log "client_class=#{raw_client.class} mode=#{runtime_mode}"
+openai_client = Boxcars::Openai.open_ai_client(openai_access_token: token)
+runtime_mode = "official-openai-client"
+log "client_class=#{openai_client.class} mode=#{runtime_mode}"
 
 require_native = truthy_env?("NOTEBOOKS_LIVE_REQUIRE_NATIVE") || truthy_env?("OPENAI_OFFICIAL_REQUIRE_NATIVE")
 if require_native
   assert!(
-    !bridge_mode,
-    "Native official client required, but runtime used ruby-openai compatibility bridge. " \
-    "Configure an official client builder or install/use native official SDK wiring."
+    openai_client.respond_to?(:responses_create) && openai_client.respond_to?(:embeddings_create),
+    "Native official client methods were not available on the runtime client."
   )
 end
 

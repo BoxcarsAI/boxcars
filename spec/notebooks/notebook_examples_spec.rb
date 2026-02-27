@@ -19,8 +19,6 @@ RSpec.describe "Notebook examples" do
   MIGRATION_HEADER = "### OpenAI Backend (Migration)"
   MIGRATION_HINTS = [
     "# Optional migration pinning (uncomment if needed)",
-    "# Boxcars.configuration.openai_client_backend = :official_openai # default",
-    "# Boxcars.configuration.openai_client_backend = :ruby_openai   # temporary fallback",
     "# Boxcars.configuration.openai_official_require_native = true  # require native official SDK wiring"
   ].freeze
 

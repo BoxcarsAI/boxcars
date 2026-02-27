@@ -4,7 +4,7 @@ module Boxcars
   # Engine that uses Google's Gemini OpenAI-compatible API.
   class Google < Openai
     DEFAULT_PARAMS = {
-      model: "gemini-1.5-flash-latest",
+      model: "gemini-2.5-flash",
       temperature: 0.1,
       max_tokens: 4096
     }.freeze
@@ -25,15 +25,14 @@ module Boxcars
       kwargs.delete(:openai_client_backend)
       kwargs.delete(:client_backend)
       key = gemini_api_key || google_api_key
-      super(prompt:, inputs:, openai_access_token: key, openai_client_backend: :ruby_openai, **kwargs)
+      super(prompt:, inputs:, openai_access_token: key, **kwargs)
     end
 
-    def self.open_ai_client(openai_access_token: nil, backend: nil)
+    def self.open_ai_client(openai_access_token: nil)
       access_token = Boxcars.configuration.gemini_api_key(gemini_api_key: openai_access_token)
-      Boxcars::OpenAIClientAdapter.build(
+      Boxcars::OpenAICompatibleClient.build(
         access_token:,
-        uri_base: URI_BASE,
-        backend: backend || :ruby_openai
+        uri_base: URI_BASE
       )
     end
 

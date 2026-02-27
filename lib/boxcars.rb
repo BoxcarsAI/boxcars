@@ -37,17 +37,7 @@ module Boxcars
       @log_prompts = ENV.fetch("LOG_PROMPTS", false)
       @log_generated = ENV.fetch("LOG_GEN", false)
       @strict_deprecated_model_aliases = false
-      backend = ENV.fetch("OPENAI_CLIENT_BACKEND", "official_openai")
-      self.openai_client_backend = backend.to_s.empty? ? :official_openai : backend
       self.openai_official_require_native = ENV.fetch("OPENAI_OFFICIAL_REQUIRE_NATIVE", false)
-    end
-
-    def openai_client_backend
-      @openai_client_backend ||= :official_openai
-    end
-
-    def openai_client_backend=(backend)
-      @openai_client_backend = normalize_openai_client_backend(backend)
     end
 
     def openai_official_client_builder
@@ -116,19 +106,6 @@ module Boxcars
     end
 
     private
-
-    def normalize_openai_client_backend(value)
-      normalized = (value || :official_openai).to_sym
-      supported = if defined?(Boxcars::OpenAICompatibleClient::SUPPORTED_BACKENDS)
-                    Boxcars::OpenAICompatibleClient::SUPPORTED_BACKENDS
-                  else
-                    %i[ruby_openai official_openai]
-                  end
-      return normalized if supported.include?(normalized)
-
-      raise ConfigurationError,
-            "Unsupported openai_client_backend: #{value.inspect}. Supported backends: #{supported.join(', ')}"
-    end
 
     def normalize_boolean(value, attr_name:)
       return value if value == true || value == false
@@ -286,7 +263,6 @@ require_relative "boxcars/generation"
 require_relative "boxcars/ruby_repl"
 require_relative "boxcars/result"
 require_relative "boxcars/openai_compatible_client"
-require_relative "boxcars/openai_client_adapter"
 require_relative "boxcars/engine"
 require_relative "boxcars/boxcar"
 require_relative "boxcars/mcp"

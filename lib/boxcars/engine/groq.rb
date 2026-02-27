@@ -32,8 +32,7 @@ module Boxcars
       access_token = Boxcars.configuration.groq_api_key(groq_api_key:)
       Boxcars::OpenAICompatibleClient.build(
         access_token:,
-        uri_base: "https://api.groq.com/openai/v1",
-        backend: :ruby_openai
+        uri_base: "https://api.groq.com/openai/v1"
       )
       # Adjusted uri_base to include /v1 as is common for OpenAI-compatible APIs
     end
@@ -57,8 +56,6 @@ module Boxcars
         log_messages_debug(api_request_params[:messages]) if Boxcars.configuration.log_prompts && api_request_params[:messages]
 
         _execute_and_process_groq_call(clnt, api_request_params, response_data)
-      rescue ::OpenAI::Error => e
-        _handle_openai_error_for_groq(e, response_data)
       rescue StandardError => e
         _handle_standard_error_for_groq(e, response_data)
       ensure
@@ -106,7 +103,7 @@ module Boxcars
     end
 
     def _execute_and_process_groq_call(clnt, api_request_params, response_data)
-      raw_response = clnt.chat(parameters: api_request_params)
+      raw_response = clnt.chat_create(parameters: api_request_params)
       response_data[:response_obj] = raw_response
       response_data[:parsed_json] = raw_response # OpenAI gem returns Hash
 
@@ -125,15 +122,17 @@ module Boxcars
       end
     end
 
-    def _handle_openai_error_for_groq(error, response_data)
-      response_data[:error] = error
-      response_data[:success] = false
-      response_data[:status_code] = error.http_status if error.respond_to?(:http_status)
-    end
-
     def _handle_standard_error_for_groq(error, response_data)
       response_data[:error] = error
       response_data[:success] = false
+      response_data[:status_code] = _error_status_code(error)
+    end
+
+    def _error_status_code(error)
+      return error.http_status if error.respond_to?(:http_status) && error.http_status
+      return error.status if error.respond_to?(:status) && error.status
+
+      500
     end
 
     def log_messages_debug(messages)

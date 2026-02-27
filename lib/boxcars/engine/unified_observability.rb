@@ -372,7 +372,7 @@ module Boxcars
     def get_default_model_for_provider(provider)
       case provider.to_s
       when 'openai'
-        'gpt-5-mini'
+        'gpt-4o-mini'
       when 'anthropic'
         'claude-3-5-sonnet-20240620'
       when 'cerebras'

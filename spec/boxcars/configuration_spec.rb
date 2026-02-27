@@ -16,43 +16,6 @@ RSpec.describe Boxcars::Configuration do
     end
   end
 
-  describe '#openai_client_backend' do
-    it 'defaults to :official_openai when env is not set' do
-      allow(ENV).to receive(:fetch).with("OPENAI_CLIENT_BACKEND", "official_openai").and_return("official_openai")
-      cfg = described_class.new
-
-      expect(cfg.openai_client_backend).to eq(:official_openai)
-    end
-
-    it 'uses OPENAI_CLIENT_BACKEND when provided' do
-      allow(ENV).to receive(:fetch).with("OPENAI_CLIENT_BACKEND", "official_openai").and_return("ruby_openai")
-      cfg = described_class.new
-
-      expect(cfg.openai_client_backend).to eq(:ruby_openai)
-    end
-
-    it 'falls back to :official_openai when OPENAI_CLIENT_BACKEND is empty' do
-      allow(ENV).to receive(:fetch).with("OPENAI_CLIENT_BACKEND", "official_openai").and_return("")
-      cfg = described_class.new
-
-      expect(cfg.openai_client_backend).to eq(:official_openai)
-    end
-
-    it 'raises on invalid OPENAI_CLIENT_BACKEND values' do
-      allow(ENV).to receive(:fetch).with("OPENAI_CLIENT_BACKEND", "official_openai").and_return("unsupported_backend")
-
-      expect do
-        described_class.new
-      end.to raise_error(Boxcars::ConfigurationError, /Unsupported openai_client_backend/)
-    end
-
-    it 'raises on invalid backend assignment' do
-      expect do
-        configuration.openai_client_backend = :invalid_backend
-      end.to raise_error(Boxcars::ConfigurationError, /Unsupported openai_client_backend/)
-    end
-  end
-
   describe '#openai_official_client_builder' do
     it 'accepts nil' do
       configuration.openai_official_client_builder = nil

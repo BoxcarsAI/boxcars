@@ -14,7 +14,7 @@ RSpec.describe Boxcars::Groq do
   let(:api_key_param) { "test_groq_api_key" }
   let(:engine_params) { {} }
 
-  let(:mock_groq_client) { instance_double(OpenAI::Client) }
+  let(:mock_groq_client) { double("OpenAICompatibleClient") }
   let(:groq_chat_success_response) do
     {
       "id" => "groq-chat-789",
@@ -57,7 +57,7 @@ RSpec.describe Boxcars::Groq do
   describe 'observability integration with OpenAI client for Groq' do
     context 'when API call is successful' do
       before do
-        allow(mock_groq_client).to receive(:chat).and_return(groq_chat_success_response)
+        allow(mock_groq_client).to receive(:chat_create).and_return(groq_chat_success_response)
       end
 
       it 'tracks an $ai_generation event with correct properties' do
@@ -118,17 +118,17 @@ RSpec.describe Boxcars::Groq do
       end
     end
 
-    context 'when OpenAI::Error is raised by the client (e.g. Groq server error)' do
-      let(:openai_error) { OpenAI::Error.new("Groq service unavailable").tap { |e| allow(e).to receive(:http_status).and_return(503) } }
+    context 'when provider error is raised by the client (e.g. Groq server error)' do
+      let(:openai_error) { StandardError.new("Groq service unavailable").tap { |e| allow(e).to receive(:status).and_return(503) } }
 
       before do
-        allow(mock_groq_client).to receive(:chat).and_raise(openai_error)
+        allow(mock_groq_client).to receive(:chat_create).and_raise(openai_error)
       end
 
       it 'tracks an $ai_generation event with error details' do
         expect do
           engine.client(prompt: prompt, inputs: inputs)
-        end.to raise_error(OpenAI::Error, "Groq service unavailable")
+        end.to raise_error(StandardError, "Groq service unavailable")
 
         expect(dummy_observability_backend.tracked_events.size).to eq(1)
         tracked_event = dummy_observability_backend.tracked_events.first
@@ -144,7 +144,7 @@ RSpec.describe Boxcars::Groq do
 
     describe '#run method' do
       it 'calls client and processes its output' do
-        allow(mock_groq_client).to receive(:chat).and_return(groq_chat_success_response)
+        allow(mock_groq_client).to receive(:chat_create).and_return(groq_chat_success_response)
         result = engine.run("test question for groq")
         expect(result).to eq("Groq is known for its LPU Inference Engine...")
 
@@ -163,7 +163,7 @@ RSpec.describe Boxcars::Groq do
         # This setup ensures that when engine.client is called (by Engine#generate),
         # it will internally use mock_groq_client.chat, get groq_chat_success_response,
         # and Groq#client will process it into a string, which is the current behavior.
-        allow(mock_groq_client).to receive(:chat)
+        allow(mock_groq_client).to receive(:chat_create)
           .with(parameters: hash_including(
             model: "llama3-70b-8192", # from DEFAULT_PARAMS
             messages: an_instance_of(Array)

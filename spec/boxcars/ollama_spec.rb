@@ -13,7 +13,7 @@ RSpec.describe Boxcars::Ollama do
   let(:inputs) { { concept: "quantum physics" } }
   let(:engine_params) { {} } # Default engine params
 
-  let(:mock_ollama_client) { instance_double(OpenAI::Client) }
+  let(:mock_ollama_client) { double("OpenAICompatibleClient") }
   let(:ollama_chat_success_response) do
     {
       "id" => "ollama-chat-456", # Example ID
@@ -55,7 +55,7 @@ RSpec.describe Boxcars::Ollama do
   describe 'observability integration with OpenAI client for Ollama' do
     context 'when API call is successful' do
       before do
-        allow(mock_ollama_client).to receive(:chat).and_return(ollama_chat_success_response)
+        allow(mock_ollama_client).to receive(:chat_create).and_return(ollama_chat_success_response)
       end
 
       it 'tracks a $ai_generation event with correct properties' do
@@ -93,20 +93,19 @@ RSpec.describe Boxcars::Ollama do
       end
     end
 
-    context 'when Ollama service is unavailable (OpenAI::Error)' do
-      let(:connection_error) { OpenAI::Error.new("Connection refused - connect(2) for \"localhost\" port 11434") }
+    context 'when Ollama service is unavailable' do
+      let(:connection_error) { StandardError.new("Connection refused - connect(2) for \"localhost\" port 11434") }
 
       before do
-        # Simulate the OpenAI client failing to connect
-        allow(mock_ollama_client).to receive(:chat).and_raise(connection_error)
-        # If http_status is available on the error, mock it
-        allow(connection_error).to receive(:http_status).and_return(nil) # Or a specific code if applicable
+        # Simulate the client failing to connect
+        allow(mock_ollama_client).to receive(:chat_create).and_raise(connection_error)
+        allow(connection_error).to receive(:status).and_return(nil)
       end
 
       it 'tracks a $ai_generation event with connection error details' do
         expect do
           engine.client(prompt: prompt, inputs: inputs)
-        end.to raise_error(OpenAI::Error, /Connection refused/)
+        end.to raise_error(StandardError, /Connection refused/)
 
         expect(dummy_observability_backend.tracked_events.size).to eq(1)
         tracked_event = dummy_observability_backend.tracked_events.first
@@ -126,7 +125,7 @@ RSpec.describe Boxcars::Ollama do
       end
 
       before do
-        allow(mock_ollama_client).to receive(:chat).and_return(ollama_error_response)
+        allow(mock_ollama_client).to receive(:chat_create).and_return(ollama_error_response)
       end
 
       it 'tracks a $ai_generation event with error details from response' do
@@ -148,7 +147,7 @@ RSpec.describe Boxcars::Ollama do
 
     describe '#run method' do
       it 'calls client and processes its output' do
-        allow(mock_ollama_client).to receive(:chat).and_return(ollama_chat_success_response)
+        allow(mock_ollama_client).to receive(:chat_create).and_return(ollama_chat_success_response)
         result = engine.run("test question for ollama")
         expect(result).to eq("Quantum physics is about tiny things acting weird.")
 

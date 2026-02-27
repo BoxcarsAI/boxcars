@@ -38,14 +38,14 @@ Notebook migration expectations for the OpenAI backend rollout are documented in
 
 ### Current Upgrade Notes (toward v1.0)
 
-- `Boxcars::Openai` now defaults to `gpt-5-mini` and `openai_client_backend=:official_openai` (with compatibility controls documented below).
+- `Boxcars::Openai` now defaults to `gpt-5-mini` and uses the official OpenAI client path.
 - Runtime ActiveSupport/ActiveRecord targets are now `~> 8.1`.
 - Swagger workflows now use Faraday guidance. `rest-client` is no longer a Boxcars runtime dependency.
 - `intelligence` and `gpt4all` are now optional dependencies:
   - Core Boxcars usage no longer requires either gem.
   - `Boxcars::IntelligenceBase` requires `gem "intelligence"` in your app.
   - `Boxcars::Gpt4allEng` requires `gem "gpt4all"` in your app.
-- OpenAI-compatible backend pinning during migration now covers Groq, Gemini, Ollama, Google, Cerebras, and Together.
+- OpenAI-compatible engines now pin to the `official_openai` backend path during migration (OpenAI, Groq, Gemini, Ollama, Google, Cerebras, Together).
 
 If your app uses `IntelligenceBase` or `Gpt4allEng`, add optional gems explicitly:
 
@@ -329,35 +329,27 @@ end
 Boxcars::Engines.strict_deprecated_aliases = true
 ```
 
-#### OpenAI Backend Selection (v0.9+)
+#### OpenAI Client Setup (v0.9+)
 
-`Boxcars::Openai` now defaults to `:official_openai`. During the migration window, you can still opt back to `:ruby_openai` while keeping other OpenAI-compatible providers stable.
+`Boxcars::Openai` and OpenAI-compatible providers use the official OpenAI client path.
 
 ```ruby
-# Process default override (legacy opt-out)
-ENV["OPENAI_CLIENT_BACKEND"] = "ruby_openai"
-# Optional: require true native official wiring and fail instead of bridge fallback.
+# Optional: require true native official wiring and fail if no official client is wired.
 ENV["OPENAI_OFFICIAL_REQUIRE_NATIVE"] = "true"
 
-# Per-engine override
-engine = Boxcars::Openai.new(
-  model: "gpt-5-mini",
-  openai_client_backend: :ruby_openai
-)
+# Per-engine setting
+engine = Boxcars::Openai.new(model: "gpt-5-mini")
 
-# Per-call override
-engine.run("Write a one-line summary", openai_client_backend: :official_openai)
+# Per-call usage
+engine.run("Write a one-line summary")
 ```
 
-Groq, Gemini, and Ollama are pinned to `:ruby_openai` during this migration phase.
-When only `ruby-openai` is present, Boxcars can auto-bridge the `:official_openai` backend through a compatibility builder while you migrate.
-In that compatibility mode, Boxcars emits a one-time warning at runtime so it is visible in logs.
+Groq, Gemini, Ollama, Google, Cerebras, and Together are pinned to `:official_openai`.
 
 If you want explicit control over the official SDK client shape, you can provide a client builder:
 
 ```ruby
 Boxcars.configure do |config|
-  config.openai_client_backend = :official_openai
   config.openai_official_client_builder = lambda do |access_token:, uri_base:, organization_id:, log_errors:|
     OpenAI::Client.new(
       api_key: access_token,
@@ -368,7 +360,7 @@ Boxcars.configure do |config|
 end
 ```
 
-If you set `OPENAI_OFFICIAL_REQUIRE_NATIVE=true` (or `config.openai_official_require_native = true`), Boxcars will fail fast instead of using the compatibility bridge.
+If you set `OPENAI_OFFICIAL_REQUIRE_NATIVE=true` (or `config.openai_official_require_native = true`), Boxcars will fail fast unless native official wiring is available.
 
 For migration parity checks:
 
@@ -385,7 +377,7 @@ To fail fast on backend wiring issues at boot time:
 Boxcars::OpenAICompatibleClient.validate_backend_configuration!
 ```
 
-This preflight also catches backend/client mismatches (for example, selecting `:ruby_openai` when a non-`ruby-openai` `OpenAI::Client` class is loaded).
+This preflight validates that official backend wiring is available before runtime calls.
 
 #### JSON-Optimized Engines
 

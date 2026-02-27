@@ -192,13 +192,29 @@ module Boxcars
         error_details = response['error']
         raise Boxcars::Error, "API error: #{error_details}" unless error_details.is_a?(Hash)
 
-        code = error_details['code']
-        message = error_details['message'] || 'unknown error'
+        # Some SDK response objects serialize `error: null` as a hash with nil values.
+        # Treat that as no error and continue validating required response content.
+        has_error_content = error_details.any? do |_k, v|
+          if v.is_a?(Hash)
+            v.values.any? { |nested| !(nested.nil? || (nested.respond_to?(:empty?) && nested.empty?)) }
+          elsif v.is_a?(Array)
+            !v.empty?
+          else
+            !(v.nil? || (v.respond_to?(:empty?) && v.empty?))
+          end
+        end
+        return if !has_error_content && must_haves.any? { |key| response.key?(key) && !response[key].nil? }
+        if !has_error_content
+          # No actual error payload; continue to required key checks below.
+        else
+          code = error_details['code'] || error_details[:code]
+          message = error_details['message'] || error_details[:message] || 'unknown error'
 
-        # Handle common API key errors
-        raise KeyError, "API key not valid or permission denied" if ['invalid_api_key', 'permission_denied'].include?(code)
+          # Handle common API key errors
+          raise KeyError, "API key not valid or permission denied" if ['invalid_api_key', 'permission_denied'].include?(code)
 
-        raise Boxcars::Error, "API error: #{message}"
+          raise Boxcars::Error, "API error: #{message}"
+        end
 
       end
 

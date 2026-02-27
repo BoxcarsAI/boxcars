@@ -11,7 +11,7 @@ module Boxcars
     attr_reader :prompts, :llm_params, :model_kwargs, :batch_size # Corrected typo llm_parmas to llm_params
 
     DEFAULT_PARAMS = {
-      model: "gemini-1.5-flash-latest", # Default model for Gemini
+      model: "gemini-2.5-flash", # Default model for Gemini
       temperature: 0.1
       # max_tokens is often part of the request, not a fixed default here
     }.freeze
@@ -30,12 +30,9 @@ module Boxcars
     # Renamed from open_ai_client to gemini_client for clarity
     def self.gemini_client(gemini_api_key: nil)
       access_token = Boxcars.configuration.gemini_api_key(gemini_api_key:)
-      # NOTE: The OpenAI gem might not support `log_errors: true` for custom uri_base.
-      # It's a param for OpenAI::Client specific to their setup.
       Boxcars::OpenAICompatibleClient.build(
         access_token: access_token,
-        uri_base: "https://generativelanguage.googleapis.com/v1beta/",
-        backend: :ruby_openai
+        uri_base: "https://generativelanguage.googleapis.com/v1beta/"
       )
       # Removed /openai from uri_base as it's usually for OpenAI-specific paths on custom domains.
       # The Gemini endpoint might be directly at /v1beta/models/gemini...:generateContent
@@ -62,13 +59,10 @@ module Boxcars
 
         log_messages_debug(api_request_params[:messages]) if Boxcars.configuration.log_prompts && api_request_params[:messages]
         _execute_and_process_gemini_call(clnt, api_request_params, response_data)
-      rescue ::OpenAI::Error => e # Catch OpenAI gem errors if they apply
-        response_data[:error] = e
-        response_data[:success] = false
-        response_data[:status_code] = e.http_status if e.respond_to?(:http_status)
       rescue StandardError => e # Catch other errors
         response_data[:error] = e
         response_data[:success] = false
+        response_data[:status_code] = _error_status_code(e)
       ensure
         duration_ms = ((Time.now - start_time) * 1000).round
         request_context = {
@@ -111,7 +105,7 @@ module Boxcars
       # isn't perfectly OpenAI-compatible for chat completions.
       # It might require calling a different method or using a more direct HTTP client.
       # For this refactor, we'll assume `gemini_client_obj.chat` is the intended path.
-      raw_response = gemini_client_obj.chat(parameters: prepared_api_params)
+      raw_response = gemini_client_obj.chat_create(parameters: prepared_api_params)
 
       current_response_data[:response_obj] = raw_response
       current_response_data[:parsed_json] = raw_response # OpenAI gem returns Hash
@@ -152,6 +146,13 @@ module Boxcars
       return unless messages.is_a?(Array)
 
       Boxcars.debug(messages.last(2).map { |p| ">>>>>> Role: #{p[:role]} <<<<<<\n#{p[:content]}" }.join("\n"), :cyan)
+    end
+
+    def _error_status_code(error)
+      return error.http_status if error.respond_to?(:http_status) && error.http_status
+      return error.status if error.respond_to?(:status) && error.status
+
+      500
     end
 
     def _gemini_handle_call_outcome(response_data:)

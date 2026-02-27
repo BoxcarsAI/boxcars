@@ -146,8 +146,8 @@ RSpec.describe Boxcars::Engines do
 
     it "creates GeminiAi engine for gemini models" do
       allow(Boxcars::GeminiAi).to receive(:new)
-      described_class.engine(model: "gemini-1.5-pro")
-      expect(Boxcars::GeminiAi).to have_received(:new).with(model: "gemini-1.5-pro")
+      described_class.engine(model: "gemini-2.5-pro")
+      expect(Boxcars::GeminiAi).to have_received(:new).with(model: "gemini-2.5-pro")
     end
 
     it "creates Together engine for together models" do

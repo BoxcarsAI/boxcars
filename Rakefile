@@ -31,7 +31,6 @@ namespace :spec do
   OPENAI_BACKEND_PARITY_SPECS = %w[
     spec/boxcars/configuration_spec.rb
     spec/boxcars/openai_compatible_client_spec.rb
-    spec/boxcars/openai_client_adapter_spec.rb
     spec/boxcars/openai_official_backend_spec.rb
     spec/boxcars/openai_backend_override_spec.rb
     spec/boxcars/openai_spec.rb
@@ -44,7 +43,6 @@ namespace :spec do
   OPENAI_BACKEND_OFFICIAL_ONLY_SPECS = %w[
     spec/boxcars/configuration_spec.rb
     spec/boxcars/openai_compatible_client_spec.rb
-    spec/boxcars/openai_client_adapter_spec.rb
     spec/boxcars/openai_official_backend_spec.rb
     spec/boxcars/openai_backend_override_spec.rb
     spec/boxcars/openai_compatible_provider_backend_pinning_spec.rb
@@ -84,14 +82,14 @@ namespace :spec do
     sh "NO_VCR=true bundle exec rspec #{VCR_OPENAI_REFRESH_SPECS.join(' ')}"
   end
 
-  desc "Run OpenAI migration parity specs (ruby_openai + official_openai contract paths)"
+  desc "Run OpenAI migration parity specs (official_openai contract path)"
   task :openai_backend_parity do
     sh "bundle exec rspec #{OPENAI_BACKEND_PARITY_SPECS.join(' ')}"
   end
 
-  desc "Run OpenAI migration parity specs with OPENAI_CLIENT_BACKEND=official_openai (official-safe subset)"
+  desc "Run OpenAI migration parity specs (official-safe subset)"
   task :openai_backend_parity_official do
-    sh "OPENAI_CLIENT_BACKEND=official_openai bundle exec rspec #{OPENAI_BACKEND_OFFICIAL_ONLY_SPECS.join(' ')}"
+    sh "bundle exec rspec #{OPENAI_BACKEND_OFFICIAL_ONLY_SPECS.join(' ')}"
   end
 
   desc "Run modernization regression suite (aliases/tool-calling/MCP/JSON schema + OpenAI backend parity lanes)"
@@ -99,7 +97,7 @@ namespace :spec do
     sh "bundle exec rspec #{NOTEBOOK_SMOKE_SPECS.join(' ')}"
     sh "bundle exec rspec #{MODERNIZATION_RUNTIME_SPECS.join(' ')}"
     sh "bundle exec rspec #{OPENAI_BACKEND_PARITY_SPECS.join(' ')}"
-    sh "OPENAI_CLIENT_BACKEND=official_openai bundle exec rspec #{OPENAI_BACKEND_OFFICIAL_ONLY_SPECS.join(' ')}"
+    sh "bundle exec rspec #{OPENAI_BACKEND_OFFICIAL_ONLY_SPECS.join(' ')}"
   end
 end
 

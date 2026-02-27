@@ -14,14 +14,14 @@ RSpec.describe Boxcars::GeminiAi do
   let(:api_key_param) { "test_gemini_api_key" }
   let(:engine_params) { {} }
 
-  let(:mock_gemini_client) { instance_double(OpenAI::Client) }
+  let(:mock_gemini_client) { double("OpenAICompatibleClient") }
   # Using OpenAI-like chat response structure as the gemini_client uses OpenAI::Client
   let(:gemini_chat_success_response_openai_style) do
     {
       "id" => "gemini-chat-123",
       "object" => "chat.completion", # This might differ for actual Gemini via OpenAI client
       "created" => Time.now.to_i,
-      "model" => "gemini-1.5-flash-latest",
+      "model" => "gemini-2.5-flash",
       "choices" => [{
         "index" => 0,
         "message" => { "role" => "assistant", "content" => "Paris" }, # 'assistant' role for OpenAI client
@@ -76,7 +76,7 @@ RSpec.describe Boxcars::GeminiAi do
   describe 'observability integration with OpenAI client for Gemini' do
     context 'when API call is successful (OpenAI-style response)' do
       before do
-        allow(mock_gemini_client).to receive(:chat).and_return(gemini_chat_success_response_openai_style)
+        allow(mock_gemini_client).to receive(:chat_create).and_return(gemini_chat_success_response_openai_style)
       end
 
       it 'tracks an $ai_generation event with correct properties' do
@@ -88,7 +88,7 @@ RSpec.describe Boxcars::GeminiAi do
 
         props = tracked_event[:properties]
         expect(props[:$ai_provider]).to eq('gemini')
-        expect(props[:$ai_model]).to eq("gemini-1.5-flash-latest")
+        expect(props[:$ai_model]).to eq("gemini-2.5-flash")
         expect(props[:$ai_is_error]).to be false
         expect(props[:$ai_latency]).to be_a(Float).and be >= 0
         expect(props[:$ai_http_status]).to eq(200)
@@ -111,7 +111,7 @@ RSpec.describe Boxcars::GeminiAi do
 
     context 'when API call is successful (Native Gemini-style response)' do
       before do
-        allow(mock_gemini_client).to receive(:chat).and_return(gemini_native_success_response)
+        allow(mock_gemini_client).to receive(:chat_create).and_return(gemini_native_success_response)
       end
 
       it 'tracks an $ai_generation event and handles native response structure' do
@@ -160,17 +160,17 @@ RSpec.describe Boxcars::GeminiAi do
       end
     end
 
-    context 'when OpenAI::Error is raised by the client' do
-      let(:openai_error) { OpenAI::Error.new("Gemini service error via OpenAI client.").tap { |e| allow(e).to receive(:http_status).and_return(500) } }
+    context 'when provider error is raised by the client' do
+      let(:openai_error) { StandardError.new("Gemini service error via OpenAI client.").tap { |e| allow(e).to receive(:status).and_return(500) } }
 
       before do
-        allow(mock_gemini_client).to receive(:chat).and_raise(openai_error)
+        allow(mock_gemini_client).to receive(:chat_create).and_raise(openai_error)
       end
 
       it 'tracks an $ai_generation event with error details' do
         expect do
           engine.client(prompt: prompt, inputs: inputs)
-        end.to raise_error(OpenAI::Error, "Gemini service error via OpenAI client.")
+        end.to raise_error(StandardError, "Gemini service error via OpenAI client.")
 
         expect(dummy_observability_backend.tracked_events.size).to eq(1)
         tracked_event = dummy_observability_backend.tracked_events.first
@@ -186,7 +186,7 @@ RSpec.describe Boxcars::GeminiAi do
 
     describe '#run method' do
       it 'calls client and processes its output' do
-        allow(mock_gemini_client).to receive(:chat).and_return(gemini_chat_success_response_openai_style)
+        allow(mock_gemini_client).to receive(:chat_create).and_return(gemini_chat_success_response_openai_style)
         result = engine.run("test question for gemini")
         expect(result).to eq("Paris") # Based on the mocked response content
 

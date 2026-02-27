@@ -24,15 +24,14 @@ module Boxcars
       kwargs = kwargs.dup
       kwargs.delete(:openai_client_backend)
       kwargs.delete(:client_backend)
-      super(prompt:, inputs:, openai_access_token: cerebras_api_key, openai_client_backend: :ruby_openai, **kwargs)
+      super(prompt:, inputs:, openai_access_token: cerebras_api_key, **kwargs)
     end
 
-    def self.open_ai_client(openai_access_token: nil, backend: nil)
+    def self.open_ai_client(openai_access_token: nil)
       access_token = Boxcars.configuration.cerebras_api_key(cerebras_api_key: openai_access_token)
-      Boxcars::OpenAIClientAdapter.build(
+      Boxcars::OpenAICompatibleClient.build(
         access_token:,
-        uri_base: URI_BASE,
-        backend: backend || :ruby_openai
+        uri_base: URI_BASE
       )
     end
 

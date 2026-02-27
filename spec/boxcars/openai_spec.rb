@@ -99,17 +99,27 @@ RSpec.describe Boxcars::Openai do
     end.new
   end
 
+  around do |example|
+    original_builder = Boxcars::OpenAICompatibleClient.official_client_builder
+    example.run
+    Boxcars::OpenAICompatibleClient.official_client_builder = original_builder
+  end
+
   before do
     Boxcars.configuration.observability_backend = dummy_observability_backend
     allow(Boxcars.configuration).to receive_messages(openai_access_token: api_key_param, organization_id: organization_id_param)
-    allow(OpenAI::Client).to receive(:new)
-      .with(access_token: api_key_param, organization_id: organization_id_param, log_errors: true)
-      .and_return(mock_openai_client)
+    Boxcars::OpenAICompatibleClient.official_client_builder = lambda do |access_token:, uri_base:, organization_id:, log_errors:|
+      expect(access_token).to eq(api_key_param)
+      expect(uri_base).to be_nil
+      expect(organization_id).to eq(organization_id_param)
+      expect(log_errors).to eq(true)
+      mock_openai_client
+    end
   end
 
   describe "defaults" do
-    it "uses gpt-5-mini as the default model" do
-      expect(described_class.new.default_params[:model]).to eq("gpt-5-mini")
+    it "uses gpt-4o-mini as the default model" do
+      expect(described_class.new.default_params[:model]).to eq("gpt-4o-mini")
     end
   end
 
@@ -211,18 +221,18 @@ RSpec.describe Boxcars::Openai do
       end
     end
 
-    context 'when OpenAI::Error (e.g., RateLimitError) is raised' do
-      let(:openai_error) { OpenAI::Error.new("Rate limit reached for requests.").tap { |e| allow(e).to receive(:http_status).and_return(429) } }
+    context 'when provider error (e.g., RateLimitError) is raised' do
+      let(:openai_error) { StandardError.new("Rate limit reached for requests.").tap { |e| allow(e).to receive(:status).and_return(429) } }
       let(:engine_params) { { model: "gpt-4o-mini" } }
 
       before do
         allow(mock_openai_client).to receive(:chat).and_raise(openai_error) # Assuming chat model for this test
       end
 
-      it 'tracks an llm_call event with OpenAI error details' do
+      it 'tracks an llm_call event with provider error details' do
         expect do
           engine.client(prompt: prompt, inputs: inputs)
-        end.to raise_error(OpenAI::Error, "Rate limit reached for requests.")
+        end.to raise_error(StandardError, "Rate limit reached for requests.")
 
         expect(dummy_observability_backend.tracked_events.size).to eq(1)
         props = dummy_observability_backend.tracked_events.first[:properties]

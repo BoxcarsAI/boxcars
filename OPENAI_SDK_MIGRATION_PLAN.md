@@ -1,6 +1,6 @@
 # OpenAI SDK Migration Plan (Maintainers)
 
-This document describes how to migrate Boxcars from `ruby-openai` to the official OpenAI Ruby SDK for OpenAI requests, while preserving the existing OpenAI-compatible integrations used by Groq, Gemini-compatible endpoints, and Ollama.
+This document tracks the migration of Boxcars from `ruby-openai` to the official OpenAI Ruby SDK for OpenAI and OpenAI-compatible providers.
 
 ## Goals
 
@@ -17,57 +17,38 @@ This document describes how to migrate Boxcars from `ruby-openai` to the officia
 
 ## Current Constraint
 
-- `ruby-openai` and the official OpenAI Ruby SDK both expose `OpenAI::Client`, so loading both paths in one process can be ambiguous.
-- During this migration window, Boxcars keeps `ruby-openai` as the provider-compatible baseline and supports the official backend via explicit builder/adapter seams.
-- Backend preflight now fails fast if `:ruby_openai` is selected with a non-`ruby-openai` `OpenAI::Client` shape.
+- Official SDK wiring still requires handling variations in client constructor/resource method signatures across versions.
+- Backend preflight must fail fast when no official client wiring is available.
 
 ## Current State
 
 - `/Users/francis/src/boxcars/lib/boxcars/openai_compatible_client.rb` is the factory seam.
-- OpenAI/Groq/Gemini/Ollama engines all call that factory.
-- `openai_client_backend` config exists, defaults to `:official_openai`.
+- OpenAI-compatible engines now route through the shared client factory seam.
 - `:official_openai` exists behind an `official_client_builder` hook.
 - If an official-style `OpenAI::Client` class is detected, the factory can auto-configure that builder.
-- If only `ruby-openai` is present, the factory can auto-configure an official-backend compatibility builder.
-- OpenAI-compatible providers are pinned to `:ruby_openai` and are not affected by this backend.
+- OpenAI-compatible providers are pinned to `:official_openai` via engine-level wiring.
 
 ## Target Architecture
 
-Use a backend-specific adapter object for OpenAI engine internals, while leaving OpenAI-compatible providers on `ruby-openai`.
+Use a shared OpenAI-compatible client factory and method shim (`chat_create`, `responses_create`, etc.) so SDK method-shape differences remain isolated.
 
 ### Phase 1 (Now / Prep)
 
-- `OpenAICompatibleClient.build(..., backend:)` selects backend.
-- `:ruby_openai` works.
+- `OpenAICompatibleClient.build(...)` constructs an official client/decorated shim.
 - `:official_openai` uses an explicit builder, or auto-detects an official-style client class when available.
 - If neither is available, `:official_openai` raises a clear `ConfigurationError`.
 
-### Phase 2 (Adapter Introduction)
+### Phase 2 (Official SDK Backend)
 
-Introduce an internal adapter (example name):
+Implement `:official_openai` path for all OpenAI-compatible engines.
 
-- `Boxcars::OpenAIClientAdapter`
+- Engines use the shared factory/decorated client, not raw SDK calls scattered across engines.
 
-Responsibilities:
+### Phase 3 (Default Switch) [Complete]
 
-- Hide SDK-specific calls (`chat`, `responses`, `completions`)
-- Return Boxcars-friendly normalized hashes
-- Normalize errors into existing Boxcars error handling expectations
+- Runtime now targets the official OpenAI client path only.
 
-### Phase 3 (Official SDK Backend)
-
-Implement `:official_openai` path for OpenAI engine usage only.
-
-- OpenAI engine uses adapter, not raw SDK client methods.
-- Groq/Gemini/Ollama continue using `:ruby_openai` path.
-
-### Phase 4 (Default Switch) [Complete]
-
-- Default `openai_client_backend` switched from `:ruby_openai` to `:official_openai`.
-- Opt-out path (`:ruby_openai`) remains available for the compatibility window.
-- Official backend can bridge through a compatibility builder when only `ruby-openai` is loaded.
-
-## Proposed Adapter Contract
+## Internal Client Contract
 
 This contract is internal and should be tested directly.
 
@@ -77,7 +58,6 @@ This contract is internal and should be tested directly.
 - `organization_id:` (OpenAI only)
 - `uri_base:` (for OpenAI-compatible providers)
 - `log_errors:`
-- `backend:`
 
 ### Methods
 
@@ -104,45 +84,36 @@ Normalize official SDK responses into the same keys used by current code:
 - Response text/tool calls -> current `"choices"` / `"output"` extraction paths
 - Error payloads -> include `"error"` key when possible
 
-If exact normalization is not possible, adapt in the adapter layer instead of changing multiple engines.
+If exact normalization is not possible, adapt in the shared client layer instead of changing multiple engines.
 
 ## Error Handling Contract
 
-The OpenAI engine currently rescues `::OpenAI::Error` and `StandardError`.
+Current approach:
 
-Migration approach:
-
-- Adapter should raise a consistent Boxcars internal error type (or `StandardError`) with `http_status` when available.
+- Engines rescue `StandardError` and derive status codes from `http_status` or `status` when available.
 - Preserve current engine error text behavior as much as practical.
-- Avoid leaking official SDK-specific exception classes outside the adapter.
+- Avoid leaking SDK-specific exception assumptions into multiple engines.
 
-## Backend Selection Rules
+## Client Wiring Rules
 
-- Default comes from `Boxcars.configuration.openai_client_backend`
-- Configuration default can be seeded by `OPENAI_CLIENT_BACKEND`
 - Apps can provide a config-level `openai_official_client_builder` (callable)
-- Optional strict mode: `openai_official_require_native=true` to fail instead of using ruby-openai compatibility bridge
+- Optional strict mode: `openai_official_require_native=true` to fail unless native official wiring is available
 - Builder precedence: module-level `OpenAICompatibleClient.official_client_builder` > config builder > auto-detected official client class
 - Optional preflight check: `OpenAICompatibleClient.validate_backend_configuration!`
-- Preflight now validates backend/client-class compatibility for both `:ruby_openai` and `:official_openai` paths
-- `Boxcars::Openai` may override backend per instance/call (`openai_client_backend:`) for canary rollouts
-- `backend:` argument overrides config
-- Supported values during migration:
-  - `:ruby_openai`
-  - `:official_openai`
-- Unsupported backend values raise `Boxcars::ConfigurationError`
+- Preflight validates official backend/client wiring before runtime calls
+- Unsupported backend hints passed directly to `OpenAICompatibleClient` raise `Boxcars::ConfigurationError`
 
 ## Rollout Plan (Code)
 
-1. Add an adapter class with a `ruby-openai` implementation first.
-2. Update `Boxcars::Openai` to call adapter methods instead of raw `client.chat`/`client.responses.create`.
-3. Add an official SDK adapter implementation behind `:official_openai`.
-4. Run regression matrix (below) across both backends.
-5. Flip default only after parity is established.
+1. Add shared client methods and route OpenAI engine through `*_create` methods.
+2. Add official SDK implementation behind `:official_openai`.
+3. Migrate OpenAI-compatible providers to shared client usage.
+4. Remove community backend code paths.
+5. Keep regression matrix (below) green on official path.
 
 ## Regression Test Matrix
 
-Run these before changing the default backend:
+Run these before migration releases:
 
 ```bash
 bundle exec rake spec:openai_backend_parity
@@ -171,7 +142,7 @@ Focus on:
 - Structured output (`json_schema`) request shaping for supported paths
 - Error propagation
 
-### Provider regression (must stay on `ruby-openai`)
+### Provider regression (must pass on `:official_openai` path)
 
 - Groq engine specs
 - Gemini-compatible engine specs
@@ -181,13 +152,13 @@ The SDK migration should not change their behavior.
 
 ## Compatibility Guidance for Contributors
 
-- Do not remove `ruby-openai` support until OpenAI provider parity is demonstrated.
-- Keep the factory seam and backend selector until at least one stable release after default flip.
-- Prefer adapter-level normalization over scattering SDK branching logic across engines.
+- Keep the factory seam and backend selector (`:official_openai`) for extension points.
+- Prefer shared client-level normalization over scattering SDK branching logic across engines.
+- Remove legacy `ruby_openai` references from new code/docs.
 
-## Open Questions (Track Before Default Flip)
+## Open Questions
 
 - Which official SDK response objects need explicit conversion for tool-call payloads?
 - Is Responses API feature parity complete for Boxcars use cases?
-- Do observability hooks need adapter-provided metadata normalization?
-- Should `:official_openai` be enabled only for `Boxcars::Openai` at first (recommended)?
+- Do observability hooks need client-layer metadata normalization?
+- Are there any remaining notebooks/examples that still imply removed backend aliases?

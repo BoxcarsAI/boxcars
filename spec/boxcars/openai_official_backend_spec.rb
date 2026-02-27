@@ -9,9 +9,7 @@ RSpec.describe "Boxcars::Openai with official_openai backend" do
   let(:official_client) { double("OfficialOpenAIClient") } # rubocop:disable RSpec/VerifiedDoubles
 
   around do |example|
-    original_backend = Boxcars.configuration.openai_client_backend
     original_builder = Boxcars::OpenAICompatibleClient.official_client_builder
-    Boxcars.configuration.openai_client_backend = :official_openai
     Boxcars::OpenAICompatibleClient.official_client_builder = lambda do |access_token:, uri_base:, organization_id:, log_errors:|
       expect(access_token).to eq(api_key_param)
       expect(uri_base).to be_nil
@@ -22,7 +20,6 @@ RSpec.describe "Boxcars::Openai with official_openai backend" do
 
     example.run
   ensure
-    Boxcars.configuration.openai_client_backend = original_backend
     Boxcars::OpenAICompatibleClient.official_client_builder = original_builder
   end
 
@@ -33,7 +30,7 @@ RSpec.describe "Boxcars::Openai with official_openai backend" do
     )
   end
 
-  it "handles chat-completions via the official adapter path" do
+  it "handles chat-completions via the official client path" do
     chat_resource = double("OfficialChatResource") # rubocop:disable RSpec/VerifiedDoubles
     chat_completions = double("OfficialChatCompletions") # rubocop:disable RSpec/VerifiedDoubles
     response_object = double( # rubocop:disable RSpec/VerifiedDoubles
@@ -61,7 +58,7 @@ RSpec.describe "Boxcars::Openai with official_openai backend" do
     expect(engine.run("Write a short tagline")).to eq("Official SDK chat response")
   end
 
-  it "handles legacy completions via the official adapter path" do
+  it "handles legacy completions via the official client path" do
     completions_resource = double("OfficialCompletionsResource") # rubocop:disable RSpec/VerifiedDoubles
     response_object = double("OfficialCompletionResponse", to_h: { choices: [{ text: "Completion answer" }] }) # rubocop:disable RSpec/VerifiedDoubles
 
@@ -73,7 +70,7 @@ RSpec.describe "Boxcars::Openai with official_openai backend" do
     expect(engine.run("Write a short tagline")).to eq("Completion answer")
   end
 
-  it "handles Responses API payloads via the official adapter path" do
+  it "handles Responses API payloads via the official client path" do
     responses_resource = double("OfficialResponsesResource") # rubocop:disable RSpec/VerifiedDoubles
     response_object = double( # rubocop:disable RSpec/VerifiedDoubles
       "OfficialResponsesResponse",

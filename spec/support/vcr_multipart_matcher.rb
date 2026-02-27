@@ -3,26 +3,19 @@ class VCRMultipartMatcher
   BOUNDARY_SUBSTITUTION = "----MultipartBoundaryAbcD3fGhiXyz00001".freeze
 
   def call(request1, request2)
-    return false unless same_content_type?(request1, request2)
+    content_type1 = (request1.headers["Content-Type"] || []).first.to_s
+    content_type2 = (request2.headers["Content-Type"] || []).first.to_s
+
+    # For non-multipart requests, this matcher should be neutral and let
+    # match_requests_on [:method, :uri, ...] decide.
+    return true unless multipart_request?(content_type1) || multipart_request?(content_type2)
+    return false unless multipart_request?(content_type1) && multipart_request?(content_type2)
     return false unless headers_excluding_content_type(request1) == headers_excluding_content_type(request2)
 
     normalized_multipart_body(request1) == normalized_multipart_body(request2)
   end
 
   private
-
-  def same_content_type?(request1, request2)
-    content_type1 = (request1.headers["Content-Type"] || []).first.to_s
-    content_type2 = (request2.headers["Content-Type"] || []).first.to_s
-
-    if multipart_request?(content_type1)
-      multipart_request?(content_type2)
-    elsif multipart_request?(content_type2)
-      false
-    else
-      content_type1 == content_type2
-    end
-  end
 
   def headers_excluding_content_type(request)
     request.headers.except("Content-Type")
