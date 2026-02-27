@@ -69,7 +69,7 @@ module Boxcars
     end
 
     def default_connection(openai_access_token: nil)
-      Openai.open_ai_client(openai_access_token:)
+      Openai.provider_client(openai_access_token:)
     end
 
     def validate_query(query)

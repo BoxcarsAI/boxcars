@@ -42,7 +42,7 @@ module Boxcars
     # @param openai_access_token [String] the OpenAI access token
     # @return [OpenAI::Client]
     def openai_client(openai_access_token: nil)
-      @openai_client ||= Openai.open_ai_client(openai_access_token:)
+      @openai_client ||= Openai.provider_client(openai_access_token:)
     end
 
     def raise_argument_error(message)
