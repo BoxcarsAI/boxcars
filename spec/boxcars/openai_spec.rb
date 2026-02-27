@@ -359,6 +359,30 @@ RSpec.describe Boxcars::Openai do
         "total_tokens" => 20
       )
     end
+
+    it 'keeps multiple choices grouped under the same prompt generation' do
+      multi_choice_payload = chat_usage_payload.merge(
+        "choices" => [
+          {
+            "message" => { "role" => "assistant", "content" => "First option" },
+            "finish_reason" => "stop"
+          },
+          {
+            "message" => { "role" => "assistant", "content" => "Second option" },
+            "finish_reason" => "stop"
+          }
+        ]
+      )
+      single_engine = aggregating_engine_class.new(
+        mock_responses: [multi_choice_payload],
+        model: "gpt-4o-mini",
+        batch_size: 1
+      )
+      result = single_engine.generate(prompts: [[prompt, { product: "coffee shop" }]])
+
+      expect(result.generations.size).to eq(1)
+      expect(result.generations.first.map(&:text)).to eq(["First option", "Second option"])
+    end
   end
 
   describe "deprecated backend kwargs" do

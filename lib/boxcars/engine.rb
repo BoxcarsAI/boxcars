@@ -79,7 +79,7 @@ module Boxcars
     # @param stop [Array<String>, nil] Optional stop words.
     # @return [EngineResult] The full engine output.
     def generate(prompts:, stop: nil)
-      choices = []
+      generations = []
       token_usage = {}
       token_usage_details = {}
       raw_usage = []
@@ -88,24 +88,21 @@ module Boxcars
       inkeys = %w[completion_tokens prompt_tokens total_tokens].freeze
       prompts.each_slice(batch_size) do |sub_prompts|
         sub_prompts.each do |sprompt, inputs|
+          prompt_choices = []
           process_generate_prompt!(
             prompt: sprompt,
             inputs:,
             stop:,
-            choices:,
+            choices: prompt_choices,
             token_usage:,
             token_usage_details:,
             raw_usage:,
             inkeys:
           )
+          generations << generation_info(prompt_choices)
         end
       end
 
-      generations = []
-      prompts.each_with_index do |_prompt, i|
-        sub_choices = choices[i, 1] || []
-        generations.push(generation_info(sub_choices))
-      end
       EngineResult.new(generations:, engine_output: { token_usage:, token_usage_details:, raw_usage: })
     end
 
