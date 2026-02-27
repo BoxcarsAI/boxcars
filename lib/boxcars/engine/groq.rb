@@ -101,26 +101,6 @@ module Boxcars
       @groq_params
     end
 
-    def groq_handle_call_outcome(response_data:)
-      if response_data[:error]
-        Boxcars.error("Groq Error: #{response_data[:error].message} (#{response_data[:error].class.name})", :red)
-        raise response_data[:error]
-      elsif !response_data[:success]
-        err_details = response_data.dig(:response_obj, "error")
-        msg = if err_details
-                err_details.is_a?(Hash) ? "#{err_details['type']}: #{err_details['message']}" : err_details.to_s
-              else
-                "Unknown error from Groq API"
-              end
-        raise Error, msg
-      else
-        choices = response_data.dig(:parsed_json, "choices")
-        raise Error, "Groq: No choices found in response" unless choices.is_a?(Array) && !choices.empty?
-
-        choices.map { |c| c.dig("message", "content") || c["text"] }.join("\n").strip
-      end
-    end
-
     # validate_response! method uses the base implementation with Groq-specific must_haves
     def validate_response!(response, must_haves: %w[choices])
       super

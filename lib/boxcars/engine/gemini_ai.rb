@@ -105,23 +105,6 @@ module Boxcars
 
     private
 
-    def gemini_handle_call_outcome(response_data:)
-      if response_data[:error]
-        Boxcars.error("GeminiAI Error: #{response_data[:error].message} (#{response_data[:error].class.name})", :red)
-        raise response_data[:error]
-      elsif !response_data[:success]
-        err_details = response_data.dig(:response_obj, "error")
-        msg = if err_details
-                err_details.is_a?(Hash) ? "#{err_details['type']}: #{err_details['message']}" : err_details.to_s
-              else
-                "Unknown error from GeminiAI API"
-              end
-        raise Error, msg
-      else
-        extract_content_from_gemini_response(response_data[:parsed_json])
-      end
-    end
-
     def extract_content_from_gemini_response(parsed_json)
       # Handle Gemini's specific response structure (candidates)
       # or OpenAI-compatible structure if the endpoint behaves that way.
