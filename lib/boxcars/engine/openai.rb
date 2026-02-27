@@ -15,7 +15,7 @@ module Boxcars
     GPT5_MODEL_REGEX = /\Agpt-[56].*/
 
     DEFAULT_PARAMS = {
-      model: "gpt-4o-mini",
+      model: "gpt-5-mini",
       temperature: 0.1,
       max_tokens: 4096
     }.freeze

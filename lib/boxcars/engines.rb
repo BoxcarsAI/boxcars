@@ -42,7 +42,7 @@ module Boxcars
       Boxcars.logger&.info { "running api with #{model}" }
 
       case model.to_s
-      when /^(gpt|o\d)-/
+      when /^(gpt-|o\d($|-))/
         Boxcars::Openai.new(model:, **kw_args)
       when "anthropic", "sonnet"
         Boxcars::Anthropic.new(model: "claude-sonnet-4-0", **kw_args)

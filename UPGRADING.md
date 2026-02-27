@@ -203,7 +203,7 @@ This factory is the migration seam that allows Boxcars to move toward the offici
 # OPENAI_OFFICIAL_REQUIRE_NATIVE=true
 
 engine = Boxcars::Openai.new(
-  model: "gpt-4o-mini",
+  model: "gpt-5-mini",
   openai_client_backend: :ruby_openai
 )
 

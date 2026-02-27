@@ -107,6 +107,12 @@ RSpec.describe Boxcars::Openai do
       .and_return(mock_openai_client)
   end
 
+  describe "defaults" do
+    it "uses gpt-5-mini as the default model" do
+      expect(described_class.new.default_params[:model]).to eq("gpt-5-mini")
+    end
+  end
+
   describe 'observability integration with direct OpenAI client usage' do
     context 'when using a chat model' do
       let(:engine_params) { { model: "gpt-4o-mini" } } # Ensure it's a chat model

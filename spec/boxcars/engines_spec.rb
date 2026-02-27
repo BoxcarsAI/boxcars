@@ -30,10 +30,10 @@ RSpec.describe Boxcars::Engines do
       expect(Boxcars::Openai).to have_received(:new).with(model: "gpt-4o")
     end
 
-    it "creates OpenAI engine for o1 models" do
+    it "creates OpenAI engine for o-series models" do
       allow(Boxcars::Openai).to receive(:new)
-      described_class.engine(model: "o1-preview")
-      expect(Boxcars::Openai).to have_received(:new).with(model: "o1-preview")
+      described_class.engine(model: "o1")
+      expect(Boxcars::Openai).to have_received(:new).with(model: "o1")
     end
 
     it "creates Anthropic engine for sonnet alias" do

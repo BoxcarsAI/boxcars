@@ -91,7 +91,7 @@ Use a Rails initializer for defaults, then call Boxcars from normal service obje
 ```ruby
 # config/initializers/boxcars.rb
 Boxcars.configure do |config|
-  config.default_model = "gpt-4o-mini"
+  config.default_model = "gpt-5-mini"
   config.log_prompts = Rails.env.development?
 end
 ```
@@ -111,7 +111,7 @@ class Ai::SummarizeTicket
 
   def call(text)
     boxcar = Boxcars::JSONEngineBoxcar.new(
-      engine: Boxcars::Engines.engine(model: "gpt-4o-mini"),
+      engine: Boxcars::Engines.engine(model: "gpt-5-mini"),
       json_schema: SCHEMA
     )
 
@@ -259,7 +259,7 @@ perplexity_engine = Boxcars::Engines.engine(model: "sonar")
 #### Supported Model Aliases
 
 **OpenAI Models:**
-- `"gpt-4o"`, `"gpt-3.5-turbo"`, `"o1-preview"` - Creates `Boxcars::Openai` engines
+- Any OpenAI model ID from the [OpenAI pricing/models page](https://openai.com/api/pricing) (for example `"gpt-5-mini"`, `"gpt-5"`, `"o1"`, `"o3"`) creates `Boxcars::Openai` engines
 
 **Anthropic Models:**
 - `"anthropic"`, `"sonnet"` - Creates `Boxcars::Anthropic` with Claude Sonnet
@@ -322,7 +322,7 @@ ENV["OPENAI_OFFICIAL_REQUIRE_NATIVE"] = "true"
 
 # Per-engine override
 engine = Boxcars::Openai.new(
-  model: "gpt-4o-mini",
+  model: "gpt-5-mini",
   openai_client_backend: :ruby_openai
 )
 
