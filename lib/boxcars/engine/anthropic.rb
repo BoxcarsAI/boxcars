@@ -99,9 +99,9 @@ module Boxcars
     def generation_info(sub_choices)
       sub_choices.map do |choice|
         Generation.new(
-          text: choice["completion"],
+          text: (choice["completion"] || choice["text"] || choice.dig("message", "content")).to_s,
           generation_info: {
-            finish_reason: choice.fetch("stop_reason", nil),
+            finish_reason: choice.fetch("stop_reason", choice["finish_reason"]),
             logprobs: choice.fetch("logprobs", nil)
           }
         )
@@ -111,31 +111,6 @@ module Boxcars
     def validate_response!(response, must_haves: %w[completion])
       super
     end
-
-    # Generates responses for prompts and aggregates token usage.
-    def generate(prompts:, stop: nil)
-      params = {}
-      params[:stop] = stop if stop
-      choices = []
-      # Get the token usage from the response.
-      # Includes prompt, completion, and total tokens used.
-      prompts.each_slice(batch_size) do |sub_prompts|
-        sub_prompts.each do |sprompts, inputs|
-          response = client(prompt: sprompts, inputs:, **params)
-          validate_response!(response)
-          choices << response
-        end
-      end
-
-      n = params.fetch(:n, 1)
-      generations = []
-      prompts.each_with_index do |_prompt, i|
-        sub_choices = choices[i * n, (i + 1) * n]
-        generations.push(generation_info(sub_choices))
-      end
-      EngineResult.new(generations:, engine_output: { token_usage: {} })
-    end
-    # rubocop:enable Metrics/AbcSize
 
     # the engine type
     def engine_type

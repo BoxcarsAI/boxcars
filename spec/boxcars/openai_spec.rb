@@ -342,6 +342,23 @@ RSpec.describe Boxcars::Openai do
         [responses_usage_payload["usage"], chat_usage_payload["usage"]]
       )
     end
+
+    it 'supports single-prompt generation via generate_one' do
+      single_engine = aggregating_engine_class.new(
+        mock_responses: [chat_usage_payload],
+        model: "gpt-4o-mini",
+        batch_size: 1
+      )
+      result = single_engine.generate_one(prompt: prompt, inputs: { product: "coffee shop" })
+
+      expect(result.generations.size).to eq(1)
+      expect(result.generations.first.first.text).to eq("Chat Completions answer")
+      expect(result.engine_output[:token_usage]).to eq(
+        "prompt_tokens" => 15,
+        "completion_tokens" => 5,
+        "total_tokens" => 20
+      )
+    end
   end
 
   describe "deprecated backend kwargs" do

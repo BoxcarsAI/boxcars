@@ -45,6 +45,10 @@ module Boxcars
     def generate(input_list:, current_conversation: nil)
       stop = input_list[0][:stop]
       the_prompt = current_conversation ? prompt.with_conversation(current_conversation) : prompt
+      if input_list.length == 1 && engine.respond_to?(:generate_one)
+        return engine.generate_one(prompt: the_prompt, inputs: input_list.first, stop:)
+      end
+
       prompts = input_list.map { |inputs| [the_prompt, inputs] }
       engine.generate(prompts:, stop:)
     end

@@ -61,14 +61,20 @@ module Boxcars
       end
     end
 
-    # Call out to LLM's endpoint with k unique prompts.
-    # @param prompts [Array<String>] The prompts to pass into the model.
-    # @param inputs [Array<String>] The inputs to subsitite into the prompt.
-    # @param stop [Array<String>] Optional list of stop words to use when generating.
+    # Generate one completion result from a single prompt/input pair.
+    # @param prompt [Prompt] The prompt object to run.
+    # @param inputs [Hash] Input values for prompt interpolation.
+    # @param stop [Array<String>, nil] Optional stop words.
+    # @return [EngineResult] A single-result engine output wrapper.
+    def generate_one(prompt:, inputs: {}, stop: nil)
+      generate(prompts: [[prompt, inputs]], stop:)
+    end
+
+    # Call out to the LLM endpoint with one or more prompt/input pairs.
+    # @param prompts [Array<Array(Prompt, Hash)>] Prompt/input pairs to run.
+    # @param stop [Array<String>, nil] Optional stop words.
     # @return [EngineResult] The full engine output.
     def generate(prompts:, stop: nil)
-      params = {}
-      params[:stop] = stop if stop
       choices = []
       token_usage = {}
       token_usage_details = {}
@@ -78,8 +84,10 @@ module Boxcars
       inkeys = %w[completion_tokens prompt_tokens total_tokens].freeze
       prompts.each_slice(batch_size) do |sub_prompts|
         sub_prompts.each do |sprompt, inputs|
-          process_generate_response!(
-            api_response_hash: client(prompt: sprompt, inputs:, **params),
+          process_generate_prompt!(
+            prompt: sprompt,
+            inputs:,
+            stop:,
             choices:,
             token_usage:,
             token_usage_details:,
@@ -89,23 +97,50 @@ module Boxcars
         end
       end
 
-      n = params.fetch(:n, 1)
       generations = []
       prompts.each_with_index do |_prompt, i|
-        sub_choices = choices[i * n, (i + 1) * n]
+        sub_choices = choices[i, 1] || []
         generations.push(generation_info(sub_choices))
       end
       EngineResult.new(generations:, engine_output: { token_usage:, token_usage_details:, raw_usage: })
     end
 
+    def process_generate_prompt!(prompt:, inputs:, stop:, choices:, token_usage:, token_usage_details:, raw_usage:, inkeys:)
+      params = {}
+      params[:stop] = stop if stop
+      process_generate_response!(
+        api_response_hash: client(prompt:, inputs:, **params),
+        choices:,
+        token_usage:,
+        token_usage_details:,
+        raw_usage:,
+        inkeys:
+      )
+    end
+
     def process_generate_response!(api_response_hash:, choices:, token_usage:, token_usage_details:, raw_usage:, inkeys:)
-      unless api_response_hash.is_a?(Hash)
+      normalized_response = normalize_generate_response(api_response_hash)
+      unless normalized_response.is_a?(Hash)
         raise TypeError, "Expected Hash from client method, got #{api_response_hash.class}: #{api_response_hash.inspect}"
       end
 
-      validate_response!(api_response_hash)
-      append_generate_choices!(choices:, api_response_hash:)
-      aggregate_generate_usage!(api_response_hash:, token_usage:, token_usage_details:, raw_usage:, inkeys:)
+      validate_response!(normalized_response)
+      append_generate_choices!(choices:, api_response_hash: normalized_response)
+      aggregate_generate_usage!(api_response_hash: normalized_response, token_usage:, token_usage_details:, raw_usage:, inkeys:)
+    end
+
+    def normalize_generate_response(value)
+      case value
+      when Hash
+        value.each_with_object({}) do |(key, nested), out|
+          normalized_key = key.is_a?(Symbol) ? key.to_s : key
+          out[normalized_key] = normalize_generate_response(nested)
+        end
+      when Array
+        value.map { |nested| normalize_generate_response(nested) }
+      else
+        value
+      end
     end
 
     def append_generate_choices!(choices:, api_response_hash:)
@@ -116,8 +151,15 @@ module Boxcars
         # Synthesize a choice from non-Chat providers (e.g., OpenAI Responses API for GPT-5)
         synthesized_text = extract_answer(api_response_hash)
         choices << { "message" => { "content" => synthesized_text }, "finish_reason" => "stop" }
+      elsif api_response_hash["completion"]
+        choices << {
+          "text" => api_response_hash["completion"],
+          "finish_reason" => api_response_hash["stop_reason"]
+        }
+      elsif api_response_hash["text"]
+        choices << { "text" => api_response_hash["text"], "finish_reason" => api_response_hash["finish_reason"] }
       else
-        Boxcars.logger&.warn "No 'choices' or 'output' found in API response: #{api_response_hash.inspect}"
+        Boxcars.logger&.warn "No generation content found in API response: #{api_response_hash.inspect}"
       end
     end
 
@@ -176,6 +218,8 @@ module Boxcars
         response["choices"].map { |c| c.dig("message", "content") || c["text"] }.join("\n").strip
       elsif response["candidates"]
         response["candidates"].map { |c| c.dig("content", "parts", 0, "text") }.join("\n").strip
+      elsif response["completion"]
+        response["completion"].to_s
       else
         response["output"] || response.to_s
       end
