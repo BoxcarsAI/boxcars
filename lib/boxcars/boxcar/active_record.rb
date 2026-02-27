@@ -18,6 +18,11 @@ module Boxcars
     # @param kwargs [Hash] Any other keyword arguments. These can include:
     #   :name, :description, :prompt, :except_models, :top_k, :stop, :code_only and :engine
     def initialize(models: nil, except_models: nil, read_only: nil, approval_callback: nil, **kwargs)
+      Boxcars::OptionalDependency.require!(
+        "activerecord",
+        feature: "Boxcars::ActiveRecord",
+        require_as: "active_record"
+      )
       check_models(models, except_models)
       @approval_callback = approval_callback
       @read_only = read_only.nil? ? !approval_callback : read_only
@@ -76,7 +81,7 @@ module Boxcars
 
     def check_models(models, exceptions)
       if models.is_a?(Array) && models.length.positive?
-        models.map { |m| m.is_a?(Class) ? m : m.constantize }
+        models = models.map { |m| m.is_a?(Class) ? m : constantize_model_name(m) }
         @requested_models = models
         models.each do |m|
           raise ArgumentError, "model #{m} needs to be an Active Record model" unless m.ancestors.include?(::ActiveRecord::Base)
@@ -85,6 +90,12 @@ module Boxcars
         raise ArgumentError, "models needs to be an array of Active Record models"
       end
       @except_models = LOCKED_OUT_MODELS + exceptions.to_a
+    end
+
+    def constantize_model_name(model_name)
+      model_name.to_s.split("::").inject(Object) { |scope, const_name| scope.const_get(const_name) }
+    rescue NameError
+      raise ArgumentError, "model #{model_name} needs to be an Active Record model"
     end
 
     def wanted_models

@@ -55,6 +55,9 @@ This section tracks the modernization work that is being added in v0.9 with a co
     - `ruby-anthropic` for `Boxcars::Anthropic`
     - `google_search_results` for `Boxcars::GoogleSearch`
     - `faraday` for `Boxcars::Perplexityai` / `Boxcars::Cohere`
+    - `activerecord` for `Boxcars::ActiveRecord` / `Boxcars::SQLActiveRecord` outside Rails
+    - `sequel` for `Boxcars::SQLSequel`
+    - `pg` + `pgvector` for pgvector-backed vector-store paths
     - `nokogiri` for XML trains and `URLText` HTML parsing
     - `hnswlib` for HNSW vector-store paths
 - Provider runtime convergence:

@@ -10,6 +10,11 @@ module Boxcars
     # @param kwargs [Hash] Any other keyword arguments to pass to the parent class. This can include
     #   :name, :description, :prompt, :top_k, :stop, and :engine
     def initialize(connection: nil, tables: nil, except_tables: nil, **kwargs)
+      Boxcars::OptionalDependency.require!(
+        "activerecord",
+        feature: "Boxcars::SQLActiveRecord",
+        require_as: "active_record"
+      )
       connection ||= ::ActiveRecord::Base.connection
       super
     end

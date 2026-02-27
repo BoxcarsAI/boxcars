@@ -20,6 +20,7 @@ group :development, :test do
   gem "google_search_results", "~> 2.2"
   gem "hnswlib", "~> 0.9.0"
   gem "nokogiri", "~> 1.18"
+  gem "sequel", "~> 5.0"
   gem "ruby-anthropic", "~> 0.4"
   gem "debug", "~> 1.9"
   gem "rspec", "~> 3.13"

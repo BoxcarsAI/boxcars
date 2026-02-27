@@ -94,11 +94,11 @@ module Boxcars
 
     def clean_up_output(code)
       output = get_output(code)
-      output = output.as_json if output.is_a?(::ActiveRecord::Result)
+      output = output.as_json if defined?(::ActiveRecord::Result) && output.is_a?(::ActiveRecord::Result)
       output = 0 if output.is_a?(Array) && output.empty?
       output = output.first if output.is_a?(Array) && output.length == 1
       output = output[output.keys.first] if output.is_a?(Hash) && output.length == 1
-      output = output.as_json if output.is_a?(::ActiveRecord::Relation)
+      output = output.as_json if defined?(::ActiveRecord::Relation) && output.is_a?(::ActiveRecord::Relation)
       output
     end
 

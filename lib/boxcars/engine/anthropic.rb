@@ -39,7 +39,7 @@ module Boxcars
     end
 
     def anthropic_client(anthropic_api_key: nil)
-      Boxcars::OptionalDependency.require!("anthropic", feature: "Boxcars::Anthropic")
+      Boxcars::OptionalDependency.require!("ruby-anthropic", feature: "Boxcars::Anthropic", require_as: "anthropic")
       ::Anthropic::Client.new(access_token: anthropic_api_key)
     end
 

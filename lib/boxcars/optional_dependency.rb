@@ -5,11 +5,12 @@ module Boxcars
   module OptionalDependency
     @loaded = {}
 
-    def self.require!(gem_name, feature:)
-      return true if @loaded[gem_name]
+    def self.require!(gem_name, feature:, require_as: gem_name)
+      cache_key = "#{gem_name}:#{require_as}"
+      return true if @loaded[cache_key]
 
-      require gem_name
-      @loaded[gem_name] = true
+      require require_as
+      @loaded[cache_key] = true
       true
     rescue LoadError
       raise Boxcars::ConfigurationError,

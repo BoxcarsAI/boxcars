@@ -95,6 +95,10 @@ gem "openai", ">= 0.30"    # OpenAI + OpenAI-compatible engines
 gem "ruby-anthropic"       # Boxcars::Anthropic
 gem "google_search_results" # Boxcars::GoogleSearch
 gem "faraday"              # Boxcars::Perplexityai / Boxcars::Cohere
+gem "activerecord"         # Boxcars::ActiveRecord / Boxcars::SQLActiveRecord (non-Rails usage)
+gem "sequel"               # Boxcars::SQLSequel
+gem "pg"                   # Pgvector vector-store backend
+gem "pgvector"             # Pgvector vector-store backend
 gem "nokogiri"             # XML trains, URLText HTML extraction
 gem "hnswlib"              # HNSW vector store paths
 ```
