@@ -23,11 +23,6 @@ module Boxcars
       prompt.input_variables
     end
 
-    # the first input key for the prompt
-    def input_key
-      input_keys.first
-    end
-
     # output keys
     def output_keys
       prompt.output_variables
