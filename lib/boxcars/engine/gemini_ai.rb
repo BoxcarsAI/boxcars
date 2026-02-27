@@ -94,7 +94,7 @@ module Boxcars
     def run(question, **)
       prompt = Prompt.new(template: question)
       response = client(prompt:, inputs: {}, **)
-      answer = _extract_content_from_gemini_response(response)
+      answer = extract_content_from_gemini_response(response)
       Boxcars.debug("Answer: #{answer}", :cyan)
       answer
     end
@@ -105,7 +105,7 @@ module Boxcars
 
     private
 
-    def _gemini_handle_call_outcome(response_data:)
+    def gemini_handle_call_outcome(response_data:)
       if response_data[:error]
         Boxcars.error("GeminiAI Error: #{response_data[:error].message} (#{response_data[:error].class.name})", :red)
         raise response_data[:error]
@@ -118,11 +118,11 @@ module Boxcars
               end
         raise Error, msg
       else
-        _extract_content_from_gemini_response(response_data[:parsed_json])
+        extract_content_from_gemini_response(response_data[:parsed_json])
       end
     end
 
-    def _extract_content_from_gemini_response(parsed_json)
+    def extract_content_from_gemini_response(parsed_json)
       # Handle Gemini's specific response structure (candidates)
       # or OpenAI-compatible structure if the endpoint behaves that way.
       if parsed_json&.key?("candidates") # Native Gemini generateContent response

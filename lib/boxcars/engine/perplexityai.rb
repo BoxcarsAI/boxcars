@@ -110,7 +110,7 @@ module Boxcars
         )
       end
 
-      _perplexity_handle_call_outcome(response_data:)
+      perplexity_handle_call_outcome(response_data:)
     end
     # rubocop:enable Metrics/MethodLength
 
@@ -162,7 +162,7 @@ module Boxcars
       params.select { |key, _| supported_keys.include?(key.to_sym) }
     end
 
-    def _perplexity_handle_call_outcome(response_data:)
+    def perplexity_handle_call_outcome(response_data:)
       if response_data[:error]
         Boxcars.error("PerplexityAI Error: #{response_data[:error].message} (#{response_data[:error].class.name})", :red)
         raise response_data[:error]

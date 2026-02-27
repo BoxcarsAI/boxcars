@@ -87,7 +87,7 @@ module Boxcars
         )
       end
 
-      _gpt4all_handle_call_outcome(response_data:)
+      gpt4all_handle_call_outcome(response_data:)
     end
 
     def run(question, **)
@@ -115,7 +115,7 @@ module Boxcars
       defined?(::Gpt4all::ConversationalAI)
     end
 
-    def _gpt4all_handle_call_outcome(response_data:)
+    def gpt4all_handle_call_outcome(response_data:)
       if response_data[:error]
         # The original code had a specific error logging format.
         Boxcars.error(["Error from gpt4all engine: #{response_data[:error].message}",

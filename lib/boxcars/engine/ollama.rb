@@ -85,7 +85,7 @@ module Boxcars
         )
       end
 
-      _ollama_handle_call_outcome(response_data:)
+      ollama_handle_call_outcome(response_data:)
     end
 
     def run(question, **)
@@ -101,7 +101,7 @@ module Boxcars
 
     private
 
-    def _ollama_handle_call_outcome(response_data:)
+    def ollama_handle_call_outcome(response_data:)
       if response_data[:error]
         Boxcars.error("Ollama Error: #{response_data[:error].message} (#{response_data[:error].class.name})", :red)
         raise response_data[:error] # Re-raise the original error

@@ -101,7 +101,7 @@ module Boxcars
       @groq_params
     end
 
-    def _groq_handle_call_outcome(response_data:)
+    def groq_handle_call_outcome(response_data:)
       if response_data[:error]
         Boxcars.error("Groq Error: #{response_data[:error].message} (#{response_data[:error].class.name})", :red)
         raise response_data[:error]
