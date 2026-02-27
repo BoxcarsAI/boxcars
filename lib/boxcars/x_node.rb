@@ -76,7 +76,7 @@ module Boxcars
     end
 
     def respond_to_missing?(method_name, include_private = false)
-      @valid_names.include?(method) || super
+      @valid_names.include?(method_name.to_sym) || super
     end
   end
 end

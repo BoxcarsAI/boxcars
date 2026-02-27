@@ -32,6 +32,13 @@ RSpec.describe Boxcars::XNode do
     it "can handle multiple sub nodes that are the same" do
       expect(described_class.from_xml(xml_fragment).usetool.params.param.length).to eq(2)
     end
+
+    it "responds to child node names" do
+      root = described_class.from_xml(xml_fragment)
+
+      expect(root.respond_to?(:usetool)).to be(true)
+      expect(root.respond_to?(:not_a_node)).to be(false)
+    end
   end
 
   context "with invalid xml" do
