@@ -38,6 +38,10 @@ module Boxcars
     # @param current_conversation [Boxcars::Conversation] Optional ongoing conversation to use for the prompt.
     # @return [Boxcars::EngineResult] The result from the engine.
     def generate(input_list:, current_conversation: nil)
+      if input_list.empty?
+        raise Boxcars::ArgumentError, "#{self.class}#generate requires at least one input hash"
+      end
+
       stop = input_list[0][:stop]
       the_prompt = current_conversation ? prompt.with_conversation(current_conversation) : prompt
       if input_list.length == 1 && engine.respond_to?(:generate_one)

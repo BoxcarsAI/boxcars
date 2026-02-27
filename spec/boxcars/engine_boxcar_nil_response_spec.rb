@@ -45,4 +45,17 @@ RSpec.describe Boxcars::EngineBoxcar do
       box.apply(input_list: [{ input: "one" }, { input: "two" }])
     end.to raise_error(Boxcars::ArgumentError, /supports exactly one input hash/)
   end
+
+  it "raises when generate is called with an empty input list" do
+    prompt = Boxcars::Prompt.new(
+      template: "Q: %<input>s",
+      input_variables: [:input],
+      output_variables: [:answer]
+    )
+    box = described_class.new(prompt: prompt, engine: nil_text_engine_class.new, description: "test")
+
+    expect do
+      box.generate(input_list: [])
+    end.to raise_error(Boxcars::ArgumentError, /requires at least one input hash/)
+  end
 end
