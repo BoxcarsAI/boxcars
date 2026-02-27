@@ -69,10 +69,6 @@ module Boxcars
             "Official OpenAI client path selected but no official client builder is configured and no compatible OpenAI::Client was detected."
     end
 
-    class << self
-      alias validate_backend_configuration! validate_client_configuration!
-    end
-
     def self.configure_official_client_builder!(client_class: nil)
       klass = client_class || detect_official_client_class
       return false unless klass

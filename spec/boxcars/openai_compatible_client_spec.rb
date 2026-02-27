@@ -112,13 +112,6 @@ RSpec.describe Boxcars::OpenAICompatibleClient do
     end
   end
 
-  describe ".validate_backend_configuration!" do
-    it "aliases to validate_client_configuration!" do
-      described_class.official_client_builder = ->(**) { double("OfficialClient") } # rubocop:disable RSpec/VerifiedDoubles
-      expect(described_class.validate_backend_configuration!).to eq(true)
-    end
-  end
-
   describe ".official_client_builder=" do
     it "rejects non-callable values" do
       expect do

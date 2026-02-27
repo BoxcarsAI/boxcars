@@ -19,11 +19,11 @@ This section tracks the modernization work that is being added in v0.9 with a co
   - `Boxcars::Openai` now runs on the official OpenAI client path only (`:ruby_openai` is unsupported)
   - `openai_official_client_builder` config hook for official client injection
   - `openai_official_require_native` toggle to fail fast unless native official wiring is available
-  - Backend/client compatibility preflight checks in `OpenAICompatibleClient.validate_backend_configuration!`
+  - Client compatibility preflight checks in `OpenAICompatibleClient.validate_client_configuration!`
   - OpenAI-compatible provider pinning to `:official_openai` during migration (OpenAI/Groq/Gemini/Ollama/Google/Cerebras/Together)
-  - CI parity lanes via `spec:openai_backend_parity` and `spec:openai_backend_parity_official`
+  - CI parity lanes via `spec:openai_client_parity` and `spec:openai_client_parity_official`
   - Consolidated modernization regression lane via `spec:modernization`
-  - Notebook migration setup cells added under `notebooks/` for explicit backend pinning during rollout
+  - Notebook migration setup cells added under `notebooks/` for explicit client wiring during rollout
   - Upgrade guide includes a notebook compatibility matrix for backend migration expectations
   - Notebook CI lanes added:
     - PR-safe `notebook-smoke` job via `spec:notebooks_smoke`

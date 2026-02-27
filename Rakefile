@@ -90,18 +90,6 @@ namespace :spec do
     sh "bundle exec rspec #{OPENAI_CLIENT_OFFICIAL_ONLY_SPECS.join(' ')}"
   end
 
-  desc "Deprecated alias for spec:openai_client_parity"
-  task :openai_backend_parity do
-    warn "[DEPRECATION] Use `bundle exec rake spec:openai_client_parity`"
-    Rake::Task["spec:openai_client_parity"].invoke
-  end
-
-  desc "Deprecated alias for spec:openai_client_parity_official"
-  task :openai_backend_parity_official do
-    warn "[DEPRECATION] Use `bundle exec rake spec:openai_client_parity_official`"
-    Rake::Task["spec:openai_client_parity_official"].invoke
-  end
-
   desc "Run modernization regression suite (aliases/tool-calling/MCP/JSON schema + OpenAI client parity lanes)"
   task :modernization do
     sh "bundle exec rspec #{NOTEBOOK_SMOKE_SPECS.join(' ')}"

@@ -99,9 +99,8 @@ Current approach:
 - Apps can provide a config-level `openai_official_client_builder` (callable)
 - Optional strict mode: `openai_official_require_native=true` to fail unless native official wiring is available
 - Builder precedence: module-level `OpenAICompatibleClient.official_client_builder` > config builder > auto-detected official client class
-- Optional preflight check: `OpenAICompatibleClient.validate_backend_configuration!`
-- Preflight validates official backend/client wiring before runtime calls
-- Unsupported backend hints passed directly to `OpenAICompatibleClient` raise `Boxcars::ConfigurationError`
+- Optional preflight check: `OpenAICompatibleClient.validate_client_configuration!`
+- Preflight validates official client wiring before runtime calls
 
 ## Rollout Plan (Code)
 
@@ -116,8 +115,8 @@ Current approach:
 Run these before migration releases:
 
 ```bash
-bundle exec rake spec:openai_backend_parity
-bundle exec rake spec:openai_backend_parity_official
+bundle exec rake spec:openai_client_parity
+bundle exec rake spec:openai_client_parity_official
 # broader modernization lane:
 bundle exec rake spec:modernization
 ```
