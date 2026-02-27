@@ -22,11 +22,19 @@ module Boxcars
     # @param question [String] The question to ask Google.
     # @return [String] The answer to the question.
     def run(question)
-      search = ::GoogleSearch.new(q: question)
-      rv = find_answer(search.get_hash)
+      rv = search_answer(question)
       Boxcars.info "Question: #{question}"
       Boxcars.info "Answer: #{rv}"
       rv
+    end
+
+    def call(inputs:)
+      question = inputs[:question] || inputs["question"]
+      { answer: search_answer(question) }
+    end
+
+    def apply(input_list:)
+      input_list.map { |inputs| call(inputs:) }
     end
 
     # Get the location of an answer from Google using the SerpAPI.
@@ -52,6 +60,11 @@ module Boxcars
     ].freeze
 
     private
+
+    def search_answer(question)
+      search = ::GoogleSearch.new(q: question)
+      find_answer(search.get_hash)
+    end
 
     def find_answer(res)
       raise Error, "Got error from SerpAPI: #{res[:error]}" if res[:error]

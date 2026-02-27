@@ -17,8 +17,17 @@ module Boxcars
     # @param url [String] The url
     # @return [String] The text for the url.
     def run(url)
-      url = URI.parse(url)
-      do_encoding(get_answer(url))
+      call(inputs: { question: url })[:answer]
+    end
+
+    def call(inputs:)
+      url = inputs[:question] || inputs["question"]
+      parsed_url = URI.parse(url)
+      { answer: do_encoding(get_answer(parsed_url)) }
+    end
+
+    def apply(input_list:)
+      input_list.map { |inputs| call(inputs:) }
     end
 
     private

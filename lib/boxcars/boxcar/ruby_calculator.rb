@@ -28,12 +28,18 @@ module Boxcars
     # @param question [String] The question to ask Google.
     # @return [String] The answer to the question.
     def run(question)
+      call(inputs: { question: })[:answer]
+    end
+
+    def call(inputs:)
+      question = inputs[:question] || inputs["question"]
       code = "puts(#{question})"
       ruby_executor = Boxcars::RubyREPL.new
-      rv = ruby_executor.call(code:)
-      puts "Question: #{question}"
-      puts "Answer: #{rv}"
-      rv
+      { answer: ruby_executor.call(code:) }
+    end
+
+    def apply(input_list:)
+      input_list.map { |inputs| call(inputs:) }
     end
   end
 end

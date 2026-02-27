@@ -20,6 +20,21 @@ module Boxcars
     # @param question [String] The question to ask Google.
     # @return [String] The answer to the question.
     def run(question)
+      fetch_answer(question)
+    end
+
+    def call(inputs:)
+      question = inputs[:question] || inputs["question"]
+      { answer: fetch_answer(question) }
+    end
+
+    def apply(input_list:)
+      input_list.map { |inputs| call(inputs:) }
+    end
+
+    private
+
+    def fetch_answer(question)
       Boxcars.debug "Question: #{question}", :yellow
       uri = URI("https://en.wikipedia.org/w/api.php")
       params = { action: "query", list: "search", srsearch: question, format: "json" }

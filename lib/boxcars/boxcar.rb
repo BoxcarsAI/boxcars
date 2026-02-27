@@ -128,16 +128,6 @@ module Boxcars
       [:history, ""]
     end
 
-    # save this boxcar to a file
-    def save(path:)
-      File.write(path, YAML.dump(self))
-    end
-
-    # load this boxcar from a file
-    def load(path:)
-      YAML.load_file(path)
-    end
-
     def schema
       params = parameters.map do |name, info|
         "<param name=#{name.to_s.inspect} data-type=#{info[:type].to_s.inspect} required=\"#{info[:required] == true}\" " \
