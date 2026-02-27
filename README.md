@@ -42,7 +42,7 @@ All of these concepts are in a module named Boxcars:
 - Boxcar - an encapsulation that performs something of interest (such as search, math, SQL, an Active Record Query, or an API call to a service). A Boxcar can use an Engine (described below) to do its work, and if not specified but needed, the default Engine is used `Boxcars.engine`.
 - Train - Given a list of Boxcars and optionally an Engine, a Train breaks down a problem into pieces for individual Boxcars to solve. The individual results are then combined until a final answer is found. `Boxcars::ZeroShot` is the legacy text ReAct implementation, and `Boxcars::ToolCallingTrain` is the newer native tool-calling runtime.
 - Prompt - used by an Engine to generate text results. Our Boxcars have built-in prompts, but you have the flexibility to change or augment them if you so desire.
-- Engine - an entity that generates text from a Prompt. OpenAI's LLM text generator is the default Engine if no other is specified, and you can override the default engine if so desired (`Boxcars.configuration.default_engine`). We have an Engine for Anthropic's Claude API named `Boxcars::Anthropic`, and another Engine for GPT named `Boxcars::Gpt4allEng`.
+- Engine - an entity that generates text from a Prompt. OpenAI's LLM text generator is the default Engine if no other is specified, and you can override the default engine if so desired (`Boxcars.configuration.default_engine`). We have an Engine for Anthropic's Claude API named `Boxcars::Anthropic`, and another Engine for local GPT named `Boxcars::Gpt4allEng` (requires the optional `gpt4all` gem).
 - VectorStore - a place to store and query vectors.
 
 ## Security

@@ -1,7 +1,12 @@
 # frozen_string_literal: true
 
-require 'gpt4all'
 require 'json' # For pretty_generate
+
+begin
+  require "gpt4all"
+rescue LoadError
+  # Optional dependency: this engine remains available when the gem is installed.
+end
 
 module Boxcars
   # A engine that uses local GPT4All API.
@@ -28,6 +33,7 @@ module Boxcars
     end
 
     def client(prompt:, inputs: {}, **kwargs)
+      ensure_gpt4all_available!
       start_time = Time.now
       response_data = { response_obj: nil, parsed_json: nil, success: false, error: nil, status_code: nil }
       # current_params are the effective parameters for this call, including defaults and overrides
@@ -97,6 +103,17 @@ module Boxcars
     end
 
     private
+
+    def ensure_gpt4all_available!
+      return if gpt4all_available?
+
+      raise Boxcars::ConfigurationError,
+            "Gpt4allEng requires the `gpt4all` gem. Add `gem \"gpt4all\"` to your application to use this engine."
+    end
+
+    def gpt4all_available?
+      defined?(::Gpt4all::ConversationalAI)
+    end
 
     def _gpt4all_handle_call_outcome(response_data:)
       if response_data[:error]

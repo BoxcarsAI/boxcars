@@ -3,7 +3,24 @@
 require 'spec_helper'
 require 'boxcars/engine/gpt4all_eng'
 require 'boxcars/prompt'
-require 'gpt4all' # Ensure Gpt4all gem types are available for mocking
+
+unless defined?(Gpt4all::ConversationalAI)
+  module Gpt4all
+    class ConversationalAI
+      def prepare_resources(*)
+      end
+
+      def start_bot
+      end
+
+      def stop_bot
+      end
+
+      def prompt(*)
+      end
+    end
+  end
+end
 
 RSpec.describe Boxcars::Gpt4allEng do
   subject(:engine) { described_class.new(**engine_params) }
@@ -40,6 +57,20 @@ RSpec.describe Boxcars::Gpt4allEng do
   end
 
   describe 'observability integration with Gpt4all::ConversationalAI' do
+    it "raises a setup error when gpt4all is unavailable" do
+      missing_gpt4all_engine = Class.new(described_class) do
+        private
+
+        def gpt4all_available?
+          false
+        end
+      end.new(**engine_params)
+
+      expect do
+        missing_gpt4all_engine.client(prompt: prompt, inputs: inputs)
+      end.to raise_error(Boxcars::ConfigurationError, /requires the `gpt4all` gem/)
+    end
+
     context 'when interaction is successful' do
       before do
         allow(mock_gpt4all_conversational_ai).to receive(:prompt).and_return(gpt4all_success_response_text)
