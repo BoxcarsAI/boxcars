@@ -102,6 +102,13 @@ module Boxcars
       engine(model:, **options)
     end
 
+    # Validate the shape returned by Boxcar#conduct.
+    # @param answer [Object] Conduct return value.
+    # @return [Boolean] True when answer is a hash containing a Boxcars::Result under :answer.
+    def self.valid_answer?(answer)
+      answer.is_a?(Hash) && answer.key?(:answer) && answer[:answer].is_a?(Boxcars::Result)
+    end
+
     def self.emit_alias_deprecation_warning(model)
       model_name = model.to_s
       info = deprecated_alias_info(model_name)

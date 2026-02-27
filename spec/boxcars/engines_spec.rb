@@ -315,4 +315,23 @@ RSpec.describe Boxcars::Engines do
     end
   end
 
+  describe ".valid_answer?" do
+    let(:valid_result) { Boxcars::Result.new(status: :ok, answer: "test answer") }
+
+    it "returns true for a conduct-style hash containing a Result under :answer" do
+      expect(described_class.valid_answer?({ answer: valid_result })).to be(true)
+    end
+
+    it "returns false when :answer is missing" do
+      expect(described_class.valid_answer?({ result: valid_result })).to be(false)
+    end
+
+    it "returns false when :answer is not a Result" do
+      expect(described_class.valid_answer?({ answer: "string" })).to be(false)
+    end
+
+    it "returns false for non-hash values" do
+      expect(described_class.valid_answer?("not a hash")).to be(false)
+    end
+  end
 end
