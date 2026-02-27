@@ -95,4 +95,346 @@ http_interactions:
 
         '
   recorded_at: Wed, 07 Jun 2023 00:01:13 GMT
-recorded_with: VCR 6.1.0
+- request:
+    method: post
+    uri: https://api.openai.com/v1/responses
+    body:
+      encoding: UTF-8
+      string: '{"model":"gpt-5-mini","input":"system: You are a Ruby on Rails Active
+        Record code generator\nsystem: Given an input question, first create a syntactically
+        correct Rails Active Record code to run, then look at the results of the code
+        and return the answer. Unless the user specifies in her question a specific
+        number of examples she wishes to obtain, limit your code to at most 5 results.\nNever
+        query for all the columns from a specific model, only ask for the relevant
+        attributes given the question.\nAlso, pay attention to which attribute is
+        in which model.\n\nUse the following format:\nQuestion: ${{Question here}}\nARChanges:
+        ${{Active Record code to compute the number of records going to change}} -
+        Only add this line if the ARCode on the next line will make data changes.\nARCode:
+        ${{Active Record code to run}} - make sure you use valid code\nAnswer: ${{Final
+        answer here}}\n\nOnly use the following Active Record models: [Comment(id:
+        integer, content: text, user_id: integer, ticket_id: integer, created_at:
+        datetime, updated_at: datetime), Ticket(id: integer, title: string, user_id:
+        integer, status: integer, body: text, created_at: datetime, updated_at: datetime),
+        User(id: integer, name: string, created_at: datetime, updated_at: datetime)]\nPay
+        attention to use only the attribute names that you can see in the model description.\nDo
+        not make up variable or attribute names, and do not share variables between
+        the code in ARChanges and ARCode\nBe careful to not query for attributes that
+        do not exist, and to use the format specified above.\nFinally, try not to
+        use print or puts in your code\nuser: Question: count of comments from John?","max_output_tokens":4096}'
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - application/json
+      User-Agent:
+      - OpenAI::Client/Ruby 0.51.0
+      Host:
+      - api.openai.com
+      X-Stainless-Arch:
+      - arm64
+      X-Stainless-Lang:
+      - ruby
+      X-Stainless-Os:
+      - MacOS
+      X-Stainless-Package-Version:
+      - 0.51.0
+      X-Stainless-Runtime:
+      - ruby
+      X-Stainless-Runtime-Version:
+      - 3.4.8
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer <openai_access_token>
+      X-Stainless-Retry-Count:
+      - '0'
+      X-Stainless-Timeout:
+      - '600.0'
+      Content-Length:
+      - '1680'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 27 Feb 2026 16:25:56 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Server:
+      - cloudflare
+      X-Ratelimit-Limit-Requests:
+      - '10000'
+      X-Ratelimit-Limit-Tokens:
+      - '10000000'
+      X-Ratelimit-Remaining-Requests:
+      - '9999'
+      X-Ratelimit-Remaining-Tokens:
+      - '9999062'
+      X-Ratelimit-Reset-Requests:
+      - 6ms
+      X-Ratelimit-Reset-Tokens:
+      - 5ms
+      Openai-Version:
+      - '2020-10-01'
+      Openai-Organization:
+      - boxcars-ai
+      Openai-Project:
+      - proj_dmFiz6ZSMR5ZHgQIY3tw6FNe
+      X-Request-Id:
+      - req_f1e804dd33914047a8049a5c0aad9790
+      Openai-Processing-Ms:
+      - '27704'
+      Cf-Cache-Status:
+      - DYNAMIC
+      Set-Cookie:
+      - __cf_bm=WBf1.vLshY_JSuzStPD95P8w_AsoHw.AFtaTwZ8JuYo-1772209528.7955756-1.0.1.1-DXQUNE827Sjq9tXzaXztJXGN30DEFW3o.vMi02bD64wWE0_4snI_f_hy34YhL0qlKkFlcm1V3jDYg4O2BgjVEc_OEnzPJHL9o.3g7m2yGprh1I2BRTB_1nW.WvoNgc6m;
+        HttpOnly; Secure; Path=/; Domain=api.openai.com; Expires=Fri, 27 Feb 2026
+        16:55:56 GMT
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      Cf-Ray:
+      - 9d4909d2f875e669-DEN
+      Alt-Svc:
+      - h3=":443"; ma=86400
+    body:
+      encoding: ASCII-8BIT
+      string: |-
+        {
+          "id": "resp_00783be5467727330069a1c578dbcc8190b7d32ee09b5635f9",
+          "object": "response",
+          "created_at": 1772209528,
+          "status": "completed",
+          "background": false,
+          "billing": {
+            "payer": "openai"
+          },
+          "completed_at": 1772209556,
+          "error": null,
+          "frequency_penalty": 0.0,
+          "incomplete_details": null,
+          "instructions": null,
+          "max_output_tokens": 4096,
+          "max_tool_calls": null,
+          "model": "gpt-5-mini-2025-08-07",
+          "output": [
+            {
+              "id": "rs_00783be5467727330069a1c5792a088190b9bbbe3ba8ea9532",
+              "type": "reasoning",
+              "summary": []
+            },
+            {
+              "id": "msg_00783be5467727330069a1c58f2fd48190abd26f4da7b62056",
+              "type": "message",
+              "status": "completed",
+              "content": [
+                {
+                  "type": "output_text",
+                  "annotations": [],
+                  "logprobs": [],
+                  "text": "Question: count of comments from John?\nARCode: count = Comment.joins(\"INNER JOIN users ON users.id = comments.user_id\").where(\"users.name = ?\", \"John\").count\nAnswer: Run the ARCode in the Rails console; it will return the integer count of comments made by users named \"John\"."
+                }
+              ],
+              "role": "assistant"
+            }
+          ],
+          "parallel_tool_calls": true,
+          "presence_penalty": 0.0,
+          "previous_response_id": null,
+          "prompt_cache_key": null,
+          "prompt_cache_retention": null,
+          "reasoning": {
+            "effort": "medium",
+            "summary": null
+          },
+          "safety_identifier": null,
+          "service_tier": "default",
+          "store": true,
+          "temperature": 1.0,
+          "text": {
+            "format": {
+              "type": "text"
+            },
+            "verbosity": "medium"
+          },
+          "tool_choice": "auto",
+          "tools": [],
+          "top_logprobs": 0,
+          "top_p": 1.0,
+          "truncation": "disabled",
+          "usage": {
+            "input_tokens": 361,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens": 1155,
+            "output_tokens_details": {
+              "reasoning_tokens": 1024
+            },
+            "total_tokens": 1516
+          },
+          "user": null,
+          "metadata": {}
+        }
+  recorded_at: Fri, 27 Feb 2026 16:25:56 GMT
+- request:
+    method: post
+    uri: https://api.openai.com/v1/chat/completions
+    body:
+      encoding: UTF-8
+      string: '{"messages":[{"role":"system","content":"You are a Ruby on Rails Active
+        Record code generator"},{"role":"system","content":"Given an input question,
+        first create a syntactically correct Rails Active Record code to run, then
+        look at the results of the code and return the answer. Unless the user specifies
+        in her question a specific number of examples she wishes to obtain, limit
+        your code to at most 5 results.\nNever query for all the columns from a specific
+        model, only ask for the relevant attributes given the question.\nAlso, pay
+        attention to which attribute is in which model.\n\nUse the following format:\nQuestion:
+        ${{Question here}}\nARChanges: ${{Active Record code to compute the number
+        of records going to change}} - Only add this line if the ARCode on the next
+        line will make data changes.\nARCode: ${{Active Record code to run}} - make
+        sure you use valid code\nAnswer: ${{Final answer here}}\n\nOnly use the following
+        Active Record models: [Comment(id: integer, content: text, user_id: integer,
+        ticket_id: integer, created_at: datetime, updated_at: datetime), Ticket(id:
+        integer, title: string, user_id: integer, status: integer, body: text, created_at:
+        datetime, updated_at: datetime), User(id: integer, name: string, created_at:
+        datetime, updated_at: datetime)]\nPay attention to use only the attribute
+        names that you can see in the model description.\nDo not make up variable
+        or attribute names, and do not share variables between the code in ARChanges
+        and ARCode\nBe careful to not query for attributes that do not exist, and
+        to use the format specified above.\nFinally, try not to use print or puts
+        in your code"},{"role":"user","content":"Question: count of comments from
+        John?"}],"model":"gpt-4o-mini","temperature":0.1,"max_tokens":4096,"stop":["Answer:"]}'
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - application/json
+      User-Agent:
+      - OpenAI::Client/Ruby 0.51.0
+      Host:
+      - api.openai.com
+      X-Stainless-Arch:
+      - arm64
+      X-Stainless-Lang:
+      - ruby
+      X-Stainless-Os:
+      - MacOS
+      X-Stainless-Package-Version:
+      - 0.51.0
+      X-Stainless-Runtime:
+      - ruby
+      X-Stainless-Runtime-Version:
+      - 3.4.8
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer <openai_access_token>
+      X-Stainless-Retry-Count:
+      - '0'
+      X-Stainless-Timeout:
+      - '600.0'
+      Content-Length:
+      - '1778'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 27 Feb 2026 16:35:37 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Access-Control-Expose-Headers:
+      - X-Request-ID
+      Openai-Organization:
+      - boxcars-ai
+      Openai-Processing-Ms:
+      - '714'
+      Openai-Project:
+      - proj_dmFiz6ZSMR5ZHgQIY3tw6FNe
+      Openai-Version:
+      - '2020-10-01'
+      Server:
+      - cloudflare
+      X-Ratelimit-Limit-Requests:
+      - '10000'
+      X-Ratelimit-Limit-Tokens:
+      - '10000000'
+      X-Ratelimit-Remaining-Requests:
+      - '9999'
+      X-Ratelimit-Remaining-Tokens:
+      - '9999600'
+      X-Ratelimit-Reset-Requests:
+      - 6ms
+      X-Ratelimit-Reset-Tokens:
+      - 2ms
+      X-Request-Id:
+      - req_e35747939eb04676a8d6e590f3083cbf
+      X-Openai-Proxy-Wasm:
+      - v0.1
+      Cf-Cache-Status:
+      - DYNAMIC
+      Set-Cookie:
+      - __cf_bm=lIKne5C0Xt76HEbBIN6RmaZcmdonadjeDd8TImPBOKw-1772210135.7912142-1.0.1.1-29dgC7U2_Q8j6CZShpY4hVBUAn6GCKdzot4fU05pU4.BvK3DzBZB5wNHfq28HmEqMLvBmzuqA0dRmLJqHjvilblcRK7oofswkEy_o0nao18X.wvZb078w7cN0ylgIU2X;
+        HttpOnly; Secure; Path=/; Domain=api.openai.com; Expires=Fri, 27 Feb 2026
+        17:05:37 GMT
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      Cf-Ray:
+      - 9d4918a4bc3edb4b-DEN
+      Alt-Svc:
+      - h3=":443"; ma=86400
+    body:
+      encoding: ASCII-8BIT
+      string: |
+        {
+          "id": "chatcmpl-DDv6OkUvFdcD0YZiqIF9bE1SOmb3d",
+          "object": "chat.completion",
+          "created": 1772210136,
+          "model": "gpt-4o-mini-2024-07-18",
+          "choices": [
+            {
+              "index": 0,
+              "message": {
+                "role": "assistant",
+                "content": "ARCode: Comment.where(user_id: User.find_by(name: 'John').id).count\n",
+                "refusal": null,
+                "annotations": []
+              },
+              "logprobs": null,
+              "finish_reason": "stop"
+            }
+          ],
+          "usage": {
+            "prompt_tokens": 362,
+            "completion_tokens": 22,
+            "total_tokens": 384,
+            "prompt_tokens_details": {
+              "cached_tokens": 0,
+              "audio_tokens": 0
+            },
+            "completion_tokens_details": {
+              "reasoning_tokens": 0,
+              "audio_tokens": 0,
+              "accepted_prediction_tokens": 0,
+              "rejected_prediction_tokens": 0
+            }
+          },
+          "service_tier": "default",
+          "system_fingerprint": "fp_373a14eb6f"
+        }
+  recorded_at: Fri, 27 Feb 2026 16:35:37 GMT
+recorded_with: VCR 6.4.0

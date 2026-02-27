@@ -202,4 +202,347 @@ http_interactions:
 
         '
   recorded_at: Wed, 07 Jun 2023 00:01:30 GMT
-recorded_with: VCR 6.1.0
+- request:
+    method: post
+    uri: https://api.openai.com/v1/responses
+    body:
+      encoding: UTF-8
+      string: '{"model":"gpt-5-mini","input":"system: You are a Ruby on Rails Active
+        Record code generator\nsystem: Given an input question, first create a syntactically
+        correct Rails Active Record code to run, then look at the results of the code
+        and return the answer. Unless the user specifies in her question a specific
+        number of examples she wishes to obtain, limit your code to at most 5 results.\nNever
+        query for all the columns from a specific model, only ask for the relevant
+        attributes given the question.\nAlso, pay attention to which attribute is
+        in which model.\n\nUse the following format:\nQuestion: ${{Question here}}\nARChanges:
+        ${{Active Record code to compute the number of records going to change}} -
+        Only add this line if the ARCode on the next line will make data changes.\nARCode:
+        ${{Active Record code to run}} - make sure you use valid code\nAnswer: ${{Final
+        answer here}}\n\nOnly use the following Active Record models: [Comment(id:
+        integer, content: text, user_id: integer, ticket_id: integer, created_at:
+        datetime, updated_at: datetime), Ticket(id: integer, title: string, user_id:
+        integer, status: integer, body: text, created_at: datetime, updated_at: datetime),
+        User(id: integer, name: string, created_at: datetime, updated_at: datetime)]\nPay
+        attention to use only the attribute names that you can see in the model description.\nDo
+        not make up variable or attribute names, and do not share variables between
+        the code in ARChanges and ARCode\nBe careful to not query for attributes that
+        do not exist, and to use the format specified above.\nFinally, try not to
+        use print or puts in your code\nuser: Question: Move John''s open tickets
+        to Sally","max_output_tokens":4096}'
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - application/json
+      User-Agent:
+      - OpenAI::Client/Ruby 0.51.0
+      Host:
+      - api.openai.com
+      X-Stainless-Arch:
+      - arm64
+      X-Stainless-Lang:
+      - ruby
+      X-Stainless-Os:
+      - MacOS
+      X-Stainless-Package-Version:
+      - 0.51.0
+      X-Stainless-Runtime:
+      - ruby
+      X-Stainless-Runtime-Version:
+      - 3.4.8
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer <openai_access_token>
+      X-Stainless-Retry-Count:
+      - '0'
+      X-Stainless-Timeout:
+      - '600.0'
+      Content-Length:
+      - '1685'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 27 Feb 2026 16:27:26 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Server:
+      - cloudflare
+      X-Ratelimit-Limit-Requests:
+      - '10000'
+      X-Ratelimit-Limit-Tokens:
+      - '10000000'
+      X-Ratelimit-Remaining-Requests:
+      - '9999'
+      X-Ratelimit-Remaining-Tokens:
+      - '9997332'
+      X-Ratelimit-Reset-Requests:
+      - 6ms
+      X-Ratelimit-Reset-Tokens:
+      - 16ms
+      Openai-Version:
+      - '2020-10-01'
+      Openai-Organization:
+      - boxcars-ai
+      Openai-Project:
+      - proj_dmFiz6ZSMR5ZHgQIY3tw6FNe
+      X-Request-Id:
+      - req_06be99a15cfc43b38b0ef349d6b1880f
+      Openai-Processing-Ms:
+      - '40846'
+      Cf-Cache-Status:
+      - DYNAMIC
+      Set-Cookie:
+      - __cf_bm=D1uHAvM9Ra6BOZTIrA0sJABY5xVEZAIghtnEHHz3qgc-1772209605.8406882-1.0.1.1-XYWCyKykMP7zd0GcKJS6h4SblTPCAxIRqXdZSQkWBP43EsqWwByb6jPouquy1mVDXkAooCvv1mUtwU9V9xvIKzfSWh8cEQ96pCCrvINt2SbpvV1nqGEgBQeUYtEAWBNO;
+        HttpOnly; Secure; Path=/; Domain=api.openai.com; Expires=Fri, 27 Feb 2026
+        16:57:26 GMT
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      Cf-Ray:
+      - 9d490bb479082d60-DEN
+      Alt-Svc:
+      - h3=":443"; ma=86400
+    body:
+      encoding: ASCII-8BIT
+      string: |-
+        {
+          "id": "resp_0a2780b589cb24fd0069a1c5c5f30881918dbdc561bdb38c63",
+          "object": "response",
+          "created_at": 1772209605,
+          "status": "completed",
+          "background": false,
+          "billing": {
+            "payer": "openai"
+          },
+          "completed_at": 1772209646,
+          "error": null,
+          "frequency_penalty": 0.0,
+          "incomplete_details": null,
+          "instructions": null,
+          "max_output_tokens": 4096,
+          "max_tool_calls": null,
+          "model": "gpt-5-mini-2025-08-07",
+          "output": [
+            {
+              "id": "rs_0a2780b589cb24fd0069a1c5c636a08191babd8788f7f635af",
+              "type": "reasoning",
+              "summary": []
+            },
+            {
+              "id": "msg_0a2780b589cb24fd0069a1c5eae9608191a5470f527b78fe53",
+              "type": "message",
+              "status": "completed",
+              "content": [
+                {
+                  "type": "output_text",
+                  "annotations": [],
+                  "logprobs": [],
+                  "text": "Question: Move John's open tickets to Sally\nARChanges: john = User.find_by(name: 'John'); john ? Ticket.where(user_id: john.id, status: 0).count : 0\nARCode: source = User.find_by(name: 'John')\ntarget = User.find_by(name: 'Sally')\nif source.nil? || target.nil?\n  [] \nelse\n  ticket_ids = Ticket.where(user_id: source.id, status: 0).pluck(:id)\n  Ticket.where(id: ticket_ids).update_all(user_id: target.id)\n  Ticket.where(id: ticket_ids).limit(5).select(:id, :title, :status)\nend\nAnswer: The code will (if both users exist) reassign all of John's tickets with status = 0 to Sally.\n\n- If either John or Sally is missing, no changes are made and the code returns an empty array.\n- The ARChanges line returns the number of tickets that will be updated.\n- After the update, the ARCode returns up to 5 example tickets that were moved (selected attributes: id, title, status). \n\nRun the ARChanges line first to see how many tickets will be changed, then run the ARCode to perform the move and get up to 5 sample records."
+                }
+              ],
+              "role": "assistant"
+            }
+          ],
+          "parallel_tool_calls": true,
+          "presence_penalty": 0.0,
+          "previous_response_id": null,
+          "prompt_cache_key": null,
+          "prompt_cache_retention": null,
+          "reasoning": {
+            "effort": "medium",
+            "summary": null
+          },
+          "safety_identifier": null,
+          "service_tier": "default",
+          "store": true,
+          "temperature": 1.0,
+          "text": {
+            "format": {
+              "type": "text"
+            },
+            "verbosity": "medium"
+          },
+          "tool_choice": "auto",
+          "tools": [],
+          "top_logprobs": 0,
+          "top_p": 1.0,
+          "truncation": "disabled",
+          "usage": {
+            "input_tokens": 361,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens": 2885,
+            "output_tokens_details": {
+              "reasoning_tokens": 2560
+            },
+            "total_tokens": 3246
+          },
+          "user": null,
+          "metadata": {}
+        }
+  recorded_at: Fri, 27 Feb 2026 16:27:26 GMT
+- request:
+    method: post
+    uri: https://api.openai.com/v1/chat/completions
+    body:
+      encoding: UTF-8
+      string: '{"messages":[{"role":"system","content":"You are a Ruby on Rails Active
+        Record code generator"},{"role":"system","content":"Given an input question,
+        first create a syntactically correct Rails Active Record code to run, then
+        look at the results of the code and return the answer. Unless the user specifies
+        in her question a specific number of examples she wishes to obtain, limit
+        your code to at most 5 results.\nNever query for all the columns from a specific
+        model, only ask for the relevant attributes given the question.\nAlso, pay
+        attention to which attribute is in which model.\n\nUse the following format:\nQuestion:
+        ${{Question here}}\nARChanges: ${{Active Record code to compute the number
+        of records going to change}} - Only add this line if the ARCode on the next
+        line will make data changes.\nARCode: ${{Active Record code to run}} - make
+        sure you use valid code\nAnswer: ${{Final answer here}}\n\nOnly use the following
+        Active Record models: [Comment(id: integer, content: text, user_id: integer,
+        ticket_id: integer, created_at: datetime, updated_at: datetime), Ticket(id:
+        integer, title: string, user_id: integer, status: integer, body: text, created_at:
+        datetime, updated_at: datetime), User(id: integer, name: string, created_at:
+        datetime, updated_at: datetime)]\nPay attention to use only the attribute
+        names that you can see in the model description.\nDo not make up variable
+        or attribute names, and do not share variables between the code in ARChanges
+        and ARCode\nBe careful to not query for attributes that do not exist, and
+        to use the format specified above.\nFinally, try not to use print or puts
+        in your code"},{"role":"user","content":"Question: Move John''s open tickets
+        to Sally"}],"model":"gpt-4o-mini","temperature":0.1,"max_tokens":4096,"stop":["Answer:"]}'
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - application/json
+      User-Agent:
+      - OpenAI::Client/Ruby 0.51.0
+      Host:
+      - api.openai.com
+      X-Stainless-Arch:
+      - arm64
+      X-Stainless-Lang:
+      - ruby
+      X-Stainless-Os:
+      - MacOS
+      X-Stainless-Package-Version:
+      - 0.51.0
+      X-Stainless-Runtime:
+      - ruby
+      X-Stainless-Runtime-Version:
+      - 3.4.8
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer <openai_access_token>
+      X-Stainless-Retry-Count:
+      - '0'
+      X-Stainless-Timeout:
+      - '600.0'
+      Content-Length:
+      - '1783'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 27 Feb 2026 16:35:40 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Access-Control-Expose-Headers:
+      - X-Request-ID
+      Openai-Organization:
+      - boxcars-ai
+      Openai-Processing-Ms:
+      - '1618'
+      Openai-Project:
+      - proj_dmFiz6ZSMR5ZHgQIY3tw6FNe
+      Openai-Version:
+      - '2020-10-01'
+      Server:
+      - cloudflare
+      X-Ratelimit-Limit-Requests:
+      - '10000'
+      X-Ratelimit-Limit-Tokens:
+      - '10000000'
+      X-Ratelimit-Remaining-Requests:
+      - '9999'
+      X-Ratelimit-Remaining-Tokens:
+      - '9999599'
+      X-Ratelimit-Reset-Requests:
+      - 6ms
+      X-Ratelimit-Reset-Tokens:
+      - 2ms
+      X-Request-Id:
+      - req_41bb95c106744b44804524b289a1fe82
+      X-Openai-Proxy-Wasm:
+      - v0.1
+      Cf-Cache-Status:
+      - DYNAMIC
+      Set-Cookie:
+      - __cf_bm=K.WCeCCI2d1u8jZYV4vM_w8k3L9D8BHviw2Yp5Zpn1E-1772210139.090638-1.0.1.1-xMAtMyrF_jL2GuhtaPE4gzxRrwcRFTuXOO9FBrcMtEvb84xrtYT5R9D1LJsxrgXMeLVn2tZJO4mHmOz6MCNf_xUaiavMCJ7R5_qnXm6e9HAZKuyjTCPfYaqSmt.Mzx7i;
+        HttpOnly; Secure; Path=/; Domain=api.openai.com; Expires=Fri, 27 Feb 2026
+        17:05:40 GMT
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      Cf-Ray:
+      - 9d4918b94d345599-DEN
+      Alt-Svc:
+      - h3=":443"; ma=86400
+    body:
+      encoding: ASCII-8BIT
+      string: |
+        {
+          "id": "chatcmpl-DDv6RPB40ZcoyjuOT2kNpsSwt98mf",
+          "object": "chat.completion",
+          "created": 1772210139,
+          "model": "gpt-4o-mini-2024-07-18",
+          "choices": [
+            {
+              "index": 0,
+              "message": {
+                "role": "assistant",
+                "content": "ARChanges: Ticket.where(user_id: User.find_by(name: 'John').id, status: 0).update_all(user_id: User.find_by(name: 'Sally').id)\nARCode: Ticket.where(user_id: User.find_by(name: 'John').id, status: 0).select(:id, :title)\n",
+                "refusal": null,
+                "annotations": []
+              },
+              "logprobs": null,
+              "finish_reason": "stop"
+            }
+          ],
+          "usage": {
+            "prompt_tokens": 362,
+            "completion_tokens": 71,
+            "total_tokens": 433,
+            "prompt_tokens_details": {
+              "cached_tokens": 0,
+              "audio_tokens": 0
+            },
+            "completion_tokens_details": {
+              "reasoning_tokens": 0,
+              "audio_tokens": 0,
+              "accepted_prediction_tokens": 0,
+              "rejected_prediction_tokens": 0
+            }
+          },
+          "service_tier": "default",
+          "system_fingerprint": "fp_373a14eb6f"
+        }
+  recorded_at: Fri, 27 Feb 2026 16:35:40 GMT
+recorded_with: VCR 6.4.0

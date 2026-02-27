@@ -235,4 +235,333 @@ http_interactions:
 
         '
   recorded_at: Thu, 30 Mar 2023 20:06:45 GMT
-recorded_with: VCR 6.1.0
+- request:
+    method: post
+    uri: https://api.openai.com/v1/responses
+    body:
+      encoding: UTF-8
+      string: '{"model":"gpt-5-mini","input":"system: Answer the following questions
+        as best you can. You have access to the following actions:\nSearch: useful
+        for when you need to answer questions about current events.You should ask
+        targeted questions\nCalculator: useful for when you need to answer questions
+        about math\nUse the following format:\nQuestion: the input question you must
+        answer\nThought: you should always think about what to do\nAction: the action
+        to take, should be one from this list: Search, Calculator\nAction Input: an
+        input question to the action\nObservation: the result of the action\n... (this
+        Thought/Action/Action Input/Observation sequence can repeat N times)\nThought:
+        I know the final answer\nFinal Answer: the final answer to the original input
+        question\n\nRemember to start a line with \"Final Answer:\" to give me the
+        final answer.\nAlso make sure to specify a question for the Action Input.\nFinally,
+        if you can deduct the answer from the question or observation, you can start
+        with \"Final Answer:\" and give me the answer.\nBegin!\nuser: Question: how
+        many days in a year?\nassistant: Thought: ","max_output_tokens":4096}'
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - application/json
+      User-Agent:
+      - OpenAI::Client/Ruby 0.51.0
+      Host:
+      - api.openai.com
+      X-Stainless-Arch:
+      - arm64
+      X-Stainless-Lang:
+      - ruby
+      X-Stainless-Os:
+      - MacOS
+      X-Stainless-Package-Version:
+      - 0.51.0
+      X-Stainless-Runtime:
+      - ruby
+      X-Stainless-Runtime-Version:
+      - 3.4.8
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer <openai_access_token>
+      X-Stainless-Retry-Count:
+      - '0'
+      X-Stainless-Timeout:
+      - '600.0'
+      Content-Length:
+      - '1144'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 27 Feb 2026 16:31:05 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Server:
+      - cloudflare
+      X-Ratelimit-Limit-Requests:
+      - '10000'
+      X-Ratelimit-Limit-Tokens:
+      - '10000000'
+      X-Ratelimit-Remaining-Requests:
+      - '9999'
+      X-Ratelimit-Remaining-Tokens:
+      - '9999626'
+      X-Ratelimit-Reset-Requests:
+      - 6ms
+      X-Ratelimit-Reset-Tokens:
+      - 2ms
+      Openai-Version:
+      - '2020-10-01'
+      Openai-Organization:
+      - boxcars-ai
+      Openai-Project:
+      - proj_dmFiz6ZSMR5ZHgQIY3tw6FNe
+      X-Request-Id:
+      - req_4340652fab6a4b829ea5f9b7159dfd36
+      Openai-Processing-Ms:
+      - '9413'
+      Cf-Cache-Status:
+      - DYNAMIC
+      Set-Cookie:
+      - __cf_bm=KmOEtPOOIp6TJLlCaosvU6YIjqgXmilcMISF6QiBnog-1772209856.1813433-1.0.1.1-KBDxQzHH_qi6GyESb1eWbzgKxk9aCf_ikuJ.iyJ4u_WZy5dM_yxHT84gjk_8F03dTPcPKvHGP3sfc5pBfC2pCL1wUOry6ltQm1.CTJbdsCEOiwEjFB5wZBtlmwOjaU67;
+        HttpOnly; Secure; Path=/; Domain=api.openai.com; Expires=Fri, 27 Feb 2026
+        17:01:05 GMT
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      Cf-Ray:
+      - 9d4911d12dfa8b71-DEN
+      Alt-Svc:
+      - h3=":443"; ma=86400
+    body:
+      encoding: ASCII-8BIT
+      string: |-
+        {
+          "id": "resp_0868348e4b2873d60069a1c6c039548190a26ed82306931f16",
+          "object": "response",
+          "created_at": 1772209856,
+          "status": "completed",
+          "background": false,
+          "billing": {
+            "payer": "openai"
+          },
+          "completed_at": 1772209865,
+          "error": null,
+          "frequency_penalty": 0.0,
+          "incomplete_details": null,
+          "instructions": null,
+          "max_output_tokens": 4096,
+          "max_tool_calls": null,
+          "model": "gpt-5-mini-2025-08-07",
+          "output": [
+            {
+              "id": "rs_0868348e4b2873d60069a1c6c08bc4819092da1894c294d0cd",
+              "type": "reasoning",
+              "summary": []
+            },
+            {
+              "id": "msg_0868348e4b2873d60069a1c6c8098481908fc33c8baec074ec",
+              "type": "message",
+              "status": "completed",
+              "content": [
+                {
+                  "type": "output_text",
+                  "annotations": [],
+                  "logprobs": [],
+                  "text": "Question: how many days in a year?\nThought: A typical (common) year has 365 days. Every 4th year is a leap year with 366 days (with exceptions in the Gregorian calendar), giving an average year length of 365.2425 days in the Gregorian system.\nFinal Answer: 365 days in a common year; 366 days in a leap year (average \u2248 365.2425 days in the Gregorian calendar)."
+                }
+              ],
+              "role": "assistant"
+            }
+          ],
+          "parallel_tool_calls": true,
+          "presence_penalty": 0.0,
+          "previous_response_id": null,
+          "prompt_cache_key": null,
+          "prompt_cache_retention": null,
+          "reasoning": {
+            "effort": "medium",
+            "summary": null
+          },
+          "safety_identifier": null,
+          "service_tier": "default",
+          "store": true,
+          "temperature": 1.0,
+          "text": {
+            "format": {
+              "type": "text"
+            },
+            "verbosity": "medium"
+          },
+          "tool_choice": "auto",
+          "tools": [],
+          "top_logprobs": 0,
+          "top_p": 1.0,
+          "truncation": "disabled",
+          "usage": {
+            "input_tokens": 230,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens": 591,
+            "output_tokens_details": {
+              "reasoning_tokens": 448
+            },
+            "total_tokens": 821
+          },
+          "user": null,
+          "metadata": {}
+        }
+  recorded_at: Fri, 27 Feb 2026 16:31:05 GMT
+- request:
+    method: post
+    uri: https://api.openai.com/v1/chat/completions
+    body:
+      encoding: UTF-8
+      string: '{"messages":[{"role":"system","content":"Answer the following questions
+        as best you can. You have access to the following actions:\nSearch: useful
+        for when you need to answer questions about current events.You should ask
+        targeted questions\nCalculator: useful for when you need to answer questions
+        about math\nUse the following format:\nQuestion: the input question you must
+        answer\nThought: you should always think about what to do\nAction: the action
+        to take, should be one from this list: Search, Calculator\nAction Input: an
+        input question to the action\nObservation: the result of the action\n... (this
+        Thought/Action/Action Input/Observation sequence can repeat N times)\nThought:
+        I know the final answer\nFinal Answer: the final answer to the original input
+        question\n\nRemember to start a line with \"Final Answer:\" to give me the
+        final answer.\nAlso make sure to specify a question for the Action Input.\nFinally,
+        if you can deduct the answer from the question or observation, you can start
+        with \"Final Answer:\" and give me the answer.\nBegin!"},{"role":"user","content":"Question:
+        how many days in a year?"},{"role":"assistant","content":"Thought: "}],"model":"gpt-4o-mini","temperature":0.1,"max_tokens":4096,"stop":["\nObservation:
+        "]}'
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - application/json
+      User-Agent:
+      - OpenAI::Client/Ruby 0.51.0
+      Host:
+      - api.openai.com
+      X-Stainless-Arch:
+      - arm64
+      X-Stainless-Lang:
+      - ruby
+      X-Stainless-Os:
+      - MacOS
+      X-Stainless-Package-Version:
+      - 0.51.0
+      X-Stainless-Runtime:
+      - ruby
+      X-Stainless-Runtime-Version:
+      - 3.4.8
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer <openai_access_token>
+      X-Stainless-Retry-Count:
+      - '0'
+      X-Stainless-Timeout:
+      - '600.0'
+      Content-Length:
+      - '1250'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 27 Feb 2026 16:36:15 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Access-Control-Expose-Headers:
+      - X-Request-ID
+      Openai-Organization:
+      - boxcars-ai
+      Openai-Processing-Ms:
+      - '1447'
+      Openai-Project:
+      - proj_dmFiz6ZSMR5ZHgQIY3tw6FNe
+      Openai-Version:
+      - '2020-10-01'
+      Server:
+      - cloudflare
+      X-Ratelimit-Limit-Requests:
+      - '10000'
+      X-Ratelimit-Limit-Tokens:
+      - '10000000'
+      X-Ratelimit-Remaining-Requests:
+      - '9999'
+      X-Ratelimit-Remaining-Tokens:
+      - '9999736'
+      X-Ratelimit-Reset-Requests:
+      - 6ms
+      X-Ratelimit-Reset-Tokens:
+      - 1ms
+      X-Request-Id:
+      - req_50548f2600b1442bbce6c28e437f528f
+      X-Openai-Proxy-Wasm:
+      - v0.1
+      Cf-Cache-Status:
+      - DYNAMIC
+      Set-Cookie:
+      - __cf_bm=xj8vKQbsit5dd7HyvMitHHoK3SqhEIKBuxKOp6gHigQ-1772210173.9060452-1.0.1.1-_Cy8Y.HltraZkRwJoasqrIJGIsaeELUmxc_Pwjh1ICKMC6JUvdlMZfXA4OkFMIO93tD2DnmKT8c_m381hNKGYQd9.IYMaeeGX_VpdHnDe6nMhjJ3tmfqfhTRQeS3zU3p;
+        HttpOnly; Secure; Path=/; Domain=api.openai.com; Expires=Fri, 27 Feb 2026
+        17:06:15 GMT
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      Cf-Ray:
+      - 9d491992ef566429-DEN
+      Alt-Svc:
+      - h3=":443"; ma=86400
+    body:
+      encoding: ASCII-8BIT
+      string: |
+        {
+          "id": "chatcmpl-DDv70gInL9yQ158oEzBWxH8bPLD2u",
+          "object": "chat.completion",
+          "created": 1772210174,
+          "model": "gpt-4o-mini-2024-07-18",
+          "choices": [
+            {
+              "index": 0,
+              "message": {
+                "role": "assistant",
+                "content": "In a standard year, there are 365 days. However, in a leap year, there are 366 days. Leap years occur every four years. \n\nFinal Answer: 365 days (or 366 days in a leap year).",
+                "refusal": null,
+                "annotations": []
+              },
+              "logprobs": null,
+              "finish_reason": "stop"
+            }
+          ],
+          "usage": {
+            "prompt_tokens": 233,
+            "completion_tokens": 48,
+            "total_tokens": 281,
+            "prompt_tokens_details": {
+              "cached_tokens": 0,
+              "audio_tokens": 0
+            },
+            "completion_tokens_details": {
+              "reasoning_tokens": 0,
+              "audio_tokens": 0,
+              "accepted_prediction_tokens": 0,
+              "rejected_prediction_tokens": 0
+            }
+          },
+          "service_tier": "default",
+          "system_fingerprint": "fp_373a14eb6f"
+        }
+  recorded_at: Fri, 27 Feb 2026 16:36:15 GMT
+recorded_with: VCR 6.4.0

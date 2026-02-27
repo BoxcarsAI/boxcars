@@ -364,4 +364,186 @@ http_interactions:
         is exactly what we need to answer the question.</thought>\n\n<final_answer>Pi
         squared to 7 digits after the decimal point is 9.8696044.</final_answer>"}],"stop_reason":"end_turn","stop_sequence":null,"usage":{"input_tokens":426,"output_tokens":65}}'
   recorded_at: Fri, 19 Jul 2024 22:42:34 GMT
-recorded_with: VCR 6.2.0
+- request:
+    method: post
+    uri: https://api.openai.com/v1/responses
+    body:
+      encoding: UTF-8
+      string: '{"model":"gpt-5-mini","input":"system: You can do basic math, but for
+        any hard calculations that a human could not do in their head, use the following
+        approach instead. Return code written in the Ruby programming language that
+        prints the results to the console. If anyone gives you a hard math problem,
+        just use the following format and we’ll take care of the rest:\n${{Question
+        with hard calculation.}}\nreply only with the following format:\n```ruby\n${{only
+        Ruby code that prints the answer. If you use puts, make sure to wrap the expression
+        in paranthesis}}\n```\n```output\n${{Output of your code}}\n```\n\nOtherwise,
+        you should use this simpler format:\n${{Question without hard calculation}}\nAnswer:
+        ${{Answer}}\n\nDo not give an explanation of the answer and make sure your
+        answer starts with either ''Answer:'' or ''```ruby''.\nsystem: here is a hard
+        example:\nthe user asks: What is 37593 * 67?\nyour answer: ```ruby\nputs(37593
+        * 67)\n```\n```output\n2518731\n```\nAnswer: 2518731\nsystem: basic example:\nuser
+        asks: What is 2518731 + 0?\nyou answer: Answer: 2518731\nsystem: Begin.\nuser:
+        question: What is pi squared to 7 decimal places?","max_output_tokens":4096}'
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - application/json
+      User-Agent:
+      - OpenAI::Client/Ruby 0.51.0
+      Host:
+      - api.openai.com
+      X-Stainless-Arch:
+      - arm64
+      X-Stainless-Lang:
+      - ruby
+      X-Stainless-Os:
+      - MacOS
+      X-Stainless-Package-Version:
+      - 0.51.0
+      X-Stainless-Runtime:
+      - ruby
+      X-Stainless-Runtime-Version:
+      - 3.4.8
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer <openai_access_token>
+      X-Stainless-Retry-Count:
+      - '0'
+      X-Stainless-Timeout:
+      - '600.0'
+      Content-Length:
+      - '1176'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 27 Feb 2026 16:32:53 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Server:
+      - cloudflare
+      X-Ratelimit-Limit-Requests:
+      - '10000'
+      X-Ratelimit-Limit-Tokens:
+      - '10000000'
+      X-Ratelimit-Remaining-Requests:
+      - '9999'
+      X-Ratelimit-Remaining-Tokens:
+      - '9999178'
+      X-Ratelimit-Reset-Requests:
+      - 6ms
+      X-Ratelimit-Reset-Tokens:
+      - 4ms
+      Openai-Version:
+      - '2020-10-01'
+      Openai-Organization:
+      - boxcars-ai
+      Openai-Project:
+      - proj_dmFiz6ZSMR5ZHgQIY3tw6FNe
+      X-Request-Id:
+      - req_03822c57bc454938af5596439f4cbebd
+      Openai-Processing-Ms:
+      - '18641'
+      Cf-Cache-Status:
+      - DYNAMIC
+      Set-Cookie:
+      - __cf_bm=.PcX3d7uki3998RpEl3IRB9tUOKFmerYZFDhd3X1xIE-1772209954.7107403-1.0.1.1-kCVyAssi_bdqQB_9NIY9yGrNR1utXzMMWMB89ZPWDhuDvndS3NN2GUw0T_NTezeQ.tqmPe.EkY3VihwSThNcfN4ju0uIBxDWW7jqxgSar_hk8u8RBMGDWwwAX2DoJSIo;
+        HttpOnly; Secure; Path=/; Domain=api.openai.com; Expires=Fri, 27 Feb 2026
+        17:02:53 GMT
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      Cf-Ray:
+      - 9d491438e98260a3-DEN
+      Alt-Svc:
+      - h3=":443"; ma=86400
+    body:
+      encoding: ASCII-8BIT
+      string: |-
+        {
+          "id": "resp_0386dbd294bed75c0069a1c722cb98819f8449a0ac8d1d831d",
+          "object": "response",
+          "created_at": 1772209954,
+          "status": "completed",
+          "background": false,
+          "billing": {
+            "payer": "openai"
+          },
+          "completed_at": 1772209973,
+          "error": null,
+          "frequency_penalty": 0.0,
+          "incomplete_details": null,
+          "instructions": null,
+          "max_output_tokens": 4096,
+          "max_tool_calls": null,
+          "model": "gpt-5-mini-2025-08-07",
+          "output": [
+            {
+              "id": "rs_0386dbd294bed75c0069a1c7231668819fa6baf87245338cbd",
+              "type": "reasoning",
+              "summary": []
+            },
+            {
+              "id": "msg_0386dbd294bed75c0069a1c7349edc819fbd8ca81d27b13c4d",
+              "type": "message",
+              "status": "completed",
+              "content": [
+                {
+                  "type": "output_text",
+                  "annotations": [],
+                  "logprobs": [],
+                  "text": "```ruby\nputs(format('%.7f', Math::PI**2))\n```\n```output\n9.8696044\n```"
+                }
+              ],
+              "role": "assistant"
+            }
+          ],
+          "parallel_tool_calls": true,
+          "presence_penalty": 0.0,
+          "previous_response_id": null,
+          "prompt_cache_key": null,
+          "prompt_cache_retention": null,
+          "reasoning": {
+            "effort": "medium",
+            "summary": null
+          },
+          "safety_identifier": null,
+          "service_tier": "default",
+          "store": true,
+          "temperature": 1.0,
+          "text": {
+            "format": {
+              "type": "text"
+            },
+            "verbosity": "medium"
+          },
+          "tool_choice": "auto",
+          "tools": [],
+          "top_logprobs": 0,
+          "top_p": 1.0,
+          "truncation": "disabled",
+          "usage": {
+            "input_tokens": 277,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens": 1039,
+            "output_tokens_details": {
+              "reasoning_tokens": 960
+            },
+            "total_tokens": 1316
+          },
+          "user": null,
+          "metadata": {}
+        }
+  recorded_at: Fri, 27 Feb 2026 16:32:53 GMT
+recorded_with: VCR 6.4.0

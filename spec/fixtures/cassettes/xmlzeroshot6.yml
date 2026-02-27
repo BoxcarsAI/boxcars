@@ -741,4 +741,368 @@ http_interactions:
       string: !binary |-
         eyJpZCI6Im1zZ18wMThHcnJaTWI1Mnp2YTdKSnVjVzdFZXYiLCJ0eXBlIjoibWVzc2FnZSIsInJvbGUiOiJhc3Npc3RhbnQiLCJtb2RlbCI6ImNsYXVkZS0zLTUtc29ubmV0LTIwMjQwNjIwIiwiY29udGVudCI6W3sidHlwZSI6InRleHQiLCJ0ZXh0IjoiXG5cbjx0aG91Z2h0PlRoZSBjYWxjdWxhdG9yIGhhcyBnaXZlbiB1cyB0aGUgc3F1YXJlIHJvb3Qgb2YgOS44Njk2MDQ0LCB3aGljaCBpcyBhcHByb3hpbWF0ZWx5IDMuMTQxNTkyNjUzNDE2NDE2Mi4gVGhpcyBpcyBhY3R1YWxseSB0aGUgdmFsdWUgb2YgcGkgKM+AKSB3aXRoIGhpZ2ggcHJlY2lzaW9uLiBUaGUgcXVlc3Rpb24gZGlkbid0IHNwZWNpZnkgaG93IG1hbnkgZGVjaW1hbCBwbGFjZXMgdG8gaW5jbHVkZSwgc28gSSdsbCBwcm92aWRlIHRoZSBhbnN3ZXIgd2l0aCB0aGUgc2FtZSBwcmVjaXNpb24gYXMgdGhlIGlucHV0LjwvdGhvdWdodD5cblxuPGZpbmFsX2Fuc3dlcj5UaGUgc3F1YXJlIHJvb3Qgb2YgdGhlIHByZXZpb3VzIGFuc3dlciAoOS44Njk2MDQ0KSBpcyBhcHByb3hpbWF0ZWx5IDMuMTQxNTkyNywgd2hpY2ggaXMgdGhlIHZhbHVlIG9mIHBpICjPgCkgdG8gNyBkZWNpbWFsIHBsYWNlcy48L2ZpbmFsX2Fuc3dlcj4ifV0sInN0b3BfcmVhc29uIjoiZW5kX3R1cm4iLCJzdG9wX3NlcXVlbmNlIjpudWxsLCJ1c2FnZSI6eyJpbnB1dF90b2tlbnMiOjU4MSwib3V0cHV0X3Rva2VucyI6MTI3fX0=
   recorded_at: Fri, 19 Jul 2024 22:40:31 GMT
-recorded_with: VCR 6.2.0
+- request:
+    method: post
+    uri: https://api.openai.com/v1/responses
+    body:
+      encoding: UTF-8
+      string: '{"model":"gpt-5-mini","input":"system: You can do basic math, but for
+        any hard calculations that a human could not do in their head, use the following
+        approach instead. Return code written in the Ruby programming language that
+        prints the results to the console. If anyone gives you a hard math problem,
+        just use the following format and we’ll take care of the rest:\n${{Question
+        with hard calculation.}}\nreply only with the following format:\n```ruby\n${{only
+        Ruby code that prints the answer. If you use puts, make sure to wrap the expression
+        in paranthesis}}\n```\n```output\n${{Output of your code}}\n```\n\nOtherwise,
+        you should use this simpler format:\n${{Question without hard calculation}}\nAnswer:
+        ${{Answer}}\n\nDo not give an explanation of the answer and make sure your
+        answer starts with either ''Answer:'' or ''```ruby''.\nsystem: here is a hard
+        example:\nthe user asks: What is 37593 * 67?\nyour answer: ```ruby\nputs(37593
+        * 67)\n```\n```output\n2518731\n```\nAnswer: 2518731\nsystem: basic example:\nuser
+        asks: What is 2518731 + 0?\nyou answer: Answer: 2518731\nsystem: Begin.\nuser:
+        question: What is pi squared to 7 decimal places?","max_output_tokens":4096}'
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - application/json
+      User-Agent:
+      - OpenAI::Client/Ruby 0.51.0
+      Host:
+      - api.openai.com
+      X-Stainless-Arch:
+      - arm64
+      X-Stainless-Lang:
+      - ruby
+      X-Stainless-Os:
+      - MacOS
+      X-Stainless-Package-Version:
+      - 0.51.0
+      X-Stainless-Runtime:
+      - ruby
+      X-Stainless-Runtime-Version:
+      - 3.4.8
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer <openai_access_token>
+      X-Stainless-Retry-Count:
+      - '0'
+      X-Stainless-Timeout:
+      - '600.0'
+      Content-Length:
+      - '1176'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 27 Feb 2026 16:33:17 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Server:
+      - cloudflare
+      X-Ratelimit-Limit-Requests:
+      - '10000'
+      X-Ratelimit-Limit-Tokens:
+      - '10000000'
+      X-Ratelimit-Remaining-Requests:
+      - '9999'
+      X-Ratelimit-Remaining-Tokens:
+      - '9998895'
+      X-Ratelimit-Reset-Requests:
+      - 6ms
+      X-Ratelimit-Reset-Tokens:
+      - 6ms
+      Openai-Version:
+      - '2020-10-01'
+      Openai-Organization:
+      - boxcars-ai
+      Openai-Project:
+      - proj_dmFiz6ZSMR5ZHgQIY3tw6FNe
+      X-Request-Id:
+      - req_12db763721404d0491c22c0eb27e23ec
+      Openai-Processing-Ms:
+      - '23537'
+      Cf-Cache-Status:
+      - DYNAMIC
+      Set-Cookie:
+      - __cf_bm=zQQEmsS026vvbRWY_NPNtC_4DehdFigZnFbTvBPlCQc-1772209973.8056893-1.0.1.1-9X8STM1w..yhcMbTIp_y2sO5RJBLdzq3SM8IDyiJY8I6iA11xZpL8r79t15IfcvVKXAqt_ilKpcogjkWchYgUD2MM0gEESpak1P3w2WlSRxHSCcN_GMBc1SxLgu0OQfm;
+        HttpOnly; Secure; Path=/; Domain=api.openai.com; Expires=Fri, 27 Feb 2026
+        17:03:17 GMT
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      Cf-Ray:
+      - 9d4914b04b867d3a-DEN
+      Alt-Svc:
+      - h3=":443"; ma=86400
+    body:
+      encoding: ASCII-8BIT
+      string: |-
+        {
+          "id": "resp_0ca9dd012a705e110069a1c735dc3881a393bafe9039b70c95",
+          "object": "response",
+          "created_at": 1772209973,
+          "status": "completed",
+          "background": false,
+          "billing": {
+            "payer": "openai"
+          },
+          "completed_at": 1772209997,
+          "error": null,
+          "frequency_penalty": 0.0,
+          "incomplete_details": null,
+          "instructions": null,
+          "max_output_tokens": 4096,
+          "max_tool_calls": null,
+          "model": "gpt-5-mini-2025-08-07",
+          "output": [
+            {
+              "id": "rs_0ca9dd012a705e110069a1c736299881a38c56959301aab97a",
+              "type": "reasoning",
+              "summary": []
+            },
+            {
+              "id": "msg_0ca9dd012a705e110069a1c74c91ac81a3be24398f28271b94",
+              "type": "message",
+              "status": "completed",
+              "content": [
+                {
+                  "type": "output_text",
+                  "annotations": [],
+                  "logprobs": [],
+                  "text": "```ruby\nputs((Math::PI**2).round(7))\n```\n```output\n9.8696044\n```\nAnswer: 9.8696044"
+                }
+              ],
+              "role": "assistant"
+            }
+          ],
+          "parallel_tool_calls": true,
+          "presence_penalty": 0.0,
+          "previous_response_id": null,
+          "prompt_cache_key": null,
+          "prompt_cache_retention": null,
+          "reasoning": {
+            "effort": "medium",
+            "summary": null
+          },
+          "safety_identifier": null,
+          "service_tier": "default",
+          "store": true,
+          "temperature": 1.0,
+          "text": {
+            "format": {
+              "type": "text"
+            },
+            "verbosity": "medium"
+          },
+          "tool_choice": "auto",
+          "tools": [],
+          "top_logprobs": 0,
+          "top_p": 1.0,
+          "truncation": "disabled",
+          "usage": {
+            "input_tokens": 277,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens": 1322,
+            "output_tokens_details": {
+              "reasoning_tokens": 1280
+            },
+            "total_tokens": 1599
+          },
+          "user": null,
+          "metadata": {}
+        }
+  recorded_at: Fri, 27 Feb 2026 16:33:17 GMT
+- request:
+    method: post
+    uri: https://api.openai.com/v1/responses
+    body:
+      encoding: UTF-8
+      string: '{"model":"gpt-5-mini","input":"system: You can do basic math, but for
+        any hard calculations that a human could not do in their head, use the following
+        approach instead. Return code written in the Ruby programming language that
+        prints the results to the console. If anyone gives you a hard math problem,
+        just use the following format and we’ll take care of the rest:\n${{Question
+        with hard calculation.}}\nreply only with the following format:\n```ruby\n${{only
+        Ruby code that prints the answer. If you use puts, make sure to wrap the expression
+        in paranthesis}}\n```\n```output\n${{Output of your code}}\n```\n\nOtherwise,
+        you should use this simpler format:\n${{Question without hard calculation}}\nAnswer:
+        ${{Answer}}\n\nDo not give an explanation of the answer and make sure your
+        answer starts with either ''Answer:'' or ''```ruby''.\nsystem: here is a hard
+        example:\nthe user asks: What is 37593 * 67?\nyour answer: ```ruby\nputs(37593
+        * 67)\n```\n```output\n2518731\n```\nAnswer: 2518731\nsystem: basic example:\nuser
+        asks: What is 2518731 + 0?\nyou answer: Answer: 2518731\nsystem: Begin.\nuser:
+        question: What is the square root of 9.8696044?","max_output_tokens":4096}'
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - application/json
+      User-Agent:
+      - OpenAI::Client/Ruby 0.51.0
+      Host:
+      - api.openai.com
+      X-Stainless-Arch:
+      - arm64
+      X-Stainless-Lang:
+      - ruby
+      X-Stainless-Os:
+      - MacOS
+      X-Stainless-Package-Version:
+      - 0.51.0
+      X-Stainless-Runtime:
+      - ruby
+      X-Stainless-Runtime-Version:
+      - 3.4.8
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer <openai_access_token>
+      X-Stainless-Retry-Count:
+      - '0'
+      X-Stainless-Timeout:
+      - '600.0'
+      Content-Length:
+      - '1174'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 27 Feb 2026 16:34:08 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Server:
+      - cloudflare
+      X-Ratelimit-Limit-Requests:
+      - '10000'
+      X-Ratelimit-Limit-Tokens:
+      - '10000000'
+      X-Ratelimit-Remaining-Requests:
+      - '9999'
+      X-Ratelimit-Remaining-Tokens:
+      - '9997358'
+      X-Ratelimit-Reset-Requests:
+      - 6ms
+      X-Ratelimit-Reset-Tokens:
+      - 15ms
+      Openai-Version:
+      - '2020-10-01'
+      Openai-Organization:
+      - boxcars-ai
+      Openai-Project:
+      - proj_dmFiz6ZSMR5ZHgQIY3tw6FNe
+      X-Request-Id:
+      - req_850d3b5d15a3428297aa3644ab1e9d6b
+      Openai-Processing-Ms:
+      - '51106'
+      Cf-Cache-Status:
+      - DYNAMIC
+      Set-Cookie:
+      - __cf_bm=SKc9sVW63BWBq87.0avKJ.6fkQloHI4gmI9OXjRS0aI-1772209997.6304648-1.0.1.1-Lj05FrzIn6x88BfxdQUNBsVldwpQU6aazdyTQ3oudhBy.BRzVWA.pBJYp95rkYbxGb7rxdovy9mTN4ppjZcdhHE38fOx9QYP8l4VxKvJmor1PmZzhJjqHdh_ywNmd9Fu;
+        HttpOnly; Secure; Path=/; Domain=api.openai.com; Expires=Fri, 27 Feb 2026
+        17:04:08 GMT
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      Cf-Ray:
+      - 9d4915452a919da4-DEN
+      Alt-Svc:
+      - h3=":443"; ma=86400
+    body:
+      encoding: ASCII-8BIT
+      string: |-
+        {
+          "id": "resp_030be99402afbcbb0069a1c74db31c819eadfb299e5073157e",
+          "object": "response",
+          "created_at": 1772209997,
+          "status": "completed",
+          "background": false,
+          "billing": {
+            "payer": "openai"
+          },
+          "completed_at": 1772210048,
+          "error": null,
+          "frequency_penalty": 0.0,
+          "incomplete_details": null,
+          "instructions": null,
+          "max_output_tokens": 4096,
+          "max_tool_calls": null,
+          "model": "gpt-5-mini-2025-08-07",
+          "output": [
+            {
+              "id": "rs_030be99402afbcbb0069a1c74e0014819e8ad816ce24535583",
+              "type": "reasoning",
+              "summary": []
+            },
+            {
+              "id": "msg_030be99402afbcbb0069a1c77feae0819e88a3bb6e5bf8b78d",
+              "type": "message",
+              "status": "completed",
+              "content": [
+                {
+                  "type": "output_text",
+                  "annotations": [],
+                  "logprobs": [],
+                  "text": "```ruby\nputs(Math.sqrt(9.8696044))\n```\n```output\n3.141592653416433\n```\nAnswer: 3.141592653416433"
+                }
+              ],
+              "role": "assistant"
+            }
+          ],
+          "parallel_tool_calls": true,
+          "presence_penalty": 0.0,
+          "previous_response_id": null,
+          "prompt_cache_key": null,
+          "prompt_cache_retention": null,
+          "reasoning": {
+            "effort": "medium",
+            "summary": null
+          },
+          "safety_identifier": null,
+          "service_tier": "default",
+          "store": true,
+          "temperature": 1.0,
+          "text": {
+            "format": {
+              "type": "text"
+            },
+            "verbosity": "medium"
+          },
+          "tool_choice": "auto",
+          "tools": [],
+          "top_logprobs": 0,
+          "top_p": 1.0,
+          "truncation": "disabled",
+          "usage": {
+            "input_tokens": 280,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens": 2859,
+            "output_tokens_details": {
+              "reasoning_tokens": 2752
+            },
+            "total_tokens": 3139
+          },
+          "user": null,
+          "metadata": {}
+        }
+  recorded_at: Fri, 27 Feb 2026 16:34:08 GMT
+recorded_with: VCR 6.4.0

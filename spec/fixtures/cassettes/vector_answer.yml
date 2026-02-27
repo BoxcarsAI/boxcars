@@ -118,4 +118,315 @@ http_interactions:
           "system_fingerprint": "fp_b4f1283ee2"
         }
   recorded_at: Fri, 27 Feb 2026 02:21:25 GMT
-recorded_with: VCR 6.3.1
+- request:
+    method: post
+    uri: https://api.openai.com/v1/responses
+    body:
+      encoding: UTF-8
+      string: '{"model":"gpt-5-mini","input":"system: You are tasked with answering
+        a question using these possibly relevant excerpts from a large volume of text:\n```text\nFor
+        work, we provide you with a laptop that suits your job. HR will give you further
+        info.\n- **Workplace**: \nwe''ve built a pretty nice office to make sure you
+        like being at Blendle HQ.\n```\n\nUsing the above, just answer the question
+        as if you were answering directly.\nuser: Will I get a laptop?","max_output_tokens":4096}'
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - application/json
+      User-Agent:
+      - OpenAI::Client/Ruby 0.51.0
+      Host:
+      - api.openai.com
+      X-Stainless-Arch:
+      - arm64
+      X-Stainless-Lang:
+      - ruby
+      X-Stainless-Os:
+      - MacOS
+      X-Stainless-Package-Version:
+      - 0.51.0
+      X-Stainless-Runtime:
+      - ruby
+      X-Stainless-Runtime-Version:
+      - 3.4.8
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer <openai_access_token>
+      X-Stainless-Retry-Count:
+      - '0'
+      X-Stainless-Timeout:
+      - '600.0'
+      Content-Length:
+      - '484'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 27 Feb 2026 16:31:09 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Server:
+      - cloudflare
+      X-Ratelimit-Limit-Requests:
+      - '10000'
+      X-Ratelimit-Limit-Tokens:
+      - '10000000'
+      X-Ratelimit-Remaining-Requests:
+      - '9999'
+      X-Ratelimit-Remaining-Tokens:
+      - '9999953'
+      X-Ratelimit-Reset-Requests:
+      - 6ms
+      X-Ratelimit-Reset-Tokens:
+      - 0s
+      Openai-Version:
+      - '2020-10-01'
+      Openai-Organization:
+      - boxcars-ai
+      Openai-Project:
+      - proj_dmFiz6ZSMR5ZHgQIY3tw6FNe
+      X-Request-Id:
+      - req_cc4dfe0fced447238627d27c6a474fc5
+      Openai-Processing-Ms:
+      - '4864'
+      Cf-Cache-Status:
+      - DYNAMIC
+      Set-Cookie:
+      - __cf_bm=ZfYyQ0.7j_O0F9YkygNPDnWoARB41nLi03Ep5M5j7QE-1772209864.8463948-1.0.1.1-lg1RhhXFHOWQ8VSFcNtw2xL52qbxQBUd4j7G0IMtZQ22z4T.0KXftWIyeaH2H.iBJgsav0P8Z0xEzdZGLUkOcKXb1.Lwb6EqJvQx5MtRTvbSoRuGe_ifnzigrd_0wORV;
+        HttpOnly; Secure; Path=/; Domain=api.openai.com; Expires=Fri, 27 Feb 2026
+        17:01:09 GMT
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      Cf-Ray:
+      - 9d4912074c431f4d-DEN
+      Alt-Svc:
+      - h3=":443"; ma=86400
+    body:
+      encoding: ASCII-8BIT
+      string: |-
+        {
+          "id": "resp_022506511748ea5a0069a1c6c8e9188193a34598489881f554",
+          "object": "response",
+          "created_at": 1772209864,
+          "status": "completed",
+          "background": false,
+          "billing": {
+            "payer": "openai"
+          },
+          "completed_at": 1772209869,
+          "error": null,
+          "frequency_penalty": 0.0,
+          "incomplete_details": null,
+          "instructions": null,
+          "max_output_tokens": 4096,
+          "max_tool_calls": null,
+          "model": "gpt-5-mini-2025-08-07",
+          "output": [
+            {
+              "id": "rs_022506511748ea5a0069a1c6c93c808193bfb12cb53c89fd12",
+              "type": "reasoning",
+              "summary": []
+            },
+            {
+              "id": "msg_022506511748ea5a0069a1c6cd34f081938919db53073ccbb3",
+              "type": "message",
+              "status": "completed",
+              "content": [
+                {
+                  "type": "output_text",
+                  "annotations": [],
+                  "logprobs": [],
+                  "text": "Yes \u2014 for work we provide you with a laptop that suits your job. HR will give you further info."
+                }
+              ],
+              "role": "assistant"
+            }
+          ],
+          "parallel_tool_calls": true,
+          "presence_penalty": 0.0,
+          "previous_response_id": null,
+          "prompt_cache_key": null,
+          "prompt_cache_retention": null,
+          "reasoning": {
+            "effort": "medium",
+            "summary": null
+          },
+          "safety_identifier": null,
+          "service_tier": "default",
+          "store": true,
+          "temperature": 1.0,
+          "text": {
+            "format": {
+              "type": "text"
+            },
+            "verbosity": "medium"
+          },
+          "tool_choice": "auto",
+          "tools": [],
+          "top_logprobs": 0,
+          "top_p": 1.0,
+          "truncation": "disabled",
+          "usage": {
+            "input_tokens": 101,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens": 264,
+            "output_tokens_details": {
+              "reasoning_tokens": 192
+            },
+            "total_tokens": 365
+          },
+          "user": null,
+          "metadata": {}
+        }
+  recorded_at: Fri, 27 Feb 2026 16:31:09 GMT
+- request:
+    method: post
+    uri: https://api.openai.com/v1/chat/completions
+    body:
+      encoding: UTF-8
+      string: '{"messages":[{"role":"system","content":"You are tasked with answering
+        a question using these possibly relevant excerpts from a large volume of text:\n```text\nFor
+        work, we provide you with a laptop that suits your job. HR will give you further
+        info.\n- **Workplace**: \nwe''ve built a pretty nice office to make sure you
+        like being at Blendle HQ.\n```\n\nUsing the above, just answer the question
+        as if you were answering directly."},{"role":"user","content":"Will I get
+        a laptop?"}],"model":"gpt-4o-mini","temperature":0.1,"max_tokens":4096,"stop":["```output"]}'
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - application/json
+      User-Agent:
+      - OpenAI::Client/Ruby 0.51.0
+      Host:
+      - api.openai.com
+      X-Stainless-Arch:
+      - arm64
+      X-Stainless-Lang:
+      - ruby
+      X-Stainless-Os:
+      - MacOS
+      X-Stainless-Package-Version:
+      - 0.51.0
+      X-Stainless-Runtime:
+      - ruby
+      X-Stainless-Runtime-Version:
+      - 3.4.8
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer <openai_access_token>
+      X-Stainless-Retry-Count:
+      - '0'
+      X-Stainless-Timeout:
+      - '600.0'
+      Content-Length:
+      - '563'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 27 Feb 2026 16:36:16 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Access-Control-Expose-Headers:
+      - X-Request-ID
+      Openai-Organization:
+      - boxcars-ai
+      Openai-Processing-Ms:
+      - '400'
+      Openai-Project:
+      - proj_dmFiz6ZSMR5ZHgQIY3tw6FNe
+      Openai-Version:
+      - '2020-10-01'
+      Server:
+      - cloudflare
+      X-Ratelimit-Limit-Requests:
+      - '10000'
+      X-Ratelimit-Limit-Tokens:
+      - '10000000'
+      X-Ratelimit-Remaining-Requests:
+      - '9999'
+      X-Ratelimit-Remaining-Tokens:
+      - '9999896'
+      X-Ratelimit-Reset-Requests:
+      - 6ms
+      X-Ratelimit-Reset-Tokens:
+      - 0s
+      X-Request-Id:
+      - req_e627805c8c3c4c3a95382bdae1b37d8e
+      X-Openai-Proxy-Wasm:
+      - v0.1
+      Cf-Cache-Status:
+      - DYNAMIC
+      Set-Cookie:
+      - __cf_bm=Zx83loBjElGoCEwxxAiCjpkGUY.Ry8x6ILxDZUxZ4gE-1772210175.6857643-1.0.1.1-d7n3M4iIElY05pZ.TVD_u92L0PuW6B2r_N0PVx9puM6mCk1IELLu6r.E07IvSXjm.Q74QYyxnkHpBubQH6kXv47B_KDOQZNNgJBKr6Y0mOk56oiSsk_4CfILl6HlDwss;
+        HttpOnly; Secure; Path=/; Domain=api.openai.com; Expires=Fri, 27 Feb 2026
+        17:06:16 GMT
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      Cf-Ray:
+      - 9d49199e0b632c1a-DEN
+      Alt-Svc:
+      - h3=":443"; ma=86400
+    body:
+      encoding: ASCII-8BIT
+      string: |
+        {
+          "id": "chatcmpl-DDv71w4ELC8sFG1XgsTR9OsQzRjFL",
+          "object": "chat.completion",
+          "created": 1772210175,
+          "model": "gpt-4o-mini-2024-07-18",
+          "choices": [
+            {
+              "index": 0,
+              "message": {
+                "role": "assistant",
+                "content": "Yes, you will be provided with a laptop that suits your job.",
+                "refusal": null,
+                "annotations": []
+              },
+              "logprobs": null,
+              "finish_reason": "stop"
+            }
+          ],
+          "usage": {
+            "prompt_tokens": 102,
+            "completion_tokens": 14,
+            "total_tokens": 116,
+            "prompt_tokens_details": {
+              "cached_tokens": 0,
+              "audio_tokens": 0
+            },
+            "completion_tokens_details": {
+              "reasoning_tokens": 0,
+              "audio_tokens": 0,
+              "accepted_prediction_tokens": 0,
+              "rejected_prediction_tokens": 0
+            }
+          },
+          "service_tier": "default",
+          "system_fingerprint": "fp_b4f1283ee2"
+        }
+  recorded_at: Fri, 27 Feb 2026 16:36:16 GMT
+recorded_with: VCR 6.4.0

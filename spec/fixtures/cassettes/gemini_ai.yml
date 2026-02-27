@@ -5,7 +5,7 @@ http_interactions:
     uri: https://generativelanguage.googleapis.com/v1beta/openai/chat/completions
     body:
       encoding: UTF-8
-      string: '{"messages":[{"role":"user","content":"Say Hi."}],"model":"gemini-1.5-flash-latest","temperature":0.1}'
+      string: '{"messages":[{"role":"user","content":"Say Hi."}],"model":"gemini-2.5-flash","temperature":0.1}'
     headers:
       Content-Type:
       - application/json
@@ -46,6 +46,6 @@ http_interactions:
       - chunked
     body:
       encoding: ASCII-8BIT
-      string: '{"choices":[{"finishReason":"stop","index":0,"message":{"content":"Hi!\n","role":"assistant"}}],"created":1734642716,"model":"gemini-1.5-flash-latest","object":"chat.completion","usage":{"completionTokens":3,"promptTokens":4,"totalTokens":7}}'
+      string: '{"choices":[{"finishReason":"stop","index":0,"message":{"content":"Hi!\n","role":"assistant"}}],"created":1734642716,"model":"gemini-2.5-flash","object":"chat.completion","usage":{"completionTokens":3,"promptTokens":4,"totalTokens":7}}'
   recorded_at: Thu, 19 Dec 2024 21:11:56 GMT
 recorded_with: VCR 6.3.1
