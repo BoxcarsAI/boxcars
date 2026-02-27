@@ -27,6 +27,7 @@ module Boxcars
     @emit_deprecation_warnings = true
     @strict_deprecated_aliases = false
     @warned_aliases = {}
+    @warned_valid_answer = false
 
     class << self
       attr_accessor :emit_deprecation_warnings, :strict_deprecated_aliases
@@ -102,11 +103,16 @@ module Boxcars
       engine(model:, **options)
     end
 
-    # Validate the shape returned by Boxcar#conduct.
+    # Deprecated. Validate the shape returned by `Boxcar#conduct`.
     # @param answer [Object] Conduct return value.
     # @return [Boolean] True when answer is a hash containing a Boxcars::Result under :answer.
+    # @deprecated Use `Boxcars::Result.valid_conduct_payload?` or `Boxcars::Result.extract`.
     def self.valid_answer?(answer)
-      answer.is_a?(Hash) && answer.key?(:answer) && answer[:answer].is_a?(Boxcars::Result)
+      unless @warned_valid_answer || !emit_deprecation_warnings
+        Boxcars.warn("Boxcars::Engines.valid_answer? is deprecated; use Boxcars::Result.valid_conduct_payload? or Boxcars::Result.extract")
+        @warned_valid_answer = true
+      end
+      Boxcars::Result.valid_conduct_payload?(answer)
     end
 
     def self.emit_alias_deprecation_warning(model)
@@ -138,6 +144,7 @@ module Boxcars
 
     def self.reset_deprecation_warnings!
       @warned_aliases = {}
+      @warned_valid_answer = false
     end
 
     def self.strict_deprecated_aliases_enabled?

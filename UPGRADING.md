@@ -34,6 +34,29 @@ Boxcars::Openai.new(model: "gpt-4o-mini")
 
 If `prompts:` is still passed, constructors now raise `Boxcars::ArgumentError` (`unknown keyword: :prompts`).
 
+## Conduct Result Helper Migration
+
+`Boxcars::Engines.valid_answer?` is deprecated. It still works in v0.10+, but you should migrate to `Boxcars::Result` helpers.
+
+Before:
+
+```ruby
+answer = train.conduct(markdown)
+if Boxcars::Engines.valid_answer?(answer)
+  value = answer[:answer].answer
+end
+```
+
+After:
+
+```ruby
+answer = train.conduct(markdown)
+result = Boxcars::Result.extract(answer)
+if result&.ok?
+  value = result.answer
+end
+```
+
 ## 1. Model Alias Migration (Do This First)
 
 Deprecated aliases still work in v0.9, but emit one-time warnings.

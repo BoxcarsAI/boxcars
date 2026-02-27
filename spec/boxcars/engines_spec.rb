@@ -333,5 +333,15 @@ RSpec.describe Boxcars::Engines do
     it "returns false for non-hash values" do
       expect(described_class.valid_answer?("not a hash")).to be(false)
     end
+
+    it "emits one deprecation warning when warnings are enabled" do
+      described_class.emit_deprecation_warnings = true
+      allow(Boxcars).to receive(:warn)
+
+      described_class.valid_answer?({ answer: valid_result })
+      described_class.valid_answer?({ answer: valid_result })
+
+      expect(Boxcars).to have_received(:warn).once
+    end
   end
 end

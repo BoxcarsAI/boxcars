@@ -38,6 +38,16 @@ module Boxcars
       answer
     end
 
+    # @return [Boolean] True when result status is `:ok`.
+    def ok?
+      status == :ok
+    end
+
+    # @return [Boolean] True when result status is `:error`.
+    def error?
+      status == :error
+    end
+
     # create a new Result from a text string
     # @param text [String] The text to use for the result
     # @param kwargs [Hash] Any additional kwargs to pass to the result
@@ -59,6 +69,24 @@ module Boxcars
       answer = Regexp.last_match(:answer) if answer =~ /^Error:\s*(?<answer>.*)$/
       explanation = "Error: #{answer}"
       new(status: :error, answer:, explanation:, **)
+    end
+
+    # Extract a Boxcars::Result from common boxcar return values.
+    # @param value [Object] Usually a `Boxcar#conduct` hash or a `Boxcars::Result`.
+    # @return [Boxcars::Result,nil] Extracted result when present.
+    def self.extract(value)
+      return value if value.is_a?(Result)
+      return nil unless value.is_a?(Hash)
+
+      candidate = value[:answer] || value["answer"]
+      candidate if candidate.is_a?(Result)
+    end
+
+    # Validate that a value is a conduct-style payload containing a `Boxcars::Result`.
+    # @param value [Object] Usually a `Boxcar#conduct` hash.
+    # @return [Boolean] True when a `Boxcars::Result` can be extracted.
+    def self.valid_conduct_payload?(value)
+      !extract(value).nil?
     end
   end
 end
