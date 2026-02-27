@@ -88,9 +88,9 @@ module Boxcars
       response = client(prompt:, **)
 
       raise Error, "Cohere: No response from API" unless response
-      raise Error, "Cohere: #{response[:error]}" if response[:error]
+      raise Error, "Cohere: #{response['error']}" if response['error']
 
-      answer = response[:text]
+      answer = extract_answer(response)
       Boxcars.debug("Answer: #{answer}", :cyan)
       answer
     end
@@ -99,7 +99,7 @@ module Boxcars
       llm_params
     end
 
-    def validate_response!(response, must_haves: %w[completion])
+    def validate_response!(response, must_haves: %w[choices text])
       super
     end
 
@@ -141,13 +141,29 @@ module Boxcars
       response_data[:status_code] = raw_response.status
 
       if raw_response.status == 200
-        parsed_json = JSON.parse(raw_response.body, symbolize_names: true)
-        response_data[:parsed_json] = parsed_json
+        parsed_json = JSON.parse(raw_response.body)
 
-        if parsed_json[:error]
+        if parsed_json["error"]
           response_data[:success] = false
-          response_data[:error] = Boxcars::Error.new("Cohere API Error: #{parsed_json[:error]}")
+          response_data[:error] = Boxcars::Error.new("Cohere API Error: #{parsed_json['error']}")
         else
+          parsed_json["choices"] ||= if parsed_json["text"]
+                                       [{ "text" => parsed_json["text"], "finish_reason" => "stop" }]
+                                     else
+                                       []
+                                     end
+          input_tokens = parsed_json.dig("meta", "tokens", "input_tokens") ||
+                         parsed_json.dig("meta", "billed_units", "input_tokens")
+          output_tokens = parsed_json.dig("meta", "tokens", "output_tokens") ||
+                          parsed_json.dig("meta", "billed_units", "output_tokens")
+          if input_tokens || output_tokens
+            parsed_json["usage"] ||= {
+              "prompt_tokens" => input_tokens.to_i,
+              "completion_tokens" => output_tokens.to_i,
+              "total_tokens" => input_tokens.to_i + output_tokens.to_i
+            }
+          end
+          response_data[:parsed_json] = parsed_json
           response_data[:success] = true
         end
       else
