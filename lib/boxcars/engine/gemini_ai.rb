@@ -6,6 +6,7 @@ module Boxcars
   # A engine that uses GeminiAI's API via an OpenAI-compatible interface.
   class GeminiAi < Engine
     include UnifiedObservability
+    include OpenAICompatibleChatHelpers
 
     attr_reader :prompts, :llm_params, :model_kwargs, :batch_size # Corrected typo llm_parmas to llm_params
 
@@ -54,14 +55,19 @@ module Boxcars
 
       begin
         clnt = GeminiAi.gemini_client(gemini_api_key:)
-        api_request_params = _prepare_gemini_request_params(current_prompt_object, inputs, current_params)
+        api_request_params = prepare_openai_compatible_chat_request(current_prompt_object, inputs, current_params)
 
         log_messages_debug(api_request_params[:messages]) if Boxcars.configuration.log_prompts && api_request_params[:messages]
-        _execute_and_process_gemini_call(clnt, api_request_params, response_data)
+        execute_openai_compatible_chat_call(
+          client: clnt,
+          api_request_params: api_request_params,
+          response_data: response_data,
+          success_check: ->(raw) { raw["choices"] || raw["candidates"] },
+          unknown_error_message: "Unknown Gemini API Error",
+          preserve_existing_error: false
+        )
       rescue StandardError => e # Catch other errors
-        response_data[:error] = e
-        response_data[:success] = false
-        response_data[:status_code] = _error_status_code(e)
+        handle_openai_compatible_standard_error(e, response_data)
       ensure
         duration_ms = ((Time.now - start_time) * 1000).round
         request_context = {
@@ -98,61 +104,6 @@ module Boxcars
     end
 
     private
-
-    def _execute_and_process_gemini_call(gemini_client_obj, prepared_api_params, current_response_data)
-      # The OpenAI gem's `chat` method might not work directly if Gemini's endpoint
-      # isn't perfectly OpenAI-compatible for chat completions.
-      # It might require calling a different method or using a more direct HTTP client.
-      # For this refactor, we'll assume `gemini_client_obj.chat` is the intended path.
-      raw_response = gemini_client_obj.chat_create(parameters: prepared_api_params)
-
-      current_response_data[:response_obj] = raw_response
-      current_response_data[:parsed_json] = raw_response # OpenAI gem returns Hash
-
-      if raw_response && !raw_response["error"] &&
-         (raw_response["choices"] || raw_response["candidates"]) # Combined check for OpenAI or Gemini success
-        current_response_data[:success] = true
-        current_response_data[:status_code] = 200 # Inferred
-      else
-        current_response_data[:success] = false
-        err_details = raw_response["error"] if raw_response
-        msg = if err_details
-                (err_details.is_a?(Hash) ? err_details['message'] : err_details).to_s
-              else
-                "Unknown Gemini API Error"
-              end
-        current_response_data[:error] = StandardError.new(msg)
-      end
-    end
-
-    def _prepare_gemini_request_params(current_prompt, current_inputs, current_engine_params)
-      # Gemini typically uses a chat-like interface.
-      # Prepare messages for the API
-      # current_prompt.as_messages(current_inputs) returns a hash like { messages: [...] }
-      # We need to extract the array part for the OpenAI client's :messages parameter.
-      message_hash = current_prompt.as_messages(current_inputs)
-      # Ensure roles are 'user' and 'model' for Gemini if needed, or transform them.
-      # OpenAI gem expects 'system', 'user', 'assistant'. Adapter logic might be needed.
-      # For now, assume as_messages produces compatible roles or Gemini endpoint handles them.
-
-      # Gemini might not use 'model' in the same way in request body if using generateContent directly.
-      # If using OpenAI gem's chat method, it expects 'model' for routing.
-      # Let's assume api_request_params are for OpenAI gem's chat method.
-      { messages: message_hash[:messages] }.merge(current_engine_params)
-    end
-
-    def log_messages_debug(messages)
-      return unless messages.is_a?(Array)
-
-      Boxcars.debug(messages.last(2).map { |p| ">>>>>> Role: #{p[:role]} <<<<<<\n#{p[:content]}" }.join("\n"), :cyan)
-    end
-
-    def _error_status_code(error)
-      return error.http_status if error.respond_to?(:http_status) && error.http_status
-      return error.status if error.respond_to?(:status) && error.status
-
-      500
-    end
 
     def _gemini_handle_call_outcome(response_data:)
       if response_data[:error]

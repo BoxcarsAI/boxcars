@@ -6,6 +6,7 @@ module Boxcars
   # A engine that uses Groq's API.
   class Groq < Engine
     include UnifiedObservability
+    include OpenAICompatibleChatHelpers
 
     attr_reader :prompts, :groq_params, :model_kwargs, :batch_size
 
@@ -50,13 +51,19 @@ module Boxcars
 
       begin
         clnt = Groq.groq_client(groq_api_key:)
-        api_request_params = _prepare_groq_request_params(current_prompt_object, inputs, current_params)
+        api_request_params = prepare_openai_compatible_chat_request(current_prompt_object, inputs, current_params)
 
         log_messages_debug(api_request_params[:messages]) if Boxcars.configuration.log_prompts && api_request_params[:messages]
 
-        _execute_and_process_groq_call(clnt, api_request_params, response_data)
+        execute_openai_compatible_chat_call(
+          client: clnt,
+          api_request_params: api_request_params,
+          response_data: response_data,
+          success_check: ->(raw) { raw["choices"] },
+          unknown_error_message: "Unknown Groq API Error"
+        )
       rescue StandardError => e
-        _handle_standard_error_for_groq(e, response_data)
+        handle_openai_compatible_standard_error(e, response_data)
       ensure
         duration_ms = ((Time.now - start_time) * 1000).round
         request_context = {
@@ -92,52 +99,6 @@ module Boxcars
 
     def default_params
       @groq_params
-    end
-
-    # Helper methods for the client method
-    def _prepare_groq_request_params(prompt_object, inputs, current_params)
-      messages_hash_from_prompt = prompt_object.as_messages(inputs)
-      actual_messages_for_api = messages_hash_from_prompt[:messages]
-      { messages: actual_messages_for_api }.merge(current_params)
-    end
-
-    def _execute_and_process_groq_call(clnt, api_request_params, response_data)
-      raw_response = clnt.chat_create(parameters: api_request_params)
-      response_data[:response_obj] = raw_response
-      response_data[:parsed_json] = raw_response # OpenAI gem returns Hash
-
-      if raw_response && !raw_response["error"] && raw_response["choices"]
-        response_data[:success] = true
-        response_data[:status_code] = 200 # Inferred
-      else
-        response_data[:success] = false
-        err_details = raw_response["error"] if raw_response
-        msg = if err_details
-                (err_details.is_a?(Hash) ? err_details['message'] : err_details).to_s
-              else
-                "Unknown Groq API Error"
-              end
-        response_data[:error] ||= StandardError.new(msg) # Use ||= to not overwrite existing exception
-      end
-    end
-
-    def _handle_standard_error_for_groq(error, response_data)
-      response_data[:error] = error
-      response_data[:success] = false
-      response_data[:status_code] = _error_status_code(error)
-    end
-
-    def _error_status_code(error)
-      return error.http_status if error.respond_to?(:http_status) && error.http_status
-      return error.status if error.respond_to?(:status) && error.status
-
-      500
-    end
-
-    def log_messages_debug(messages)
-      return unless messages.is_a?(Array)
-
-      Boxcars.debug(messages.last(2).map { |p| ">>>>>> Role: #{p[:role]} <<<<<<\n#{p[:content]}" }.join("\n"), :cyan)
     end
 
     def _groq_handle_call_outcome(response_data:)

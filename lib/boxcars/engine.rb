@@ -228,6 +228,7 @@ module Boxcars
 end
 
 require 'boxcars/engine/unified_observability'
+require "boxcars/engine/openai_compatible_chat_helpers"
 require "boxcars/engine/engine_result"
 require "boxcars/engine/intelligence_base"
 require "boxcars/engine/anthropic"
