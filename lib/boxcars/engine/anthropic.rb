@@ -69,9 +69,9 @@ module Boxcars
         end
 
         raw_response = aclient.messages(parameters: api_request_params)
-        _process_anthropic_response(raw_response, response_data)
+        process_anthropic_response(raw_response, response_data)
       rescue StandardError => e
-        _handle_anthropic_error(e, response_data)
+        handle_anthropic_error(e, response_data)
       ensure
         call_context = {
           start_time:,
@@ -80,10 +80,10 @@ module Boxcars
           api_request_params:,
           current_params:
         }
-        _track_anthropic_observability(call_context, response_data)
+        track_anthropic_observability(call_context, response_data)
       end
 
-      _anthropic_handle_call_outcome(response_data:)
+      anthropic_handle_call_outcome(response_data:)
     end
 
     # get an answer from the engine for a question.
@@ -232,7 +232,7 @@ module Boxcars
 
     # Process the raw response from Anthropic API
     # rubocop:disable Metrics/AbcSize
-    def _process_anthropic_response(raw_response, response_data)
+    def process_anthropic_response(raw_response, response_data)
       response_data[:response_obj] = raw_response
       response_data[:parsed_json] = raw_response # Already parsed by Anthropic gem
 
@@ -252,14 +252,14 @@ module Boxcars
     # rubocop:enable Metrics/AbcSize
 
     # Handle errors from Anthropic API calls
-    def _handle_anthropic_error(error, response_data)
+    def handle_anthropic_error(error, response_data)
       response_data[:error] = error
       response_data[:success] = false
       response_data[:status_code] = openai_compatible_error_status_code(error)
     end
 
     # Track observability using the unified system
-    def _track_anthropic_observability(call_context, response_data)
+    def track_anthropic_observability(call_context, response_data)
       duration_ms = ((Time.now - call_context[:start_time]) * 1000).round
       request_context = {
         prompt: call_context[:prompt_object],
@@ -278,18 +278,18 @@ module Boxcars
     end
 
     # Handle the final outcome of the API call
-    def _anthropic_handle_call_outcome(response_data:)
+    def anthropic_handle_call_outcome(response_data:)
       if response_data[:error]
-        _handle_anthropic_error_outcome(response_data[:error])
+        handle_anthropic_error_outcome(response_data[:error])
       elsif !response_data[:success]
-        _handle_anthropic_response_body_error(response_data[:response_obj])
+        handle_anthropic_response_body_error(response_data[:response_obj])
       else
         response_data[:parsed_json] # Return the raw parsed JSON
       end
     end
 
     # Handle error outcomes
-    def _handle_anthropic_error_outcome(error_data)
+    def handle_anthropic_error_outcome(error_data)
       detailed_error_message = error_data.message
       if error_data.respond_to?(:response) && error_data.response
         detailed_error_message += " - Details: #{error_data.response[:body]}"
@@ -299,7 +299,7 @@ module Boxcars
     end
 
     # Handle response body errors
-    def _handle_anthropic_response_body_error(response_obj)
+    def handle_anthropic_response_body_error(response_obj)
       err_details = response_obj&.dig("error")
       msg = err_details ? "#{err_details['type']}: #{err_details['message']}" : "Unknown error from Anthropic API"
       raise Error, msg

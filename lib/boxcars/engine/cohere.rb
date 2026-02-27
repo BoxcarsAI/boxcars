@@ -72,10 +72,10 @@ module Boxcars
 
         Boxcars.debug("Prompt after formatting:#{api_request_params[:message]}", :cyan) if Boxcars.configuration.log_prompts
 
-        raw_response = _cohere_api_call(api_request_params, api_key)
-        _process_cohere_response(raw_response, response_data)
+        raw_response = cohere_api_call(api_request_params, api_key)
+        process_cohere_response(raw_response, response_data)
       rescue StandardError => e
-        _handle_cohere_error(e, response_data)
+        handle_cohere_error(e, response_data)
       ensure
         call_context = {
           start_time:,
@@ -84,10 +84,10 @@ module Boxcars
           api_request_params:,
           current_params:
         }
-        _track_cohere_observability(call_context, response_data)
+        track_cohere_observability(call_context, response_data)
       end
 
-      _cohere_handle_call_outcome(response_data:)
+      cohere_handle_call_outcome(response_data:)
     end
 
     # get an answer from the engine for a question.
@@ -144,14 +144,14 @@ module Boxcars
     private
 
     # Make the actual API call to Cohere
-    def _cohere_api_call(params, api_key)
+    def cohere_api_call(params, api_key)
       Boxcars::OptionalDependency.require!("faraday", feature: "Boxcars::Cohere")
       ensure_cohere_api_key!(api_key, error_class: Boxcars::Error, message: "Cohere API key not set")
       post_cohere_chat(params, api_key)
     end
 
     # Process the raw response from Cohere API
-    def _process_cohere_response(raw_response, response_data)
+    def process_cohere_response(raw_response, response_data)
       response_data[:response_obj] = raw_response
       response_data[:status_code] = raw_response.status
 
@@ -172,14 +172,14 @@ module Boxcars
     end
 
     # Handle errors from Cohere API calls
-    def _handle_cohere_error(error, response_data)
+    def handle_cohere_error(error, response_data)
       response_data[:error] = error
       response_data[:success] = false
       response_data[:status_code] = openai_compatible_error_status_code(error)
     end
 
     # Track observability using the unified system
-    def _track_cohere_observability(call_context, response_data)
+    def track_cohere_observability(call_context, response_data)
       duration_ms = ((Time.now - call_context[:start_time]) * 1000).round
       request_context = {
         prompt: call_context[:prompt_object],
@@ -198,18 +198,18 @@ module Boxcars
     end
 
     # Handle the final outcome of the API call
-    def _cohere_handle_call_outcome(response_data:)
+    def cohere_handle_call_outcome(response_data:)
       if response_data[:error]
-        _handle_cohere_error_outcome(response_data[:error])
+        handle_cohere_error_outcome(response_data[:error])
       elsif !response_data[:success]
-        _handle_cohere_response_body_error(response_data[:response_obj])
+        handle_cohere_response_body_error(response_data[:response_obj])
       else
         response_data[:parsed_json] # Return the raw parsed JSON
       end
     end
 
     # Handle error outcomes
-    def _handle_cohere_error_outcome(error_data)
+    def handle_cohere_error_outcome(error_data)
       detailed_error_message = error_data.message
       if error_data.respond_to?(:response) && error_data.response
         detailed_error_message += " - Details: #{error_data.response[:body]}"
@@ -219,7 +219,7 @@ module Boxcars
     end
 
     # Handle response body errors
-    def _handle_cohere_response_body_error(response_obj)
+    def handle_cohere_response_body_error(response_obj)
       msg = "Unknown error from Cohere API"
       if response_obj.respond_to?(:body)
         begin
