@@ -130,7 +130,7 @@ module Boxcars
       @my_prompt ||= ConversationPrompt.new(
         conversation: @conversation,
         input_variables: [:question],
-        other_inputs: [:top_k, :dialect, :table_info],
+        other_inputs: [:top_k, :dialect, :schema],
         output_variables: [:answer])
     end
   end

@@ -26,4 +26,12 @@ RSpec.describe Boxcars::SQLBase do
       dummy_sql_boxcar_class.new(connection: nil, tables: ["users"])
     end.to raise_error(Boxcars::ArgumentError, /table users not found in database/)
   end
+
+  it "declares :schema as a prompt dependency (not legacy :table_info)" do
+    connection = instance_double("Connection", tables: [])
+    boxcar = dummy_sql_boxcar_class.new(connection:)
+
+    expect(boxcar.prompt.other_inputs).to include(:schema)
+    expect(boxcar.prompt.other_inputs).not_to include(:table_info)
+  end
 end
