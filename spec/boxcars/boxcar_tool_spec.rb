@@ -143,4 +143,64 @@ RSpec.describe Boxcars::Boxcar do
       )
     end
   end
+
+  describe "#run contract" do
+    let(:result_boxcar_class) do
+      Class.new(described_class) do
+        def call(inputs:)
+          { answer: Boxcars::Result.new(status: :ok, answer: "echo: #{inputs[:question]}", explanation: "ok") }
+        end
+
+        def apply(input_list:)
+          input_list.map { |inputs| call(inputs:) }
+        end
+      end
+    end
+
+    let(:custom_output_boxcar_class) do
+      Class.new(described_class) do
+        def output_keys
+          [:foo]
+        end
+
+        def call(inputs:)
+          { foo: "value: #{inputs[:question]}" }
+        end
+
+        def apply(input_list:)
+          input_list.map { |inputs| call(inputs:) }
+        end
+      end
+    end
+
+    let(:invalid_output_boxcar_class) do
+      Class.new(described_class) do
+        def call(inputs:)
+          "not-a-hash: #{inputs[:question]}"
+        end
+
+        def apply(input_list:)
+          input_list
+        end
+      end
+    end
+
+    it "unwraps Boxcars::Result to the contained answer value" do
+      boxcar = result_boxcar_class.new(description: "Result wrapper")
+      expect(boxcar.run("hello")).to eq("echo: hello")
+    end
+
+    it "returns the first configured output key value for non-standard output keys" do
+      boxcar = custom_output_boxcar_class.new(description: "Custom output")
+      expect(boxcar.run("hello")).to eq("value: hello")
+    end
+
+    it "raises a clear error when #call does not return a hash" do
+      boxcar = invalid_output_boxcar_class.new(description: "Invalid output")
+
+      expect do
+        boxcar.run("hello")
+      end.to raise_error(Boxcars::Error, /#call must return a Hash/)
+    end
+  end
 end

@@ -2,7 +2,7 @@
 
 RSpec.describe Boxcars::URLText do
   context "with valid urls" do
-    it "can get HTMP URL" do
+    it "can get HTML URL" do
       VCR.use_cassette("url_text") do
         expect(described_class.new
           .run("https://en.wikipedia.org/wiki/Miss_Meyers").answer).to include("fellow Hall of Famer")

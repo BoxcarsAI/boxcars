@@ -16,6 +16,8 @@ module Boxcars
       super
     end
 
+    # Default JSON-like parameter description for tool wiring.
+    # @return [Hash] Parameter descriptor hash keyed by `:question`.
     def default_params
       { question: {
           type: :string,
@@ -25,12 +27,15 @@ module Boxcars
     end
 
     # run a ruby calculator question
-    # @param question [String] The question to ask Google.
-    # @return [String] The answer to the question.
+    # @param question [String] Ruby expression to evaluate.
+    # @return [Boxcars::Result] Execution result from the Ruby REPL helper.
     def run(question)
       call(inputs: { question: })[:answer]
     end
 
+    # Execute one Ruby calculator request using the normalized Boxcar input contract.
+    # @param inputs [Hash] Expected to contain `:question` (or `"question"`).
+    # @return [Hash] `{ answer: Boxcars::Result }`.
     def call(inputs:)
       question = inputs[:question] || inputs["question"]
       code = "puts(#{question})"
@@ -38,6 +43,9 @@ module Boxcars
       { answer: ruby_executor.call(code:) }
     end
 
+    # Execute multiple Ruby calculator requests.
+    # @param input_list [Array<Hash>] Input hashes for `#call`.
+    # @return [Array<Hash>] One output hash per input hash.
     def apply(input_list:)
       input_list.map { |inputs| call(inputs:) }
     end

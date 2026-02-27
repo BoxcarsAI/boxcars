@@ -68,7 +68,9 @@ module Boxcars
       raise "Did not get output keys that were expected, got: #{outputs}. Expected: #{output_keys}"
     end
 
-    # Run the logic of this chain and return the output.
+    # Run the core logic for one invocation.
+    # @param inputs [Hash] Input values keyed by `input_keys`.
+    # @return [Hash] Output values keyed by `output_keys`.
     def call(inputs:)
       raise NotImplementedError
     end
@@ -80,11 +82,12 @@ module Boxcars
       raise NotImplementedError
     end
 
-    # Get an answer from the boxcar.
+    # Convenience wrapper around `conduct` that returns only the first output value.
     # @param args [Array] The positional arguments to pass to the boxcar.
     # @param kwargs [Hash] The keyword arguments to pass to the boxcar.
     # you can pass one or the other, but not both.
-    # @return [String] The answer to the question.
+    # @return [Object] The first output value. If that value is a `Boxcars::Result`,
+    #   this method returns `result.answer`.
     def run(*, **)
       rv = conduct(*, **)
       rv = rv[:answer] if rv.is_a?(Hash) && rv.key?(:answer)
@@ -94,11 +97,11 @@ module Boxcars
       rv
     end
 
-    # Get an extended answer from the boxcar.
+    # Run the boxcar and return full input/output context.
     # @param args [Array] The positional arguments to pass to the boxcar.
     # @param kwargs [Hash] The keyword arguments to pass to the boxcar.
     # you can pass one or the other, but not both.
-    # @return [Boxcars::Result] The answer to the question.
+    # @return [Hash] A hash that includes original inputs and call outputs.
     def conduct(*, **)
       Boxcars.info "> Entering #{name}#run", :gray, style: :bold
       rv = depart(*, **)
@@ -303,6 +306,9 @@ module Boxcars
         Boxcars.error "Error in #{name} boxcar#call: #{e}\nbt:#{e.backtrace[0..5].join("\n   ")}", :red
         Boxcars.error("Response Body: #{e.response[:body]}", :red) if e.respond_to?(:response) && !e.response.nil?
         raise e
+      end
+      unless output.is_a?(Hash)
+        raise Boxcars::Error, "#{name}#call must return a Hash keyed by #{output_keys.inspect}, got #{output.class}"
       end
       validate_outputs(outputs: output.keys)
       return output if return_only_outputs

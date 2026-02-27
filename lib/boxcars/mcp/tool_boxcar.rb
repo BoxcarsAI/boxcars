@@ -8,6 +8,12 @@ module Boxcars
     class ToolBoxcar < Boxcar
       attr_reader :mcp_client, :tool_name, :tool_description, :input_schema
 
+      # @param mcp_client [Object] MCP client that responds to `call_tool`.
+      # @param tool_name [String, Symbol] Name of the remote MCP tool.
+      # @param tool_description [String, nil] Human-readable tool description.
+      # @param input_schema [Hash] MCP input schema for the tool.
+      # @param name_prefix [String, nil] Optional prefix for local boxcar naming.
+      # @param kwargs [Hash] Standard Boxcar options.
       def initialize(mcp_client:, tool_name:, tool_description: nil, input_schema: {}, name_prefix: nil, **kwargs)
         @mcp_client = mcp_client
         @tool_name = tool_name.to_s
@@ -21,21 +27,29 @@ module Boxcars
         super(**kwargs)
       end
 
+      # Execute one MCP tool call.
+      # @param inputs [Hash] Tool arguments to forward to MCP.
+      # @return [Hash] `{ answer: Boxcars::Result }`.
       def call(inputs:)
         payload = mcp_client.call_tool(name: tool_name, arguments: stringify_keys(inputs))
         result = mcp_payload_to_result(payload)
         { answer: result }
       end
 
+      # @return [Array<Symbol>] Tool parameter names accepted by this boxcar.
       def input_keys
         parameters.keys
       end
 
+      # Execute multiple MCP tool calls.
+      # @param input_list [Array<Hash>] Input hashes for `#call`.
+      # @return [Array<Hash>] One output hash per input hash.
       def apply(input_list:)
         input_list.map { |inputs| call(inputs:) }
       end
 
       # Prefer the MCP-provided schema over the legacy parameter map.
+      # @return [Hash] JSON Schema compatible input schema.
       def parameters_json_schema
         schema = deep_stringify(input_schema)
         return super if schema.empty?

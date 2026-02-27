@@ -20,7 +20,7 @@ module Boxcars
 
     # Get an answer from Google using the SerpAPI.
     # @param question [String] The question to ask Google.
-    # @return [String] The answer to the question.
+    # @return [String, Hash] A best answer string, or a hash with answer text and source URL.
     def run(question)
       rv = search_answer(question)
       Boxcars.info "Question: #{question}"
@@ -28,11 +28,17 @@ module Boxcars
       rv
     end
 
+    # Execute one search request using the normalized Boxcar input contract.
+    # @param inputs [Hash] Expected to contain `:question` (or `"question"`).
+    # @return [Hash] `{ answer: ... }` where answer is a String or Hash.
     def call(inputs:)
       question = inputs[:question] || inputs["question"]
       { answer: search_answer(question) }
     end
 
+    # Execute multiple search requests.
+    # @param input_list [Array<Hash>] Input hashes for `#call`.
+    # @return [Array<Hash>] One output hash per input hash.
     def apply(input_list:)
       input_list.map { |inputs| call(inputs:) }
     end

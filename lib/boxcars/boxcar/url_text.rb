@@ -6,26 +6,32 @@ module Boxcars
     # the description of this boxcar
     DESC = "useful when you want to get text from a URL."
 
-    # implements a boxcar that uses the Google SerpAPI to get answers to questions.
+    # Create a URL text extraction boxcar.
     # @param name [String] The name of the boxcar. Defaults to classname.
-    # @param description [String] A description of the boxcar. Defaults to SERPDESC.
+    # @param description [String] A description of the boxcar.
     def initialize(name: "FetchURL", description: DESC)
       super
     end
 
     # Get text from a url.
     # @param url [String] The url
-    # @return [String] The text for the url.
+    # @return [Boxcars::Result] Text extraction result (or error result).
     def run(url)
       call(inputs: { question: url })[:answer]
     end
 
+    # Execute one URL text fetch using the normalized Boxcar input contract.
+    # @param inputs [Hash] Expected to contain `:question` (or `"question"`) with a URL.
+    # @return [Hash] `{ answer: Boxcars::Result }`.
     def call(inputs:)
       url = inputs[:question] || inputs["question"]
       parsed_url = URI.parse(url)
       { answer: do_encoding(get_answer(parsed_url)) }
     end
 
+    # Execute multiple URL text fetches.
+    # @param input_list [Array<Hash>] Input hashes for `#call`.
+    # @return [Array<Hash>] One output hash per input hash.
     def apply(input_list:)
       input_list.map { |inputs| call(inputs:) }
     end
