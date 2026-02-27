@@ -85,6 +85,22 @@ Or install it yourself as:
 
     $ gem install boxcars
 
+### Optional Provider Dependencies
+
+`boxcars` now keeps provider/tooling dependencies optional so base installs stay lean.
+Add only the gems you use:
+
+```ruby
+gem "openai", ">= 0.30"    # OpenAI + OpenAI-compatible engines
+gem "ruby-anthropic"       # Boxcars::Anthropic
+gem "google_search_results" # Boxcars::GoogleSearch
+gem "faraday"              # Boxcars::Perplexityai / Boxcars::Cohere
+gem "nokogiri"             # XML trains, URLText HTML extraction
+gem "hnswlib"              # HNSW vector store paths
+```
+
+If a feature is used without its optional gem installed, Boxcars raises a setup error with the gem name to add.
+
 ## Usage
 
 First, set environment variables for providers you plan to use (for example `OPENAI_ACCESS_TOKEN` or `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `SERPAPI_API_KEY`). If you prefer, you can pass keys directly in code.

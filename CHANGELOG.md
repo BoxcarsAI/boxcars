@@ -40,7 +40,7 @@ This section tracks the modernization work that is being added in v0.9 with a co
 - Runtime dependency upgrades:
   - ActiveRecord and ActiveSupport moved to `~> 8.1`.
   - `pgvector` updated to `~> 0.3.2`.
-  - Official `openai` Ruby SDK replaces `ruby-openai` as the runtime dependency.
+  - Official `openai` Ruby SDK replaces `ruby-openai` for OpenAI-compatible engine paths.
   - `vcr`, `webmock`, and `rubocop-rake` updated.
 - Swagger modernization:
   - Swagger prompt/cassette/notebook guidance now uses Faraday.
@@ -50,6 +50,13 @@ This section tracks the modernization work that is being added in v0.9 with a co
     - `Boxcars::IntelligenceBase` remains supported and now fails with a clear setup error if the gem is missing.
   - `gpt4all` removed as a hard runtime dependency.
     - `Boxcars::Gpt4allEng` remains supported and now fails with a clear setup error if the gem is missing.
+  - Provider/tooling gems are now optional at runtime (loaded on use with setup errors if missing):
+    - `openai` for OpenAI and OpenAI-compatible engines (OpenAI/Groq/Gemini/Ollama/Google/Cerebras/Together)
+    - `ruby-anthropic` for `Boxcars::Anthropic`
+    - `google_search_results` for `Boxcars::GoogleSearch`
+    - `faraday` for `Boxcars::Perplexityai` / `Boxcars::Cohere`
+    - `nokogiri` for XML trains and `URLText` HTML parsing
+    - `hnswlib` for HNSW vector-store paths
 - Provider runtime convergence:
   - `Boxcars::Google`, `Boxcars::Cerebras`, and `Boxcars::Together` migrated off `IntelligenceBase` to the OpenAI-compatible official client path.
   - OpenAI-compatible engines now pin to `:official_openai` via the client factory seam.

@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'openai'
-
 module Boxcars
   module VectorStore
     class EmbedViaOpenAI
@@ -16,7 +14,7 @@ module Boxcars
 
       def call
         texts.map do |text|
-          embedding = embedding_with_retry(model: model, input: strip_new_lines(text))
+          embedding = fetch_embedding(model: model, input: strip_new_lines(text))
           {
             embedding: embedding,
             dim: embedding.size
@@ -35,7 +33,7 @@ module Boxcars
         raise_error 'openai_connection must support embeddings requests'
       end
 
-      def embedding_with_retry(request)
+      def fetch_embedding(request)
         response = if @client.respond_to?(:embeddings_create)
                      @client.embeddings_create(parameters: request)
                    else

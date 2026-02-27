@@ -2,13 +2,6 @@ PATH
   remote: .
   specs:
     boxcars (0.10.0)
-      faraday (~> 2.0)
-      faraday-retry (~> 2.0)
-      google_search_results (~> 2.2)
-      hnswlib (~> 0.9)
-      nokogiri (~> 1.18)
-      openai (>= 0.30)
-      ruby-anthropic (~> 0.4)
 
 GEM
   remote: https://rubygems.org/
@@ -60,8 +53,6 @@ GEM
       multipart-post (~> 2.0)
     faraday-net_http (3.4.2)
       net-http (~> 0.5)
-    faraday-retry (2.4.0)
-      faraday (~> 2.0)
     google_search_results (2.2.0)
     hashdiff (1.2.1)
     hnswlib (0.9.3)
@@ -221,8 +212,10 @@ DEPENDENCIES
   debug (~> 1.9)
   dotenv (~> 3.1)
   faraday (~> 2.0)
-  faraday-retry (~> 2.0)
+  google_search_results (~> 2.2)
   hnswlib (~> 0.9.0)
+  nokogiri (~> 1.18)
+  openai (>= 0.30)
   pg (~> 1.5)
   pgvector (~> 0.3.2)
   posthog-ruby
@@ -231,6 +224,7 @@ DEPENDENCIES
   rubocop (~> 1.67)
   rubocop-rake (~> 0.7.1)
   rubocop-rspec (~> 3.2)
+  ruby-anthropic (~> 0.4)
   sqlite3 (~> 2.0)
   vcr (~> 6.4.0)
   webmock (~> 3.26.1)

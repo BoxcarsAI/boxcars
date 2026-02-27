@@ -110,6 +110,16 @@ RSpec.describe Boxcars::OpenAICompatibleClient do
         described_class.validate_client_configuration!
       end.to raise_error(Boxcars::ConfigurationError, /native-only mode/)
     end
+
+    it "raises setup guidance when openai gem is missing" do
+      allow(Boxcars::OptionalDependency).to receive(:require!)
+        .with("openai", feature: "OpenAI and OpenAI-compatible engines")
+        .and_raise(Boxcars::ConfigurationError, "Missing optional dependency 'openai'.")
+
+      expect do
+        described_class.validate_client_configuration!
+      end.to raise_error(Boxcars::ConfigurationError, /optional dependency 'openai'/)
+    end
   end
 
   describe ".official_client_builder=" do

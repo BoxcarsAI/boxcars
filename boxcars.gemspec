@@ -31,13 +31,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   # runtime dependencies
-  spec.add_dependency "faraday", "~> 2.0"
-  spec.add_dependency "faraday-retry", "~> 2.0"
-  spec.add_dependency "google_search_results", "~> 2.2"
-  spec.add_dependency "hnswlib", "~> 0.9"
-  spec.add_dependency "nokogiri", "~> 1.18"
-  spec.add_dependency "ruby-anthropic", "~> 0.4"
-  spec.add_dependency "openai", ">= 0.30"
+  # Provider/tooling gems are optional and loaded on use.
 
   # For more information and examples about making a new gem, checkout our
   # guide at: https://bundler.io/guides/creating_gem.html

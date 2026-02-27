@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'faraday'
-require 'faraday/retry'
 require 'json'
 
 module Boxcars
@@ -43,6 +41,7 @@ module Boxcars
       current_prompt_object = prompt.is_a?(Array) ? prompt.first : prompt
 
       begin
+        Boxcars::OptionalDependency.require!("faraday", feature: "Boxcars::Perplexityai")
         api_key = perplexity_api_key || Boxcars.configuration.perplexity_api_key(**current_params.slice(:perplexity_api_key))
         raise Boxcars::ConfigurationError, "Perplexity API key not set" if api_key.nil? || api_key.strip.empty?
 
@@ -86,15 +85,14 @@ module Boxcars
                 end
           response_data[:error] = StandardError.new(msg)
         end
-      rescue Faraday::Error => e # Catch Faraday specific errors (includes connection, timeout, 4xx/5xx)
+      rescue StandardError => e
         response_data[:error] = e
         response_data[:success] = false
-        response_data[:status_code] = e.response_status if e.respond_to?(:response_status)
-        response_data[:response_obj] = e.response if e.respond_to?(:response) # Store Faraday response if available
-        response_data[:parsed_json] = e.response[:body] if e.respond_to?(:response) && e.response[:body].is_a?(Hash)
-      rescue StandardError => e # Catch other unexpected errors
-        response_data[:error] = e
-        response_data[:success] = false
+        if defined?(Faraday::Error) && e.is_a?(Faraday::Error)
+          response_data[:status_code] = e.response_status if e.respond_to?(:response_status)
+          response_data[:response_obj] = e.response if e.respond_to?(:response)
+          response_data[:parsed_json] = e.response[:body] if e.respond_to?(:response) && e.response[:body].is_a?(Hash)
+        end
       ensure
         duration_ms = ((Time.now - start_time) * 1000).round
         request_context = {

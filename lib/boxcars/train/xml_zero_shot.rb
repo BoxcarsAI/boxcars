@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "nokogiri"
-
 # Agent for the MRKL chain
 module Boxcars
   # A Train using the zero-shot react method and only XML in the prompt.

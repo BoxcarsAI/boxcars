@@ -40,7 +40,8 @@ module Boxcars
     end
 
     def chat(params, cohere_api_key)
-      raise Boxcars::ConfigurationError('Cohere API key not set') if cohere_api_key.blank?
+      Boxcars::OptionalDependency.require!("faraday", feature: "Boxcars::Cohere")
+      raise Boxcars::ConfigurationError('Cohere API key not set') if cohere_api_key.to_s.strip.empty?
 
       # Define the API endpoint and parameters
       api_endpoint = 'https://api.cohere.ai/v1/chat'
@@ -150,7 +151,8 @@ module Boxcars
 
     # Make the actual API call to Cohere
     def _cohere_api_call(params, api_key)
-      raise Boxcars::Error, 'Cohere API key not set' if api_key.blank?
+      Boxcars::OptionalDependency.require!("faraday", feature: "Boxcars::Cohere")
+      raise Boxcars::Error, 'Cohere API key not set' if api_key.to_s.strip.empty?
 
       # Define the API endpoint and parameters
       api_endpoint = 'https://api.cohere.ai/v1/chat'

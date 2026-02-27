@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "nokogiri"
-
 # base class for all XML trains
 module Boxcars
   # A Train using XML for prompting and execution.
@@ -64,6 +62,7 @@ module Boxcars
     private
 
     def parse_output(engine_output)
+      Boxcars::OptionalDependency.require!("nokogiri", feature: "Boxcars::XMLTrain")
       doc = Nokogiri::XML("<data>#{engine_prefix}#{engine_output}\n</data>")
       keys = doc.element_children.first.element_children.map(&:name).map(&:to_sym)
       keys.to_h do |key|

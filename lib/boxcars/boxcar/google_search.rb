@@ -1,6 +1,4 @@
 # frozen_string_literal: true
-
-require 'google_search_results'
 module Boxcars
   # A Boxcar that uses the Google SERP API to get answers to questions.
   # It looks through SERP (search engine results page) results to find the answer.
@@ -15,6 +13,7 @@ module Boxcars
     # @param serpapi_api_key [String] The API key to use for the SerpAPI. Defaults to Boxcars.configuration.serpapi_api_key.
     def initialize(name: "Search", description: SERPDESC, serpapi_api_key: nil)
       super(name:, description:)
+      Boxcars::OptionalDependency.require!("google_search_results", feature: "Boxcars::GoogleSearch")
       api_key = Boxcars.configuration.serpapi_api_key(serpapi_api_key:)
       ::GoogleSearch.api_key = api_key
     end

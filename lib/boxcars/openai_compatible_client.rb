@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "openai"
-
 module Boxcars
   # Centralized factory for OpenAI-compatible clients used by multiple engines
   # (OpenAI, Groq, Ollama, Gemini-compatible endpoints, etc.).
@@ -56,6 +54,7 @@ module Boxcars
     end
 
     def self.validate_client_configuration!
+      ensure_openai_dependency!
       builder = official_client_builder || Boxcars.configuration.openai_official_client_builder
       return true if builder
       return true if detect_official_client_class
@@ -70,6 +69,7 @@ module Boxcars
     end
 
     def self.configure_official_client_builder!(client_class: nil)
+      ensure_openai_dependency!
       klass = client_class || detect_official_client_class
       return false unless klass
 
@@ -181,6 +181,7 @@ module Boxcars
     private
 
     def self.build_official_openai_client(access_token:, uri_base: nil, organization_id: nil, log_errors: nil)
+      ensure_openai_dependency!
       builder = official_client_builder || Boxcars.configuration.openai_official_client_builder
       unless builder
         configure_official_client_builder!
@@ -226,6 +227,10 @@ module Boxcars
             "Tried #{candidates.length} constructor variants. Last error: #{errors.last}"
     end
 
+    def self.ensure_openai_dependency!
+      Boxcars::OptionalDependency.require!("openai", feature: "OpenAI and OpenAI-compatible engines")
+    end
+
     def self.call_create(resource, parameters)
       create_method = resource.method(:create)
       if keyword_parameters?(create_method, :parameters)
@@ -246,6 +251,6 @@ module Boxcars
     private_class_method :build_official_openai_client
     private_class_method :detect_official_client_class, :official_client_class?, :build_with_official_client_class
     private_class_method :official_client_requires_native?
-    private_class_method :call_create, :keyword_parameters?
+    private_class_method :call_create, :keyword_parameters?, :ensure_openai_dependency!
   end
 end

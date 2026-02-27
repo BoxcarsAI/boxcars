@@ -1,6 +1,4 @@
 # frozen_string_literal: true
-
-require 'hnswlib'
 require 'json'
 
 module Boxcars
@@ -76,6 +74,7 @@ module Boxcars
         end
 
         def load_index(metadata, index_file)
+          Boxcars::OptionalDependency.require!("hnswlib", feature: "Boxcars::VectorStore::Hnswlib")
           search_index = ::Hnswlib::HierarchicalNSW.new(
             space: metadata[:metric],
             dim: metadata[:dim]

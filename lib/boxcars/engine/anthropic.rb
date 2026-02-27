@@ -1,6 +1,4 @@
 # frozen_string_literal: true
-
-require 'anthropic'
 # Boxcars is a framework for running a series of tools to get an answer to a question.
 module Boxcars
   # A engine that uses OpenAI's API.
@@ -41,6 +39,7 @@ module Boxcars
     end
 
     def anthropic_client(anthropic_api_key: nil)
+      Boxcars::OptionalDependency.require!("anthropic", feature: "Boxcars::Anthropic")
       ::Anthropic::Client.new(access_token: anthropic_api_key)
     end
 

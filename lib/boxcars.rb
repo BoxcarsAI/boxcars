@@ -256,6 +256,7 @@ require_relative "boxcars/version"
 require_relative "boxcars/observation"
 require_relative "boxcars/observability_backend"
 require_relative "boxcars/observability"
+require_relative "boxcars/optional_dependency"
 # If users want it, they can require 'boxcars/observability_backends/multi_backend'
 require_relative "boxcars/x_node"
 require_relative "boxcars/prompt"

@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'fileutils'
-require 'hnswlib'
 require 'json'
 
 module Boxcars

@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'openai' # Gemini uses the OpenAI gem with a custom URI base
 require 'json'
 
 module Boxcars

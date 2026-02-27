@@ -1,6 +1,4 @@
 # frozen_string_literal: true
-
-require 'hnswlib'
 require 'json'
 require 'fileutils'
 
@@ -14,6 +12,7 @@ module Boxcars
         # @param index_file_path [String] The path to the index file.
         # @option json_doc_file_path [String] Optional. The path to the json file containing the document text.
         def initialize(hnsw_vectors_array)
+          Boxcars::OptionalDependency.require!("hnswlib", feature: "Boxcars::VectorStore::Hnswlib")
           @metadata = hnsw_vectors_array&.first&.metadata
           validate_params(hnsw_vectors_array, metadata)
 

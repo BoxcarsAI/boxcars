@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require "openai"
 require "json"
 require "securerandom"
 

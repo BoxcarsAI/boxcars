@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'nokogiri'
-
 module Boxcars
   class XNode
     attr_accessor :node, :children, :attributes
@@ -28,6 +26,7 @@ module Boxcars
     end
 
     def self.from_xml(xml)
+      Boxcars::OptionalDependency.require!("nokogiri", feature: "XML trains and XML parsing helpers")
       xml = xml[xml.index("<")..-1] unless xml.start_with?("<")
       xml = xml[0..xml.rindex(">")] unless xml.end_with?(">")
       doc = Nokogiri::XML.parse(xml)

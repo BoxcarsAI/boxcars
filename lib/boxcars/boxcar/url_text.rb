@@ -33,6 +33,7 @@ module Boxcars
     end
 
     def html_to_text(url, response)
+      Boxcars::OptionalDependency.require!("nokogiri", feature: "Boxcars::URLText HTML parsing")
       Nokogiri::HTML(response.body).css(%w[h1 h2 h3 h4 h5 h6 p a].join(",")).map do |e|
         itxt = e.inner_text.strip
         itxt = itxt.gsub(/[[:space:]]+/, " ") # remove extra spaces
