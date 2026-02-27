@@ -53,10 +53,12 @@ module Boxcars
     # @param current_conversation [Boxcars::Conversation] Optional ongoing conversation to use for the prompt.
     # @return [Hash] A hash of the output key and the output value.
     def apply(input_list:, current_conversation: nil)
-      response = generate(input_list:, current_conversation:)
-      response.generations.to_h do |generation|
-        [output_key, generation[0]&.text.to_s]
+      if input_list.length != 1
+        raise Boxcars::ArgumentError, "#{self.class}#apply currently supports exactly one input hash"
       end
+
+      response = generate(input_list:, current_conversation:)
+      { output_key => response.generations.dig(0, 0)&.text.to_s }
     end
 
     # predict a response from the engine

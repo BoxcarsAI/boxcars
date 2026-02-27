@@ -32,4 +32,17 @@ RSpec.describe Boxcars::EngineBoxcar do
       expect(rv[:answer].to_s).to match(/Empty response from engine/)
     end.not_to raise_error
   end
+
+  it "raises when apply is called with multiple inputs" do
+    prompt = Boxcars::Prompt.new(
+      template: "Q: %<input>s",
+      input_variables: [:input],
+      output_variables: [:answer]
+    )
+    box = described_class.new(prompt: prompt, engine: nil_text_engine_class.new, description: "test")
+
+    expect do
+      box.apply(input_list: [{ input: "one" }, { input: "two" }])
+    end.to raise_error(Boxcars::ArgumentError, /supports exactly one input hash/)
+  end
 end
