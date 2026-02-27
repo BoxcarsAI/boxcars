@@ -106,11 +106,6 @@ module Boxcars
       )
     end
 
-    # Backward compatibility wrapper; prefer `.provider_client`.
-    def self.open_ai_client(openai_access_token: nil)
-      provider_client(openai_access_token:)
-    end
-
     # -- Public helper -------------------------------------------------------------
     # Some callers outside this class still invoke `validate_response!` directly.
     # It simply raises if the JSON body contains an "error" payload.

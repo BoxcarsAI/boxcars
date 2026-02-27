@@ -35,11 +35,6 @@ module Boxcars
       )
     end
 
-    # Backward compatibility wrapper; prefer `.provider_client`.
-    def self.ollama_client
-      provider_client
-    end
-
     def client(prompt:, inputs: {}, **kwargs)
       start_time = Time.now
       response_data = { response_obj: nil, parsed_json: nil, success: false, error: nil, status_code: nil }
@@ -48,7 +43,7 @@ module Boxcars
       api_request_params = nil
 
       begin
-        clnt = Ollama.ollama_client
+        clnt = self.class.provider_client
         api_request_params = prepare_openai_compatible_chat_request(current_prompt_object, inputs, current_params)
 
         log_messages_debug(api_request_params[:messages]) if Boxcars.configuration.log_prompts && api_request_params[:messages]

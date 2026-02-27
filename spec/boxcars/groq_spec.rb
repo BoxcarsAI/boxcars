@@ -50,8 +50,8 @@ RSpec.describe Boxcars::Groq do
   before do
     Boxcars.configuration.observability_backend = dummy_observability_backend
     allow(Boxcars.configuration).to receive(:groq_api_key).and_return(api_key_param)
-    allow(described_class).to receive(:groq_client).with(groq_api_key: api_key_param).and_return(mock_groq_client)
-    allow(described_class).to receive(:groq_client).with(groq_api_key: nil).and_return(mock_groq_client)
+    allow(described_class).to receive(:provider_client).with(groq_api_key: api_key_param).and_return(mock_groq_client)
+    allow(described_class).to receive(:provider_client).with(groq_api_key: nil).and_return(mock_groq_client)
   end
 
   describe 'observability integration with OpenAI client for Groq' do
@@ -98,7 +98,7 @@ RSpec.describe Boxcars::Groq do
     context 'when API key is missing (ConfigurationError)' do
       before do
         allow(Boxcars.configuration).to receive(:groq_api_key).with(groq_api_key: nil).and_raise(Boxcars::ConfigurationError.new("Groq API key not set"))
-        allow(described_class).to receive(:groq_client).with(groq_api_key: nil).and_call_original
+        allow(described_class).to receive(:provider_client).with(groq_api_key: nil).and_call_original
       end
 
       it 'tracks an $ai_generation event with failure details' do

@@ -15,7 +15,7 @@ RSpec.describe Boxcars::GeminiAi do
   let(:engine_params) { {} }
 
   let(:mock_gemini_client) { double("OpenAICompatibleClient") }
-  # Using OpenAI-like chat response structure as the gemini_client uses OpenAI::Client
+  # Using OpenAI-like chat response structure as the provider_client uses OpenAI::Client
   let(:gemini_chat_success_response_openai_style) do
     {
       "id" => "gemini-chat-123",
@@ -67,10 +67,10 @@ RSpec.describe Boxcars::GeminiAi do
   before do
     Boxcars.configuration.observability_backend = dummy_observability_backend
     allow(Boxcars.configuration).to receive(:gemini_api_key).and_return(api_key_param)
-    # Mock the self.gemini_client method to return our mock_gemini_client
-    allow(described_class).to receive(:gemini_client).with(gemini_api_key: api_key_param).and_return(mock_gemini_client)
+    # Mock the self.provider_client method to return our mock_gemini_client
+    allow(described_class).to receive(:provider_client).with(gemini_api_key: api_key_param).and_return(mock_gemini_client)
     # Also mock if called without explicit key (to use config)
-    allow(described_class).to receive(:gemini_client).with(gemini_api_key: nil).and_return(mock_gemini_client)
+    allow(described_class).to receive(:provider_client).with(gemini_api_key: nil).and_return(mock_gemini_client)
   end
 
   describe 'observability integration with OpenAI client for Gemini' do
@@ -138,10 +138,10 @@ RSpec.describe Boxcars::GeminiAi do
 
     context 'when API key is missing (ConfigurationError)' do
       before do
-        # Make gemini_client raise the error when api key is effectively nil
+        # Make provider_client raise the error when api key is effectively nil
         allow(Boxcars.configuration).to receive(:gemini_api_key).with(gemini_api_key: nil).and_raise(Boxcars::ConfigurationError.new("Gemini API key not set"))
-        # Redefine the mock for self.gemini_client to reflect this
-        allow(described_class).to receive(:gemini_client).with(gemini_api_key: nil).and_call_original
+        # Redefine the mock for self.provider_client to reflect this
+        allow(described_class).to receive(:provider_client).with(gemini_api_key: nil).and_call_original
       end
 
       it 'tracks an $ai_generation event with failure details' do

@@ -17,7 +17,7 @@ RSpec.describe "OpenAI-compatible provider client wiring" do
       uri_base: "https://api.groq.com/openai/v1"
     ))
 
-    Boxcars::Groq.groq_client
+    Boxcars::Groq.provider_client
   end
 
   it "wires GeminiAi to the expected OpenAI-compatible endpoint" do
@@ -28,7 +28,7 @@ RSpec.describe "OpenAI-compatible provider client wiring" do
       uri_base: "https://generativelanguage.googleapis.com/v1beta/"
     ))
 
-    Boxcars::GeminiAi.gemini_client
+    Boxcars::GeminiAi.provider_client
   end
 
   it "wires Ollama to the expected OpenAI-compatible endpoint" do
@@ -37,7 +37,7 @@ RSpec.describe "OpenAI-compatible provider client wiring" do
       uri_base: "http://localhost:11434/v1"
     ))
 
-    Boxcars::Ollama.ollama_client
+    Boxcars::Ollama.provider_client
   end
 
   it "wires Google to the expected OpenAI-compatible endpoint" do
