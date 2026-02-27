@@ -22,39 +22,17 @@ RSpec.describe Boxcars::Openai do
     )
   end
 
-  it "ignores deprecated backend options while using the official client" do
-    expect(Boxcars::OpenAICompatibleClient).to receive(:build).with(
-      access_token: "token-123",
-      organization_id: nil,
-      log_errors: true
-    ).and_return(adapter)
-
-    expect(adapter).to receive(:chat_create) do |parameters:|
-      expect(parameters).to include(:model, :messages)
-      expect(parameters).not_to have_key(:openai_client_backend)
-      expect(parameters).not_to have_key(:client_backend)
-      chat_response
-    end
-
-    engine = described_class.new(model: "gpt-4o-mini", openai_client_backend: :official_openai)
-    expect(engine.run("Say hi")).to eq("backend override answer")
+  it "raises when deprecated backend kwargs are passed to constructor" do
+    expect do
+      described_class.new(model: "gpt-4o-mini", openai_client_backend: :official_openai)
+    end.to raise_error(Boxcars::ConfigurationError, /openai_client_backend/)
   end
 
-  it "ignores per-call deprecated backend options without mutating API params" do
-    expect(Boxcars::OpenAICompatibleClient).to receive(:build).with(
-      access_token: "token-123",
-      organization_id: nil,
-      log_errors: true
-    ).and_return(adapter)
-
-    expect(adapter).to receive(:chat_create) do |parameters:|
-      expect(parameters).to include(:model, :messages)
-      expect(parameters).not_to have_key(:openai_client_backend)
-      expect(parameters).not_to have_key(:client_backend)
-      chat_response
-    end
-
+  it "raises when deprecated backend kwargs are passed to #run" do
+    expect(Boxcars::OpenAICompatibleClient).not_to receive(:build)
     engine = described_class.new(model: "gpt-4o-mini")
-    expect(engine.run("Say hi", openai_client_backend: :ruby_openai, client_backend: :ruby_openai)).to eq("backend override answer")
+    expect do
+      engine.run("Say hi", openai_client_backend: :ruby_openai, client_backend: :ruby_openai)
+    end.to raise_error(Boxcars::ConfigurationError, /openai_client_backend.*client_backend|client_backend.*openai_client_backend/)
   end
 end

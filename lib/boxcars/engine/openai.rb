@@ -34,8 +34,7 @@ module Boxcars
                    batch_size: 20,
                    **kwargs)
       user_id          = kwargs.delete(:user_id)
-      kwargs.delete(:openai_client_backend)
-      kwargs.delete(:client_backend)
+      reject_deprecated_backend_kwargs!(kwargs)
       @open_ai_params  = adjust_for_o_series!(DEFAULT_PARAMS.merge(kwargs))
       @prompts         = prompts
       @batch_size      = batch_size
@@ -49,8 +48,7 @@ module Boxcars
       start_time       = Time.now
       response_data    = { response_obj: nil, parsed_json: nil,
                            success: false, error: nil, status_code: nil }
-      kwargs.delete(:openai_client_backend)
-      kwargs.delete(:client_backend)
+      reject_deprecated_backend_kwargs!(kwargs)
       current_params   = open_ai_params.merge(kwargs)
       is_chat_model    = chat_model?(current_params[:model])
       prompt_object    = prompt.is_a?(Array) ? prompt.first : prompt
@@ -189,6 +187,17 @@ module Boxcars
       return "" unless messages.is_a?(Array)
 
       messages.map { |m| "#{m[:role]}: #{m[:content]}" }.join("\n")
+    end
+
+    def reject_deprecated_backend_kwargs!(kwargs)
+      deprecated_keys = %i[openai_client_backend client_backend]
+      provided = deprecated_keys.select { |key| kwargs.key?(key) }
+      return if provided.empty?
+
+      keys = provided.map { |key| ":#{key}" }.join(", ")
+      raise ConfigurationError,
+            "#{keys} #{provided.length == 1 ? 'is' : 'are'} no longer supported. " \
+            "Boxcars now uses the official OpenAI client path only."
     end
 
     # -- API call / response ----------------------------------------------------

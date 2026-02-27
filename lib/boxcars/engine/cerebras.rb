@@ -21,9 +21,6 @@ module Boxcars
     end
 
     def client(prompt:, inputs: {}, cerebras_api_key: nil, **kwargs)
-      kwargs = kwargs.dup
-      kwargs.delete(:openai_client_backend)
-      kwargs.delete(:client_backend)
       super(prompt:, inputs:, openai_access_token: cerebras_api_key, **kwargs)
     end
 

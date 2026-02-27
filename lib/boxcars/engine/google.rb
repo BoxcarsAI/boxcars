@@ -21,9 +21,6 @@ module Boxcars
 
     # Supports both `gemini_api_key:` and legacy `google_api_key:` naming.
     def client(prompt:, inputs: {}, gemini_api_key: nil, google_api_key: nil, **kwargs)
-      kwargs = kwargs.dup
-      kwargs.delete(:openai_client_backend)
-      kwargs.delete(:client_backend)
       key = gemini_api_key || google_api_key
       super(prompt:, inputs:, openai_access_token: key, **kwargs)
     end
