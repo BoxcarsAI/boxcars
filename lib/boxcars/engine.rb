@@ -70,6 +70,12 @@ module Boxcars
       generate(prompts: [[prompt, inputs]], stop:)
     end
 
+    # Backward-compatible prompt normalization for providers that still receive
+    # legacy prompt arrays from older call paths.
+    def normalize_prompt_object(prompt)
+      prompt.is_a?(Array) ? prompt.first : prompt
+    end
+
     # Call out to the LLM endpoint with one or more prompt/input pairs.
     # @param prompts [Array<Array(Prompt, Hash)>] Prompt/input pairs to run.
     # @param stop [Array<String>, nil] Optional stop words.
