@@ -48,7 +48,7 @@ RSpec.describe "OpenAI-compatible provider client wiring" do
                                                                       uri_base: "https://generativelanguage.googleapis.com/v1beta/"
                                                                     ))
 
-    Boxcars::Google.open_ai_client
+    Boxcars::Google.provider_client
   end
 
   it "wires Cerebras to the expected OpenAI-compatible endpoint" do
@@ -59,7 +59,7 @@ RSpec.describe "OpenAI-compatible provider client wiring" do
                                                                       uri_base: "https://api.cerebras.ai/v1"
                                                                     ))
 
-    Boxcars::Cerebras.open_ai_client
+    Boxcars::Cerebras.provider_client
   end
 
   it "wires Together to the expected OpenAI-compatible endpoint" do
@@ -70,6 +70,6 @@ RSpec.describe "OpenAI-compatible provider client wiring" do
                                                                       uri_base: "https://api.together.xyz/v1"
                                                                     ))
 
-    Boxcars::Together.open_ai_client
+    Boxcars::Together.provider_client
   end
 end

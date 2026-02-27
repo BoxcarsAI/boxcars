@@ -56,7 +56,7 @@ module Boxcars
 
       begin
         raw_response = execute_api_call(
-          self.class.open_ai_client(openai_access_token:),
+          self.class.provider_client(openai_access_token:),
           is_chat_model,
           api_request
         )
@@ -107,12 +107,17 @@ module Boxcars
     # --------------------------------------------------------------------------
     #  Class helpers
     # --------------------------------------------------------------------------
-    def self.open_ai_client(openai_access_token: nil)
+    def self.provider_client(openai_access_token: nil)
       Boxcars::OpenAICompatibleClient.build(
         access_token: Boxcars.configuration.openai_access_token(openai_access_token:),
         organization_id: Boxcars.configuration.organization_id,
         log_errors: true
       )
+    end
+
+    # Backward compatibility wrapper; prefer `.provider_client`.
+    def self.open_ai_client(openai_access_token: nil)
+      provider_client(openai_access_token:)
     end
 
     # -- Public helper -------------------------------------------------------------

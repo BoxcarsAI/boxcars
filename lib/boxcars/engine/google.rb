@@ -25,7 +25,7 @@ module Boxcars
       super(prompt:, inputs:, openai_access_token: key, **kwargs)
     end
 
-    def self.open_ai_client(openai_access_token: nil)
+    def self.provider_client(openai_access_token: nil)
       access_token = Boxcars.configuration.gemini_api_key(gemini_api_key: openai_access_token)
       Boxcars::OpenAICompatibleClient.build(
         access_token:,
