@@ -21,8 +21,12 @@ module Boxcars
 
     # Get an answer from the Engine.
     # @param question [String] The question to ask the Engine.
-    def run(question)
-      raise NotImplementedError
+    def run(question, **kwargs)
+      prompt = Prompt.new(template: question)
+      response = client(prompt:, inputs: {}, **kwargs)
+      answer = extract_answer(response)
+      Boxcars.debug("Answer: #{answer}", :cyan)
+      answer
     end
 
     # Provider/runtime capabilities used by newer execution strategies

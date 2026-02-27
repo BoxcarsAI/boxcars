@@ -78,19 +78,6 @@ module Boxcars
       anthropic_handle_call_outcome(response_data:)
     end
 
-    # Runs the engine and returns the extracted answer text.
-    def run(question, **)
-      prompt = Prompt.new(template: question)
-      response = client(prompt:, **)
-
-      raise Error, "Anthropic: No response from API" unless response
-      raise Error, "Anthropic: #{response['error']}" if response['error']
-
-      answer = response['completion']
-      Boxcars.debug("Answer: #{answer}", :cyan)
-      answer
-    end
-
     def default_params
       llm_params
     end

@@ -118,13 +118,6 @@ module Boxcars
       end
     end
 
-    # Run the engine with a question
-    def run(question, **)
-      prompt = Prompt.new(template: question)
-      response = client(prompt:, **)
-      extract_answer(response)
-    end
-
     private
 
     def ensure_intelligence_available!

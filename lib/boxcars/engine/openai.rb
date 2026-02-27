@@ -80,15 +80,6 @@ module Boxcars
       handle_call_outcome(response_data:)
     end
 
-    # Convenience one-shot helper used by Engine#generate
-    def run(question, **)
-      prompt      = Prompt.new(template: question)
-      raw_json    = client(prompt:, inputs: {}, **)
-      ans         = extract_answer(raw_json)
-      Boxcars.debug("Answer: #{ans}", :cyan)
-      ans
-    end
-
     # Expose the defaults so callers can introspect or dup/merge them
     def default_params = open_ai_params
 

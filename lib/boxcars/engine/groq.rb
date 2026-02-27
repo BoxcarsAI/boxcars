@@ -83,14 +83,6 @@ module Boxcars
       response_data[:parsed_json]
     end
 
-    def run(question, **)
-      prompt = Prompt.new(template: question)
-      response = client(prompt:, inputs: {}, **)
-      answer = extract_answer(response)
-      Boxcars.debug("Answer: #{answer}", :cyan)
-      answer
-    end
-
     private
 
     def default_params

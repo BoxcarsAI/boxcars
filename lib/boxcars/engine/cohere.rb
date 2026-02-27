@@ -82,19 +82,6 @@ module Boxcars
       cohere_handle_call_outcome(response_data:)
     end
 
-    # Runs the engine and returns the extracted answer text.
-    def run(question, **)
-      prompt = Prompt.new(template: question)
-      response = client(prompt:, **)
-
-      raise Error, "Cohere: No response from API" unless response
-      raise Error, "Cohere: #{response['error']}" if response['error']
-
-      answer = extract_answer(response)
-      Boxcars.debug("Answer: #{answer}", :cyan)
-      answer
-    end
-
     def default_params
       llm_params
     end

@@ -95,14 +95,6 @@ module Boxcars
       gpt4all_handle_call_outcome(response_data:)
     end
 
-    def run(question, **)
-      prompt = Prompt.new(template: question)
-      response = client(prompt:, inputs: {}, **)
-      answer = extract_answer(response)
-      Boxcars.debug("Answer: #{answer}", :cyan)
-      answer
-    end
-
     def default_params
       @gpt4all_params
     end

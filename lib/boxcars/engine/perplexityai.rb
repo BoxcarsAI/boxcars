@@ -111,14 +111,6 @@ module Boxcars
     end
     # rubocop:enable Metrics/MethodLength
 
-    def run(question, **)
-      prompt = Prompt.new(template: question)
-      response = client(prompt:, inputs: {}, **)
-      answer = extract_answer(response)
-      Boxcars.debug("Answer: #{answer}", :cyan)
-      answer
-    end
-
     def default_params
       @perplexity_params
     end
