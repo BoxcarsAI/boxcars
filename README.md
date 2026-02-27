@@ -36,6 +36,25 @@ Inspired by LangChain, Boxcars brings a Ruby-first design that favors practical 
 Upgrading guidance for the ongoing modernization work (native tool-calling, MCP, JSON Schema support, alias deprecations, and OpenAI backend migration) is in [`UPGRADING.md`](./UPGRADING.md).
 Notebook migration expectations for the OpenAI backend rollout are documented in the "Notebook compatibility matrix" section of [`UPGRADING.md`](./UPGRADING.md#notebook-compatibility-matrix-v09).
 
+### Current Upgrade Notes (toward v1.0)
+
+- `Boxcars::Openai` now defaults to `gpt-5-mini` and `openai_client_backend=:official_openai` (with compatibility controls documented below).
+- Runtime ActiveSupport/ActiveRecord targets are now `~> 8.1`.
+- Swagger workflows now use Faraday guidance. `rest-client` is no longer a Boxcars runtime dependency.
+- `intelligence` and `gpt4all` are now optional dependencies:
+  - Core Boxcars usage no longer requires either gem.
+  - `Boxcars::IntelligenceBase` requires `gem "intelligence"` in your app.
+  - `Boxcars::Gpt4allEng` requires `gem "gpt4all"` in your app.
+- OpenAI-compatible backend pinning during migration now covers Groq, Gemini, Ollama, Google, Cerebras, and Together.
+
+If your app uses `IntelligenceBase` or `Gpt4allEng`, add optional gems explicitly:
+
+```ruby
+# Gemfile (only if you use these paths)
+gem "intelligence"
+gem "gpt4all"
+```
+
 ## Concepts
 All of these concepts are in a module named Boxcars:
 
@@ -259,7 +278,7 @@ perplexity_engine = Boxcars::Engines.engine(model: "sonar")
 #### Supported Model Aliases
 
 **OpenAI Models:**
-- Any OpenAI model ID from the [OpenAI pricing/models page](https://openai.com/api/pricing) (for example `"gpt-5-mini"`, `"gpt-5"`, `"o1"`, `"o3"`) creates `Boxcars::Openai` engines
+- Any OpenAI model ID from the [OpenAI pricing/models page](https://developers.openai.com/api/pricing) (for example `"gpt-5-mini"`, `"gpt-5"`, `"o1"`, `"o3"`) creates `Boxcars::Openai` engines
 
 **Anthropic Models:**
 - `"anthropic"`, `"sonnet"` - Creates `Boxcars::Anthropic` with Claude Sonnet
@@ -438,7 +457,7 @@ train = Boxcars.train.new(boxcars: boxcars)
 
 ### Overriding the Default Engine Model
 
-Boxcars provides several ways to override the default engine model used throughout your application. The default model is currently `"gemini-2.5-flash-preview-05-20"`, but you can customize this behavior.
+Boxcars provides several ways to override the default engine model used throughout your application. The default model is currently `"gemini-2.5-flash"` in `Boxcars::Engines`, but you can customize this behavior.
 
 #### Global Configuration
 
@@ -501,7 +520,7 @@ The `Boxcars::Engines.engine()` method resolves the model in this order:
 
 1. **Explicit model parameter**: `Boxcars::Engines.engine(model: "gpt-4o")`
 2. **Global configuration**: `Boxcars.configuration.default_model`
-3. **Built-in default**: `"gemini-2.5-flash-preview-05-20"`
+3. **Built-in default**: `"gemini-2.5-flash"`
 
 #### Supported Model Aliases
 

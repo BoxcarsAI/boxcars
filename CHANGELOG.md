@@ -36,6 +36,26 @@ This section tracks the modernization work that is being added in v0.9 with a co
     - `spec:vcr_openai_smoke`
     - `spec:vcr_openai_refresh`
 
+#### Dependency and Runtime Migration Updates (v0.9)
+
+- Runtime dependency upgrades:
+  - ActiveRecord and ActiveSupport moved to `~> 8.1`.
+  - `pgvector` updated to `~> 0.3.2`.
+  - `vcr`, `webmock`, and `rubocop-rake` updated.
+- Swagger modernization:
+  - Swagger prompt/cassette/notebook guidance now uses Faraday.
+  - `rest-client` removed from Boxcars runtime dependencies.
+- Optionalized legacy dependencies:
+  - `intelligence` removed as a hard runtime dependency.
+    - `Boxcars::IntelligenceBase` remains supported and now fails with a clear setup error if the gem is missing.
+  - `gpt4all` removed as a hard runtime dependency.
+    - `Boxcars::Gpt4allEng` remains supported and now fails with a clear setup error if the gem is missing.
+- Provider runtime convergence:
+  - `Boxcars::Google`, `Boxcars::Cerebras`, and `Boxcars::Together` migrated off `IntelligenceBase` to the OpenAI-compatible adapter path.
+  - OpenAI-compatible backend pinning coverage expanded to include Google/Cerebras/Together (in addition to Groq/Gemini/Ollama).
+- Current remaining `bundle outdated` item after this pass:
+  - `diff-lcs` (`2.x` blocked by RSpec 3.x dependency constraint `< 2.0`).
+
 #### Model Alias Deprecations (warning now, planned removal in v1.0)
 
 Deprecated aliases currently emit a one-time warning (per process) and still work in v0.9.
