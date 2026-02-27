@@ -31,10 +31,6 @@ module Boxcars
       super(description:, name:, user_id:)
     end
 
-    def conversation_model?(_model)
-      true
-    end
-
     def anthropic_client(anthropic_api_key: nil)
       Boxcars::OptionalDependency.require!("ruby-anthropic", feature: "Boxcars::Anthropic", require_as: "anthropic")
       ::Anthropic::Client.new(access_token: anthropic_api_key)

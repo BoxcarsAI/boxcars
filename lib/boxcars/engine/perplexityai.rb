@@ -26,10 +26,6 @@ module Boxcars
       super(description:, name:, user_id:)
     end
 
-    def conversation_model?(_model_name)
-      true
-    end
-
     # rubocop:disable Metrics/MethodLength
     def client(prompt:, inputs: {}, perplexity_api_key: nil, **kwargs)
       start_time = Time.now

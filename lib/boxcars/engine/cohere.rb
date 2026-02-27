@@ -32,10 +32,6 @@ module Boxcars
       super(description:, name:, user_id:)
     end
 
-    def conversation_model?(_model)
-      true
-    end
-
     def chat(params, cohere_api_key)
       Boxcars::OptionalDependency.require!("faraday", feature: "Boxcars::Cohere")
       ensure_cohere_api_key!(

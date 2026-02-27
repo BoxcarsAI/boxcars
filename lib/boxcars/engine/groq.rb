@@ -35,10 +35,6 @@ module Boxcars
       )
     end
 
-    def conversation_model?(_model_name)
-      true
-    end
-
     def client(prompt:, inputs: {}, groq_api_key: nil, **kwargs)
       start_time = Time.now
       response_data = { response_obj: nil, parsed_json: nil, success: false, error: nil, status_code: nil }
