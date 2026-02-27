@@ -5,6 +5,7 @@ module Boxcars
   # rubocop:disable Metrics/ClassLength
   class Anthropic < Engine
     include UnifiedObservability
+    include OpenAICompatibleChatHelpers
 
     attr_reader :prompts, :llm_params, :model_kwargs, :batch_size
 
@@ -64,9 +65,7 @@ module Boxcars
           if api_request_params[:messages].length < 2 && api_request_params[:system] && !api_request_params[:system].empty?
             Boxcars.debug(">>>>>> Role: system <<<<<<\n#{api_request_params[:system]}")
           end
-          Boxcars.debug(api_request_params[:messages].last(2).map do |p|
-            ">>>>>> Role: #{p[:role]} <<<<<<\n#{p[:content]}"
-          end.join("\n"), :cyan)
+          log_messages_debug(api_request_params[:messages])
         end
 
         raw_response = aclient.messages(parameters: api_request_params)
@@ -256,7 +255,7 @@ module Boxcars
     def _handle_anthropic_error(error, response_data)
       response_data[:error] = error
       response_data[:success] = false
-      response_data[:status_code] = error.respond_to?(:http_status) ? error.http_status : nil
+      response_data[:status_code] = openai_compatible_error_status_code(error)
     end
 
     # Track observability using the unified system

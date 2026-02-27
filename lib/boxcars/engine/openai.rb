@@ -8,6 +8,7 @@ module Boxcars
   class Openai < Engine # rubocop:disable Metrics/ClassLength
     # include Boxcars::EngineHelpers
     include UnifiedObservability
+    include OpenAICompatibleChatHelpers
 
     CHAT_MODEL_REGEX = /(^gpt-4)|(-turbo\b)|(^o\d)|(gpt-3\.5-turbo)/
     O_SERIES_REGEX   = /^o/
@@ -269,14 +270,7 @@ module Boxcars
     def handle_error(error, data)
       data[:error]        = error
       data[:success]      = false
-      data[:status_code]  = error_status_code(error)
-    end
-
-    def error_status_code(error)
-      return error.http_status if error.respond_to?(:http_status) && error.http_status
-      return error.status if error.respond_to?(:status) && error.status
-
-      500
+      data[:status_code]  = openai_compatible_error_status_code(error)
     end
 
     def handle_call_outcome(response_data:)
@@ -448,15 +442,6 @@ module Boxcars
       end
       params.delete(:temperature)
       params
-    end
-
-    def log_messages_debug(messages)
-      return unless messages.is_a?(Array)
-
-      Boxcars.debug(
-        messages.last(2).map { |m| ">>>>>> Role: #{m[:role]} <<<<<<\n#{m[:content]}" }.join("\n"),
-        :cyan
-      )
     end
 
     # -- Error raising ----------------------------------------------------------
