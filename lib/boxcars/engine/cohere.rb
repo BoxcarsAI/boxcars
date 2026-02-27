@@ -86,25 +86,6 @@ module Boxcars
       llm_params
     end
 
-    # The engine type.
-    def engine_type
-      "claude"
-    end
-
-    # Looks up the context size for a model by name.
-    def modelname_to_contextsize(_modelname)
-      100000
-    end
-
-    # Calculates the maximum number of tokens possible for a prompt.
-    def max_tokens_for_prompt(prompt_text)
-      num_tokens = get_num_tokens(prompt_text)
-
-      # get max context size for model by name
-      max_size = modelname_to_contextsize(model_name)
-      max_size - num_tokens
-    end
-
     def default_prefixes
       { system: "SYSTEM: ", user: "USER: ", assistant: "CHATBOT: ", history: :history }
     end

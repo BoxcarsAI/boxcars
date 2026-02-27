@@ -82,46 +82,6 @@ module Boxcars
       llm_params
     end
 
-    # the engine type
-    def engine_type
-      "claude"
-    end
-
-    # calculate the number of tokens used
-    def get_num_tokens(text:)
-      text.split.length # TODO: hook up to token counting gem
-    end
-
-    # lookup the context size for a model by name
-    # @param modelname [String] The name of the model to lookup.
-    def modelname_to_contextsize(_modelname)
-      100000
-    end
-
-    # Calculate the maximum number of tokens possible to generate for a prompt.
-    # @param prompt_text [String] The prompt text to use.
-    # @return [Integer] the number of tokens possible to generate.
-    def max_tokens_for_prompt(prompt_text)
-      num_tokens = get_num_tokens(prompt_text)
-
-      # get max context size for model by name
-      max_size = modelname_to_contextsize(model_name)
-      max_size - num_tokens
-    end
-
-    def extract_model_version(model_string)
-      # Use a regular expression to find the version number
-      match = model_string.match(/claude-(\d+)(?:-(\d+))?/)
-
-      raise ArgumentError, "No version number found in model string: #{model_string}" unless match
-
-      major = match[1].to_i
-      minor = match[2].to_i
-
-      # Combine major and minor versions
-      major + (minor.to_f / 10)
-    end
-
     # convert generic parameters to Anthopic specific ones
     # rubocop:disable Metrics/AbcSize
     def convert_to_anthropic(params)
