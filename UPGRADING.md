@@ -16,6 +16,24 @@ v1.0 is expected to:
 - Remove deprecated model aliases
 - Prefer explicit model names (with a small curated alias set)
 
+## Constructor Cleanup: `prompts:` Removed From Engine Initializers
+
+Engine constructors no longer accept a `prompts:` keyword argument.
+
+Before:
+
+```ruby
+Boxcars::Openai.new(model: "gpt-4o-mini", prompts: [])
+```
+
+After:
+
+```ruby
+Boxcars::Openai.new(model: "gpt-4o-mini")
+```
+
+If `prompts:` is still passed, constructors now raise `Boxcars::ArgumentError` (`unknown keyword: :prompts`).
+
 ## 1. Model Alias Migration (Do This First)
 
 Deprecated aliases still work in v0.9, but emit one-time warnings.

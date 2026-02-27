@@ -61,6 +61,9 @@ This section tracks the modernization work that is being added in v0.9 with a co
     - `pg` + `pgvector` for pgvector-backed vector-store paths
     - `nokogiri` for XML trains and `URLText` HTML parsing
     - `hnswlib` for HNSW vector-store paths
+- Engine constructor simplification:
+  - Removed legacy `prompts:` constructor kwarg from engine initializers.
+  - Passing `prompts:` now raises `Boxcars::ArgumentError` (`unknown keyword: :prompts`).
 - Provider runtime convergence:
   - `Boxcars::Google`, `Boxcars::Cerebras`, and `Boxcars::Together` migrated off `IntelligenceBase` to the OpenAI-compatible official client path.
   - OpenAI-compatible engines now pin to `:official_openai` via the client factory seam.
