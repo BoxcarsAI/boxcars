@@ -387,6 +387,7 @@ For OpenAI client parity checks:
 ```bash
 bundle exec rake spec:openai_client_parity
 bundle exec rake spec:openai_client_parity_official
+bundle exec rake spec:minimal_dependencies
 # full modernization regression lane:
 bundle exec rake spec:modernization
 ```

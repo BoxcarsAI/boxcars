@@ -6,3 +6,4 @@ pkg
 example.rb
 /.idea
 /tmp/*
+/script/minimal/Gemfile.lock

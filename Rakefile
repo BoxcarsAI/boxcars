@@ -97,6 +97,17 @@ namespace :spec do
     sh "bundle exec rspec #{OPENAI_CLIENT_PARITY_SPECS.join(' ')}"
     sh "bundle exec rspec #{OPENAI_CLIENT_OFFICIAL_ONLY_SPECS.join(' ')}"
   end
+
+  desc "Run minimal-dependency bundle check (core load + optional gem setup errors)"
+  task :minimal_dependencies do
+    minimal_gemfile = File.expand_path("script/minimal/Gemfile", __dir__)
+    check_script = File.expand_path("script/minimal_dependencies_check.rb", __dir__)
+
+    Bundler.with_unbundled_env do
+      sh %(BUNDLE_GEMFILE="#{minimal_gemfile}" bundle install)
+      sh %(BUNDLE_GEMFILE="#{minimal_gemfile}" bundle exec ruby "#{check_script}")
+    end
+  end
 end
 
 require "rubocop/rake_task"

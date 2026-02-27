@@ -56,7 +56,7 @@ jobs:
         ruby-version: '3.4'
         bundler-cache: true
     - name: Run OpenAI migration parity specs
-      run: bundle exec rake spec:openai_backend_parity
+      run: bundle exec rake spec:openai_client_parity
 
   openai-backend-parity-official:
     runs-on: ubuntu-latest
@@ -69,7 +69,20 @@ jobs:
         ruby-version: '3.4'
         bundler-cache: true
     - name: Run OpenAI migration parity specs (forced official backend)
-      run: bundle exec rake spec:openai_backend_parity_official
+      run: bundle exec rake spec:openai_client_parity_official
+
+  minimal-dependencies:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.4'
+        bundler-cache: true
+    - name: Run minimal dependency compatibility check
+      run: bundle exec rake spec:minimal_dependencies
 
   modernization:
     runs-on: ubuntu-latest
@@ -132,7 +145,7 @@ jobs:
   publish-rubygem:
     runs-on: ubuntu-latest
     name: Publish Ruby Gem
-    needs: [specs, openai-backend-parity, openai-backend-parity-official, modernization, notebook-smoke, rubocop]
+    needs: [specs, openai-backend-parity, openai-backend-parity-official, modernization, notebook-smoke, minimal-dependencies, rubocop]
 
     steps:
     - name: publish gem

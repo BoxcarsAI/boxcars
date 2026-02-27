@@ -24,6 +24,7 @@ This section tracks the modernization work that is being added in v0.9 with a co
   - `JSONEngineBoxcar` now keeps native JSON Schema structured-output enabled on OpenAI Responses models (maps `response_format` to Responses `text.format`)
   - OpenAI-compatible provider pinning to `:official_openai` during migration (OpenAI/Groq/Gemini/Ollama/Google/Cerebras/Together)
   - CI parity lanes via `spec:openai_client_parity` and `spec:openai_client_parity_official`
+  - Minimal-dependency compatibility lane via `spec:minimal_dependencies` (isolated bundle with only `boxcars`)
   - Consolidated modernization regression lane via `spec:modernization`
   - Notebook migration setup cells added under `notebooks/` for explicit client wiring during rollout
   - Upgrade guide includes a notebook compatibility matrix for backend migration expectations
