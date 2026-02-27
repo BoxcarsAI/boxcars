@@ -4,7 +4,6 @@
 module Boxcars
   # A Train using the zero-shot react method.
   class ZeroShot < Train
-    attr_reader :boxcars, :observation_prefix
     attr_accessor :wants_next_actions
 
     # @param boxcars [Array<Boxcars::Boxcar>] The boxcars to run.

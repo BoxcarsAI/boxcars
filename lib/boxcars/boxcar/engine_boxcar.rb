@@ -74,14 +74,6 @@ module Boxcars
       prediction
     end
 
-    # check that there is exactly one output key
-    # @raise [Boxcars::ArgumentError] if there is not exactly one output key.
-    def check_output_keys
-      return unless output_keys.length != 1
-
-      raise Boxcars::ArgumentError, "not supported when there is not exactly one output key. Got #{output_keys}."
-    end
-
     # call the boxcar
     # @param inputs [Hash] The inputs to the boxcar.
     # @return [Hash] The outputs from the boxcar.
@@ -113,12 +105,6 @@ module Boxcars
     rescue Boxcars::Error => e
       Boxcars.error e.message, :red
       { output_key => "Error: #{e.message}" }
-    end
-
-    # @param inputs [Hash] The inputs to the boxcar.
-    # @return Hash The input variable for this boxcar.
-    def prediction_input(inputs)
-      { input_key => inputs[input_key] }
     end
 
     # @return Hash The additional variables for this boxcar.

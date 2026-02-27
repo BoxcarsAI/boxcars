@@ -318,12 +318,5 @@ module Boxcars
       text[json_start..json_end]
     end
 
-    def extract_json2(text)
-      # Match the outermost JSON object
-      match = text.match(/\{(?:[^{}]|\{(?:[^{}]|\{[^{}]*\})*\})*\}/)
-      raise StandardError, "No valid JSON object found in the output" unless match
-
-      match[0]
-    end
   end
 end
