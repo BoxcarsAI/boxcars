@@ -3,7 +3,7 @@
 require "spec_helper"
 require "boxcars/engine/openai"
 
-RSpec.describe "Boxcars::Openai with official_openai backend" do
+RSpec.describe "Boxcars::Openai official client path" do
   let(:api_key_param) { "test_openai_api_key" }
   let(:organization_id_param) { "test_org_id" }
   let(:official_client) { double("OfficialOpenAIClient") } # rubocop:disable RSpec/VerifiedDoubles

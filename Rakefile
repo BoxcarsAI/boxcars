@@ -31,10 +31,9 @@ namespace :spec do
   OPENAI_BACKEND_PARITY_SPECS = %w[
     spec/boxcars/configuration_spec.rb
     spec/boxcars/openai_compatible_client_spec.rb
-    spec/boxcars/openai_official_backend_spec.rb
-    spec/boxcars/openai_backend_override_spec.rb
+    spec/boxcars/openai_official_client_path_spec.rb
     spec/boxcars/openai_spec.rb
-    spec/boxcars/openai_compatible_provider_backend_pinning_spec.rb
+    spec/boxcars/openai_compatible_provider_client_wiring_spec.rb
     spec/boxcars/groq_spec.rb
     spec/boxcars/gemini_ai_spec.rb
     spec/boxcars/ollama_spec.rb
@@ -43,9 +42,8 @@ namespace :spec do
   OPENAI_BACKEND_OFFICIAL_ONLY_SPECS = %w[
     spec/boxcars/configuration_spec.rb
     spec/boxcars/openai_compatible_client_spec.rb
-    spec/boxcars/openai_official_backend_spec.rb
-    spec/boxcars/openai_backend_override_spec.rb
-    spec/boxcars/openai_compatible_provider_backend_pinning_spec.rb
+    spec/boxcars/openai_official_client_path_spec.rb
+    spec/boxcars/openai_compatible_provider_client_wiring_spec.rb
   ].freeze
 
   desc "Run notebook smoke specs (structure + migration setup compatibility)"

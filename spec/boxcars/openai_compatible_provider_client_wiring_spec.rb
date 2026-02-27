@@ -8,8 +8,8 @@ require "boxcars/engine/google"
 require "boxcars/engine/cerebras"
 require "boxcars/engine/together"
 
-RSpec.describe "OpenAI-compatible provider backend pinning" do
-  it "pins Groq to official_openai" do
+RSpec.describe "OpenAI-compatible provider client wiring" do
+  it "wires Groq to the expected OpenAI-compatible endpoint" do
     allow(Boxcars.configuration).to receive(:groq_api_key).with(groq_api_key: nil).and_return("groq-key")
 
     expect(Boxcars::OpenAICompatibleClient).to receive(:build).with(hash_including(
@@ -20,7 +20,7 @@ RSpec.describe "OpenAI-compatible provider backend pinning" do
     Boxcars::Groq.groq_client
   end
 
-  it "pins GeminiAi to official_openai" do
+  it "wires GeminiAi to the expected OpenAI-compatible endpoint" do
     allow(Boxcars.configuration).to receive(:gemini_api_key).with(gemini_api_key: nil).and_return("gemini-key")
 
     expect(Boxcars::OpenAICompatibleClient).to receive(:build).with(hash_including(
@@ -31,7 +31,7 @@ RSpec.describe "OpenAI-compatible provider backend pinning" do
     Boxcars::GeminiAi.gemini_client
   end
 
-  it "pins Ollama to official_openai" do
+  it "wires Ollama to the expected OpenAI-compatible endpoint" do
     expect(Boxcars::OpenAICompatibleClient).to receive(:build).with(hash_including(
       access_token: "ollama-dummy-key",
       uri_base: "http://localhost:11434/v1"
@@ -40,7 +40,7 @@ RSpec.describe "OpenAI-compatible provider backend pinning" do
     Boxcars::Ollama.ollama_client
   end
 
-  it "pins Google to official_openai" do
+  it "wires Google to the expected OpenAI-compatible endpoint" do
     allow(Boxcars.configuration).to receive(:gemini_api_key).with(gemini_api_key: nil).and_return("google-key")
 
     expect(Boxcars::OpenAICompatibleClient).to receive(:build).with(hash_including(
@@ -51,7 +51,7 @@ RSpec.describe "OpenAI-compatible provider backend pinning" do
     Boxcars::Google.open_ai_client
   end
 
-  it "pins Cerebras to official_openai" do
+  it "wires Cerebras to the expected OpenAI-compatible endpoint" do
     allow(Boxcars.configuration).to receive(:cerebras_api_key).with(cerebras_api_key: nil).and_return("cerebras-key")
 
     expect(Boxcars::OpenAICompatibleClient).to receive(:build).with(hash_including(
@@ -62,7 +62,7 @@ RSpec.describe "OpenAI-compatible provider backend pinning" do
     Boxcars::Cerebras.open_ai_client
   end
 
-  it "pins Together to official_openai" do
+  it "wires Together to the expected OpenAI-compatible endpoint" do
     allow(Boxcars.configuration).to receive(:together_api_key).with(together_api_key: nil).and_return("together-key")
 
     expect(Boxcars::OpenAICompatibleClient).to receive(:build).with(hash_including(
