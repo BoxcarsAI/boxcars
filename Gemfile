@@ -15,15 +15,15 @@ gem "activesupport", "~> 7.1"
 gem "rest-client", "~> 2.1"
 gem "hnswlib", "~> 0.9.0"
 gem "pg", "~> 1.5"
-gem "pgvector", "~> 0.2.2"
+gem "pgvector", "~> 0.3.2"
 
 group :development, :test do
   gem "debug", "~> 1.9"
   gem "rspec", "~> 3.13"
   gem "rubocop", "~> 1.67"
-  gem "vcr", "~> 6.3.1"
-  gem "webmock", "~> 3.24.0"
-  gem "rubocop-rake", "~> 0.6.0"
+  gem "vcr", "~> 6.4.0"
+  gem "webmock", "~> 3.26.1"
+  gem "rubocop-rake", "~> 0.7.1"
   gem "rubocop-rspec", "~> 3.2"
   gem "posthog-ruby", require: false
   gem "github_changelog_generator", "~> 1.16", require: false

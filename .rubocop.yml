@@ -4,11 +4,9 @@ inherit_mode:
   merge:
     - Exclude
 
-require:
-  - rubocop-rake
-
 plugins:
   - rubocop-rspec
+  - rubocop-rake
 
 
 AllCops:
