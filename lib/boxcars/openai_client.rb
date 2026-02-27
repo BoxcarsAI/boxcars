@@ -254,5 +254,4 @@ module Boxcars
     private_class_method :call_create, :keyword_parameters?, :ensure_openai_dependency!
   end
 
-  OpenAICompatibleClient = OpenAIClient unless const_defined?(:OpenAICompatibleClient, false)
 end
