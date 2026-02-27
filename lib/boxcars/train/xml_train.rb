@@ -19,7 +19,6 @@ module Boxcars
       @thought_prefix ||= "<thought>"
       @observation_prefix ||= "<observation>"
       @final_answer_prefix ||= "<final_answer>"
-      @answer_prefix ||= "<answer>"
       @question_prefix ||= "<question>"
       @output_prefix ||= "<output>"
     end

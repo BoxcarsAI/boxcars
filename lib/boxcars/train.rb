@@ -5,7 +5,7 @@ module Boxcars
   class Train < EngineBoxcar
     attr_reader :boxcars, :return_values, :return_intermediate_steps, :using_xml,
                 :max_iterations, :early_stopping_method, :name_to_boxcar_map,
-                :observation_prefix, :thought_prefix, :final_answer_prefix, :answer_prefix, :question_prefix, :engine_prefix
+                :observation_prefix, :thought_prefix, :final_answer_prefix, :question_prefix, :engine_prefix
 
     # A Train will use a engine to run a series of boxcars.
     # @param boxcars [Array<Boxcars::Boxcar>] The boxcars to run.
@@ -31,7 +31,6 @@ module Boxcars
       @thought_prefix ||= "Thought: "
       @observation_prefix ||= "Observation: "
       @final_answer_prefix ||= "Final Answer: "
-      @answer_prefix ||= "Answer:"
       @question_prefix ||= "Question: "
     end
 
