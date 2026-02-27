@@ -27,12 +27,17 @@ module Boxcars
       super(description:, name:, user_id:)
     end
 
-    def self.groq_client(groq_api_key: nil)
+    def self.provider_client(groq_api_key: nil)
       access_token = Boxcars.configuration.groq_api_key(groq_api_key:)
       Boxcars::OpenAICompatibleClient.build(
         access_token:,
         uri_base: "https://api.groq.com/openai/v1"
       )
+    end
+
+    # Backward compatibility wrapper; prefer `.provider_client`.
+    def self.groq_client(groq_api_key: nil)
+      provider_client(groq_api_key:)
     end
 
     def client(prompt:, inputs: {}, groq_api_key: nil, **kwargs)

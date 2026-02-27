@@ -26,12 +26,17 @@ module Boxcars
       super(description:, name:, user_id:)
     end
 
-    def self.gemini_client(gemini_api_key: nil)
+    def self.provider_client(gemini_api_key: nil)
       access_token = Boxcars.configuration.gemini_api_key(gemini_api_key:)
       Boxcars::OpenAICompatibleClient.build(
         access_token: access_token,
         uri_base: "https://generativelanguage.googleapis.com/v1beta/"
       )
+    end
+
+    # Backward compatibility wrapper; prefer `.provider_client`.
+    def self.gemini_client(gemini_api_key: nil)
+      provider_client(gemini_api_key:)
     end
 
     def client(prompt:, inputs: {}, gemini_api_key: nil, **kwargs)
