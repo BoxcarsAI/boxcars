@@ -22,12 +22,11 @@ module Boxcars
       model_name: "gpt4all-j-v1.3-groovy"
     }.freeze
 
-    def initialize(name: DEFAULT_NAME, description: DEFAULT_DESCRIPTION, prompts: [], batch_size: 2, **kwargs)
+    def initialize(name: DEFAULT_NAME, description: DEFAULT_DESCRIPTION, batch_size: 2, **kwargs)
+      kwargs.delete(:prompts)
       user_id = kwargs.delete(:user_id)
       @gpt4all_params = DEFAULT_PARAMS.merge(kwargs)
-      @prompts = prompts
-      @batch_size = batch_size
-      super(description:, name:, user_id:)
+      super(description:, name:, batch_size:, user_id:)
     end
 
     def client(prompt:, inputs: {}, **kwargs)

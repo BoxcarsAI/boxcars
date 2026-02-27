@@ -15,8 +15,8 @@ module Boxcars
     DEFAULT_DESCRIPTION = "useful for when you need to use DeepSeek AI to process complex content. " \
                           "Supports text, images, and other content types"
 
-    def initialize(name: DEFAULT_NAME, description: DEFAULT_DESCRIPTION, prompts: [], batch_size: 20, **kwargs)
-      super(name:, description:, prompts:, batch_size:, **DEFAULT_PARAMS.merge(kwargs))
+    def initialize(name: DEFAULT_NAME, description: DEFAULT_DESCRIPTION, batch_size: 20, **kwargs)
+      super(name:, description:, batch_size:, **DEFAULT_PARAMS.merge(kwargs))
     end
 
     def client(prompt:, inputs: {}, together_api_key: nil, **kwargs)

@@ -24,12 +24,11 @@ module Boxcars
                           "You should ask targeted questions"
 
     # Initializes a Cohere engine instance.
-    def initialize(name: DEFAULT_NAME, description: DEFAULT_DESCRIPTION, prompts: [], **kwargs)
+    def initialize(name: DEFAULT_NAME, description: DEFAULT_DESCRIPTION, **kwargs)
+      kwargs.delete(:prompts)
       user_id = kwargs.delete(:user_id)
       @llm_params = DEFAULT_PARAMS.merge(kwargs)
-      @prompts = prompts
-      @batch_size = 20
-      super(description:, name:, user_id:)
+      super(description:, name:, batch_size: 20, user_id:)
     end
 
     def chat(params, cohere_api_key)

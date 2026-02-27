@@ -18,12 +18,11 @@ module Boxcars
     DEFAULT_DESCRIPTION = "useful for when you need to use Perplexity AI to answer questions. " \
                           "You should ask targeted questions"
 
-    def initialize(name: DEFAULT_NAME, description: DEFAULT_DESCRIPTION, prompts: [], batch_size: 20, **kwargs)
+    def initialize(name: DEFAULT_NAME, description: DEFAULT_DESCRIPTION, batch_size: 20, **kwargs)
+      kwargs.delete(:prompts)
       user_id = kwargs.delete(:user_id)
       @perplexity_params = DEFAULT_PARAMS.merge(kwargs)
-      @prompts = prompts
-      @batch_size = batch_size
-      super(description:, name:, user_id:)
+      super(description:, name:, batch_size:, user_id:)
     end
 
     # rubocop:disable Metrics/MethodLength

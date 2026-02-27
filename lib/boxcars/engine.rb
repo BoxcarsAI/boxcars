@@ -3,18 +3,19 @@
 module Boxcars
   # @abstract
   class Engine
-    attr_reader :prompts, :batch_size, :user_id
+    attr_reader :batch_size, :user_id
 
     # An Engine is used by Boxcars to generate output from prompts
     # @param name [String] The name of the Engine. Defaults to classname.
     # @param description [String] A description of the Engine.
-    # @param prompts [Array<Prompt>] The prompts to use for the Engine.
     # @param batch_size [Integer] The number of prompts to send to the Engine at a time.
     # @param user_id [String, Integer] The ID of the user using this Engine (optional for observability).
-    def initialize(description: 'Engine', name: nil, prompts: [], batch_size: 20, user_id: nil)
+    def initialize(description: 'Engine', name: nil, batch_size: 20, user_id: nil, **kwargs)
+      kwargs.delete(:prompts)
+      raise ArgumentError, "Unknown keyword(s): #{kwargs.keys.join(', ')}" if kwargs.any?
+
       @name = name || self.class.name
       @description = description
-      @prompts = prompts
       @batch_size = batch_size
       @user_id = user_id
     end

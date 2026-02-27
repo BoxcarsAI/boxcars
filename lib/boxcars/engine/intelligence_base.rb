@@ -19,15 +19,15 @@ module Boxcars
     # @param provider [String] The provider of the Engine implemented by the Intelligence gem.
     # @param name [String] The name of the Engine. Defaults to classname.
     # @param description [String] A description of the Engine.
-    # @param prompts [Array<Prompt>] The prompts to use for the Engine.
     # @param batch_size [Integer] The number of prompts to send to the Engine at a time.
     # @param kwargs [Hash] Additional parameters to pass to the Engine.
-    def initialize(provider:, description:, name:, prompts: [], batch_size: 20, **kwargs)
+    def initialize(provider:, description:, name:, batch_size: 20, **kwargs)
+      kwargs.delete(:prompts)
       user_id = kwargs.delete(:user_id)
       @provider = provider
       # Start with defaults, merge other kwargs, then explicitly set model if provided in initialize
       @all_params = default_model_params.merge(kwargs)
-      super(description:, name:, prompts:, batch_size:, user_id:)
+      super(description:, name:, batch_size:, user_id:)
     end
 
     # can be overridden by provider subclass

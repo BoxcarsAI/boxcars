@@ -121,6 +121,10 @@ RSpec.describe Boxcars::Openai do
     it "uses gpt-4o-mini as the default model" do
       expect(described_class.new.default_params[:model]).to eq("gpt-4o-mini")
     end
+
+    it "accepts legacy prompts kwarg for backward compatibility" do
+      expect { described_class.new(prompts: [prompt]) }.not_to raise_error
+    end
   end
 
   describe 'observability integration with direct OpenAI client usage' do

@@ -30,15 +30,13 @@ module Boxcars
     # --------------------------------------------------------------------------
     def initialize(name: DEFAULT_NAME,
                    description: DEFAULT_DESCRIPTION,
-                   prompts: [],
                    batch_size: 20,
                    **kwargs)
+      kwargs.delete(:prompts)
       user_id          = kwargs.delete(:user_id)
       reject_deprecated_backend_kwargs!(kwargs)
       @open_ai_params  = adjust_for_o_series!(DEFAULT_PARAMS.merge(kwargs))
-      @prompts         = prompts
-      @batch_size      = batch_size
-      super(description:, name:, user_id:)
+      super(description:, name:, batch_size:, user_id:)
     end
 
     # --------------------------------------------------------------------------
