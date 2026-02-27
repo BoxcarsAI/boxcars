@@ -14,7 +14,7 @@ RSpec.describe Boxcars::GeminiAi do
   let(:api_key_param) { "test_gemini_api_key" }
   let(:engine_params) { {} }
 
-  let(:mock_gemini_client) { double("OpenAICompatibleClient") }
+  let(:mock_gemini_client) { double("OpenAIClient") }
   # Using OpenAI-like chat response structure as the provider_client uses OpenAI::Client
   let(:gemini_chat_success_response_openai_style) do
     {

@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Boxcars::OpenAICompatibleClient do
+RSpec.describe Boxcars::OpenAIClient do
   around do |example|
     original_require_native = Boxcars.configuration.openai_official_require_native
     original_builder = described_class.official_client_builder

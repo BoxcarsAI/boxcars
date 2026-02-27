@@ -20,7 +20,7 @@ This section tracks the modernization work that is being added in v0.9 with a co
   - `OPENAI_API_KEY` is accepted as a fallback for `OPENAI_ACCESS_TOKEN` in configuration lookup
   - `openai_official_client_builder` config hook for official client injection
   - `openai_official_require_native` toggle to fail fast unless native official wiring is available
-  - Client compatibility preflight checks in `OpenAICompatibleClient.validate_client_configuration!`
+  - Client compatibility preflight checks in `OpenAIClient.validate_client_configuration!`
   - `JSONEngineBoxcar` now keeps native JSON Schema structured-output enabled on OpenAI Responses models (maps `response_format` to Responses `text.format`)
   - OpenAI-compatible provider pinning to `:official_openai` during migration (OpenAI/Groq/Gemini/Ollama/Google/Cerebras/Together)
   - CI parity lanes via `spec:openai_client_parity` and `spec:openai_client_parity_official`

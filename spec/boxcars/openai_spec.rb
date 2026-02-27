@@ -100,15 +100,15 @@ RSpec.describe Boxcars::Openai do
   end
 
   around do |example|
-    original_builder = Boxcars::OpenAICompatibleClient.official_client_builder
+    original_builder = Boxcars::OpenAIClient.official_client_builder
     example.run
-    Boxcars::OpenAICompatibleClient.official_client_builder = original_builder
+    Boxcars::OpenAIClient.official_client_builder = original_builder
   end
 
   before do
     Boxcars.configuration.observability_backend = dummy_observability_backend
     allow(Boxcars.configuration).to receive_messages(openai_access_token: api_key_param, organization_id: organization_id_param)
-    Boxcars::OpenAICompatibleClient.official_client_builder = lambda do |access_token:, uri_base:, organization_id:, log_errors:|
+    Boxcars::OpenAIClient.official_client_builder = lambda do |access_token:, uri_base:, organization_id:, log_errors:|
       expect(access_token).to eq(api_key_param)
       expect(uri_base).to be_nil
       expect(organization_id).to eq(organization_id_param)
@@ -369,7 +369,7 @@ RSpec.describe Boxcars::Openai do
     end
 
     it "raises when deprecated backend kwargs are passed to #run" do
-      expect(Boxcars::OpenAICompatibleClient).not_to receive(:build)
+      expect(Boxcars::OpenAIClient).not_to receive(:build)
 
       expect do
         engine.run("Say hi", openai_client_backend: :ruby_openai, client_backend: :ruby_openai)

@@ -9,8 +9,8 @@ RSpec.describe "Boxcars::Openai official client path" do
   let(:official_client) { double("OfficialOpenAIClient") } # rubocop:disable RSpec/VerifiedDoubles
 
   around do |example|
-    original_builder = Boxcars::OpenAICompatibleClient.official_client_builder
-    Boxcars::OpenAICompatibleClient.official_client_builder = lambda do |access_token:, uri_base:, organization_id:, log_errors:|
+    original_builder = Boxcars::OpenAIClient.official_client_builder
+    Boxcars::OpenAIClient.official_client_builder = lambda do |access_token:, uri_base:, organization_id:, log_errors:|
       expect(access_token).to eq(api_key_param)
       expect(uri_base).to be_nil
       expect(organization_id).to eq(organization_id_param)
@@ -20,7 +20,7 @@ RSpec.describe "Boxcars::Openai official client path" do
 
     example.run
   ensure
-    Boxcars::OpenAICompatibleClient.official_client_builder = original_builder
+    Boxcars::OpenAIClient.official_client_builder = original_builder
   end
 
   before do

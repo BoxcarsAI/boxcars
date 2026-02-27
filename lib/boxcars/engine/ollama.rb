@@ -29,7 +29,7 @@ module Boxcars
 
     def self.provider_client
       # The OpenAI client expects an API key even for local endpoints.
-      Boxcars::OpenAICompatibleClient.build(
+      Boxcars::OpenAIClient.build(
         access_token: "ollama-dummy-key",
         uri_base: "http://localhost:11434/v1"
       )

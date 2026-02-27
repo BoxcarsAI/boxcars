@@ -13,7 +13,7 @@ RSpec.describe Boxcars::Ollama do
   let(:inputs) { { concept: "quantum physics" } }
   let(:engine_params) { {} } # Default engine params
 
-  let(:mock_ollama_client) { double("OpenAICompatibleClient") }
+  let(:mock_ollama_client) { double("OpenAIClient") }
   let(:ollama_chat_success_response) do
     {
       "id" => "ollama-chat-456", # Example ID

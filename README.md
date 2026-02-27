@@ -395,7 +395,7 @@ bundle exec rake spec:modernization
 To fail fast on client wiring issues at boot time:
 
 ```ruby
-Boxcars::OpenAICompatibleClient.validate_client_configuration!
+Boxcars::OpenAIClient.validate_client_configuration!
 ```
 
 This preflight validates that official client wiring is available before runtime calls.

@@ -29,7 +29,7 @@ module Boxcars
 
     def self.provider_client(groq_api_key: nil)
       access_token = Boxcars.configuration.groq_api_key(groq_api_key:)
-      Boxcars::OpenAICompatibleClient.build(
+      Boxcars::OpenAIClient.build(
         access_token:,
         uri_base: "https://api.groq.com/openai/v1"
       )

@@ -46,9 +46,13 @@ RSpec.describe "Notebook examples" do
   end
 
   VECTOR_NOTEBOOKS.each do |path|
-    it "#{path} uses OpenAICompatibleClient for vector flows" do
+    it "#{path} uses the OpenAI client builder for vector flows" do
       sources = notebook_sources(path)
-      expect(sources.any? { |src| src.include?("Boxcars::OpenAICompatibleClient.build") }).to be(true)
+      expect(
+        sources.any? do |src|
+          src.include?("Boxcars::OpenAIClient.build") || src.include?("Boxcars::OpenAICompatibleClient.build")
+        end
+      ).to be(true)
     end
   end
 end

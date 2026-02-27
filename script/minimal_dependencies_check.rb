@@ -9,7 +9,7 @@ module MinimalDependenciesCheck
     puts "Loaded Boxcars #{Boxcars::VERSION}"
 
     assert_missing_optional("openai") do
-      Boxcars::OpenAICompatibleClient.validate_client_configuration!
+      Boxcars::OpenAIClient.validate_client_configuration!
     end
 
     assert_missing_optional("faraday") do

@@ -22,7 +22,7 @@ This document tracks the migration of Boxcars from `ruby-openai` to the official
 
 ## Current State
 
-- `/Users/francis/src/boxcars/lib/boxcars/openai_compatible_client.rb` is the factory seam.
+- `/Users/francis/src/boxcars/lib/boxcars/openai_client.rb` is the canonical factory seam.
 - OpenAI-compatible engines now route through the shared client factory seam.
 - `:official_openai` exists behind an `official_client_builder` hook.
 - If an official-style `OpenAI::Client` class is detected, the factory can auto-configure that builder.
@@ -34,7 +34,7 @@ Use a shared OpenAI-compatible client factory and method shim (`chat_create`, `r
 
 ### Phase 1 (Now / Prep)
 
-- `OpenAICompatibleClient.build(...)` constructs an official client/decorated shim.
+- `OpenAIClient.build(...)` constructs an official client/decorated shim.
 - `:official_openai` uses an explicit builder, or auto-detects an official-style client class when available.
 - If neither is available, `:official_openai` raises a clear `ConfigurationError`.
 
@@ -98,8 +98,8 @@ Current approach:
 
 - Apps can provide a config-level `openai_official_client_builder` (callable)
 - Optional strict mode: `openai_official_require_native=true` to fail unless native official wiring is available
-- Builder precedence: module-level `OpenAICompatibleClient.official_client_builder` > config builder > auto-detected official client class
-- Optional preflight check: `OpenAICompatibleClient.validate_client_configuration!`
+- Builder precedence: module-level `OpenAIClient.official_client_builder` > config builder > auto-detected official client class
+- Optional preflight check: `OpenAIClient.validate_client_configuration!`
 - Preflight validates official client wiring before runtime calls
 
 ## Rollout Plan (Code)
@@ -123,7 +123,7 @@ bundle exec rake spec:modernization
 
 ### Unit
 
-- `/Users/francis/src/boxcars/spec/boxcars/openai_compatible_client_spec.rb`
+- `/Users/francis/src/boxcars/spec/boxcars/openai_client_spec.rb`
 - Adapter-specific specs (new)
 - `/Users/francis/src/boxcars/spec/boxcars/engine/capabilities_spec.rb`
 - `/Users/francis/src/boxcars/spec/boxcars/tool_calling_train_spec.rb`

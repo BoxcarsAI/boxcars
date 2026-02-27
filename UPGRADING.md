@@ -258,7 +258,7 @@ end
 Optional startup preflight:
 
 ```ruby
-Boxcars::OpenAICompatibleClient.validate_client_configuration!
+Boxcars::OpenAIClient.validate_client_configuration!
 ```
 
 This preflight validates official client wiring, so client-shape mismatches fail early.

@@ -27,7 +27,7 @@ module Boxcars
 
     def self.provider_client(openai_access_token: nil)
       access_token = Boxcars.configuration.gemini_api_key(gemini_api_key: openai_access_token)
-      Boxcars::OpenAICompatibleClient.build(
+      Boxcars::OpenAIClient.build(
         access_token:,
         uri_base: URI_BASE
       )

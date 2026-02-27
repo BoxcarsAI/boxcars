@@ -14,7 +14,7 @@ RSpec.describe Boxcars::Groq do
   let(:api_key_param) { "test_groq_api_key" }
   let(:engine_params) { {} }
 
-  let(:mock_groq_client) { double("OpenAICompatibleClient") }
+  let(:mock_groq_client) { double("OpenAIClient") }
   let(:groq_chat_success_response) do
     {
       "id" => "groq-chat-789",

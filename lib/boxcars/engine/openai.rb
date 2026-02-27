@@ -99,7 +99,7 @@ module Boxcars
     #  Class helpers
     # --------------------------------------------------------------------------
     def self.provider_client(openai_access_token: nil)
-      Boxcars::OpenAICompatibleClient.build(
+      Boxcars::OpenAIClient.build(
         access_token: Boxcars.configuration.openai_access_token(openai_access_token:),
         organization_id: Boxcars.configuration.organization_id,
         log_errors: true
