@@ -75,7 +75,7 @@ module Boxcars
 
     # Apply the boxcar to a list of inputs.
     # @param input_list [Array<Hash>] The list of inputs.
-    # @return [Array<Boxcars::Boxcar>] The list of outputs.
+    # @return [Array<Hash>] One output hash per input hash.
     def apply(input_list:)
       raise NotImplementedError
     end

@@ -16,6 +16,21 @@ RSpec.describe Boxcars::EngineBoxcar do
     end
   end
 
+  let(:echo_engine_class) do
+    Class.new(Boxcars::Engine) do
+      def initialize(**kwargs)
+        super(description: "EchoEngine", **kwargs)
+      end
+
+      def generate(prompts:, **_kwargs)
+        generations = prompts.map do |_prompt, inputs|
+          [Boxcars::Generation.new(text: inputs[:input].to_s)]
+        end
+        Boxcars::EngineResult.new(generations:)
+      end
+    end
+  end
+
   it "does not raise when engine returns nil text and reports error on empty response" do
     prompt = Boxcars::Prompt.new(
       template: "Q: %<input>s",
@@ -33,17 +48,25 @@ RSpec.describe Boxcars::EngineBoxcar do
     end.not_to raise_error
   end
 
-  it "raises when apply is called with multiple inputs" do
+  it "returns one output hash per input for apply" do
     prompt = Boxcars::Prompt.new(
       template: "Q: %<input>s",
       input_variables: [:input],
       output_variables: [:answer]
     )
-    box = described_class.new(prompt: prompt, engine: nil_text_engine_class.new, description: "test")
+    box = described_class.new(prompt: prompt, engine: echo_engine_class.new, description: "test")
+    outputs = box.apply(input_list: [{ input: "one" }, { input: "two" }])
+    expect(outputs).to eq([{ answer: "one" }, { answer: "two" }])
+  end
 
-    expect do
-      box.apply(input_list: [{ input: "one" }, { input: "two" }])
-    end.to raise_error(Boxcars::ArgumentError, /supports exactly one input hash/)
+  it "returns an empty output list for empty apply input" do
+    prompt = Boxcars::Prompt.new(
+      template: "Q: %<input>s",
+      input_variables: [:input],
+      output_variables: [:answer]
+    )
+    box = described_class.new(prompt: prompt, engine: echo_engine_class.new, description: "test")
+    expect(box.apply(input_list: [])).to eq([])
   end
 
   it "raises when generate is called with an empty input list" do

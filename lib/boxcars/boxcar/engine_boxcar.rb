@@ -55,14 +55,12 @@ module Boxcars
     # apply a response from the engine
     # @param input_list [Array<Hash>] A list of hashes of input values to use for the prompt.
     # @param current_conversation [Boxcars::Conversation] Optional ongoing conversation to use for the prompt.
-    # @return [Hash] A hash of the output key and the output value.
+    # @return [Array<Hash>] One output hash per input hash.
     def apply(input_list:, current_conversation: nil)
-      if input_list.length != 1
-        raise Boxcars::ArgumentError, "#{self.class}#apply currently supports exactly one input hash"
-      end
+      return [] if input_list.empty?
 
       response = generate(input_list:, current_conversation:)
-      { output_key => response.generations.dig(0, 0)&.text.to_s }
+      response.generations.map { |generation| { output_key => generation[0]&.text.to_s } }
     end
 
     # predict a response from the engine
@@ -70,7 +68,7 @@ module Boxcars
     # @param kwargs [Hash] A hash of input values to use for the prompt.
     # @return [String] The output value.
     def predict(current_conversation: nil, **kwargs)
-      prediction = apply(current_conversation:, input_list: [kwargs])[output_key]
+      prediction = apply(current_conversation:, input_list: [kwargs]).first[output_key]
       Boxcars.debug(prediction, :white) if Boxcars.configuration.log_generated
       prediction
     end
