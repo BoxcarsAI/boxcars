@@ -20,7 +20,7 @@ module Boxcars
                           "You should ask targeted questions"
 
     def initialize(name: DEFAULT_NAME, description: DEFAULT_DESCRIPTION, batch_size: 20, **kwargs)
-      kwargs.delete(:prompts)
+      raise ArgumentError, "unknown keyword: :prompts" if kwargs.key?(:prompts)
       user_id = kwargs.delete(:user_id)
       @groq_params = DEFAULT_PARAMS.merge(kwargs)
       super(description:, name:, batch_size:, user_id:)

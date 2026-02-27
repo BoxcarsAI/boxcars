@@ -24,7 +24,7 @@ module Boxcars
 
     # Initializes an Anthropic engine instance.
     def initialize(name: DEFAULT_NAME, description: DEFAULT_DESCRIPTION, **kwargs)
-      kwargs.delete(:prompts)
+      raise ArgumentError, "unknown keyword: :prompts" if kwargs.key?(:prompts)
       user_id = kwargs.delete(:user_id)
       @llm_params = DEFAULT_PARAMS.merge(kwargs)
       super(description:, name:, batch_size: 20, user_id:)

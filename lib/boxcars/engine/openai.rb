@@ -32,7 +32,7 @@ module Boxcars
                    description: DEFAULT_DESCRIPTION,
                    batch_size: 20,
                    **kwargs)
-      kwargs.delete(:prompts)
+      raise ArgumentError, "unknown keyword: :prompts" if kwargs.key?(:prompts)
       user_id          = kwargs.delete(:user_id)
       reject_deprecated_backend_kwargs!(kwargs)
       @open_ai_params  = adjust_for_o_series!(DEFAULT_PARAMS.merge(kwargs))

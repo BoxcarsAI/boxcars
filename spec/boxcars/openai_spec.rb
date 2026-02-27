@@ -122,8 +122,8 @@ RSpec.describe Boxcars::Openai do
       expect(described_class.new.default_params[:model]).to eq("gpt-4o-mini")
     end
 
-    it "accepts legacy prompts kwarg for backward compatibility" do
-      expect { described_class.new(prompts: [prompt]) }.not_to raise_error
+    it "rejects legacy prompts kwarg" do
+      expect { described_class.new(prompts: [prompt]) }.to raise_error(Boxcars::ArgumentError, /prompts/)
     end
   end
 

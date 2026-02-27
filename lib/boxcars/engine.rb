@@ -10,10 +10,7 @@ module Boxcars
     # @param description [String] A description of the Engine.
     # @param batch_size [Integer] The number of prompts to send to the Engine at a time.
     # @param user_id [String, Integer] The ID of the user using this Engine (optional for observability).
-    def initialize(description: 'Engine', name: nil, batch_size: 20, user_id: nil, **kwargs)
-      kwargs.delete(:prompts)
-      raise ArgumentError, "Unknown keyword(s): #{kwargs.keys.join(', ')}" if kwargs.any?
-
+    def initialize(description: 'Engine', name: nil, batch_size: 20, user_id: nil)
       @name = name || self.class.name
       @description = description
       @batch_size = batch_size

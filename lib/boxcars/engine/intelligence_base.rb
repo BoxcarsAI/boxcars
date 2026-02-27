@@ -22,7 +22,7 @@ module Boxcars
     # @param batch_size [Integer] The number of prompts to send to the Engine at a time.
     # @param kwargs [Hash] Additional parameters to pass to the Engine.
     def initialize(provider:, description:, name:, batch_size: 20, **kwargs)
-      kwargs.delete(:prompts)
+      raise ArgumentError, "unknown keyword: :prompts" if kwargs.key?(:prompts)
       user_id = kwargs.delete(:user_id)
       @provider = provider
       # Start with defaults, merge other kwargs, then explicitly set model if provided in initialize
