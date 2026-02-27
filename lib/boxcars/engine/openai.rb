@@ -23,7 +23,7 @@ module Boxcars
     DEFAULT_NAME        = "OpenAI engine"
     DEFAULT_DESCRIPTION = "Useful when you need AI to answer questions. Ask targeted questions."
 
-    attr_reader :prompts, :open_ai_params, :batch_size
+    attr_reader :prompts, :open_ai_params, :batch_size, :openai_client_backend
 
     # --------------------------------------------------------------------------
     #  Construction
@@ -34,6 +34,7 @@ module Boxcars
                    batch_size: 20,
                    **kwargs)
       user_id          = kwargs.delete(:user_id)
+      @openai_client_backend = kwargs.delete(:openai_client_backend) || kwargs.delete(:client_backend)
       @open_ai_params  = adjust_for_o_series!(DEFAULT_PARAMS.merge(kwargs))
       @prompts         = prompts
       @batch_size      = batch_size
@@ -47,6 +48,7 @@ module Boxcars
       start_time       = Time.now
       response_data    = { response_obj: nil, parsed_json: nil,
                            success: false, error: nil, status_code: nil }
+      openai_backend   = kwargs.delete(:openai_client_backend) || kwargs.delete(:client_backend) || openai_client_backend
       current_params   = open_ai_params.merge(kwargs)
       is_chat_model    = chat_model?(current_params[:model])
       prompt_object    = prompt.is_a?(Array) ? prompt.first : prompt
@@ -54,7 +56,7 @@ module Boxcars
 
       begin
         raw_response = execute_api_call(
-          self.class.open_ai_client(openai_access_token:),
+          self.class.open_ai_client(openai_access_token:, backend: openai_backend),
           is_chat_model,
           api_request
         )
@@ -90,14 +92,27 @@ module Boxcars
     # Expose the defaults so callers can introspect or dup/merge them
     def default_params = open_ai_params
 
+    def capabilities
+      model_name = open_ai_params[:model].to_s
+      tool_capable = chat_model?(model_name) || gpt5_model?(model_name)
+
+      {
+        tool_calling: tool_capable,
+        structured_output_json_schema: tool_capable,
+        native_json_object: chat_model?(model_name),
+        responses_api: gpt5_model?(model_name)
+      }
+    end
+
     # --------------------------------------------------------------------------
     #  Class helpers
     # --------------------------------------------------------------------------
-    def self.open_ai_client(openai_access_token: nil)
-      ::OpenAI::Client.new(
+    def self.open_ai_client(openai_access_token: nil, backend: nil)
+      Boxcars::OpenAIClientAdapter.build(
         access_token: Boxcars.configuration.openai_access_token(openai_access_token:),
         organization_id: Boxcars.configuration.organization_id,
-        log_errors: true
+        log_errors: true,
+        backend: backend
       )
     end
 
@@ -154,6 +169,7 @@ module Boxcars
       input_str = messages_to_input(messages)
 
       p = params.dup
+      explicit_response_input = p.delete(:response_input)
       p.delete(:messages)
       p.delete(:response_format)
       p.delete(:stop)
@@ -163,7 +179,7 @@ module Boxcars
         p[:reasoning] = { effort: effort }
       end
 
-      formatted = { model: p[:model], input: input_str, _use_responses_api: true }
+      formatted = { model: p[:model], input: explicit_response_input || input_str, _use_responses_api: true }
       p.each { |k, v| formatted[k] = v unless k == :model }
       formatted
     end
@@ -180,18 +196,13 @@ module Boxcars
         call_params = api_request.dup
         call_params.delete(:_use_responses_api)
         Boxcars.debug("Input after formatting:\n#{call_params[:input]}", :cyan) if Boxcars.configuration.log_prompts
-        unless client.respond_to?(:responses)
-          raise StandardError,
-                "OpenAI Responses API not supported by installed ruby-openai gem. Upgrade ruby-openai to >7.0 version."
-        end
-
-        client.responses.create(parameters: call_params)
+        client.responses_create(parameters: call_params)
       elsif chat_mode
         log_messages_debug(api_request[:messages]) if Boxcars.configuration.log_prompts
-        client.chat(parameters: api_request)
+        client.chat_create(parameters: api_request)
       else
         Boxcars.debug("Prompt after formatting:\n#{api_request[:prompt]}", :cyan) if Boxcars.configuration.log_prompts
-        client.completions(parameters: api_request)
+        client.completions_create(parameters: api_request)
       end
     end
 
@@ -243,7 +254,7 @@ module Boxcars
 
       texts = []
 
-      output_items.each do |i| # rubocop:disable Metrics/BlockLength
+      output_items.each do |i|
         next unless i.is_a?(Hash)
 
         case i["type"]

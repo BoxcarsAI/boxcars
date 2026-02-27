@@ -5,6 +5,28 @@ module Boxcars
   class Boxcar
     attr_reader :name, :description, :return_direct, :parameters
 
+    SCHEMA_KEY_ALIASES = {
+      additional_properties: "additionalProperties",
+      one_of: "oneOf",
+      any_of: "anyOf",
+      all_of: "allOf"
+    }.freeze
+
+    TYPE_ALIASES = {
+      int: "integer",
+      integer: "integer",
+      float: "number",
+      double: "number",
+      decimal: "number",
+      number: "number",
+      string: "string",
+      bool: "boolean",
+      boolean: "boolean",
+      array: "array",
+      object: "object",
+      null: "null"
+    }.freeze
+
     # A Boxcar is a container for a single tool to run.
     # @param name [String] The name of the boxcar. Defaults to classname.
     # @param description [String] A description of the boxcar.
@@ -130,7 +152,130 @@ module Boxcars
       SCHEMA
     end
 
+    # A provider-safe function/tool name for LLM tool-calling APIs.
+    def tool_call_name(max_length: 64)
+      sanitized = name.to_s.gsub(/[^\w-]+/, "_").gsub(/\A_+|_+\z/, "")
+      sanitized = "boxcar" if sanitized.empty?
+      sanitized = "boxcar_#{sanitized}" unless sanitized.match?(/\A[a-zA-Z_]/)
+      sanitized[0, max_length]
+    end
+
+    # Convert legacy Boxcar parameter definitions into JSON Schema.
+    def parameters_json_schema
+      props = {}
+      required = []
+
+      parameters.each do |param_name, info|
+        param_key = param_name.to_s
+        props[param_key] = parameter_descriptor_to_json_schema(info)
+        required << param_key if parameter_required?(info)
+      end
+
+      schema = {
+        "type" => "object",
+        "properties" => props,
+        "additionalProperties" => false
+      }
+      schema["required"] = required if required.any?
+      schema
+    end
+
+    # Provider-agnostic normalized tool definition.
+    def tool_definition
+      {
+        name: tool_call_name,
+        display_name: name,
+        description: description,
+        input_schema: parameters_json_schema
+      }
+    end
+
+    # OpenAI-compatible tool spec shape (also usable by many compatible providers).
+    def tool_spec
+      {
+        type: "function",
+        function: {
+          name: tool_call_name,
+          description: description,
+          parameters: parameters_json_schema
+        }
+      }
+    end
+
     private
+
+    def parameter_required?(info)
+      return false unless info.is_a?(Hash)
+
+      info[:required] == true || info["required"] == true
+    end
+
+    def parameter_descriptor_to_json_schema(info)
+      return { "type" => normalize_json_type(info) } if info.is_a?(Symbol) || info.is_a?(String)
+
+      return { "type" => "string" } unless info.is_a?(Hash)
+
+      raw_schema = info[:json_schema] || info["json_schema"] || info[:schema] || info["schema"]
+      return normalize_json_schema_fragment(raw_schema) if raw_schema
+
+      schema = {}
+      schema["type"] = normalize_json_type(info[:type] || info["type"] || "string")
+
+      description = info[:description] || info["description"]
+      schema["description"] = description if description
+
+      info.each do |key, value|
+        next if %i[type description required json_schema schema].include?(key)
+        next if ["type", "description", "required", "json_schema", "schema"].include?(key)
+
+        normalized_key = normalize_schema_key(key)
+        schema[normalized_key] = normalize_json_schema_fragment(value)
+      end
+
+      schema
+    end
+
+    def normalize_json_schema_fragment(value)
+      case value
+      when Hash
+        value.each_with_object({}) do |(key, fragment_value), out|
+          normalized_key = normalize_schema_key(key)
+          out[normalized_key] =
+            case normalized_key
+            when "type"
+              normalize_json_type(fragment_value)
+            when "properties"
+              if fragment_value.is_a?(Hash)
+                fragment_value.each_with_object({}) do |(prop_name, prop_schema), props|
+                  props[prop_name.to_s] = normalize_json_schema_fragment(prop_schema)
+                end
+              else
+                normalize_json_schema_fragment(fragment_value)
+              end
+            when "required"
+              fragment_value.is_a?(Array) ? fragment_value.map(&:to_s) : fragment_value
+            else
+              normalize_json_schema_fragment(fragment_value)
+            end
+        end
+      when Array
+        value.map { |item| normalize_json_schema_fragment(item) }
+      when Symbol
+        value.to_s
+      else
+        value
+      end
+    end
+
+    def normalize_schema_key(key)
+      SCHEMA_KEY_ALIASES.fetch(key.to_sym, key.to_s)
+    end
+
+    def normalize_json_type(type)
+      TYPE_ALIASES.fetch(type.to_sym, type.to_s)
+    rescue NoMethodError
+      type.to_s
+    end
 
     # remember the history of this boxcar. Take the current intermediate steps and
     # create a history that can be used on the next run.

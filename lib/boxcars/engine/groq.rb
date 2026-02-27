@@ -30,7 +30,11 @@ module Boxcars
     # Renamed from open_ai_client to groq_client for clarity
     def self.groq_client(groq_api_key: nil)
       access_token = Boxcars.configuration.groq_api_key(groq_api_key:)
-      ::OpenAI::Client.new(access_token:, uri_base: "https://api.groq.com/openai/v1")
+      Boxcars::OpenAICompatibleClient.build(
+        access_token:,
+        uri_base: "https://api.groq.com/openai/v1",
+        backend: :ruby_openai
+      )
       # Adjusted uri_base to include /v1 as is common for OpenAI-compatible APIs
     end
 

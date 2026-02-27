@@ -12,13 +12,14 @@ RSpec.describe Boxcars::VectorStore::EmbedViaOpenAI do
     }
   end
   let(:texts) { ['example text'] }
-  let(:openai_client) { instance_double(OpenAI::Client) }
+  let(:openai_client) { double('OpenAIClient') } # rubocop:disable RSpec/VerifiedDoubles
 
   before do
+    allow(openai_client).to receive(:respond_to?).with(:embeddings_create).and_return(false)
+    allow(openai_client).to receive(:respond_to?).with(:embeddings).and_return(true)
     allow(openai_client).to receive(:embeddings) do |_params|
       JSON.parse(File.read('spec/fixtures/embeddings/embeddings_response.json'))
     end
-    allow(openai_client).to receive(:is_a?).with(OpenAI::Client).and_return(true)
   end
 
   describe '#call' do
@@ -28,6 +29,19 @@ RSpec.describe Boxcars::VectorStore::EmbedViaOpenAI do
 
     it 'returns an embedding for the given text' do
       expect(embedding.size).to eq(1)
+    end
+
+    it 'supports adapter clients with embeddings_create' do
+      adapter_client = double('OpenAIAdapterClient') # rubocop:disable RSpec/VerifiedDoubles
+      allow(adapter_client).to receive(:respond_to?).with(:embeddings_create).and_return(true)
+      allow(adapter_client).to receive(:embeddings_create) do |_params|
+        JSON.parse(File.read('spec/fixtures/embeddings/embeddings_response.json'))
+      end
+
+      result = described_class.call(texts: texts, client: adapter_client)
+
+      expect(result.size).to eq(1)
+      expect(result.first[:embedding]).to be_an(Array)
     end
   end
 

@@ -32,7 +32,11 @@ module Boxcars
       access_token = Boxcars.configuration.gemini_api_key(gemini_api_key:)
       # NOTE: The OpenAI gem might not support `log_errors: true` for custom uri_base.
       # It's a param for OpenAI::Client specific to their setup.
-      ::OpenAI::Client.new(access_token:, uri_base: "https://generativelanguage.googleapis.com/v1beta/")
+      Boxcars::OpenAICompatibleClient.build(
+        access_token: access_token,
+        uri_base: "https://generativelanguage.googleapis.com/v1beta/",
+        backend: :ruby_openai
+      )
       # Removed /openai from uri_base as it's usually for OpenAI-specific paths on custom domains.
       # The Gemini endpoint might be directly at /v1beta/models/gemini...:generateContent
       # This might need adjustment based on how the OpenAI gem forms the full URL.

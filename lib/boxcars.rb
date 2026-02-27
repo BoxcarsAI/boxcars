@@ -29,13 +29,45 @@ module Boxcars
   class Configuration
     attr_writer :openai_access_token, :serpapi_api_key, :groq_api_key, :cerebras_api_key, :perplexity_api_key
     attr_accessor :organization_id, :logger, :log_prompts, :log_generated, :default_train, :default_engine, :default_model,
-                  :observability_backend
+                  :observability_backend, :strict_deprecated_model_aliases
 
     def initialize
       @organization_id = nil
       @logger = Rails.logger if defined?(Rails)
       @log_prompts = ENV.fetch("LOG_PROMPTS", false)
       @log_generated = ENV.fetch("LOG_GEN", false)
+      @strict_deprecated_model_aliases = false
+      backend = ENV.fetch("OPENAI_CLIENT_BACKEND", "official_openai")
+      self.openai_client_backend = backend.to_s.empty? ? :official_openai : backend
+      self.openai_official_require_native = ENV.fetch("OPENAI_OFFICIAL_REQUIRE_NATIVE", false)
+    end
+
+    def openai_client_backend
+      @openai_client_backend ||= :official_openai
+    end
+
+    def openai_client_backend=(backend)
+      @openai_client_backend = normalize_openai_client_backend(backend)
+    end
+
+    def openai_official_client_builder
+      @openai_official_client_builder
+    end
+
+    def openai_official_client_builder=(builder)
+      unless builder.nil? || builder.respond_to?(:call)
+        raise ConfigurationError, "openai_official_client_builder must be callable (Proc/lambda) or nil"
+      end
+
+      @openai_official_client_builder = builder
+    end
+
+    def openai_official_require_native
+      !!@openai_official_require_native
+    end
+
+    def openai_official_require_native=(value)
+      @openai_official_require_native = normalize_boolean(value, attr_name: :openai_official_require_native)
     end
 
     # @return [String] The OpenAI Access Token either from arg or env.
@@ -84,6 +116,30 @@ module Boxcars
     end
 
     private
+
+    def normalize_openai_client_backend(value)
+      normalized = (value || :official_openai).to_sym
+      supported = if defined?(Boxcars::OpenAICompatibleClient::SUPPORTED_BACKENDS)
+                    Boxcars::OpenAICompatibleClient::SUPPORTED_BACKENDS
+                  else
+                    %i[ruby_openai official_openai]
+                  end
+      return normalized if supported.include?(normalized)
+
+      raise ConfigurationError,
+            "Unsupported openai_client_backend: #{value.inspect}. Supported backends: #{supported.join(', ')}"
+    end
+
+    def normalize_boolean(value, attr_name:)
+      return value if value == true || value == false
+
+      normalized = value.to_s.strip.downcase
+      return true if %w[1 true yes y on].include?(normalized)
+      return false if normalized.empty? || %w[0 false no n off].include?(normalized)
+
+      raise ConfigurationError,
+            "#{attr_name} must be a boolean-like value (true/false, 1/0, yes/no)"
+    end
 
     def check_key(key, val)
       return val unless val.nil? || val.empty?
@@ -229,7 +285,10 @@ require_relative "boxcars/conversation"
 require_relative "boxcars/generation"
 require_relative "boxcars/ruby_repl"
 require_relative "boxcars/result"
+require_relative "boxcars/openai_compatible_client"
+require_relative "boxcars/openai_client_adapter"
 require_relative "boxcars/engine"
 require_relative "boxcars/boxcar"
+require_relative "boxcars/mcp"
 require_relative "boxcars/train"
 require_relative "boxcars/engines"

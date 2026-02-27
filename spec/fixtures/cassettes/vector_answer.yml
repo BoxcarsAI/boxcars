@@ -11,7 +11,7 @@ http_interactions:
         info.\n- **Workplace**: \nwe''ve built a pretty nice office to make sure you
         like being at Blendle HQ.\n```\n\nUsing the above, just answer the question
         as if you were answering directly."},{"role":"user","content":"Will I get
-        a laptop?"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["```output"]}'
+        a laptop?"}],"model":"gpt-4o-mini","temperature":0.1,"max_tokens":4096,"stop":["```output"]}'
     headers:
       Content-Type:
       - application/json
@@ -29,55 +29,93 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Mon, 22 May 2023 23:04:08 GMT
+      - Fri, 27 Feb 2026 02:21:25 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
       - chunked
       Connection:
       - keep-alive
-      Access-Control-Allow-Origin:
-      - "*"
-      Cache-Control:
-      - no-cache, must-revalidate
-      Openai-Model:
-      - gpt-3.5-turbo-0301
+      Access-Control-Expose-Headers:
+      - X-Request-ID
       Openai-Organization:
-      - user-ri9zw9ahumb1bo9vs73mudbi
+      - boxcars-ai
       Openai-Processing-Ms:
-      - '2699'
+      - '547'
+      Openai-Project:
+      - proj_dmFiz6ZSMR5ZHgQIY3tw6FNe
       Openai-Version:
       - '2020-10-01'
-      Strict-Transport-Security:
-      - max-age=15724800; includeSubDomains
-      X-Ratelimit-Limit-Requests:
-      - '3500'
-      X-Ratelimit-Limit-Tokens:
-      - '90000'
-      X-Ratelimit-Remaining-Requests:
-      - '3499'
-      X-Ratelimit-Remaining-Tokens:
-      - '89385'
-      X-Ratelimit-Reset-Requests:
-      - 17ms
-      X-Ratelimit-Reset-Tokens:
-      - 410ms
-      X-Request-Id:
-      - 1495f77b01e9bc792721fbce55e5e7c8
-      Cf-Cache-Status:
-      - DYNAMIC
       Server:
       - cloudflare
+      X-Ratelimit-Limit-Requests:
+      - '10000'
+      X-Ratelimit-Limit-Tokens:
+      - '10000000'
+      X-Ratelimit-Remaining-Requests:
+      - '9999'
+      X-Ratelimit-Remaining-Tokens:
+      - '9999896'
+      X-Ratelimit-Reset-Requests:
+      - 6ms
+      X-Ratelimit-Reset-Tokens:
+      - 0s
+      X-Request-Id:
+      - req_dc963fc57f3640aea3f398198f22880f
+      X-Openai-Proxy-Wasm:
+      - v0.1
+      Cf-Cache-Status:
+      - DYNAMIC
+      Set-Cookie:
+      - __cf_bm=qpaNPRDhl5R2tHC3_6nYjL1WjginG2j90XLre7Daohg-1772158884.9908917-1.0.1.1-fLsvS3pyQ.GeWAT67twbbRok1tlPMxrVB6jPO.M2sbyviCiP_qfkTQ5LAfBuXrdscWh_jap6DG2S4mkxqmttIw9vVI6vrk2mnFYgOrwBxAKt6SKHq5g8Cefi19sVYyAt;
+        HttpOnly; Secure; Path=/; Domain=api.openai.com; Expires=Fri, 27 Feb 2026
+        02:51:25 GMT
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
       Cf-Ray:
-      - 7cb8b23d18c51fd3-IAD
+      - 9d4435673be58014-DEN
       Alt-Svc:
-      - h3=":443"; ma=86400, h3-29=":443"; ma=86400
+      - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
-      string: '{"id":"chatcmpl-7J8rO4QJ7Fjq7rRJhuipEsLRfBOSh","object":"chat.completion","created":1684796646,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":103,"completion_tokens":27,"total_tokens":130},"choices":[{"message":{"role":"assistant","content":"Yes,
-        for work, you will be provided with a laptop that suits your job. Further
-        information will be given to you by HR."},"finish_reason":"stop","index":0}]}
-
-        '
-  recorded_at: Mon, 22 May 2023 23:04:08 GMT
-recorded_with: VCR 6.1.0
+      string: |
+        {
+          "id": "chatcmpl-DDhllV8z3E9LHZ1HyZCWLYtPZgOI0",
+          "object": "chat.completion",
+          "created": 1772158885,
+          "model": "gpt-4o-mini-2024-07-18",
+          "choices": [
+            {
+              "index": 0,
+              "message": {
+                "role": "assistant",
+                "content": "Yes, you will be provided with a laptop that suits your job.",
+                "refusal": null,
+                "annotations": []
+              },
+              "logprobs": null,
+              "finish_reason": "stop"
+            }
+          ],
+          "usage": {
+            "prompt_tokens": 102,
+            "completion_tokens": 14,
+            "total_tokens": 116,
+            "prompt_tokens_details": {
+              "cached_tokens": 0,
+              "audio_tokens": 0
+            },
+            "completion_tokens_details": {
+              "reasoning_tokens": 0,
+              "audio_tokens": 0,
+              "accepted_prediction_tokens": 0,
+              "rejected_prediction_tokens": 0
+            }
+          },
+          "service_tier": "default",
+          "system_fingerprint": "fp_b4f1283ee2"
+        }
+  recorded_at: Fri, 27 Feb 2026 02:21:25 GMT
+recorded_with: VCR 6.3.1

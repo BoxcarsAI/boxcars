@@ -30,11 +30,17 @@ module Boxcars
 
       def validate_params(texts, client)
         raise_error 'texts must be an array of strings' unless texts.is_a?(Array) && texts.all? { |text| text.is_a?(String) }
-        raise_error 'openai_connection must be an OpenAI::Client' unless client.is_a?(OpenAI::Client)
+        return if client.respond_to?(:embeddings_create) || client.respond_to?(:embeddings)
+
+        raise_error 'openai_connection must support embeddings requests'
       end
 
       def embedding_with_retry(request)
-        response = @client.embeddings(parameters: request)
+        response = if @client.respond_to?(:embeddings_create)
+                     @client.embeddings_create(parameters: request)
+                   else
+                     @client.embeddings(parameters: request)
+                   end
         response['data'][0]['embedding']
       end
 

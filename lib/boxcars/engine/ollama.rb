@@ -32,7 +32,11 @@ module Boxcars
     def self.ollama_client
       # The OpenAI gem requires an access_token, even if the local service doesn't.
       # Provide a dummy one if not needed, or allow configuration if Ollama setup requires one.
-      ::OpenAI::Client.new(access_token: "ollama-dummy-key", uri_base: "http://localhost:11434/v1")
+      Boxcars::OpenAICompatibleClient.build(
+        access_token: "ollama-dummy-key",
+        uri_base: "http://localhost:11434/v1",
+        backend: :ruby_openai
+      )
       # Added /v1 to uri_base, as OpenAI-compatible endpoints often version this way.
       # Verify Ollama's actual OpenAI-compatible endpoint path.
     end

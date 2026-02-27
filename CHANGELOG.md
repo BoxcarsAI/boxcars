@@ -1,5 +1,84 @@
 # Changelog
 
+## [Unreleased]
+
+### Upgrade Guide (v0.9 -> v1.0 planned)
+
+This section tracks the modernization work that is being added in v0.9 with a compatibility window before v1.0 removals.
+
+#### New Runtime / Tooling Foundations (v0.9)
+
+- `Boxcars::ToolCallingTrain` added for native LLM tool-calling (chat-completions and OpenAI Responses API style loops).
+- Boxcars now expose normalized tool specs / JSON Schema for tool-calling APIs.
+- `JSONEngineBoxcar` supports JSON Schema validation and can use native structured-output response formats on capable engines.
+- MCP is a first-class integration path:
+  - `Boxcars::MCP.stdio(...)` to connect to an MCP server over `stdio`
+  - `Boxcars::MCP.boxcars_from_client(...)` to wrap MCP tools as Boxcars
+  - `Boxcars::MCP.tool_calling_train(...)` to combine local Boxcars + MCP tools into a `ToolCallingTrain`
+- OpenAI backend migration controls added:
+  - Default `openai_client_backend` switched to `:official_openai` (with `:ruby_openai` opt-out)
+  - `openai_client_backend` config default (with `OPENAI_CLIENT_BACKEND` env support)
+  - `openai_official_client_builder` config hook for official client injection
+  - `Boxcars::Openai` per-instance/per-call backend override (`openai_client_backend:`)
+  - One-time warning when `:official_openai` falls back to ruby-openai compatibility bridge
+  - `openai_official_require_native` toggle to fail fast instead of bridge fallback
+  - Backend/client compatibility preflight checks in `OpenAICompatibleClient.validate_backend_configuration!`
+  - OpenAI-compatible provider pinning to `:ruby_openai` during migration (Groq/Gemini/Ollama)
+  - CI parity lanes via `spec:openai_backend_parity` and `spec:openai_backend_parity_official`
+  - Consolidated modernization regression lane via `spec:modernization`
+  - Notebook migration setup cells added under `notebooks/` for explicit backend pinning during rollout
+  - Upgrade guide includes a notebook compatibility matrix for backend migration expectations
+  - Notebook CI lanes added:
+    - PR-safe `notebook-smoke` job via `spec:notebooks_smoke`
+    - Weekly/manual live compatibility job via `spec:notebooks_live` (requires `OPENAI_ACCESS_TOKEN`)
+    - Optional native-only enforcement for live notebook checks via workflow variables (`OPENAI_OFFICIAL_REQUIRE_NATIVE` or `NOTEBOOKS_LIVE_REQUIRE_NATIVE`)
+  - Targeted VCR refresh tasks added for OpenAI/embeddings cassette maintenance:
+    - `spec:vcr_openai_smoke`
+    - `spec:vcr_openai_refresh`
+
+#### Model Alias Deprecations (warning now, planned removal in v1.0)
+
+Deprecated aliases currently emit a one-time warning (per process) and still work in v0.9.
+
+Recommended replacements:
+
+- `anthropic` -> `sonnet`
+- `groq` -> `llama-3.3-70b-versatile`
+- `deepseek` -> `deepseek-r1-distill-llama-70b`
+- `mistral` -> `mistral-saba-24b`
+- `online` -> `sonar`
+- `huge` / `online_huge` / `sonar_huge` / `sonar-huge` / `sonar_pro` -> `sonar-pro`
+- `flash` / `gemini-flash` -> `gemini-2.5-flash`
+- `gemini-pro` -> `gemini-2.5-pro`
+- `cerebras` -> `gpt-oss-120b`
+- `qwen` -> `Qwen/Qwen2.5-VL-72B-Instruct`
+
+Kept curated aliases (not deprecated):
+
+- `sonar`
+- `sonar-pro`
+- `sonnet`
+- `opus`
+
+#### Strict Migration Mode (recommended for CI)
+
+To fail fast on deprecated aliases during migration testing:
+
+```ruby
+Boxcars.configure do |config|
+  config.strict_deprecated_model_aliases = true
+end
+
+# or:
+Boxcars::Engines.strict_deprecated_aliases = true
+```
+
+#### Planned v1.0 Direction
+
+- Remove deprecated aliases listed above.
+- Prefer explicit model names and a small curated alias set (`sonar`, `sonar-pro`, `sonnet`, `opus`).
+- Continue OpenAI SDK migration behind the internal OpenAI-compatible client factory seam to reduce provider regressions.
+
 ## [v0.8.5](https://github.com/BoxcarsAI/boxcars/tree/v0.8.5) (2025-07-01)
 
 [Full Changelog](https://github.com/BoxcarsAI/boxcars/compare/v0.8.4...v0.8.5)

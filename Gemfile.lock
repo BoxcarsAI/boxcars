@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    boxcars (0.8.10)
+    boxcars (0.9.0)
       faraday-retry (~> 2.0)
       google_search_results (~> 2.2)
       gpt4all (~> 0.0.5)

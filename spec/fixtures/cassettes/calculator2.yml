@@ -11,14 +11,15 @@ http_interactions:
         that prints the results to the console. If anyone gives you a hard math problem,
         just use the following format and we’ll take care of the rest:\n${{Question
         with hard calculation.}}\nreply only with the following format:\n```ruby\n${{only
-        Ruby code that prints the answer}}\n```\n```output\n${{Output of your code}}\n```\n\nOtherwise,
+        Ruby code that prints the answer. If you use puts, make sure to wrap the expression
+        in paranthesis}}\n```\n```output\n${{Output of your code}}\n```\n\nOtherwise,
         you should use this simpler format:\n${{Question without hard calculation}}\nAnswer:
         ${{Answer}}\n\nDo not give an explanation of the answer and make sure your
         answer starts with either ''Answer:'' or ''```ruby''."},{"role":"system","content":"here
         is a hard example:\nthe user asks: What is 37593 * 67?\nyour answer: ```ruby\nputs(37593
         * 67)\n```\n```output\n2518731\n```\nAnswer: 2518731"},{"role":"system","content":"basic
         example:\nuser asks: What is 2518731 + 0?\nyou answer: Answer: 2518731"},{"role":"system","content":"Begin."},{"role":"user","content":"what
-        is 1 plus 2?"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["```output"]}'
+        is 1 plus 2?"}],"model":"gpt-4o-mini","temperature":0.1,"max_tokens":4096,"stop":["```output"]}'
     headers:
       Content-Type:
       - application/json
@@ -36,72 +37,93 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Mon, 10 Jul 2023 00:00:05 GMT
+      - Fri, 27 Feb 2026 02:21:24 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
       - chunked
       Connection:
       - keep-alive
-      Access-Control-Allow-Origin:
-      - "*"
-      Cache-Control:
-      - no-cache, must-revalidate
-      Openai-Model:
-      - gpt-3.5-turbo-0613
+      Access-Control-Expose-Headers:
+      - X-Request-ID
       Openai-Organization:
-      - user-ri9zw9ahumb1bo9vs73mudbi
+      - boxcars-ai
       Openai-Processing-Ms:
-      - '136'
+      - '225'
+      Openai-Project:
+      - proj_dmFiz6ZSMR5ZHgQIY3tw6FNe
       Openai-Version:
       - '2020-10-01'
-      Strict-Transport-Security:
-      - max-age=15724800; includeSubDomains
-      X-Ratelimit-Limit-Requests:
-      - '3500'
-      X-Ratelimit-Limit-Tokens:
-      - '90000'
-      X-Ratelimit-Remaining-Requests:
-      - '3499'
-      X-Ratelimit-Remaining-Tokens:
-      - '89244'
-      X-Ratelimit-Reset-Requests:
-      - 17ms
-      X-Ratelimit-Reset-Tokens:
-      - 503ms
-      X-Request-Id:
-      - 59976a825e3a6f9eecba29890280e7a5
-      Cf-Cache-Status:
-      - DYNAMIC
       Server:
       - cloudflare
+      X-Ratelimit-Limit-Requests:
+      - '10000'
+      X-Ratelimit-Limit-Tokens:
+      - '10000000'
+      X-Ratelimit-Remaining-Requests:
+      - '9999'
+      X-Ratelimit-Remaining-Tokens:
+      - '9999740'
+      X-Ratelimit-Reset-Requests:
+      - 6ms
+      X-Ratelimit-Reset-Tokens:
+      - 1ms
+      X-Request-Id:
+      - req_5e10d844d584438b9a0bd9deff9f9e4e
+      X-Openai-Proxy-Wasm:
+      - v0.1
+      Cf-Cache-Status:
+      - DYNAMIC
+      Set-Cookie:
+      - __cf_bm=O_Q6.Rg8y6Ca4CK9A5LoMGG81Od2Qk7CjTd_TRUU_K0-1772158883.9606082-1.0.1.1-BTjzKhnWhaIrHJu6_dPjylF6t58Ay2CBr7Yx7GNABd88AnkOSOLVC9S_clHuNFkSbp.UiK64Ba3GftDif7U7OnHCPdyF.IkyCw6FjSbmrq_vQsFiWkEAw_9OS0BaAKZF;
+        HttpOnly; Secure; Path=/; Domain=api.openai.com; Expires=Fri, 27 Feb 2026
+        02:51:24 GMT
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
       Cf-Ray:
-      - 7e4486422965a71b-PHX
+      - 9d443560cc11e061-DEN
       Alt-Svc:
       - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
       string: |
         {
-          "id": "chatcmpl-7aYbtAFsNlXgSSwKcbOF1n7ZsqFfG",
+          "id": "chatcmpl-DDhlkN1YOWJA2CaIsPssoJkFdI8Ys",
           "object": "chat.completion",
-          "created": 1688947205,
-          "model": "gpt-3.5-turbo-0613",
+          "created": 1772158884,
+          "model": "gpt-4o-mini-2024-07-18",
           "choices": [
             {
               "index": 0,
               "message": {
                 "role": "assistant",
-                "content": "Answer: 3"
+                "content": "Answer: 3",
+                "refusal": null,
+                "annotations": []
               },
+              "logprobs": null,
               "finish_reason": "stop"
             }
           ],
           "usage": {
-            "prompt_tokens": 262,
+            "prompt_tokens": 278,
             "completion_tokens": 4,
-            "total_tokens": 266
-          }
+            "total_tokens": 282,
+            "prompt_tokens_details": {
+              "cached_tokens": 0,
+              "audio_tokens": 0
+            },
+            "completion_tokens_details": {
+              "reasoning_tokens": 0,
+              "audio_tokens": 0,
+              "accepted_prediction_tokens": 0,
+              "rejected_prediction_tokens": 0
+            }
+          },
+          "service_tier": "default",
+          "system_fingerprint": "fp_b4f1283ee2"
         }
-  recorded_at: Mon, 10 Jul 2023 00:00:05 GMT
-recorded_with: VCR 6.1.0
+  recorded_at: Fri, 27 Feb 2026 02:21:24 GMT
+recorded_with: VCR 6.3.1

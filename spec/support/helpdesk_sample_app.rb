@@ -53,7 +53,7 @@ end
 class Ticket < ApplicationRecord
   belongs_to :user
   has_many :comments
-  enum status: { open: 0, closed: 1 }
+  enum :status, { open: 0, closed: 1 }
 end
 
 # add some data

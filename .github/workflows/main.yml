@@ -7,6 +7,11 @@ on:
 
   pull_request:
 
+  schedule:
+    - cron: "17 9 * * 1"
+
+  workflow_dispatch:
+
 jobs:
   specs:
     runs-on: ubuntu-latest
@@ -40,6 +45,77 @@ jobs:
         DATABASE_URL: postgres://postgres:@localhost:5432/boxcars_test
       run: bundle exec rake spec
 
+  openai-backend-parity:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.4'
+        bundler-cache: true
+    - name: Run OpenAI migration parity specs
+      run: bundle exec rake spec:openai_backend_parity
+
+  openai-backend-parity-official:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.4'
+        bundler-cache: true
+    - name: Run OpenAI migration parity specs (forced official backend)
+      run: bundle exec rake spec:openai_backend_parity_official
+
+  modernization:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.4'
+        bundler-cache: true
+    - name: Run modernization regression suite
+      run: bundle exec rake spec:modernization
+
+  notebook-smoke:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.4'
+        bundler-cache: true
+    - name: Run notebook smoke specs
+      run: bundle exec rake spec:notebooks_smoke
+
+  notebook-live-check:
+    runs-on: ubuntu-latest
+    if: ${{ (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && secrets.OPENAI_ACCESS_TOKEN != '' }}
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.4'
+        bundler-cache: true
+    - name: Run live notebook compatibility checks
+      env:
+        OPENAI_ACCESS_TOKEN: ${{ secrets.OPENAI_ACCESS_TOKEN }}
+        OPENAI_CLIENT_BACKEND: official_openai
+        OPENAI_OFFICIAL_REQUIRE_NATIVE: ${{ vars.OPENAI_OFFICIAL_REQUIRE_NATIVE }}
+        NOTEBOOKS_LIVE_REQUIRE_NATIVE: ${{ vars.NOTEBOOKS_LIVE_REQUIRE_NATIVE }}
+      run: bundle exec rake spec:notebooks_live
+
   rubocop:
     runs-on: ubuntu-latest
 
@@ -56,7 +132,7 @@ jobs:
   publish-rubygem:
     runs-on: ubuntu-latest
     name: Publish Ruby Gem
-    needs: [specs, rubocop]
+    needs: [specs, openai-backend-parity, openai-backend-parity-official, modernization, notebook-smoke, rubocop]
 
     steps:
     - name: publish gem
@@ -78,4 +154,3 @@ jobs:
         # if yours isn't named RUBYGEMS_AUTH_TOKEN
         GEM_HOST_API_KEY: "${{secrets.RUBYGEMS_AUTH_TOKEN}}"
       if: ${{ steps.release.outputs.release_created }}
-

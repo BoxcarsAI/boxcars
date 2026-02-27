@@ -10,17 +10,39 @@
   <a href="https://github.com/BoxcarsAI/boxcars/blob/main/LICENSE.txt"><img src="https://img.shields.io/badge/license-MIT-informational" alt="License"></a>
 </p>
 
-Boxcars is a gem that enables you to create new systems with AI composability, using various concepts such as LLMs (OpenAI, Anthropic, Gpt4all), Search, SQL (with both Sequel and Active Record support), Rails Active Record, Vector Search and more. This can even be extended with your concepts as well (including your concepts).
+Boxcars is a Ruby framework for building LLM-powered systems with less cognitive load, especially for Ruby and Rails teams.
+If you want one gem that can search, calculate, query data, call external APIs, run retrieval, and coordinate all of that in one runtime, Boxcars is built for that workflow.
 
-This gem was inspired by the popular Python library Langchain. However, we wanted to give it a Ruby spin and make it more user-friendly for beginners to get started.
+Inspired by LangChain, Boxcars brings a Ruby-first design that favors practical composition over framework lock-in.
+
+## Why Boxcars
+
+- Tool composability by default: package domain logic as `Boxcar` objects and reuse them across assistants, jobs, and services.
+- Lower cognitive load for Ruby/Rails developers: one consistent programming model (`Boxcar`, `Train`, `Engine`) for controllers, jobs, and service objects instead of one-off wrappers per provider.
+- Multiple orchestration modes: keep legacy text ReAct (`Boxcars::ZeroShot`) or use native provider tool calling (`Boxcars::ToolCallingTrain`).
+- Structured output paths: enforce JSON contracts with JSON Schema through `JSONEngineBoxcar`.
+- MCP-ready integration: connect MCP servers over stdio and merge MCP tools with local Boxcars in one tool-calling runtime.
+- Provider flexibility without a rewrite: use OpenAI, Anthropic, Groq, Gemini, Ollama, Perplexity, and more through shared engine patterns.
+- Data-aware workflows: combine SQL, ActiveRecord, vector search, and API-backed tools in one train for end-to-end tasks.
+- Incremental migration strategy: modernize from older aliases/runtime paths without breaking existing apps in one big cutover.
+
+## What You Can Build Quickly
+
+- Internal copilots that can search docs, inspect SQL/ActiveRecord data, and answer with auditable tool traces.
+- Operations bots that call Swagger-defined APIs and business tools to complete multi-step actions.
+- Retrieval-first assistants that combine embeddings/vector search with deterministic follow-up tool calls.
+- Local+remote agent workflows that blend your own Ruby tools with MCP-discovered tools.
+
+Upgrading guidance for the ongoing modernization work (native tool-calling, MCP, JSON Schema support, alias deprecations, and OpenAI backend migration) is in [`UPGRADING.md`](./UPGRADING.md).
+Notebook migration expectations for the OpenAI backend rollout are documented in the "Notebook compatibility matrix" section of [`UPGRADING.md`](./UPGRADING.md#notebook-compatibility-matrix-v09).
 
 ## Concepts
 All of these concepts are in a module named Boxcars:
 
 - Boxcar - an encapsulation that performs something of interest (such as search, math, SQL, an Active Record Query, or an API call to a service). A Boxcar can use an Engine (described below) to do its work, and if not specified but needed, the default Engine is used `Boxcars.engine`.
-- Train - Given a list of Boxcars and optionally an Engine, a Train breaks down a problem into pieces for individual Boxcars to solve. The individual results are then combined until a final answer is found. ZeroShot is the only current implementation of Train (but we are adding more soon), and you can either construct it directly or use `Boxcars::train` when you want to build a Train.
+- Train - Given a list of Boxcars and optionally an Engine, a Train breaks down a problem into pieces for individual Boxcars to solve. The individual results are then combined until a final answer is found. `Boxcars::ZeroShot` is the legacy text ReAct implementation, and `Boxcars::ToolCallingTrain` is the newer native tool-calling runtime.
 - Prompt - used by an Engine to generate text results. Our Boxcars have built-in prompts, but you have the flexibility to change or augment them if you so desire.
-- Engine - an entity that generates text from a Prompt. OpenAI's LLM text generator is the default Engine if no other is specified, and you can override the default engine if so desired (`Boxcar.configuration.default_engine`). We have an Engine for Anthropic's Claude API named `Boxcars::Anthropic`, and another Engine for GPT named `Boxcars::Gpt4allEng`.
+- Engine - an entity that generates text from a Prompt. OpenAI's LLM text generator is the default Engine if no other is specified, and you can override the default engine if so desired (`Boxcars.configuration.default_engine`). We have an Engine for Anthropic's Claude API named `Boxcars::Anthropic`, and another Engine for GPT named `Boxcars::Gpt4allEng`.
 - VectorStore - a place to store and query vectors.
 
 ## Security
@@ -46,9 +68,9 @@ Or install it yourself as:
 
 ## Usage
 
-We will be adding more examples soon, but here are a couple to get you started. First, you'll need to set up your environment variables for services like OpenAI, Anthropic, and Google SERP (OPENAI_ACCESS_TOKEN, ANTHROPIC_API_KEY,SERPAPI_API_KEY) etc. If you prefer not to set these variables in your environment, you can pass them directly into the API.
+First, set environment variables for providers you plan to use (for example `OPENAI_ACCESS_TOKEN`, `ANTHROPIC_API_KEY`, `SERPAPI_API_KEY`). If you prefer, you can pass keys directly in code.
 
-In the examples below, we added one Ruby gem to load the environment at the first line, but depending on what you want, you might not need this.
+In the examples below, we use one extra gem to load environment variables; depending on your setup, you may not need it.
 ```ruby
 require "dotenv/load"
 require "boxcars"
@@ -61,6 +83,44 @@ irb -r dotenv/load -r boxcars
 # or if you prefer local repository
 irb -r dotenv/load -r ./lib/boxcars
 ```
+
+### Rails Quickstart (Low Cognitive Load Path)
+
+Use a Rails initializer for defaults, then call Boxcars from normal service objects.
+
+```ruby
+# config/initializers/boxcars.rb
+Boxcars.configure do |config|
+  config.default_model = "gpt-4o-mini"
+  config.log_prompts = Rails.env.development?
+end
+```
+
+```ruby
+# app/services/ai/summarize_ticket.rb
+class Ai::SummarizeTicket
+  SCHEMA = {
+    type: "object",
+    properties: {
+      summary: { type: "string" },
+      priority: { type: "string", enum: ["low", "medium", "high"] }
+    },
+    required: ["summary", "priority"],
+    additionalProperties: false
+  }.freeze
+
+  def call(text)
+    boxcar = Boxcars::JSONEngineBoxcar.new(
+      engine: Boxcars::Engines.engine(model: "gpt-4o-mini"),
+      json_schema: SCHEMA
+    )
+
+    boxcar.run("Summarize this support ticket and set priority:\n\n#{text}")
+  end
+end
+```
+
+This keeps LLM integration close to standard Rails patterns while avoiding custom prompt-parsing glue code.
 
 ### Direct Boxcar Use
 
@@ -82,22 +142,24 @@ Answer: 4.407651178009159
 4.407651178009159
 ```
 
-Note that since Openai is currently the most used Engine, if you do not pass in an engine, it will default as expected. So, this is the equivalent shorter version of the above script:
+Note that since OpenAI is currently the most used engine, if you do not pass an engine, Boxcars will use its default engine. This is the equivalent shorter version:
 ```ruby
 # run the calculator
 calc = Boxcars::Calculator.new # just use the default Engine
 puts calc.run "what is pi to the fourth power divided by 22.1?"
 ```
-You can change the default_engine with `Boxcars::configuration.default_engine = NewDefaultEngine`
-### Boxcars currently implemented
+You can change the default engine with `Boxcars.configuration.default_engine = NewDefaultEngine`
+### Built-in Boxcars and Capabilities
 
-Here is what we have so far, but please put up a PR with your new ideas.
-- GoogleSearch: uses the SERP API to do searches
-- WikipediaSearch: uses the Wikipedia API to do searches
-- Calculator: uses an Engine to generate ruby code to do math
-- SQL: given an ActiveRecord connection, it will generate and run sql statements from a prompt.
-- ActiveRecord: given an ActiveRecord connection, it will generate and run ActiveRecord statements from a prompt.
-- Swagger: give a Swagger Open API file (YAML or JSON), answer questions about or run against the referenced service. See [here](https://github.com/BoxcarsAI/boxcars/blob/main/notebooks/swagger_examples.ipynb) for examples.
+Boxcars ships with high-leverage tools you can compose immediately, and you can add your own domain-specific Boxcars as needed.
+
+- `GoogleSearch`: uses SERP API for live web lookup.
+- `WikipediaSearch`: uses Wikipedia API for fast factual retrieval.
+- `Calculator`: uses an engine to produce/execute Ruby math logic.
+- `SQL`: generates and executes SQL from prompts using your ActiveRecord connection.
+- `ActiveRecord`: generates and executes ActiveRecord code from prompts.
+- `Swagger`: consumes OpenAPI (YAML/JSON) to answer questions about and run against API endpoints. See [Swagger notebook examples](https://github.com/BoxcarsAI/boxcars/blob/main/notebooks/swagger_examples.ipynb).
+- `VectorStore` workflows: embed, persist, and retrieve context for RAG-like retrieval flows (see vector notebooks).
 
 ### Run a list of Boxcars
 ```ruby
@@ -133,6 +195,33 @@ Next Actions:
 3. What is the square root of the average temperature in Miami FL in January?
 < Exiting Zero Shot#run
 ```
+
+### MCP Tools with Native Tool Calling
+
+You can connect an MCP server over `stdio`, wrap its tools as Boxcars, and run them with the newer native tool-calling train:
+
+```ruby
+require "boxcars"
+
+engine = Boxcars::Engines.engine(model: "gpt-4o")
+mcp_client = Boxcars::MCP.stdio(command: "npx", args: ["-y", "@modelcontextprotocol/server-filesystem", "/tmp"])
+
+begin
+  train = Boxcars::MCP.tool_calling_train(
+    engine: engine,
+    boxcars: [Boxcars::Calculator.new],
+    clients: [mcp_client],
+    client_name_prefixes: { 0 => "Filesystem" }
+  )
+
+  puts train.run("What files are in /tmp and what is 12 * 9?")
+ensure
+  mcp_client.close
+end
+```
+
+`Boxcars::MCP.tool_calling_train(...)` combines local Boxcars and MCP-discovered tools into a `Boxcars::ToolCallingTrain`.
+
 ### More Examples
 See [this](https://github.com/BoxcarsAI/boxcars/blob/main/notebooks/boxcars_examples.ipynb) Jupyter Notebook for more examples.
 
@@ -157,14 +246,14 @@ Boxcars provides a convenient factory class `Boxcars::Engines` that simplifies c
 #### Basic Usage
 
 ```ruby
-# Using default model (gemini-2.5-flash-preview-05-20)
+# Using default model (gemini-2.5-flash)
 engine = Boxcars::Engines.engine
 
-# Using specific models with convenient aliases
+# Using specific models and curated aliases
 gpt_engine = Boxcars::Engines.engine(model: "gpt-4o")
 claude_engine = Boxcars::Engines.engine(model: "sonnet")
-gemini_engine = Boxcars::Engines.engine(model: "flash")
-groq_engine = Boxcars::Engines.engine(model: "groq")
+gemini_engine = Boxcars::Engines.engine(model: "gemini-2.5-flash")
+perplexity_engine = Boxcars::Engines.engine(model: "sonar")
 ```
 
 #### Supported Model Aliases
@@ -196,6 +285,89 @@ groq_engine = Boxcars::Engines.engine(model: "groq")
 **Together AI Models:**
 - `"together-model-name"` - Creates `Boxcars::Together` (strips "together-" prefix)
 
+#### Alias Deprecations (Migration to v1.0)
+
+Some older aliases are still supported but now emit a one-time deprecation warning (per process) to make future pruning safer.
+
+Examples of deprecated aliases:
+- `"anthropic"` (use `"sonnet"`)
+- `"groq"` (use an explicit model like `"llama-3.3-70b-versatile"`)
+- `"online"` / `"huge"` / `"online_huge"` (use `"sonar"` / `"sonar-pro"`)
+- `"sonar_huge"` / `"sonar-huge"` / `"sonar_pro"` (use `"sonar-pro"`)
+- `"flash"` / `"gemini-flash"` / `"gemini-pro"` (use explicit Gemini models)
+- `"deepseek"`, `"mistral"`, `"cerebras"`, `"qwen"` (use explicit model names)
+
+`"sonar"` and `"sonar-pro"` remain supported curated aliases.
+
+To enforce migration in CI or during upgrades, enable strict mode to raise an error instead of warning when a deprecated alias is used:
+
+```ruby
+Boxcars.configure do |config|
+  config.strict_deprecated_model_aliases = true
+end
+
+# or:
+Boxcars::Engines.strict_deprecated_aliases = true
+```
+
+#### OpenAI Backend Selection (v0.9+)
+
+`Boxcars::Openai` now defaults to `:official_openai`. During the migration window, you can still opt back to `:ruby_openai` while keeping other OpenAI-compatible providers stable.
+
+```ruby
+# Process default override (legacy opt-out)
+ENV["OPENAI_CLIENT_BACKEND"] = "ruby_openai"
+# Optional: require true native official wiring and fail instead of bridge fallback.
+ENV["OPENAI_OFFICIAL_REQUIRE_NATIVE"] = "true"
+
+# Per-engine override
+engine = Boxcars::Openai.new(
+  model: "gpt-4o-mini",
+  openai_client_backend: :ruby_openai
+)
+
+# Per-call override
+engine.run("Write a one-line summary", openai_client_backend: :official_openai)
+```
+
+Groq, Gemini, and Ollama are pinned to `:ruby_openai` during this migration phase.
+When only `ruby-openai` is present, Boxcars can auto-bridge the `:official_openai` backend through a compatibility builder while you migrate.
+In that compatibility mode, Boxcars emits a one-time warning at runtime so it is visible in logs.
+
+If you want explicit control over the official SDK client shape, you can provide a client builder:
+
+```ruby
+Boxcars.configure do |config|
+  config.openai_client_backend = :official_openai
+  config.openai_official_client_builder = lambda do |access_token:, uri_base:, organization_id:, log_errors:|
+    OpenAI::Client.new(
+      api_key: access_token,
+      base_url: uri_base,
+      organization: organization_id
+    )
+  end
+end
+```
+
+If you set `OPENAI_OFFICIAL_REQUIRE_NATIVE=true` (or `config.openai_official_require_native = true`), Boxcars will fail fast instead of using the compatibility bridge.
+
+For migration parity checks:
+
+```bash
+bundle exec rake spec:openai_backend_parity
+bundle exec rake spec:openai_backend_parity_official
+# full modernization regression lane:
+bundle exec rake spec:modernization
+```
+
+To fail fast on backend wiring issues at boot time:
+
+```ruby
+Boxcars::OpenAICompatibleClient.validate_backend_configuration!
+```
+
+This preflight also catches backend/client mismatches (for example, selecting `:ruby_openai` when a non-`ruby-openai` `OpenAI::Client` class is loaded).
+
 #### JSON-Optimized Engines
 
 For applications requiring JSON responses, use the `json_engine` method:
@@ -207,6 +379,34 @@ json_engine = Boxcars::Engines.json_engine(model: "gpt-4o")
 # Automatically removes response_format for models that don't support it
 json_claude = Boxcars::Engines.json_engine(model: "sonnet")
 ```
+
+#### `JSONEngineBoxcar` for Typed App Workflows
+
+`JSONEngineBoxcar` is designed for application code paths where you want structured fields instead of prompt-parsing strings.
+In real-world `apiserver` usage, this wrapper has been a major time saver for keeping LLM responses predictable.
+With JSON Schema support, it can now validate output contracts directly in the boxcar layer.
+
+```ruby
+schema = {
+  type: "object",
+  properties: {
+    answer: { type: "string" },
+    confidence: { type: ["number", "null"] }
+  },
+  required: ["answer"],
+  additionalProperties: false
+}
+
+extractor = Boxcars::JSONEngineBoxcar.new(
+  engine: Boxcars::Engines.engine(model: "gpt-4o"),
+  json_schema: schema
+)
+
+result = extractor.run("What is the best one-line summary of this ticket?")
+# => { status: "ok", answer: { "answer" => "...", "confidence" => 0.92 }, ... }
+```
+
+If you need a softer rollout during migration, use `json_schema_strict: false` and tighten to strict mode once outputs are stable.
 
 #### Passing Additional Parameters
 
@@ -231,7 +431,7 @@ result = calc.run "What is 15 * 23?"
 # Or in a Train
 boxcars = [
   Boxcars::Calculator.new(engine: Boxcars::Engines.engine(model: "gpt-4o")),
-  Boxcars::GoogleSearch.new(engine: Boxcars::Engines.engine(model: "flash"))
+  Boxcars::GoogleSearch.new(engine: Boxcars::Engines.engine(model: "gemini-2.5-flash"))
 ]
 train = Boxcars.train.new(boxcars: boxcars)
 ```
@@ -289,9 +489,9 @@ Set the default model via environment variables or initialization:
 if Rails.env.production?
   Boxcars.configuration.default_model = "gpt-4o"      # Use GPT-4o in production
 elsif Rails.env.development?
-  Boxcars.configuration.default_model = "flash"       # Use faster Gemini Flash in development
+  Boxcars.configuration.default_model = "gemini-2.5-flash" # Use faster Gemini Flash in development
 else
-  Boxcars.configuration.default_model = "groq"        # Use Groq for testing
+  Boxcars.configuration.default_model = "llama-3.3-70b-versatile" # Use explicit Groq model for testing
 end
 ```
 
@@ -305,15 +505,15 @@ The `Boxcars::Engines.engine()` method resolves the model in this order:
 
 #### Supported Model Aliases
 
-When setting `default_model`, you can use any of the supported model aliases:
+When setting `default_model`, you can use any supported explicit model name plus curated aliases:
 
 ```ruby
 # These are all valid default_model values:
 Boxcars.configuration.default_model = "gpt-4o"        # OpenAI GPT-4o
 Boxcars.configuration.default_model = "sonnet"        # Claude Sonnet
-Boxcars.configuration.default_model = "flash"         # Gemini Flash
-Boxcars.configuration.default_model = "groq"          # Groq Llama
-Boxcars.configuration.default_model = "online"        # Perplexity Sonar
+Boxcars.configuration.default_model = "gemini-2.5-flash" # Gemini Flash
+Boxcars.configuration.default_model = "sonar"         # Perplexity Sonar
+Boxcars.configuration.default_model = "sonar-pro"     # Perplexity Sonar Pro
 ```
 
 #### Legacy Engine Configuration

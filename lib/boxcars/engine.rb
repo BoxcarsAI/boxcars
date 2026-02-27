@@ -25,6 +25,22 @@ module Boxcars
       raise NotImplementedError
     end
 
+    # Provider/runtime capabilities used by newer execution strategies
+    # (e.g. tool-calling planners and structured-output helpers).
+    # Engines can override this to advertise support.
+    def capabilities
+      {
+        tool_calling: false,
+        structured_output_json_schema: false,
+        native_json_object: false,
+        responses_api: false
+      }
+    end
+
+    def supports?(capability)
+      capabilities.fetch(capability.to_sym, false)
+    end
+
     # calculate the number of tokens used
     def get_num_tokens(text:)
       text.split.length # TODO: hook up to token counting gem
