@@ -109,9 +109,20 @@ RuboCop::RakeTask.new
 
 task default: %i[spec rubocop]
 
-require 'github_changelog_generator/task'
+begin
+  require "github_changelog_generator/task"
 
-GitHubChangelogGenerator::RakeTask.new :changelog do |config|
-  config.user = 'BoxcarsAI'
-  config.project = 'boxcars'
+  GitHubChangelogGenerator::RakeTask.new :changelog do |config|
+    config.user = "BoxcarsAI"
+    config.project = "boxcars"
+  end
+rescue LoadError
+  desc "Generate changelog (install github_changelog_generator gem first)"
+  task :changelog do
+    warn(
+      "github_changelog_generator is not installed. " \
+      "Run `bundle add github_changelog_generator --group development,test --skip-install` " \
+      "to enable this task."
+    )
+  end
 end
