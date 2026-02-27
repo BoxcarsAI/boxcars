@@ -21,23 +21,10 @@ RSpec.describe Boxcars::OpenAICompatibleClient do
       expect(described_class.build(access_token: "abc")).to eq(client)
     end
 
-    it "accepts explicit official backend" do
-      client = double("OfficialOpenAIClient") # rubocop:disable RSpec/VerifiedDoubles
-      described_class.official_client_builder = ->(**) { client }
-
-      expect(described_class.build(access_token: "abc", backend: :official_openai)).to eq(client)
-    end
-
-    it "raises on ruby_openai backend" do
+    it "rejects removed backend kwarg" do
       expect do
-        described_class.build(access_token: "abc", backend: :ruby_openai)
-      end.to raise_error(Boxcars::ConfigurationError, /Unsupported openai_client_backend/)
-    end
-
-    it "raises for unsupported backend" do
-      expect do
-        described_class.build(access_token: "abc", backend: :mystery_sdk)
-      end.to raise_error(Boxcars::ConfigurationError, /Unsupported openai_client_backend/)
+        described_class.build(access_token: "abc", backend: :official_openai)
+      end.to raise_error(ArgumentError, /unknown keyword: :backend/)
     end
 
     it "uses configured official client builder when present" do
@@ -55,8 +42,7 @@ RSpec.describe Boxcars::OpenAICompatibleClient do
           access_token: "abc",
           uri_base: "https://api.openai.com/v1",
           organization_id: "org_123",
-          log_errors: true,
-          backend: :official_openai
+          log_errors: true
         )
       ).to eq(official_client)
     end
@@ -83,8 +69,7 @@ RSpec.describe Boxcars::OpenAICompatibleClient do
         access_token: "abc",
         uri_base: "https://api.openai.com/v1",
         organization_id: "org_123",
-        log_errors: true,
-        backend: :official_openai
+        log_errors: true
       )
 
       expect(built).to be_a(fake_official_client_class)
@@ -92,23 +77,17 @@ RSpec.describe Boxcars::OpenAICompatibleClient do
     end
   end
 
-  describe ".validate_backend_configuration!" do
-    it "returns true for official backend" do
+  describe ".validate_client_configuration!" do
+    it "returns true when an official builder is configured" do
       described_class.official_client_builder = ->(**) { double("OfficialClient") } # rubocop:disable RSpec/VerifiedDoubles
-      expect(described_class.validate_backend_configuration!).to eq(true)
-    end
-
-    it "raises on ruby_openai backend" do
-      expect do
-        described_class.validate_backend_configuration!(backend: :ruby_openai)
-      end.to raise_error(Boxcars::ConfigurationError, /Unsupported openai_client_backend/)
+      expect(described_class.validate_client_configuration!).to eq(true)
     end
 
     it "returns true when configuration builder is present" do
       Boxcars.configuration.openai_official_client_builder = ->(**) { double("OfficialClient") } # rubocop:disable RSpec/VerifiedDoubles
       described_class.official_client_builder = nil
 
-      expect(described_class.validate_backend_configuration!).to eq(true)
+      expect(described_class.validate_client_configuration!).to eq(true)
     end
 
     it "raises when no builder or official class is available" do
@@ -117,7 +96,7 @@ RSpec.describe Boxcars::OpenAICompatibleClient do
       allow(described_class).to receive(:detect_official_client_class).and_return(nil)
 
       expect do
-        described_class.validate_backend_configuration!
+        described_class.validate_client_configuration!
       end.to raise_error(Boxcars::ConfigurationError, /no compatible OpenAI::Client was detected/)
     end
 
@@ -128,8 +107,15 @@ RSpec.describe Boxcars::OpenAICompatibleClient do
       allow(described_class).to receive(:detect_official_client_class).and_return(nil)
 
       expect do
-        described_class.validate_backend_configuration!
+        described_class.validate_client_configuration!
       end.to raise_error(Boxcars::ConfigurationError, /native-only mode/)
+    end
+  end
+
+  describe ".validate_backend_configuration!" do
+    it "aliases to validate_client_configuration!" do
+      described_class.official_client_builder = ->(**) { double("OfficialClient") } # rubocop:disable RSpec/VerifiedDoubles
+      expect(described_class.validate_backend_configuration!).to eq(true)
     end
   end
 

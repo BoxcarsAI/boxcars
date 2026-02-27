@@ -28,7 +28,7 @@ namespace :spec do
     spec/boxcars/mcp_tool_boxcar_spec.rb
   ].freeze
 
-  OPENAI_BACKEND_PARITY_SPECS = %w[
+  OPENAI_CLIENT_PARITY_SPECS = %w[
     spec/boxcars/configuration_spec.rb
     spec/boxcars/openai_compatible_client_spec.rb
     spec/boxcars/openai_official_client_path_spec.rb
@@ -39,7 +39,7 @@ namespace :spec do
     spec/boxcars/ollama_spec.rb
   ].freeze
 
-  OPENAI_BACKEND_OFFICIAL_ONLY_SPECS = %w[
+  OPENAI_CLIENT_OFFICIAL_ONLY_SPECS = %w[
     spec/boxcars/configuration_spec.rb
     spec/boxcars/openai_compatible_client_spec.rb
     spec/boxcars/openai_official_client_path_spec.rb
@@ -80,22 +80,34 @@ namespace :spec do
     sh "NO_VCR=true bundle exec rspec #{VCR_OPENAI_REFRESH_SPECS.join(' ')}"
   end
 
-  desc "Run OpenAI migration parity specs (official_openai contract path)"
+  desc "Run OpenAI client parity specs (official client contract path)"
+  task :openai_client_parity do
+    sh "bundle exec rspec #{OPENAI_CLIENT_PARITY_SPECS.join(' ')}"
+  end
+
+  desc "Run OpenAI client parity specs (official-safe subset)"
+  task :openai_client_parity_official do
+    sh "bundle exec rspec #{OPENAI_CLIENT_OFFICIAL_ONLY_SPECS.join(' ')}"
+  end
+
+  desc "Deprecated alias for spec:openai_client_parity"
   task :openai_backend_parity do
-    sh "bundle exec rspec #{OPENAI_BACKEND_PARITY_SPECS.join(' ')}"
+    warn "[DEPRECATION] Use `bundle exec rake spec:openai_client_parity`"
+    Rake::Task["spec:openai_client_parity"].invoke
   end
 
-  desc "Run OpenAI migration parity specs (official-safe subset)"
+  desc "Deprecated alias for spec:openai_client_parity_official"
   task :openai_backend_parity_official do
-    sh "bundle exec rspec #{OPENAI_BACKEND_OFFICIAL_ONLY_SPECS.join(' ')}"
+    warn "[DEPRECATION] Use `bundle exec rake spec:openai_client_parity_official`"
+    Rake::Task["spec:openai_client_parity_official"].invoke
   end
 
-  desc "Run modernization regression suite (aliases/tool-calling/MCP/JSON schema + OpenAI backend parity lanes)"
+  desc "Run modernization regression suite (aliases/tool-calling/MCP/JSON schema + OpenAI client parity lanes)"
   task :modernization do
     sh "bundle exec rspec #{NOTEBOOK_SMOKE_SPECS.join(' ')}"
     sh "bundle exec rspec #{MODERNIZATION_RUNTIME_SPECS.join(' ')}"
-    sh "bundle exec rspec #{OPENAI_BACKEND_PARITY_SPECS.join(' ')}"
-    sh "bundle exec rspec #{OPENAI_BACKEND_OFFICIAL_ONLY_SPECS.join(' ')}"
+    sh "bundle exec rspec #{OPENAI_CLIENT_PARITY_SPECS.join(' ')}"
+    sh "bundle exec rspec #{OPENAI_CLIENT_OFFICIAL_ONLY_SPECS.join(' ')}"
   end
 end
 

@@ -173,9 +173,9 @@ These areas are still evolving and may receive further changes before v1.0:
 - Additional MCP features (streaming, reconnect/recovery, resources/prompts)
 - Provider pruning policy refinements beyond alias cleanup
 
-## 8. OpenAI SDK Migration (Planned / In Progress)
+## 8. OpenAI SDK Migration (Completed in v0.10)
 
-For maintainers/contributors working on the SDK swap itself, see `OPENAI_SDK_MIGRATION_PLAN.md` for the internal client contract, rollout phases, and regression matrix.
+For maintainers/contributors who want implementation details of the SDK swap, see `OPENAI_SDK_MIGRATION_PLAN.md` for the internal client contract and regression matrix.
 
 Boxcars currently uses an internal OpenAI-compatible client factory to create clients for:
 
@@ -184,7 +184,7 @@ Boxcars currently uses an internal OpenAI-compatible client factory to create cl
 - Gemini (OpenAI-compatible endpoint path used by current engine)
 - Ollama
 
-This shared factory seam is the migration path for all OpenAI-compatible engines, so backend wiring can evolve without changing public engine APIs.
+This shared factory seam is used by all OpenAI-compatible engines, so client wiring can evolve without changing public engine APIs.
 
 ### What users should do now
 
@@ -192,9 +192,9 @@ This shared factory seam is the migration path for all OpenAI-compatible engines
 - Avoid depending on the exact underlying client object class returned inside engine internals.
 - Prefer explicit model names and `ToolCallingTrain` for new builds.
 
-### OpenAI backend defaults (v0.9+)
+### OpenAI client defaults (v0.10+)
 
-`Boxcars::Openai` now uses `:official_openai` only.
+`Boxcars::Openai` now uses the official OpenAI client path only.
 
 ```ruby
 # optional strict mode: fail unless native official wiring is available
@@ -207,18 +207,18 @@ engine = Boxcars::Openai.new(
 engine.run("Write a one-line summary")
 ```
 
-Groq/Gemini/Ollama/Google/Cerebras/Together are pinned to `:official_openai`.
+Groq/Gemini/Ollama/Google/Cerebras/Together use the same official client path with provider-specific base URLs.
 
 ### Notebook compatibility matrix (v0.9+)
 
-The example notebooks under `notebooks/` were updated with an "OpenAI Backend (Migration)" setup cell so backend selection is explicit.
+The example notebooks under `notebooks/` were updated during migration and remain compatible with the official client path.
 
 | Notebook | Current status | Required changes |
 | --- | --- | --- |
-| `notebooks/boxcars_examples.ipynb` | Uses `Boxcars::Engines`/Boxcars abstractions; follows default backend behavior. | None. |
-| `notebooks/swagger_examples.ipynb` | Uses `Boxcars::Swagger`; unaffected by OpenAI backend wiring details. | None. |
-| `notebooks/vector_search_examples.ipynb` | Uses `Boxcars::Openai.open_ai_client` for embeddings/vector search. Official client path supports embeddings. | None (keep migration setup cell if you want backend pinning). |
-| `notebooks/embeddings/embeddings_example.ipynb` | Uses `Boxcars::Openai.open_ai_client` for embeddings/vector search. Official client path supports embeddings. | None (keep migration setup cell if you want backend pinning). |
+| `notebooks/boxcars_examples.ipynb` | Uses `Boxcars::Engines`/Boxcars abstractions; follows default client behavior. | None. |
+| `notebooks/swagger_examples.ipynb` | Uses `Boxcars::Swagger`; unaffected by OpenAI client wiring details. | None. |
+| `notebooks/vector_search_examples.ipynb` | Uses `Boxcars::Openai.open_ai_client` for embeddings/vector search. Official client path supports embeddings. | None. |
+| `notebooks/embeddings/embeddings_example.ipynb` | Uses `Boxcars::Openai.open_ai_client` for embeddings/vector search. Official client path supports embeddings. | None. |
 
 If you enable strict native mode (`OPENAI_OFFICIAL_REQUIRE_NATIVE=true` or `config.openai_official_require_native = true`), ensure native official OpenAI SDK wiring is available; otherwise notebook runs that initialize the OpenAI client will fail early by design.
 
@@ -226,7 +226,7 @@ If you enable strict native mode (`OPENAI_OFFICIAL_REQUIRE_NATIVE=true` or `conf
 
 - Start with PR smoke coverage for notebook code paths that do not require live API calls.
 - Add a scheduled weekly run (not nightly) for any live integration notebook checks to limit cost and flaky failures while migration work is active.
-- Consider nightly only after backend defaults, SDK wiring, and cassette strategy are stable.
+- Consider nightly only after client defaults, SDK wiring, and cassette strategy are stable.
 - If you want live checks to enforce native official wiring, set repository variables:
   - `OPENAI_OFFICIAL_REQUIRE_NATIVE=true` (Boxcars fail-fast behavior)
   - or `NOTEBOOKS_LIVE_REQUIRE_NATIVE=true` (script-level assertion)
@@ -241,7 +241,7 @@ Boxcars.configure do |config|
 end
 ```
 
-When enabling `:official_openai`, you can provide a builder in config:
+If you want explicit control over official client construction, you can provide a builder in config:
 
 ```ruby
 Boxcars.configure do |config|
@@ -258,7 +258,7 @@ end
 Optional startup preflight:
 
 ```ruby
-Boxcars::OpenAICompatibleClient.validate_backend_configuration!
+Boxcars::OpenAICompatibleClient.validate_client_configuration!
 ```
 
 This preflight validates official client wiring, so client-shape mismatches fail early.
@@ -268,9 +268,9 @@ If you are validating migration behavior in CI or locally, run:
 ```bash
 bundle exec rake spec:vcr_openai_smoke
 bundle exec rake spec:notebooks_smoke
-bundle exec rake spec:openai_backend_parity
+bundle exec rake spec:openai_client_parity
 # and forced-official subset:
-bundle exec rake spec:openai_backend_parity_official
+bundle exec rake spec:openai_client_parity_official
 # or run the broader modernization regression suite:
 bundle exec rake spec:modernization
 # optional live notebook check (requires OPENAI_ACCESS_TOKEN):

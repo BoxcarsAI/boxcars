@@ -6,8 +6,6 @@ module Boxcars
   # Centralized factory for OpenAI-compatible clients used by multiple engines
   # (OpenAI, Groq, Ollama, Gemini-compatible endpoints, etc.).
   module OpenAICompatibleClient
-    SUPPORTED_BACKENDS = %i[official_openai].freeze
-
     # Adds a small stable surface used by engines (`*_create` methods) directly on
     # top of the official OpenAI::Client instance.
     module ClientMethods
@@ -46,10 +44,7 @@ module Boxcars
       end
     end
 
-    def self.build(access_token:, uri_base: nil, organization_id: nil, log_errors: nil, backend: nil)
-      selected_backend = normalize_backend(backend)
-      raise Boxcars::ConfigurationError, "Unsupported openai_client_backend: #{selected_backend.inspect}" unless selected_backend == :official_openai
-
+    def self.build(access_token:, uri_base: nil, organization_id: nil, log_errors: nil)
       raw_client = build_official_openai_client(
         access_token:,
         uri_base:,
@@ -60,30 +55,22 @@ module Boxcars
       decorate_client(raw_client)
     end
 
-    def self.normalize_backend(backend)
-      normalized = (backend || :official_openai).to_sym
-      return :official_openai if normalized == :official_openai
-
-      raise Boxcars::ConfigurationError,
-            "Unsupported openai_client_backend: #{backend.inspect}. " \
-            "Supported backends: #{SUPPORTED_BACKENDS.join(', ')}"
-    end
-
-    def self.validate_backend_configuration!(backend: nil)
-      selected_backend = normalize_backend(backend)
-      raise Boxcars::ConfigurationError, "Unsupported openai_client_backend: #{selected_backend.inspect}" unless selected_backend == :official_openai
-
+    def self.validate_client_configuration!
       builder = official_client_builder || Boxcars.configuration.openai_official_client_builder
       return true if builder
       return true if detect_official_client_class
 
-      if official_backend_requires_native?
+      if official_client_requires_native?
         raise Boxcars::ConfigurationError,
-              "official_openai backend is configured in native-only mode, but no native official OpenAI client was detected."
+              "Official OpenAI client path is configured in native-only mode, but no native official OpenAI client was detected."
       end
 
       raise Boxcars::ConfigurationError,
-            "official_openai backend selected but no official client builder is configured and no compatible OpenAI::Client was detected."
+            "Official OpenAI client path selected but no official client builder is configured and no compatible OpenAI::Client was detected."
+    end
+
+    class << self
+      alias validate_backend_configuration! validate_client_configuration!
     end
 
     def self.configure_official_client_builder!(client_class: nil)
@@ -125,7 +112,7 @@ module Boxcars
     # --------------------------------------------------------------------------
     def self.call_chat(client, parameters)
       unless client.respond_to?(:chat)
-        raise Boxcars::ConfigurationError, "official_openai backend client does not expose #chat"
+        raise Boxcars::ConfigurationError, "Official OpenAI client does not expose #chat"
       end
 
       chat_resource = client.chat
@@ -136,13 +123,13 @@ module Boxcars
       elsif chat_resource.respond_to?(:create)
         call_create(chat_resource, parameters)
       else
-        raise Boxcars::ConfigurationError, "official_openai backend chat resource does not support #create"
+        raise Boxcars::ConfigurationError, "Official OpenAI client chat resource does not support #create"
       end
     end
 
     def self.call_completions(client, parameters)
       unless client.respond_to?(:completions)
-        raise Boxcars::ConfigurationError, "official_openai backend client does not expose #completions"
+        raise Boxcars::ConfigurationError, "Official OpenAI client does not expose #completions"
       end
 
       completions_resource = client.completions
@@ -153,7 +140,7 @@ module Boxcars
 
     def self.call_responses(client, parameters)
       unless client.respond_to?(:responses)
-        raise StandardError, "OpenAI Responses API not supported by official_openai backend client."
+        raise StandardError, "OpenAI Responses API not supported by the official OpenAI client."
       end
 
       call_create(client.responses, parameters)
@@ -161,7 +148,7 @@ module Boxcars
 
     def self.call_embeddings(client, parameters)
       unless client.respond_to?(:embeddings)
-        raise Boxcars::ConfigurationError, "official_openai backend client does not expose #embeddings"
+        raise Boxcars::ConfigurationError, "Official OpenAI client does not expose #embeddings"
       end
 
       embeddings_resource = client.embeddings
@@ -214,7 +201,7 @@ module Boxcars
       end
 
       raise Boxcars::ConfigurationError,
-            "openai_client_backend=:official_openai requires an official client builder or a compatible OpenAI::Client class, " \
+            "Official OpenAI client path requires an official client builder or a compatible OpenAI::Client class, " \
             "but none was detected."
     end
 
@@ -256,13 +243,13 @@ module Boxcars
       method_obj.parameters.any? { |type, name| %i[key keyreq].include?(type) && name == keyword_name }
     end
 
-    def self.official_backend_requires_native?
+    def self.official_client_requires_native?
       Boxcars.configuration.openai_official_require_native
     end
 
-    private_class_method :normalize_backend, :build_official_openai_client
+    private_class_method :build_official_openai_client
     private_class_method :detect_official_client_class, :official_client_class?, :build_with_official_client_class
-    private_class_method :official_backend_requires_native?
+    private_class_method :official_client_requires_native?
     private_class_method :call_create, :keyword_parameters?
   end
 end

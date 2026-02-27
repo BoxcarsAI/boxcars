@@ -33,8 +33,8 @@ Inspired by LangChain, Boxcars brings a Ruby-first design that favors practical 
 - Retrieval-first assistants that combine embeddings/vector search with deterministic follow-up tool calls.
 - Local+remote agent workflows that blend your own Ruby tools with MCP-discovered tools.
 
-Upgrading guidance for the ongoing modernization work (native tool-calling, MCP, JSON Schema support, alias deprecations, and OpenAI backend migration) is in [`UPGRADING.md`](./UPGRADING.md).
-Notebook migration expectations for the OpenAI backend rollout are documented in the "Notebook compatibility matrix" section of [`UPGRADING.md`](./UPGRADING.md#notebook-compatibility-matrix-v09).
+Upgrading guidance for the ongoing modernization work (native tool-calling, MCP, JSON Schema support, alias deprecations, and official OpenAI client migration) is in [`UPGRADING.md`](./UPGRADING.md).
+Notebook migration expectations for the OpenAI client migration are documented in the "Notebook compatibility matrix" section of [`UPGRADING.md`](./UPGRADING.md#notebook-compatibility-matrix-v09).
 
 ### Current Upgrade Notes (toward v1.0)
 
@@ -45,7 +45,7 @@ Notebook migration expectations for the OpenAI backend rollout are documented in
   - Core Boxcars usage no longer requires either gem.
   - `Boxcars::IntelligenceBase` requires `gem "intelligence"` in your app.
   - `Boxcars::Gpt4allEng` requires `gem "gpt4all"` in your app.
-- OpenAI-compatible engines now pin to the `official_openai` backend path during migration (OpenAI, Groq, Gemini, Ollama, Google, Cerebras, Together).
+- OpenAI and OpenAI-compatible engines now use the official OpenAI client path (OpenAI, Groq, Gemini, Ollama, Google, Cerebras, Together).
 
 If your app uses `IntelligenceBase` or `Gpt4allEng`, add optional gems explicitly:
 
@@ -344,7 +344,7 @@ engine = Boxcars::Openai.new(model: "gpt-5-mini")
 engine.run("Write a one-line summary")
 ```
 
-Groq, Gemini, Ollama, Google, Cerebras, and Together are pinned to `:official_openai`.
+Groq, Gemini, Ollama, Google, Cerebras, and Together all use the same official OpenAI client path with provider-specific base URLs.
 
 If you want explicit control over the official SDK client shape, you can provide a client builder:
 
@@ -362,22 +362,22 @@ end
 
 If you set `OPENAI_OFFICIAL_REQUIRE_NATIVE=true` (or `config.openai_official_require_native = true`), Boxcars will fail fast unless native official wiring is available.
 
-For migration parity checks:
+For OpenAI client parity checks:
 
 ```bash
-bundle exec rake spec:openai_backend_parity
-bundle exec rake spec:openai_backend_parity_official
+bundle exec rake spec:openai_client_parity
+bundle exec rake spec:openai_client_parity_official
 # full modernization regression lane:
 bundle exec rake spec:modernization
 ```
 
-To fail fast on backend wiring issues at boot time:
+To fail fast on client wiring issues at boot time:
 
 ```ruby
-Boxcars::OpenAICompatibleClient.validate_backend_configuration!
+Boxcars::OpenAICompatibleClient.validate_client_configuration!
 ```
 
-This preflight validates that official backend wiring is available before runtime calls.
+This preflight validates that official client wiring is available before runtime calls.
 
 #### JSON-Optimized Engines
 
