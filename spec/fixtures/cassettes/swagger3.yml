@@ -15,7 +15,7 @@ http_interactions:
         if you know the answer and do not need any API calls, you should use this
         simpler format:\n${{Question not needing API calls}}\nAnswer: ${{Answer}}\n\nDo
         not give an explanation of the answer and make sure your answer starts with
-        either ''Answer:'' or ''```ruby''. Make use of the rest-client gem to make
+        either ''Answer:'' or ''```ruby''. Make use of the faraday gem to make
         your requests to the API. Just print the answer."},{"role":"user","content":"describe
         the available APIs for pets"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["```output"]}'
     headers:
@@ -78,8 +78,8 @@ http_interactions:
     body:
       encoding: ASCII-8BIT
       string: '{"id":"chatcmpl-76kyTIljWdgQxEAjapenoHnZVQUWc","object":"chat.completion","created":1681844893,"model":"gpt-3.5-turbo-0301","usage":{"prompt_tokens":199,"completion_tokens":512,"total_tokens":711},"choices":[{"message":{"role":"assistant","content":"Question:
-        describe the available APIs for pets\n\n```ruby\nrequire ''rest-client''\nrequire
-        ''json''\n\nresponse = RestClient.get(''https://petstore.swagger.io/v2/swagger.json'')\njson
+        describe the available APIs for pets\n\n```ruby\nrequire ''faraday''\nrequire
+        ''json''\n\nresponse = Faraday.get(''https://petstore.swagger.io/v2/swagger.json'')\njson
         = JSON.parse(response.body)\n\njson[''paths''].each do |path, value|\n  if
         path.include?(''/pet'')\n    puts \"API: #{path}\"\n    puts \"Description:
         #{value.values[0][''summary'']}\"\n    puts \"HTTP Method: #{value.keys[0]}\"\n    puts

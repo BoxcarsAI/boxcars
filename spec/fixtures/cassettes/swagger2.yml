@@ -16,7 +16,7 @@ http_interactions:
         API calls, you should use this simpler format:\n${{Question not needing API
         calls}}\nAnswer: ${{Answer}}\n\nDo not give an explanation of the answer and
         make sure your answer starts with either ''Answer:'' or ''```ruby''. Make
-        use of the rest-client gem to make your requests to the API. Just print the
+        use of the faraday gem to make your requests to the API. Just print the
         answer."},{"role":"user","content":"what is 1 plus 2?"}],"model":"gpt-3.5-turbo","temperature":0.2,"max_tokens":512,"stop":["```output"]}'
     headers:
       Content-Type:
