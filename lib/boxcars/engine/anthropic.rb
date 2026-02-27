@@ -108,7 +108,7 @@ module Boxcars
       end
     end
 
-    def validate_response!(response, must_haves: %w[completion])
+    def validate_response!(response, must_haves: %w[choices])
       super
     end
 

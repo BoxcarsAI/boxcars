@@ -58,6 +58,7 @@ module Boxcars
           unknown_error_message: "Unknown Gemini API Error",
           preserve_existing_error: false
         )
+        normalize_gemini_response!(response_data)
       rescue StandardError => e
         handle_openai_compatible_standard_error(e, response_data)
       ensure
@@ -85,7 +86,7 @@ module Boxcars
     def run(question, **)
       prompt = Prompt.new(template: question)
       response = client(prompt:, inputs: {}, **)
-      answer = extract_content_from_gemini_response(response)
+      answer = extract_answer(response)
       Boxcars.debug("Answer: #{answer}", :cyan)
       answer
     end
@@ -96,18 +97,33 @@ module Boxcars
 
     private
 
-    def extract_content_from_gemini_response(parsed_json)
-      if parsed_json&.key?("candidates")
-        parsed_json["candidates"].map { |c| c.dig("content", "parts", 0, "text") }.join("\n").strip
-      elsif parsed_json&.key?("choices")
-        parsed_json["choices"].map { |c| c.dig("message", "content") || c["text"] }.join("\n").strip
-      else
-        raise Error, "GeminiAI: Could not extract answer from response"
-      end
-    end
+    def normalize_gemini_response!(response_data)
+      return unless response_data[:success]
+      return unless response_data[:parsed_json].is_a?(Hash)
 
-    def validate_response!(response, must_haves: %w[choices candidates])
-      super
+      parsed = normalize_generate_response(response_data[:parsed_json])
+
+      if !parsed["choices"].is_a?(Array) && parsed["candidates"].is_a?(Array)
+        parsed["choices"] = parsed["candidates"].map do |candidate|
+          text = candidate.dig("content", "parts", 0, "text")
+          {
+            "message" => { "role" => "assistant", "content" => text },
+            "text" => text,
+            "finish_reason" => candidate["finishReason"] || candidate["finish_reason"]
+          }
+        end
+      end
+
+      usage_metadata = parsed["usageMetadata"] || parsed["usage_metadata"]
+      if usage_metadata.is_a?(Hash)
+        parsed["usage"] ||= {
+          "prompt_tokens" => usage_metadata["promptTokenCount"] || usage_metadata["prompt_token_count"],
+          "completion_tokens" => usage_metadata["candidatesTokenCount"] || usage_metadata["candidates_token_count"],
+          "total_tokens" => usage_metadata["totalTokenCount"] || usage_metadata["total_token_count"]
+        }.compact
+      end
+
+      response_data[:parsed_json] = parsed
     end
   end
 end

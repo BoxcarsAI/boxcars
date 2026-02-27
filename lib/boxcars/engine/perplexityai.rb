@@ -64,15 +64,16 @@ module Boxcars
           req.body = api_request_params
         end
 
+        parsed_json = normalize_generate_response(response.body)
         response_data[:response_obj] = response
-        response_data[:parsed_json] = response.body
+        response_data[:parsed_json] = parsed_json
         response_data[:status_code] = response.status
 
-        if response.success? && response.body && response.body["choices"]
+        if response.success? && parsed_json["choices"]
           response_data[:success] = true
         else
           response_data[:success] = false
-          err_details = response.body["error"] if response.body.is_a?(Hash)
+          err_details = parsed_json["error"] if parsed_json.is_a?(Hash)
           msg = if err_details
                   "#{err_details['type']}: #{err_details['message']}"
                 else
@@ -85,7 +86,9 @@ module Boxcars
         if defined?(Faraday::Error) && e.is_a?(Faraday::Error)
           response_data[:status_code] = e.response_status if e.respond_to?(:response_status)
           response_data[:response_obj] = e.response if e.respond_to?(:response)
-          response_data[:parsed_json] = e.response[:body] if e.respond_to?(:response) && e.response[:body].is_a?(Hash)
+          if e.respond_to?(:response) && e.response[:body].is_a?(Hash)
+            response_data[:parsed_json] = normalize_generate_response(e.response[:body])
+          end
         end
       ensure
         duration_ms = ((Time.now - start_time) * 1000).round

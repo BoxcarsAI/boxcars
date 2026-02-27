@@ -99,7 +99,7 @@ module Boxcars
       llm_params
     end
 
-    def validate_response!(response, must_haves: %w[choices text])
+    def validate_response!(response, must_haves: %w[choices])
       super
     end
 
