@@ -95,23 +95,6 @@ module Boxcars
       llm_params
     end
 
-    # Builds generation metadata from Anthropic responses.
-    def generation_info(sub_choices)
-      sub_choices.map do |choice|
-        Generation.new(
-          text: (choice["completion"] || choice["text"] || choice.dig("message", "content")).to_s,
-          generation_info: {
-            finish_reason: choice.fetch("stop_reason", choice["finish_reason"]),
-            logprobs: choice.fetch("logprobs", nil)
-          }
-        )
-      end
-    end
-
-    def validate_response!(response, must_haves: %w[choices])
-      super
-    end
-
     # the engine type
     def engine_type
       "claude"

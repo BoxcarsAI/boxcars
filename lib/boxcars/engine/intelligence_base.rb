@@ -138,8 +138,5 @@ module Boxcars
       defined?(::Intelligence::Adapter) && defined?(::Intelligence::ChatRequest)
     end
 
-    def validate_response!(response, must_haves: %w[choices])
-      super
-    end
   end
 end

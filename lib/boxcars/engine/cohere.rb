@@ -99,10 +99,6 @@ module Boxcars
       llm_params
     end
 
-    def validate_response!(response, must_haves: %w[choices])
-      super
-    end
-
     # The engine type.
     def engine_type
       "claude"
