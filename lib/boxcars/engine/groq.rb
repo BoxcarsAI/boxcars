@@ -3,7 +3,7 @@
 require 'json'
 
 module Boxcars
-  # A engine that uses Groq's API.
+  # An engine that uses Groq's API.
   class Groq < Engine
     include UnifiedObservability
     include OpenAICompatibleChatHelpers
@@ -13,7 +13,7 @@ module Boxcars
     DEFAULT_PARAMS = {
       model: "llama3-70b-8192",
       temperature: 0.1,
-      max_tokens: 4096 # Groq API might have specific limits or naming for this
+      max_tokens: 4096
     }.freeze
     DEFAULT_NAME = "Groq engine"
     DEFAULT_DESCRIPTION = "useful for when you need to use Groq AI to answer questions. " \
@@ -21,23 +21,20 @@ module Boxcars
 
     def initialize(name: DEFAULT_NAME, description: DEFAULT_DESCRIPTION, prompts: [], batch_size: 20, **kwargs)
       user_id = kwargs.delete(:user_id)
-      @groq_params = DEFAULT_PARAMS.merge(kwargs) # Corrected typo here
+      @groq_params = DEFAULT_PARAMS.merge(kwargs)
       @prompts = prompts
       @batch_size = batch_size
       super(description:, name:, user_id:)
     end
 
-    # Renamed from open_ai_client to groq_client for clarity
     def self.groq_client(groq_api_key: nil)
       access_token = Boxcars.configuration.groq_api_key(groq_api_key:)
       Boxcars::OpenAICompatibleClient.build(
         access_token:,
         uri_base: "https://api.groq.com/openai/v1"
       )
-      # Adjusted uri_base to include /v1 as is common for OpenAI-compatible APIs
     end
 
-    # Groq models are typically conversational.
     def conversation_model?(_model_name)
       true
     end
@@ -47,7 +44,7 @@ module Boxcars
       response_data = { response_obj: nil, parsed_json: nil, success: false, error: nil, status_code: nil }
       current_params = @groq_params.merge(kwargs)
       current_prompt_object = prompt.is_a?(Array) ? prompt.first : prompt
-      api_request_params = nil # Initialize
+      api_request_params = nil
 
       begin
         clnt = Groq.groq_client(groq_api_key:)
@@ -81,7 +78,6 @@ module Boxcars
         )
       end
 
-      # If there's an error, raise it to maintain backward compatibility with existing tests
       raise response_data[:error] if response_data[:error]
 
       response_data[:parsed_json]
@@ -101,7 +97,6 @@ module Boxcars
       @groq_params
     end
 
-    # validate_response! method uses the base implementation with Groq-specific must_haves
     def validate_response!(response, must_haves: %w[choices])
       super
     end

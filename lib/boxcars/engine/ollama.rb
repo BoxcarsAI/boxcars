@@ -3,7 +3,7 @@
 require 'json'
 
 module Boxcars
-  # A engine that uses a local Ollama API (OpenAI-compatible).
+  # An engine that uses a local Ollama API (OpenAI-compatible).
   class Ollama < Engine
     include UnifiedObservability
     include OpenAICompatibleChatHelpers
@@ -11,9 +11,9 @@ module Boxcars
     attr_reader :prompts, :model_kwargs, :batch_size, :ollama_params
 
     DEFAULT_PARAMS = {
-      model: "llama3", # Default model for Ollama
+      model: "llama3",
       temperature: 0.1,
-      max_tokens: 4096 # Check if Ollama respects this or has its own limits
+      max_tokens: 4096
     }.freeze
     DEFAULT_NAME = "Ollama engine"
     DEFAULT_DESCRIPTION = "useful for when you need to use local AI to answer questions. " \
@@ -23,24 +23,18 @@ module Boxcars
       user_id = kwargs.delete(:user_id)
       @ollama_params = DEFAULT_PARAMS.merge(kwargs)
       @prompts = prompts
-      @batch_size = batch_size # Retain if used by other methods
+      @batch_size = batch_size
       super(description:, name:, user_id:)
     end
 
-    # Renamed from open_ai_client to ollama_client for clarity
-    # Ollama doesn't use an API key by default.
     def self.ollama_client
-      # The OpenAI gem requires an access_token, even if the local service doesn't.
-      # Provide a dummy one if not needed, or allow configuration if Ollama setup requires one.
+      # The OpenAI client expects an API key even for local endpoints.
       Boxcars::OpenAICompatibleClient.build(
         access_token: "ollama-dummy-key",
         uri_base: "http://localhost:11434/v1"
       )
-      # Added /v1 to uri_base, as OpenAI-compatible endpoints often version this way.
-      # Verify Ollama's actual OpenAI-compatible endpoint path.
     end
 
-    # Ollama models are typically conversational.
     def conversation_model?(_model_name)
       true
     end
@@ -50,7 +44,7 @@ module Boxcars
       response_data = { response_obj: nil, parsed_json: nil, success: false, error: nil, status_code: nil }
       current_params = @ollama_params.merge(kwargs)
       current_prompt_object = prompt.is_a?(Array) ? prompt.first : prompt
-      api_request_params = nil # Initialize
+      api_request_params = nil
 
       begin
         clnt = Ollama.ollama_client
@@ -90,7 +84,7 @@ module Boxcars
 
     def run(question, **)
       prompt = Prompt.new(template: question)
-      answer = client(prompt:, inputs: {}, **) # Pass empty inputs hash
+      answer = client(prompt:, inputs: {}, **)
       Boxcars.debug("Answer: #{answer}", :cyan)
       answer
     end
@@ -104,9 +98,8 @@ module Boxcars
     def ollama_handle_call_outcome(response_data:)
       if response_data[:error]
         Boxcars.error("Ollama Error: #{response_data[:error].message} (#{response_data[:error].class.name})", :red)
-        raise response_data[:error] # Re-raise the original error
+        raise response_data[:error]
       elsif !response_data[:success]
-        # This case handles errors returned in the response body but not raised as OpenAI::Error
         err_details = response_data.dig(:response_obj, "error")
         msg = if err_details
                 err_details.is_a?(Hash) ? err_details['message'] : err_details.to_s
@@ -115,7 +108,6 @@ module Boxcars
               end
         raise Error, msg
       else
-        # Extract answer from successful response (assuming OpenAI-like structure)
         choices = response_data.dig(:parsed_json, "choices")
         raise Error, "Ollama: No choices found in response" unless choices.is_a?(Array) && !choices.empty?
 

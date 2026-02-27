@@ -2,7 +2,7 @@
 
 # Boxcars - a framework for running a series of tools to get an answer to a question.
 module Boxcars
-  # A engine that uses Cohere's API.
+  # An engine that uses Cohere's API.
   class Cohere < Engine
     include UnifiedObservability
     include OpenAICompatibleChatHelpers
@@ -17,17 +17,13 @@ module Boxcars
       temperature: 0.2
     }.freeze
 
-    # the default name of the engine
+    # The default name of the engine.
     DEFAULT_NAME = "Cohere engine"
-    # the default description of the engine
+    # The default description of the engine.
     DEFAULT_DESCRIPTION = "useful for when you need to use Cohere AI to answer questions. " \
                           "You should ask targeted questions"
 
-    # A engine is the driver for a single tool to run.
-    # @param name [String] The name of the engine. Defaults to "OpenAI engine".
-    # @param description [String] A description of the engine. Defaults to:
-    #        useful for when you need to use AI to answer questions. You should ask targeted questions".
-    # @param prompts [Array<String>] The prompts to use when asking the engine. Defaults to [].
+    # Initializes a Cohere engine instance.
     def initialize(name: DEFAULT_NAME, description: DEFAULT_DESCRIPTION, prompts: [], **kwargs)
       user_id = kwargs.delete(:user_id)
       @llm_params = DEFAULT_PARAMS.merge(kwargs)
@@ -51,11 +47,7 @@ module Boxcars
       parse_cohere_response_body(post_cohere_chat(params, cohere_api_key).body)
     end
 
-    # Get an answer from the engine.
-    # @param prompt [String] The prompt to use when asking the engine.
-    # @param cohere_api_key [String] Optional api key to use when asking the engine.
-    #   Defaults to Boxcars.configuration.cohere_api_key.
-    # @param kwargs [Hash] Additional parameters to pass to the engine if wanted.
+    # Calls Cohere and returns the parsed response object.
     def client(prompt:, inputs: {}, **kwargs)
       start_time = Time.now
       response_data = { response_obj: nil, parsed_json: nil, success: false, error: nil, status_code: nil }
@@ -90,9 +82,7 @@ module Boxcars
       cohere_handle_call_outcome(response_data:)
     end
 
-    # get an answer from the engine for a question.
-    # @param question [String] The question to ask the engine.
-    # @param kwargs [Hash] Additional parameters to pass to the engine if wanted.
+    # Runs the engine and returns the extracted answer text.
     def run(question, **)
       prompt = Prompt.new(template: question)
       response = client(prompt:, **)
@@ -105,30 +95,25 @@ module Boxcars
       answer
     end
 
-    # Get the default parameters for the engine.
     def default_params
       llm_params
     end
 
-    # validate_response! method uses the base implementation with Cohere-specific must_haves
     def validate_response!(response, must_haves: %w[completion])
       super
     end
 
-    # the engine type
+    # The engine type.
     def engine_type
       "claude"
     end
 
-    # lookup the context size for a model by name
-    # @param modelname [String] The name of the model to lookup.
+    # Looks up the context size for a model by name.
     def modelname_to_contextsize(_modelname)
       100000
     end
 
-    # Calculate the maximum number of tokens possible to generate for a prompt.
-    # @param prompt_text [String] The prompt text to use.
-    # @return [Integer] the number of tokens possible to generate.
+    # Calculates the maximum number of tokens possible for a prompt.
     def max_tokens_for_prompt(prompt_text)
       num_tokens = get_num_tokens(prompt_text)
 

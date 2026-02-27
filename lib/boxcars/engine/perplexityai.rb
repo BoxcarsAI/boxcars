@@ -3,19 +3,18 @@
 require 'json'
 
 module Boxcars
-  # A engine that uses PerplexityAI's API.
+  # An engine that uses PerplexityAI's API.
   class Perplexityai < Engine
     include UnifiedObservability
     include OpenAICompatibleChatHelpers
 
     attr_reader :prompts, :perplexity_params, :model_kwargs, :batch_size
 
-    DEFAULT_PARAMS = { # Renamed from DEFAULT_PER_PARAMS for consistency
-      model: "llama-3-sonar-large-32k-online", # Removed extra quotes
+    DEFAULT_PARAMS = {
+      model: "llama-3-sonar-large-32k-online",
       temperature: 0.1
-      # max_tokens can be part of kwargs if needed
     }.freeze
-    DEFAULT_NAME = "PerplexityAI engine" # Renamed from DEFAULT_PER_NAME
+    DEFAULT_NAME = "PerplexityAI engine"
     DEFAULT_DESCRIPTION = "useful for when you need to use Perplexity AI to answer questions. " \
                           "You should ask targeted questions"
 
@@ -23,22 +22,20 @@ module Boxcars
       user_id = kwargs.delete(:user_id)
       @perplexity_params = DEFAULT_PARAMS.merge(kwargs)
       @prompts = prompts
-      @batch_size = batch_size # Retain if used by generate
+      @batch_size = batch_size
       super(description:, name:, user_id:)
     end
 
-    # Perplexity models are conversational.
     def conversation_model?(_model_name)
       true
     end
 
-    # Main client method for interacting with the Perplexity API
     # rubocop:disable Metrics/MethodLength
     def client(prompt:, inputs: {}, perplexity_api_key: nil, **kwargs)
       start_time = Time.now
       response_data = { response_obj: nil, parsed_json: nil, success: false, error: nil, status_code: nil }
       current_params = @perplexity_params.merge(kwargs)
-      api_request_params = nil # Parameters actually sent to Perplexity API
+      api_request_params = nil
       current_prompt_object = prompt.is_a?(Array) ? prompt.first : prompt
 
       begin
@@ -48,15 +45,12 @@ module Boxcars
 
         conn = Faraday.new(url: "https://api.perplexity.ai") do |faraday|
           faraday.request :json
-          faraday.response :json # Parse JSON response
-          faraday.response :raise_error # Raise exceptions on 4xx/5xx
+          faraday.response :json
+          faraday.response :raise_error
           faraday.adapter Faraday.default_adapter
         end
 
         messages_for_api = current_prompt_object.as_messages(inputs)[:messages]
-        # Perplexity expects a 'model' and 'messages' structure.
-        # Other params like temperature, max_tokens are top-level.
-        # Filter out parameters that Perplexity doesn't support
         supported_params = filter_supported_params(current_params)
         api_request_params = {
           model: supported_params[:model],
@@ -70,8 +64,8 @@ module Boxcars
           req.body = api_request_params
         end
 
-        response_data[:response_obj] = response # Faraday response object
-        response_data[:parsed_json] = response.body # Faraday with :json middleware parses body
+        response_data[:response_obj] = response
+        response_data[:parsed_json] = response.body
         response_data[:status_code] = response.status
 
         if response.success? && response.body && response.body["choices"]
@@ -117,13 +111,11 @@ module Boxcars
     def run(question, **)
       prompt = Prompt.new(template: question)
       response = client(prompt:, inputs: {}, **)
-      # Extract the content from the response for the run method
       answer = extract_answer(response)
       Boxcars.debug("Answer: #{answer}", :cyan)
       answer
     end
 
-    # Extract answer content from the API response
     def extract_answer(response)
       if response.is_a?(Hash) && response["choices"]
         response["choices"].map { |c| c.dig("message", "content") }.join("\n").strip
@@ -136,16 +128,13 @@ module Boxcars
       @perplexity_params
     end
 
-    # validate_response! method uses the base implementation
     def validate_response!(response, must_haves: %w[choices])
       super
     end
 
     private
 
-    # Filter out parameters that Perplexity doesn't support
     def filter_supported_params(params)
-      # Perplexity supports these parameters based on their API documentation
       supported_keys = %i[
         model
         messages
@@ -158,7 +147,6 @@ module Boxcars
         frequency_penalty
       ]
 
-      # Remove unsupported parameters like stop, response_format, etc.
       params.select { |key, _| supported_keys.include?(key.to_sym) }
     end
 
@@ -177,13 +165,8 @@ module Boxcars
                 "PerplexityAI: No choices found in response"
         end
 
-        # Return the full parsed JSON response (Hash) as expected by the base Engine class
         parsed_response
       end
     end
-
-    # Methods like `check_response`, `generate`, `generation_info` are removed or would need significant rework.
-    # `check_response` logic is now part of `_perplexity_handle_call_outcome`.
-    # `generate` would need to be re-implemented carefully if batching is desired with direct Faraday.
   end
 end

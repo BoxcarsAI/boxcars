@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 # Boxcars is a framework for running a series of tools to get an answer to a question.
 module Boxcars
-  # A engine that uses OpenAI's API.
+  # An engine that uses Anthropic's API.
   # rubocop:disable Metrics/ClassLength
   class Anthropic < Engine
     include UnifiedObservability
@@ -16,17 +16,13 @@ module Boxcars
       temperature: 0.1
     }.freeze
 
-    # the default name of the engine
+    # The default name of the engine.
     DEFAULT_NAME = "Anthropic engine"
-    # the default description of the engine
+    # The default description of the engine.
     DEFAULT_DESCRIPTION = "useful for when you need to use Anthropic AI to answer questions. " \
                           "You should ask targeted questions"
 
-    # A engine is the driver for a single tool to run.
-    # @param name [String] The name of the engine. Defaults to "OpenAI engine".
-    # @param description [String] A description of the engine. Defaults to:
-    #        useful for when you need to use AI to answer questions. You should ask targeted questions".
-    # @param prompts [Array<String>] The prompts to use when asking the engine. Defaults to [].
+    # Initializes an Anthropic engine instance.
     def initialize(name: DEFAULT_NAME, description: DEFAULT_DESCRIPTION, prompts: [], **kwargs)
       user_id = kwargs.delete(:user_id)
       @llm_params = DEFAULT_PARAMS.merge(kwargs)
@@ -44,11 +40,7 @@ module Boxcars
       ::Anthropic::Client.new(access_token: anthropic_api_key)
     end
 
-    # Get an answer from the engine.
-    # @param prompt [String] The prompt to use when asking the engine.
-    # @param anthropic_api_key [String] Optional api key to use when asking the engine.
-    #   Defaults to Boxcars.configuration.anthropic_api_key.
-    # @param kwargs [Hash] Additional parameters to pass to the engine if wanted.
+    # Calls Anthropic and returns the parsed response object.
     def client(prompt:, inputs: {}, **kwargs)
       start_time = Time.now
       response_data = { response_obj: nil, parsed_json: nil, success: false, error: nil, status_code: nil }
@@ -86,9 +78,7 @@ module Boxcars
       anthropic_handle_call_outcome(response_data:)
     end
 
-    # get an answer from the engine for a question.
-    # @param question [String] The question to ask the engine.
-    # @param kwargs [Hash] Additional parameters to pass to the engine if wanted.
+    # Runs the engine and returns the extracted answer text.
     def run(question, **)
       prompt = Prompt.new(template: question)
       response = client(prompt:, **)
@@ -101,14 +91,11 @@ module Boxcars
       answer
     end
 
-    # Get the default parameters for the engine.
     def default_params
       llm_params
     end
 
-    # Get generation informaton
-    # @param sub_choices [Array<Hash>] The choices to get generation info for.
-    # @return [Array<Generation>] The generation information.
+    # Builds generation metadata from Anthropic responses.
     def generation_info(sub_choices)
       sub_choices.map do |choice|
         Generation.new(
@@ -121,16 +108,11 @@ module Boxcars
       end
     end
 
-    # validate_response! method uses the base implementation with Anthropic-specific must_haves
     def validate_response!(response, must_haves: %w[completion])
       super
     end
 
-    # Call out to OpenAI's endpoint with k unique prompts.
-    # @param prompts [Array<String>] The prompts to pass into the model.
-    # @param inputs [Array<String>] The inputs to subsitite into the prompt.
-    # @param stop [Array<String>] Optional list of stop words to use when generating.
-    # @return [EngineResult] The full engine output.
+    # Generates responses for prompts and aggregates token usage.
     def generate(prompts:, stop: nil)
       params = {}
       params[:stop] = stop if stop
