@@ -37,7 +37,7 @@ module Boxcars
     # Callback to process the action/action input of a train.
     # @param text [String] The text to extract from.
     def extract_boxcar_and_input(text)
-      Result.new(status: :ok, answer: text, explanation: engine_output)
+      raise NotImplementedError, "#{self.class} must implement #extract_boxcar_and_input"
     end
 
     # build the scratchpad for the engine
