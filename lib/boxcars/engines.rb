@@ -102,13 +102,6 @@ module Boxcars
       engine(model:, **options)
     end
 
-    # Validate that an answer has the expected structure
-    # @param answer [Hash] The answer to validate
-    # @return [Boolean] True if the answer is valid
-    def self.valid_answer?(answer)
-      answer.is_a?(Hash) && answer.key?(:answer) && answer[:answer].is_a?(Boxcars::Result)
-    end
-
     def self.emit_alias_deprecation_warning(model)
       model_name = model.to_s
       info = deprecated_alias_info(model_name)

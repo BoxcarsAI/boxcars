@@ -315,27 +315,4 @@ RSpec.describe Boxcars::Engines do
     end
   end
 
-  describe ".valid_answer?" do
-    let(:valid_result) { Boxcars::Result.new(status: :ok, answer: "test answer") }
-    let(:valid_answer) { { answer: valid_result } }
-    let(:invalid_answer_no_key) { { result: valid_result } }
-    let(:invalid_answer_wrong_type) { { answer: "string" } }
-    let(:invalid_answer_not_hash) { "not a hash" }
-
-    it "returns true for valid answer" do
-      expect(described_class.valid_answer?(valid_answer)).to be true
-    end
-
-    it "returns false for answer without :answer key" do
-      expect(described_class.valid_answer?(invalid_answer_no_key)).to be false
-    end
-
-    it "returns false for answer with wrong type" do
-      expect(described_class.valid_answer?(invalid_answer_wrong_type)).to be false
-    end
-
-    it "returns false for non-hash answer" do
-      expect(described_class.valid_answer?(invalid_answer_not_hash)).to be false
-    end
-  end
 end
