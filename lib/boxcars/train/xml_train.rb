@@ -61,19 +61,6 @@ module Boxcars
 
     private
 
-    def parse_output(engine_output)
-      Boxcars::OptionalDependency.require!("nokogiri", feature: "Boxcars::XMLTrain")
-      doc = Nokogiri::XML("<data>#{engine_prefix}#{engine_output}\n</data>")
-      keys = doc.element_children.first.element_children.map(&:name).map(&:to_sym)
-      keys.to_h do |key|
-        [key, doc.at_xpath("//#{key}")&.text]
-      end
-    end
-
-    def child_keys(xnode)
-      xnode.children.map(&:name).map(&:to_sym)
-    end
-
     # get next action and input using an XNode
     # @param xnode [XNode] The XNode to use.
     # @return [Array<String, String>] The action and input.
