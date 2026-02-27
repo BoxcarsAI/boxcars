@@ -41,6 +41,7 @@ RSpec.configure do |c|
 
   c.before do |example|
     otoken = example.metadata[:skip_tokens] ? nil : ENV.fetch("OPENAI_ACCESS_TOKEN", "abcdef")
+    openai_api_key = example.metadata[:skip_tokens] ? nil : ENV.fetch("OPENAI_API_KEY", otoken)
     stoken = example.metadata[:skip_tokens] ? nil : ENV.fetch("SERPAPI_API_KEY", "abcdefg")
     atoken = example.metadata[:skip_tokens] ? nil : ENV.fetch("ANTHROPIC_API_KEY", "abcdefgh")
     ctoken = example.metadata[:skip_tokens] ? nil : ENV.fetch("COHERE_API_KEY", "abcdefgh")
@@ -53,6 +54,7 @@ RSpec.configure do |c|
     log_generated = ENV.fetch("LOG_GEN", false)
     http_p = ENV.fetch('http_proxy', nil)
     allow(ENV).to receive(:fetch).with("OPENAI_ACCESS_TOKEN", nil).and_return(otoken)
+    allow(ENV).to receive(:fetch).with("OPENAI_API_KEY", nil).and_return(openai_api_key)
     allow(ENV).to receive(:fetch).with("SERPAPI_API_KEY", nil).and_return(stoken)
     allow(ENV).to receive(:fetch).with("ANTHROPIC_API_KEY", nil).and_return(atoken)
     allow(ENV).to receive(:fetch).with("COHERE_API_KEY", nil).and_return(ctoken)

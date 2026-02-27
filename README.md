@@ -87,7 +87,7 @@ Or install it yourself as:
 
 ## Usage
 
-First, set environment variables for providers you plan to use (for example `OPENAI_ACCESS_TOKEN`, `ANTHROPIC_API_KEY`, `SERPAPI_API_KEY`). If you prefer, you can pass keys directly in code.
+First, set environment variables for providers you plan to use (for example `OPENAI_ACCESS_TOKEN` or `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `SERPAPI_API_KEY`). If you prefer, you can pass keys directly in code.
 
 In the examples below, we use one extra gem to load environment variables; depending on your setup, you may not need it.
 ```ruby

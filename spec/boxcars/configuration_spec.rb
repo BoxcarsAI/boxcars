@@ -65,6 +65,22 @@ RSpec.describe Boxcars::Configuration do
     end
   end
 
+  describe '#openai_access_token' do
+    it 'uses OPENAI_ACCESS_TOKEN when set' do
+      allow(ENV).to receive(:fetch).with("OPENAI_ACCESS_TOKEN", nil).and_return("token-from-access-token")
+      allow(ENV).to receive(:fetch).with("OPENAI_API_KEY", nil).and_return("token-from-api-key")
+
+      expect(configuration.openai_access_token).to eq("token-from-access-token")
+    end
+
+    it 'falls back to OPENAI_API_KEY when OPENAI_ACCESS_TOKEN is missing' do
+      allow(ENV).to receive(:fetch).with("OPENAI_ACCESS_TOKEN", nil).and_return(nil)
+      allow(ENV).to receive(:fetch).with("OPENAI_API_KEY", nil).and_return("token-from-api-key")
+
+      expect(configuration.openai_access_token).to eq("token-from-api-key")
+    end
+  end
+
   describe 'Boxcars.configure' do
     after do
       # Reset configuration after each test

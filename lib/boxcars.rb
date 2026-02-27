@@ -134,7 +134,9 @@ module Boxcars
               provided_val
             else
               # otherwise, dig out of the environment
-              env_val = ENV.fetch(key.to_s.upcase, nil)
+              env_keys = [key.to_s.upcase]
+              env_keys << "OPENAI_API_KEY" if key == :openai_access_token
+              env_val = env_keys.lazy.map { |env_key| ENV.fetch(env_key, nil) }.find { |candidate| !candidate.nil? && !candidate.empty? }
               env_val
             end
       check_key(key, val)

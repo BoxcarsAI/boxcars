@@ -17,6 +17,7 @@ This section tracks the modernization work that is being added in v0.9 with a co
   - `Boxcars::MCP.tool_calling_train(...)` to combine local Boxcars + MCP tools into a `ToolCallingTrain`
 - OpenAI backend migration controls added:
   - `Boxcars::Openai` now runs on the official OpenAI client path only (`:ruby_openai` is unsupported)
+  - `OPENAI_API_KEY` is accepted as a fallback for `OPENAI_ACCESS_TOKEN` in configuration lookup
   - `openai_official_client_builder` config hook for official client injection
   - `openai_official_require_native` toggle to fail fast unless native official wiring is available
   - Client compatibility preflight checks in `OpenAICompatibleClient.validate_client_configuration!`
