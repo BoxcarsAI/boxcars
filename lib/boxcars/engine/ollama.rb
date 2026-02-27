@@ -84,7 +84,8 @@ module Boxcars
 
     def run(question, **)
       prompt = Prompt.new(template: question)
-      answer = client(prompt:, inputs: {}, **)
+      response = client(prompt:, inputs: {}, **)
+      answer = extract_answer(response)
       Boxcars.debug("Answer: #{answer}", :cyan)
       answer
     end
@@ -108,10 +109,7 @@ module Boxcars
               end
         raise Error, msg
       else
-        choices = response_data.dig(:parsed_json, "choices")
-        raise Error, "Ollama: No choices found in response" unless choices.is_a?(Array) && !choices.empty?
-
-        choices.map { |c| c.dig("message", "content") }.join("\n").strip
+        response_data[:parsed_json]
       end
     end
   end

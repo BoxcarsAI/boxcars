@@ -198,6 +198,13 @@ module Boxcars
         response_data[:status_code] = 200 # Inferred
         # Transform response to match expected format
         raw_response['completion'] = raw_response.dig('content', 0, 'text')
+        raw_response['choices'] ||= [{ "text" => raw_response['completion'], "finish_reason" => raw_response["stop_reason"] }]
+        if raw_response["usage"].is_a?(Hash)
+          raw_response["usage"]["prompt_tokens"] ||= raw_response["usage"]["input_tokens"]
+          raw_response["usage"]["completion_tokens"] ||= raw_response["usage"]["output_tokens"]
+          raw_response["usage"]["total_tokens"] ||= raw_response["usage"]["prompt_tokens"].to_i +
+                                                    raw_response["usage"]["completion_tokens"].to_i
+        end
         raw_response.delete('content')
       else
         response_data[:success] = false
