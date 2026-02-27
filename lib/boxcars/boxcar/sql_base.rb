@@ -54,9 +54,9 @@ module Boxcars
 
     def check_tables(rtables, exceptions)
       requested_tables = nil
-      if rtables.is_a?(Array) && tables.length.positive?
+      if rtables.is_a?(Array)
         requested_tables = rtables
-        all_tables = tables
+        all_tables = tables.to_a
         rtables.each do |t|
           raise ArgumentError, "table #{t} not found in database" unless all_tables.include?(t)
         end
