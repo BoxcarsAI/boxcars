@@ -5,6 +5,7 @@ module Boxcars
   # Supports legacy `result[:answer].answer` access while guiding users toward
   # `Boxcars::Result.extract(result)`.
   class ConductResult < Hash
+    LEGACY_ANSWER_ACCESS_REMOVE_IN = "3.0"
     @emit_legacy_answer_access_warnings = true
     @warned_legacy_answer_access = false
 
@@ -53,7 +54,7 @@ module Boxcars
       return unless Boxcars.configuration.emit_deprecation_warnings
       return if self.class.instance_variable_get(:@warned_legacy_answer_access)
 
-      Boxcars.warn("Deprecated conduct hash access `result[:answer].answer`; use `Boxcars::Result.extract(result)&.answer`")
+      Boxcars.warn("Deprecated conduct hash access `result[:answer].answer`; use `Boxcars::Result.extract(result)&.answer` (planned removal in v#{LEGACY_ANSWER_ACCESS_REMOVE_IN})")
       self.class.instance_variable_set(:@warned_legacy_answer_access, true)
     end
 

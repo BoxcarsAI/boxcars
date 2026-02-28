@@ -4,6 +4,7 @@ module Boxcars
   # Factory class for creating engine instances based on model names
   # Provides convenient shortcuts and aliases for different AI models
   class Engines
+    VALID_ANSWER_REMOVE_IN = "3.0"
     DEFAULT_MODEL = "gemini-2.5-flash"
     DEPRECATED_MODEL_ALIASES = {
       # Generic provider aliases are convenient but ambiguous and make pruning harder.
@@ -109,7 +110,7 @@ module Boxcars
     # @deprecated Use `Boxcars::Result.valid_conduct_payload?` or `Boxcars::Result.extract`.
     def self.valid_answer?(answer)
       unless @warned_valid_answer || !deprecation_warnings_enabled?
-        Boxcars.warn("Boxcars::Engines.valid_answer? is deprecated; use Boxcars::Result.valid_conduct_payload? or Boxcars::Result.extract")
+        Boxcars.warn("Boxcars::Engines.valid_answer? is deprecated; use Boxcars::Result.valid_conduct_payload? or Boxcars::Result.extract (planned removal in v#{VALID_ANSWER_REMOVE_IN})")
         @warned_valid_answer = true
       end
       Boxcars::Result.valid_conduct_payload?(answer)

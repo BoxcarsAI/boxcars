@@ -36,7 +36,7 @@ If `prompts:` is still passed, constructors now raise `Boxcars::ArgumentError` (
 
 ## Conduct Result Helper Migration
 
-`Boxcars::Engines.valid_answer?` is deprecated. It still works in v0.10+, but you should migrate to `Boxcars::Result` helpers.
+`Boxcars::Engines.valid_answer?` is deprecated. It still works in v0.10+, but you should migrate to `Boxcars::Result` helpers (planned removal in v3.0).
 
 Before:
 
@@ -57,7 +57,7 @@ if result&.ok?
 end
 ```
 
-Legacy `result[:answer].answer` still works for now, but emits a one-time deprecation warning.
+Legacy `result[:answer].answer` still works for now, but emits a one-time deprecation warning (planned removal in v3.0).
 
 If you need to silence deprecation warnings temporarily during rollout:
 
@@ -317,6 +317,7 @@ This preflight validates official client wiring, so client-shape mismatches fail
 If you are validating migration behavior in CI or locally, run:
 
 ```bash
+bundle exec rake spec:deprecation_guards
 bundle exec rake spec:vcr_openai_smoke
 bundle exec rake spec:notebooks_smoke
 bundle exec rake spec:openai_client_parity

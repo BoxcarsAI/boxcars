@@ -92,10 +92,16 @@ namespace :spec do
 
   desc "Run modernization regression suite (aliases/tool-calling/MCP/JSON schema + OpenAI client parity lanes)"
   task :modernization do
+    sh "bundle exec ruby script/deprecation_usage_guard.rb"
     sh "bundle exec rspec #{NOTEBOOK_SMOKE_SPECS.join(' ')}"
     sh "bundle exec rspec #{MODERNIZATION_RUNTIME_SPECS.join(' ')}"
     sh "bundle exec rspec #{OPENAI_CLIENT_PARITY_SPECS.join(' ')}"
     sh "bundle exec rspec #{OPENAI_CLIENT_OFFICIAL_ONLY_SPECS.join(' ')}"
+  end
+
+  desc "Fail when deprecated API patterns appear outside compatibility coverage"
+  task :deprecation_guards do
+    sh "bundle exec ruby script/deprecation_usage_guard.rb"
   end
 
   desc "Run minimal-dependency bundle check (core load + optional gem setup errors)"

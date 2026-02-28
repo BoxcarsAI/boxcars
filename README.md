@@ -393,6 +393,7 @@ If you set `OPENAI_OFFICIAL_REQUIRE_NATIVE=true` (or `config.openai_official_req
 For OpenAI client parity checks:
 
 ```bash
+bundle exec rake spec:deprecation_guards
 bundle exec rake spec:openai_client_parity
 bundle exec rake spec:openai_client_parity_official
 bundle exec rake spec:minimal_dependencies
