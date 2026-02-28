@@ -53,7 +53,7 @@ module Boxcars
     # @param inputs [Hash] The inputs.
     # @raise [RuntimeError] If the inputs are not the same.
     def validate_inputs(inputs:)
-      missing_keys = input_keys - inputs.keys
+      missing_keys = input_keys.reject { |key| key_present?(inputs, key) }
       raise "Missing some input keys: #{missing_keys}" if missing_keys.any?
 
       inputs
@@ -63,7 +63,10 @@ module Boxcars
     # @param outputs [Array<String>] The output keys.
     # @raise [RuntimeError] If the outputs are not the same.
     def validate_outputs(outputs:)
-      return if (outputs - output_keys - ['log']).empty?
+      unexpected = outputs.reject do |key|
+        output_keys.any? { |expected| same_key?(expected, key) } || same_key?(:log, key)
+      end
+      return if unexpected.empty?
 
       raise "Did not get output keys that were expected, got: #{outputs}. Expected: #{output_keys}"
     end
@@ -365,6 +368,26 @@ module Boxcars
       return nil unless inputs.is_a?(Hash)
 
       inputs[key] || inputs[key.to_s]
+    end
+
+    def key_present?(hash, key)
+      key_variants(key).any? { |candidate| hash.key?(candidate) }
+    end
+
+    def same_key?(left, right)
+      left_variants = key_variants(left)
+      key_variants(right).any? { |candidate| left_variants.include?(candidate) }
+    end
+
+    def key_variants(key)
+      case key
+      when Symbol
+        [key, key.to_s]
+      when String
+        [key, key.to_sym]
+      else
+        [key]
+      end
     end
 
     # the default answer is the text passed in

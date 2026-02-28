@@ -153,6 +153,43 @@ RSpec.describe Boxcars::Boxcar do
     end
   end
 
+  describe "key normalization" do
+    it "accepts string-keyed input hashes for #conduct" do
+      boxcar = Class.new(described_class) do
+        def call(inputs:)
+          { answer: "echo: #{inputs[:question] || inputs['question']}" }
+        end
+      end.new(description: "String input key support")
+
+      result = boxcar.conduct("question" => "hello")
+      expect(result.output_for(:answer)).to eq("echo: hello")
+    end
+
+    it "accepts string output keys when output_keys are symbols" do
+      boxcar = Class.new(described_class) do
+        def output_keys
+          [:foo]
+        end
+
+        def call(inputs:)
+          { "foo" => "value: #{inputs[:question] || inputs['question']}" }
+        end
+      end.new(description: "String output key support")
+
+      expect(boxcar.run("hello")).to eq("value: hello")
+    end
+
+    it "accepts symbol log keys in output payloads" do
+      boxcar = Class.new(described_class) do
+        def call(inputs:)
+          { answer: "echo: #{inputs[:question]}", log: "trace" }
+        end
+      end.new(description: "Log key support")
+
+      expect(boxcar.run("hello")).to eq("echo: hello")
+    end
+  end
+
   describe "#run contract" do
     let(:result_boxcar_class) do
       Class.new(described_class) do
