@@ -30,7 +30,7 @@ module Boxcars
     # @param question [String] Ruby expression to evaluate.
     # @return [Boxcars::Result] Execution result from the Ruby REPL helper.
     def run(question)
-      call(inputs: { question: })[:answer]
+      run_result(question)
     end
 
     # Execute one Ruby calculator request using the normalized Boxcar input contract.

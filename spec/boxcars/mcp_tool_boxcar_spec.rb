@@ -106,8 +106,7 @@ RSpec.describe Boxcars::MCP do
         input_schema: { "type" => "object", "properties" => {}, "additionalProperties" => false }
       )
 
-      result = boxcar.conduct({})
-      answer = Boxcars::Result.extract(result)
+      answer = boxcar.run_result({})
 
       expect(answer).to be_a(Boxcars::Result)
       expect(answer.status).to eq(:error)

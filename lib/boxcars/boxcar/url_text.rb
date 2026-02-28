@@ -17,7 +17,7 @@ module Boxcars
     # @param url [String] The url
     # @return [Boxcars::Result] Text extraction result (or error result).
     def run(url)
-      call(inputs: { question: url })[:answer]
+      run_result(url)
     end
 
     # Execute one URL text fetch using the normalized Boxcar input contract.

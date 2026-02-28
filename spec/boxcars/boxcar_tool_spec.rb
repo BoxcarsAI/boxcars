@@ -232,5 +232,21 @@ RSpec.describe Boxcars::Boxcar do
     ensure
       Boxcars.configuration.emit_deprecation_warnings = true
     end
+
+    it "returns structured result via #run_result" do
+      boxcar = result_boxcar_class.new(description: "Result wrapper")
+      result = boxcar.run_result("hello")
+
+      expect(result).to be_a(Boxcars::Result)
+      expect(result.answer).to eq("echo: hello")
+    end
+
+    it "returns structured result via #conduct_result" do
+      boxcar = result_boxcar_class.new(description: "Result wrapper")
+      result = boxcar.conduct_result("hello")
+
+      expect(result).to be_a(Boxcars::Result)
+      expect(result.answer).to eq("echo: hello")
+    end
   end
 end

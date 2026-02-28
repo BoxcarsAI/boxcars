@@ -97,6 +97,22 @@ module Boxcars
       rv
     end
 
+    # Convenience helper that returns the structured `Boxcars::Result` from `conduct`.
+    # @param args [Array] The positional arguments to pass to the boxcar.
+    # @param kwargs [Hash] The keyword arguments to pass to the boxcar.
+    # @return [Boxcars::Result,nil] Extracted result when this boxcar returns structured output.
+    def run_result(*, **)
+      Result.extract(conduct(*, **))
+    end
+
+    # Alias for `run_result` to make intent explicit when callers want full context first.
+    # @param args [Array] The positional arguments to pass to the boxcar.
+    # @param kwargs [Hash] The keyword arguments to pass to the boxcar.
+    # @return [Boxcars::Result,nil] Extracted result when this boxcar returns structured output.
+    def conduct_result(*, **)
+      run_result(*, **)
+    end
+
     # Run the boxcar and return full input/output context.
     # @param args [Array] The positional arguments to pass to the boxcar.
     # @param kwargs [Hash] The keyword arguments to pass to the boxcar.

@@ -50,8 +50,7 @@ end
 After:
 
 ```ruby
-answer = train.conduct(markdown)
-result = Boxcars::Result.extract(answer)
+result = train.run_result(markdown)
 if result&.ok?
   value = result.answer
 end

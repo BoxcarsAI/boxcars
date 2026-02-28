@@ -54,7 +54,7 @@ module Boxcars
       return unless Boxcars.configuration.emit_deprecation_warnings
       return if self.class.instance_variable_get(:@warned_legacy_answer_access)
 
-      Boxcars.warn("Deprecated conduct hash access `result[:answer].answer`; use `Boxcars::Result.extract(result)&.answer` (planned removal in v#{LEGACY_ANSWER_ACCESS_REMOVE_IN})")
+      Boxcars.warn("Deprecated conduct hash access `result[:answer].answer`; use `boxcar.run_result(...)&.answer` (planned removal in v#{LEGACY_ANSWER_ACCESS_REMOVE_IN})")
       self.class.instance_variable_set(:@warned_legacy_answer_access, true)
     end
 
