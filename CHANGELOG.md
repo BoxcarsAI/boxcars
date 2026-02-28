@@ -70,6 +70,12 @@ This section tracks the modernization work that is being added in v0.9 with a co
 - Current remaining `bundle outdated` item after this pass:
   - `diff-lcs` (`2.x` blocked by RSpec 3.x dependency constraint `< 2.0`).
 
+#### Response Payload Normalization and Hardening (v0.9)
+
+- Engine and observability response parsing now normalize provider payload key shapes consistently (string/symbol key compatibility) across OpenAI-compatible and direct-provider paths.
+- Added regression coverage for symbol-key payloads in provider/observability specs for OpenAI, Groq, Gemini, Anthropic, Cohere, PerplexityAI, and Ollama.
+- Shared OpenAI-compatible helper path now normalizes status/error extraction before provider-specific success checks.
+
 #### Model Alias Deprecations (warning now, planned removal in v1.0)
 
 Deprecated aliases currently emit a one-time warning (per process) and still work in v0.9.
