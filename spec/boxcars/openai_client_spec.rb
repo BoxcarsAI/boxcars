@@ -33,7 +33,7 @@ RSpec.describe Boxcars::OpenAIClient do
         expect(access_token).to eq("abc")
         expect(uri_base).to eq("https://api.openai.com/v1")
         expect(organization_id).to eq("org_123")
-        expect(log_errors).to eq(true)
+        expect(log_errors).to be(true)
         official_client
       end
 
@@ -80,14 +80,14 @@ RSpec.describe Boxcars::OpenAIClient do
   describe ".validate_client_configuration!" do
     it "returns true when an official builder is configured" do
       described_class.official_client_builder = ->(**) { double("OfficialClient") } # rubocop:disable RSpec/VerifiedDoubles
-      expect(described_class.validate_client_configuration!).to eq(true)
+      expect(described_class.validate_client_configuration!).to be(true)
     end
 
     it "returns true when configuration builder is present" do
       Boxcars.configuration.openai_official_client_builder = ->(**) { double("OfficialClient") } # rubocop:disable RSpec/VerifiedDoubles
       described_class.official_client_builder = nil
 
-      expect(described_class.validate_client_configuration!).to eq(true)
+      expect(described_class.validate_client_configuration!).to be(true)
     end
 
     it "raises when no builder or official class is available" do

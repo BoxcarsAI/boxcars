@@ -28,7 +28,7 @@ module Boxcars
       super
     end
 
-    def fetch(key, *args, &block)
+    def fetch(key, *args, &)
       warn_legacy_answer_access(key)
       super
     end
@@ -62,12 +62,16 @@ module Boxcars
     private
 
     def warn_legacy_answer_access(key)
-      return unless key == :answer || key == "answer"
+      return unless [:answer, "answer"].include?(key)
       return unless self.class.emit_legacy_answer_access_warnings
       return unless Boxcars.configuration.emit_deprecation_warnings
       return if self.class.instance_variable_get(:@warned_legacy_answer_access)
 
-      Boxcars.warn("Deprecated conduct hash access `result[:answer].answer`; use `boxcar.run_result(...)&.answer` (planned removal in v#{LEGACY_ANSWER_ACCESS_REMOVE_IN})")
+      Boxcars.warn(
+        "Deprecated conduct hash access `result[:answer].answer`; " \
+        "use `boxcar.run_result(...)&.answer` " \
+        "(planned removal in v#{LEGACY_ANSWER_ACCESS_REMOVE_IN})"
+      )
       self.class.instance_variable_set(:@warned_legacy_answer_access, true)
     end
 

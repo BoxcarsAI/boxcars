@@ -4,7 +4,7 @@ require "spec_helper"
 require "timeout"
 
 RSpec.describe "Live LLM smoke", :live_env do
-  PROMPT = "Reply with exactly OK and nothing else.".freeze
+  PROMPT = "Reply with exactly OK and nothing else."
 
   ENGINE_CASES = [
     {
@@ -142,7 +142,7 @@ RSpec.describe "Live LLM smoke", :live_env do
       name: "gpt4all",
       optional_env: "GPT4ALL_LIVE",
       enabled: lambda {
-        defined?(::Gpt4all::ConversationalAI)
+        defined?(Gpt4all::ConversationalAI)
       },
       run: lambda { |prompt|
         Boxcars::Gpt4allEng.new(model_name: ENV.fetch("GPT4ALL_LIVE_MODEL", "gpt4all-j-v1.3-groovy")).run(prompt)
@@ -241,11 +241,8 @@ RSpec.describe "Live LLM smoke", :live_env do
       end
     end
 
-    puts "[llms-live] executed=#{executed.join(', ')}"
-    puts "[llms-live] skipped=#{skipped.join(' | ')}" unless skipped.empty?
-
     expect(executed).not_to be_empty,
-      "No live engines were configured. Provide API keys in .env and set RUN_LIVE_LLM_SPECS=true."
+                            "No live engines were configured. Provide API keys in .env and set RUN_LIVE_LLM_SPECS=true."
     expect(failures).to be_empty, "Live LLM failures:\n- #{failures.join("\n- ")}"
   end
 end

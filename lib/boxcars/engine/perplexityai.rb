@@ -20,6 +20,7 @@ module Boxcars
 
     def initialize(name: DEFAULT_NAME, description: DEFAULT_DESCRIPTION, batch_size: 20, **kwargs)
       raise ArgumentError, "unknown keyword: :prompts" if kwargs.key?(:prompts)
+
       user_id = kwargs.delete(:user_id)
       @perplexity_params = DEFAULT_PARAMS.merge(kwargs)
       super(description:, name:, batch_size:, user_id:)

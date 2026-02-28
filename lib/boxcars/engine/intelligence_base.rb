@@ -23,6 +23,7 @@ module Boxcars
     # @param kwargs [Hash] Additional parameters to pass to the Engine.
     def initialize(provider:, description:, name:, batch_size: 20, **kwargs)
       raise ArgumentError, "unknown keyword: :prompts" if kwargs.key?(:prompts)
+
       user_id = kwargs.delete(:user_id)
       @provider = provider
       # Start with defaults, merge other kwargs, then explicitly set model if provided in initialize
@@ -130,6 +131,5 @@ module Boxcars
     def intelligence_available?
       defined?(::Intelligence::Adapter) && defined?(::Intelligence::ChatRequest)
     end
-
   end
 end

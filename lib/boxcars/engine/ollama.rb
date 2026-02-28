@@ -21,6 +21,7 @@ module Boxcars
 
     def initialize(name: DEFAULT_NAME, description: DEFAULT_DESCRIPTION, batch_size: 2, **kwargs)
       raise ArgumentError, "unknown keyword: :prompts" if kwargs.key?(:prompts)
+
       user_id = kwargs.delete(:user_id)
       @ollama_params = DEFAULT_PARAMS.merge(kwargs)
       super(description:, name:, batch_size:, user_id:)
@@ -84,7 +85,9 @@ module Boxcars
     private
 
     def ollama_handle_call_outcome(response_data:)
-      normalized_response_obj = normalize_generate_response(response_data[:response_obj]) if response_data[:response_obj].is_a?(Hash)
+      if response_data[:response_obj].is_a?(Hash)
+        normalized_response_obj = normalize_generate_response(response_data[:response_obj])
+      end
 
       if response_data[:error]
         Boxcars.error("Ollama Error: #{response_data[:error].message} (#{response_data[:error].class.name})", :red)

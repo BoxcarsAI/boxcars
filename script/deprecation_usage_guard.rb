@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "set"
-
 ROOT = File.expand_path("..", __dir__)
 
 SCAN_PATHS = %w[lib spec].freeze
@@ -11,16 +9,16 @@ PATTERNS = [
     label: "Boxcars::Engines.valid_answer? legacy helper",
     regex: /Boxcars::Engines\.valid_answer\?\(/,
     allowed_files: Set.new([
-      "spec/boxcars/engines_spec.rb"
-    ])
+                             "spec/boxcars/engines_spec.rb"
+                           ])
   },
   {
     label: "legacy conduct access result[:answer].answer",
     regex: /result\[:answer\]\.answer\b/,
     allowed_files: Set.new([
-      "lib/boxcars/conduct_result.rb",
-      "spec/boxcars/boxcar_tool_spec.rb"
-    ])
+                             "lib/boxcars/conduct_result.rb",
+                             "spec/boxcars/boxcar_tool_spec.rb"
+                           ])
   }
 ].freeze
 

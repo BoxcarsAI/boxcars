@@ -331,6 +331,7 @@ module Boxcars
       unless output.is_a?(Hash)
         raise Boxcars::Error, "#{name}#call must return a Hash keyed by #{output_keys.inspect}, got #{output.class}"
       end
+
       validate_outputs(outputs: output.keys)
       return output if return_only_outputs
 

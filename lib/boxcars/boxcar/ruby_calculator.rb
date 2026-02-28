@@ -35,6 +35,5 @@ module Boxcars
       ruby_executor = Boxcars::RubyREPL.new
       { answer: ruby_executor.call(code:) }
     end
-
   end
 end

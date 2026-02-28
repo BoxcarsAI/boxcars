@@ -28,7 +28,7 @@ RSpec.describe Boxcars::SQLBase do
   end
 
   it "declares :schema as a prompt dependency (not legacy :table_info)" do
-    connection = instance_double("Connection", tables: [])
+    connection = instance_double(Connection, tables: [])
     boxcar = dummy_sql_boxcar_class.new(connection:)
 
     expect(boxcar.prompt.other_inputs).to include(:schema)

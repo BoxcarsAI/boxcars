@@ -134,7 +134,7 @@ RSpec.describe Boxcars::Openai do
       expect(access_token).to eq(api_key_param)
       expect(uri_base).to be_nil
       expect(organization_id).to eq(organization_id_param)
-      expect(log_errors).to eq(true)
+      expect(log_errors).to be(true)
       mock_openai_client
     end
   end

@@ -145,9 +145,7 @@ module Boxcars
     end
 
     def extract_assistant_message(response)
-      if responses_api_response?(response)
-        return extract_responses_assistant_message(response)
-      end
+      return extract_responses_assistant_message(response) if responses_api_response?(response)
 
       message = response.dig(:choices, 0, :message)
       raise Boxcars::Error, "Tool-calling response missing assistant message" unless message.is_a?(Hash)
@@ -300,13 +298,16 @@ module Boxcars
       parsed = JSON.parse(raw_arguments)
       case parsed
       when Hash
-        parsed.transform_keys { |k| k.to_sym rescue k }
-      else
-        if boxcar.input_keys.length == 1
-          { boxcar.input_keys.first => parsed }
-        else
-          raise Boxcars::ArgumentError, "Tool arguments for #{boxcar.name} must be an object"
+        parsed.transform_keys do |k|
+          k.to_sym
+        rescue
+          k
         end
+      else
+        raise Boxcars::ArgumentError, "Tool arguments for #{boxcar.name} must be an object" unless boxcar.input_keys.length == 1
+
+        { boxcar.input_keys.first => parsed }
+
       end
     rescue JSON::ParserError => e
       raise Boxcars::ArgumentError, "Invalid JSON arguments for #{boxcar.name}: #{e.message}"

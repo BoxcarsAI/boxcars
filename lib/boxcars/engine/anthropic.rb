@@ -1,8 +1,8 @@
 # frozen_string_literal: true
+
 # Boxcars is a framework for running a series of tools to get an answer to a question.
 module Boxcars
   # An engine that uses Anthropic's API.
-  # rubocop:disable Metrics/ClassLength
   class Anthropic < Engine
     include UnifiedObservability
     include OpenAICompatibleChatHelpers
@@ -25,6 +25,7 @@ module Boxcars
     # Initializes an Anthropic engine instance.
     def initialize(name: DEFAULT_NAME, description: DEFAULT_DESCRIPTION, **kwargs)
       raise ArgumentError, "unknown keyword: :prompts" if kwargs.key?(:prompts)
+
       user_id = kwargs.delete(:user_id)
       @llm_params = DEFAULT_PARAMS.merge(kwargs)
       super(description:, name:, batch_size: 20, user_id:)
@@ -78,14 +79,12 @@ module Boxcars
     end
 
     # convert generic parameters to Anthopic specific ones
-    # rubocop:disable Metrics/AbcSize
     def convert_to_anthropic(params)
       params[:stop_sequences] = params.delete(:stop) if params.key?(:stop)
       params[:system] = params[:messages].shift[:content] if params.dig(:messages, 0, :role) == :system
       params[:messages].pop if params[:messages].last[:content].nil? || params[:messages].last[:content].strip.empty?
       combine_assistant(params)
     end
-    # rubocop:enable Metrics/AbcSize
 
     def combine_assistant(params)
       params[:messages] = combine_assistant_entries(params[:messages])
@@ -113,7 +112,6 @@ module Boxcars
     private
 
     # Process the raw response from Anthropic API
-    # rubocop:disable Metrics/AbcSize
     def process_anthropic_response(raw_response, response_data)
       normalized_response = normalize_anthropic_payload(raw_response)
       response_data[:response_obj] = raw_response
@@ -124,7 +122,8 @@ module Boxcars
         response_data[:status_code] = 200 # Inferred
         # Transform response to match expected format
         normalized_response["completion"] = normalized_response.dig("content", 0, "text")
-        normalized_response["choices"] ||= [{ "text" => normalized_response["completion"], "finish_reason" => normalized_response["stop_reason"] }]
+        normalized_response["choices"] ||= [{ "text" => normalized_response["completion"],
+                                              "finish_reason" => normalized_response["stop_reason"] }]
         if normalized_response["usage"].is_a?(Hash)
           normalized_response["usage"]["prompt_tokens"] ||= normalized_response["usage"]["input_tokens"]
           normalized_response["usage"]["completion_tokens"] ||= normalized_response["usage"]["output_tokens"]
@@ -139,7 +138,6 @@ module Boxcars
         response_data[:error] ||= StandardError.new(msg)
       end
     end
-    # rubocop:enable Metrics/AbcSize
 
     # Handle errors from Anthropic API calls
     def handle_anthropic_error(error, response_data)
@@ -202,5 +200,4 @@ module Boxcars
       normalize_generate_response(payload)
     end
   end
-  # rubocop:enable Metrics/ClassLength
 end

@@ -14,7 +14,7 @@ RSpec.describe "Boxcars::Openai official client path" do
       expect(access_token).to eq(api_key_param)
       expect(uri_base).to be_nil
       expect(organization_id).to eq(organization_id_param)
-      expect(log_errors).to eq(true)
+      expect(log_errors).to be(true)
       official_client
     end
 
@@ -117,22 +117,22 @@ RSpec.describe "Boxcars::Openai official client path" do
     allow(official_client).to receive(:respond_to?).with(:responses).and_return(true)
     allow(official_client).to receive(:responses).and_return(responses_resource)
     expect(responses_resource).to receive(:create).with(hash_including(
-      model: "gpt-5-mini",
-      input: kind_of(String),
-      text: {
-        format: {
-          type: "json_schema",
-          name: "boxcars_json_output",
-          strict: true,
-          schema: {
-            "type" => "object",
-            "properties" => { "share_count" => { "type" => "string" } },
-            "required" => ["share_count"],
-            "additionalProperties" => false
-          }
-        }
-      }
-    )).and_return(response_object)
+                                                          model: "gpt-5-mini",
+                                                          input: kind_of(String),
+                                                          text: {
+                                                            format: {
+                                                              type: "json_schema",
+                                                              name: "boxcars_json_output",
+                                                              strict: true,
+                                                              schema: {
+                                                                "type" => "object",
+                                                                "properties" => { "share_count" => { "type" => "string" } },
+                                                                "required" => ["share_count"],
+                                                                "additionalProperties" => false
+                                                              }
+                                                            }
+                                                          }
+                                                        )).and_return(response_object)
 
     boxcar = Boxcars::JSONEngineBoxcar.new(
       engine: Boxcars::Openai.new(model: "gpt-5-mini"),

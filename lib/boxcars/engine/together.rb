@@ -19,8 +19,8 @@ module Boxcars
       super(name:, description:, batch_size:, **DEFAULT_PARAMS.merge(kwargs))
     end
 
-    def client(prompt:, inputs: {}, together_api_key: nil, **kwargs)
-      super(prompt:, inputs:, openai_access_token: together_api_key, **kwargs)
+    def client(prompt:, inputs: {}, together_api_key: nil, **)
+      super(prompt:, inputs:, openai_access_token: together_api_key, **)
     end
 
     def self.provider_client(openai_access_token: nil)

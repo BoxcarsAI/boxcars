@@ -29,9 +29,7 @@ module Boxcars
     end
 
     class << self
-      def official_client_builder
-        @official_client_builder
-      end
+      attr_reader :official_client_builder
 
       def official_client_builder=(builder)
         unless builder.nil? || builder.respond_to?(:call)
@@ -65,10 +63,11 @@ module Boxcars
       end
 
       raise Boxcars::ConfigurationError,
-            "Official OpenAI client path selected but no official client builder is configured and no compatible OpenAI::Client was detected."
+            "Official OpenAI client path selected but no official client builder is configured " \
+            "and no compatible OpenAI::Client was detected."
     end
 
-    def self.configure_official_client_builder!(client_class: nil)
+    def self.install_official_client_builder!(client_class: nil)
       ensure_openai_dependency!
       klass = client_class || detect_official_client_class
       return false unless klass
@@ -107,9 +106,7 @@ module Boxcars
     # Request helpers used by ClientMethods
     # --------------------------------------------------------------------------
     def self.call_chat(client, parameters)
-      unless client.respond_to?(:chat)
-        raise Boxcars::ConfigurationError, "Official OpenAI client does not expose #chat"
-      end
+      raise Boxcars::ConfigurationError, "Official OpenAI client does not expose #chat" unless client.respond_to?(:chat)
 
       chat_resource = client.chat
       return chat_resource if chat_resource.is_a?(Hash)
@@ -184,7 +181,7 @@ module Boxcars
       ensure_openai_dependency!
       builder = official_client_builder || Boxcars.configuration.openai_official_client_builder
       unless builder
-        configure_official_client_builder!
+        install_official_client_builder!
         builder = official_client_builder
       end
 
@@ -215,11 +212,9 @@ module Boxcars
 
       errors = []
       candidates.each do |kwargs|
-        begin
-          return klass.new(**kwargs.compact)
-        rescue ::ArgumentError => e
-          errors << e.message
-        end
+        return klass.new(**kwargs.compact)
+      rescue ::ArgumentError => e
+        errors << e.message
       end
 
       raise Boxcars::ConfigurationError,
@@ -253,5 +248,4 @@ module Boxcars
     private_class_method :official_client_requires_native?
     private_class_method :call_create, :keyword_parameters?, :ensure_openai_dependency!
   end
-
 end

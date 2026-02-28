@@ -19,9 +19,9 @@ module Boxcars
 
     # Get an answer from the Engine.
     # @param question [String] The question to ask the Engine.
-    def run(question, **kwargs)
+    def run(question, **)
       prompt = Prompt.new(template: question)
-      response = client(prompt:, inputs: {}, **kwargs)
+      response = client(prompt:, inputs: {}, **)
       answer = extract_answer(response)
       Boxcars.debug("Answer: #{answer}", :cyan)
       answer
@@ -247,9 +247,9 @@ module Boxcars
           end
         end
         return if !has_error_content && must_haves.any? { |key| response.key?(key) && !response[key].nil? }
-        if !has_error_content
+
+        if has_error_content
           # No actual error payload; continue to required key checks below.
-        else
           code = error_details['code'] || error_details[:code]
           message = error_details['message'] || error_details[:message] || 'unknown error'
 

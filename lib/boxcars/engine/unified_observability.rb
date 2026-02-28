@@ -65,7 +65,11 @@ module Boxcars
       end
 
       # Add error details if present
-      properties[:$ai_error] = extract_error_message(normalized_response_data, provider) if normalized_response_data[:error] || !normalized_response_data[:success]
+      if normalized_response_data[:error] || !normalized_response_data[:success]
+        properties[:$ai_error] =
+          extract_error_message(normalized_response_data,
+                                provider)
+      end
 
       properties
     end

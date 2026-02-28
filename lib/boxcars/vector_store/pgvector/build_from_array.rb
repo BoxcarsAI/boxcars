@@ -68,9 +68,7 @@ module Boxcars
         def validate_params(embedding_tool, input_array)
           raise_argument_error('input_array is nil') unless input_array
           raise_argument_error('input_array must be an array') unless input_array.is_a?(Array)
-          unless proper_input_array?(input_array)
-            raise_argument_error('items in input_array needs to have content and metadata')
-          end
+          raise_argument_error('items in input_array needs to have content and metadata') unless proper_input_array?(input_array)
           return if %i[openai tensorflow].include?(embedding_tool)
 
           raise_argument_error('embedding_tool is invalid') unless %i[openai tensorflow].include?(embedding_tool)

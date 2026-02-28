@@ -33,6 +33,7 @@ module Boxcars
                    batch_size: 20,
                    **kwargs)
       raise ArgumentError, "unknown keyword: :prompts" if kwargs.key?(:prompts)
+
       user_id          = kwargs.delete(:user_id)
       reject_deprecated_backend_kwargs!(kwargs)
       @open_ai_params  = adjust_for_o_series!(DEFAULT_PARAMS.merge(kwargs))
@@ -166,9 +167,7 @@ module Boxcars
       if (effort = p.delete(:reasoning_effort))
         p[:reasoning] = { effort: effort }
       end
-      if response_format
-        p[:text] = merge_responses_text_format(text: p[:text], response_format: response_format)
-      end
+      p[:text] = merge_responses_text_format(text: p[:text], response_format: response_format) if response_format
 
       formatted = { model: p[:model], input: explicit_response_input || input_str, _use_responses_api: true }
       p.each { |k, v| formatted[k] = v unless k == :model }

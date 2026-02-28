@@ -5,8 +5,8 @@ module Boxcars
   # It looks through SERP (search engine results page) results to find the answer.
   class GoogleSearch < Boxcar
     # Default description for this boxcar.
-    SERPDESC = "useful for when you need to answer questions about current events." \
-               " You should ask targeted questions"
+    SERPDESC = "useful for when you need to answer questions about current events. " \
+               "You should ask targeted questions"
 
     # Create a boxcar that uses SerpAPI-backed Google search.
     # @param name [String] The name of the boxcar. Defaults to classname.

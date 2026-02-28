@@ -5,8 +5,8 @@ module Boxcars
   # A Boxcar that uses the Wikipedia search API to get answers to questions.
   class WikipediaSearch < Boxcar
     # Default description for this boxcar.
-    WDESC = "useful for when you need to answer questions about topics from Wikipedia." \
-            " You should ask targeted questions"
+    WDESC = "useful for when you need to answer questions about topics from Wikipedia. " \
+            "You should ask targeted questions"
 
     # Create a boxcar that uses Wikipedia search to answer questions.
     # @param name [String] The name of the boxcar. Defaults to classname.

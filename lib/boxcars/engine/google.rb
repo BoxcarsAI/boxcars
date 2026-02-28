@@ -20,9 +20,9 @@ module Boxcars
     end
 
     # Supports both `gemini_api_key:` and legacy `google_api_key:` naming.
-    def client(prompt:, inputs: {}, gemini_api_key: nil, google_api_key: nil, **kwargs)
+    def client(prompt:, inputs: {}, gemini_api_key: nil, google_api_key: nil, **)
       key = gemini_api_key || google_api_key
-      super(prompt:, inputs:, openai_access_token: key, **kwargs)
+      super(prompt:, inputs:, openai_access_token: key, **)
     end
 
     def self.provider_client(openai_access_token: nil)

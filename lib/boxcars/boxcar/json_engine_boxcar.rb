@@ -320,6 +320,5 @@ module Boxcars
       json_end = text.rindex("}")
       text[json_start..json_end]
     end
-
   end
 end
