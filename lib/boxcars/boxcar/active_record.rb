@@ -2,10 +2,10 @@
 
 # Boxcars is a framework for running a series of tools to get an answer to a question.
 module Boxcars
-  # A Boxcar that interprets a prompt and executes SQL code to get answers
+  # A Boxcar that interprets a prompt and executes Active Record code to get answers.
   # rubocop:disable Metrics/ClassLength
   class ActiveRecord < EngineBoxcar
-    # the description of this engine boxcar
+    # Default description for this boxcar.
     ARDESC = "useful for when you need to query a database for an application named %<name>s."
     LOCKED_OUT_MODELS = %w[ActiveRecord::SchemaMigration ActiveRecord::InternalMetadata ApplicationRecord].freeze
     attr_accessor :connection, :requested_models, :read_only, :approval_callback, :code_only
@@ -33,7 +33,7 @@ module Boxcars
       super(**kwargs)
     end
 
-    # @return Hash The additional variables for this boxcar.
+    # @return [Hash] The additional variables for this boxcar.
     def prediction_additional(_inputs)
       { model_info: }.merge super
     end

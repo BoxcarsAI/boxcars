@@ -2,12 +2,12 @@
 
 # Boxcars is a framework for running a series of tools to get an answer to a question.
 module Boxcars
-  # A Boxcar that interprets a prompt and executes ruby code to do math
+  # A Boxcar that interprets a prompt and executes Ruby code to do math.
   class Calculator < EngineBoxcar
-    # the description of this engine boxcar
+    # Default description for this boxcar.
     CALCDESC = "useful for when you need to answer questions about math"
 
-    # @param engine [Boxcars::Engine] The engine to user for this boxcar. Can be inherited from a train if nil.
+    # @param engine [Boxcars::Engine] The engine to use for this boxcar. Can be inherited from a train if nil.
     # @param prompt [Boxcars::Prompt] The prompt to use for this boxcar. Defaults to built-in prompt.
     # @param kwargs [Hash] Any other keyword arguments to pass to the parent class.
     def initialize(engine: nil, prompt: nil, **kwargs)
@@ -18,7 +18,7 @@ module Boxcars
       super(engine:, prompt: the_prompt, **kwargs)
     end
 
-    # our template
+    # Prompt template used by this boxcar.
     CTEMPLATE = [
       syst("You can do basic math, but for any hard calculations that a human could not do ",
            "in their head, use the following approach instead. ",
@@ -28,7 +28,7 @@ module Boxcars
            "${{Question with hard calculation.}}\n",
            "reply only with the following format:\n",
            "```ruby\n${{only Ruby code that prints the answer. " \
-           "If you use puts, make sure to wrap the expression in paranthesis}}\n```\n",
+           "If you use puts, make sure to wrap the expression in parentheses}}\n```\n",
            "```output\n${{Output of your code}}\n```\n\n",
            "Otherwise, you should use this simpler format:\n",
            "${{Question without hard calculation}}\n",

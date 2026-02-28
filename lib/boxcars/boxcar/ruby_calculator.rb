@@ -2,9 +2,9 @@
 
 # Boxcars is a framework for running a series of tools to get an answer to a question.
 module Boxcars
-  # A Boxcar executes ruby code to do math
+  # A Boxcar that executes Ruby code to do math.
   class RubyCalculator < Boxcar
-    # the description of this engine boxcar
+    # Default description for this boxcar.
     CALCDESC = "will run a ruby calculation to answer a math question"
 
     # @param kwargs [Hash] Any other keyword arguments to pass to the parent class.

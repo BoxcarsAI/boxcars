@@ -6,10 +6,10 @@ module Boxcars
   class EngineBoxcar < Boxcar
     attr_accessor :prompt, :engine, :top_k, :stop
 
-    # A Boxcar is a container for a single tool to run.
+    # Create an engine-backed boxcar.
     # @param prompt [Boxcars::Prompt] The prompt to use for this boxcar with sane defaults.
-    # @param engine [Boxcars::Engine] The engine to user for this boxcar. Can be inherited from a train if nil.
-    # @param kwargs [Hash] Additional arguments including: name, description, top_k, return_direct, and stop
+    # @param engine [Boxcars::Engine] The engine to use for this boxcar. Can be inherited from a train if nil.
+    # @param kwargs [Hash] Additional arguments including: name, description, top_k, return_direct, and stop.
     def initialize(prompt:, engine: nil, **kwargs)
       @prompt = prompt
       @engine = engine || Boxcars.engine.new
@@ -18,22 +18,22 @@ module Boxcars
       super(**kwargs)
     end
 
-    # input keys for the prompt
+    # Input keys for the prompt.
     def input_keys
       prompt.input_variables
     end
 
-    # output keys
+    # Output keys for the prompt.
     def output_keys
       prompt.output_variables
     end
 
-    # the first output key
+    # The first output key.
     def output_key
       output_keys.first
     end
 
-    # generate a response from the engine
+    # Generate a response from the engine.
     # @param input_list [Array<Hash>] A list of hashes of input values to use for the prompt.
     # @param current_conversation [Boxcars::Conversation] Optional ongoing conversation to use for the prompt.
     # @return [Boxcars::EngineResult] The result from the engine.
@@ -52,7 +52,7 @@ module Boxcars
       engine.generate(prompts:, stop:)
     end
 
-    # apply a response from the engine
+    # Apply a response from the engine.
     # @param input_list [Array<Hash>] A list of hashes of input values to use for the prompt.
     # @param current_conversation [Boxcars::Conversation] Optional ongoing conversation to use for the prompt.
     # @return [Array<Hash>] One output hash per input hash.
@@ -63,7 +63,7 @@ module Boxcars
       response.generations.map { |generation| { output_key => generation[0]&.text.to_s } }
     end
 
-    # predict a response from the engine
+    # Predict a response from the engine.
     # @param current_conversation [Boxcars::Conversation] Optional ongoing conversation to use for the prompt.
     # @param kwargs [Hash] A hash of input values to use for the prompt.
     # @return [String] The output value.
@@ -73,7 +73,7 @@ module Boxcars
       prediction
     end
 
-    # call the boxcar
+    # Execute the boxcar.
     # @param inputs [Hash] The inputs to the boxcar.
     # @return [Hash] The outputs from the boxcar.
     def call(inputs:)
@@ -106,18 +106,18 @@ module Boxcars
       { output_key => "Error: #{e.message}" }
     end
 
-    # @return Hash The additional variables for this boxcar.
+    # @return [Hash] The additional variables for this boxcar.
     def prediction_additional(_inputs)
       { stop:, top_k: }
     end
 
     # @param inputs [Hash] The inputs to the boxcar.
-    # @return Hash The variables for this boxcar.
+    # @return [Hash] The variables for this boxcar.
     def prediction_variables(inputs)
       prediction_additional(inputs).merge(inputs)
     end
 
-    # remove backticks or triple backticks from the code
+    # Remove backticks or triple backticks from the code.
     # @param code [String] The code to remove backticks from.
     # @return [String] The code without backticks.
     def extract_code(code)

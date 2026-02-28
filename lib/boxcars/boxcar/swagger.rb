@@ -4,13 +4,13 @@
 module Boxcars
   # A Boxcar that interprets a prompt and executes API calls to get an answer.
   class Swagger < EngineBoxcar
-    # the description of this engine boxcar
+    # Default description for this boxcar.
     DESC = "useful for when you need to make Open API calls to get an answer."
 
     attr_accessor :swagger_url, :context
 
     # @param swagger_url [String] The URL of the Open API Swagger file to use.
-    # @param engine [Boxcars::Engine] The engine to user for this boxcar. Can be inherited from a train if nil.
+    # @param engine [Boxcars::Engine] The engine to use for this boxcar. Can be inherited from a train if nil.
     # @param prompt [Boxcars::Prompt] The prompt to use for this boxcar. Defaults to built-in prompt.
     # @param context [String] Additional context to use for the prompt.
     # @param kwargs [Hash] Any other keyword arguments to pass to the parent class.
@@ -24,12 +24,12 @@ module Boxcars
       super(engine:, prompt: the_prompt, **kwargs)
     end
 
-    # @return Hash The additional variables for this boxcar.
+    # @return [Hash] The additional variables for this boxcar.
     def prediction_additional(_inputs)
       { swagger_url:, context: }.merge super
     end
 
-    # our template
+    # Prompt template used by this boxcar.
     CTEMPLATE = [
       syst("Study this Open API Swagger file %<swagger_url>s\n",
            "and write a Ruby Program that prints the answer to the following questions using the appropriate API calls:\n",

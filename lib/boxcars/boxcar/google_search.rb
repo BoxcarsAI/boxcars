@@ -1,13 +1,14 @@
 # frozen_string_literal: true
+
 module Boxcars
   # A Boxcar that uses the Google SERP API to get answers to questions.
   # It looks through SERP (search engine results page) results to find the answer.
   class GoogleSearch < Boxcar
-    # the description of this boxcar
+    # Default description for this boxcar.
     SERPDESC = "useful for when you need to answer questions about current events." \
-               "You should ask targeted questions"
+               " You should ask targeted questions"
 
-    # implements a boxcar that uses the Google SerpAPI to get answers to questions.
+    # Create a boxcar that uses SerpAPI-backed Google search.
     # @param name [String] The name of the boxcar. Defaults to classname.
     # @param description [String] A description of the boxcar. Defaults to SERPDESC.
     # @param serpapi_api_key [String] The API key to use for the SerpAPI. Defaults to Boxcars.configuration.serpapi_api_key.

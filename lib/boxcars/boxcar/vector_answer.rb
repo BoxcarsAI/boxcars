@@ -2,16 +2,16 @@
 
 # Boxcars is a framework for running a series of tools to get an answer to a question.
 module Boxcars
-  # A Boxcar that interprets a prompt and executes ruby code to do math
+  # A Boxcar that answers questions using vector-search context.
   class VectorAnswer < EngineBoxcar
-    # the description of this engine boxcar
+    # Default description for this boxcar.
     DESC = "useful for when you need to answer questions from vector search results."
 
     attr_reader :embeddings, :vector_documents, :search_content
 
     # @param embeddings [Hash] The vector embeddings to use for this boxcar.
     # @param vector_documents [Hash] The vector documents to use for this boxcar.
-    # @param engine [Boxcars::Engine] The engine to user for this boxcar. Can be inherited from a train if nil.
+    # @param engine [Boxcars::Engine] The engine to use for this boxcar. Can be inherited from a train if nil.
     # @param prompt [Boxcars::Prompt] The prompt to use for this boxcar. Defaults to built-in prompt.
     # @param kwargs [Hash] Any other keyword arguments to pass to the parent class.
     def initialize(embeddings:, vector_documents:, engine: nil, prompt: nil, **kwargs)
@@ -25,12 +25,12 @@ module Boxcars
     end
 
     # @param inputs [Hash] The inputs to use for the prediction.
-    # @return Hash The additional variables for this boxcar.
+    # @return [Hash] The additional variables for this boxcar.
     def prediction_additional(inputs)
       { search_content: get_search_content(input_value(inputs, :question)) }.merge super
     end
 
-    # our template
+    # Prompt template used by this boxcar.
     CTEMPLATE = [
       syst("You are tasked with answering a question using these possibly relevant excerpts from a large volume of text:\n" \
            "```text\n%<search_content>s\n```\n\n",
@@ -48,9 +48,9 @@ module Boxcars
       end.to_a.join("\n\n")
     end
 
-    # return the content of the search results for count results
-    # @params question [String] The question to search for.
-    # @params count [Integer] The number of results to return.
+    # Return the content of search results for the requested count.
+    # @param question [String] The question to search for.
+    # @param count [Integer] The number of results to return.
     # @return [String] The content of the search results.
     def get_search_content(question, count: 1)
       search = Boxcars::VectorSearch.new(embeddings:, vector_documents:)

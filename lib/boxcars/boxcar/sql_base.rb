@@ -2,11 +2,11 @@
 
 # Boxcars is a framework for running a series of tools to get an answer to a question.
 module Boxcars
-  # A Boxcar that interprets a prompt and executes SQL code to get answers
-  # Use one of the subclasses for ActiveRecord or Sequel
+  # A Boxcar that interprets a prompt and executes SQL code to get answers.
+  # Use one of the subclasses for ActiveRecord or Sequel.
   # @abstract
   class SQLBase < EngineBoxcar
-    # the description of this engine boxcar
+    # Default description for this boxcar.
     SQLDESC = "useful for when you need to query a database for %<name>s."
     LOCKED_OUT_TABLES = %w[schema_migrations ar_internal_metadata].freeze
     attr_accessor :connection, :the_tables
@@ -27,7 +27,7 @@ module Boxcars
       super(**kwargs)
     end
 
-    # @return Hash The additional variables for this boxcar.
+    # @return [Hash] The additional variables for this boxcar.
     def prediction_additional(_inputs)
       { schema:, dialect: }.merge super
     end
@@ -38,7 +38,7 @@ module Boxcars
            "in her question a specific number of examples he wishes to obtain, always limit your query ",
            "to at most %<top_k>s results using a LIMIT clause. You can order the results by a relevant column ",
            "to return the most interesting examples in the database.\n",
-           "Never query for all the columns from a specific table, only ask for the elevant columns given the question.\n",
+           "Never query for all the columns from a specific table, only ask for the relevant columns given the question.\n",
            "Pay attention to use only the column names that you can see in the schema description. Be careful to ",
            "not query for columns that do not exist. Also, pay attention to which column is in which table.\n",
            "Use the following format:\n",

@@ -12,7 +12,7 @@ module Boxcars
     # @param description [String] The description of the train. Defaults to 'Zero Shot Train'.
     # @param prompt [Boxcars::Prompt] The prompt to use. Defaults to the built-in prompt.
     # @param kwargs [Hash] Additional arguments to pass to the train. wants_next_actions: true
-    def initialize(boxcars:, engine: nil, name: 'Zero Shot XML', description: 'Zero Shot Train wiht XML', prompt: nil, **kwargs)
+    def initialize(boxcars:, engine: nil, name: 'Zero Shot XML', description: 'Zero Shot Train with XML', prompt: nil, **kwargs)
       @engine_prefix = ''
       @wants_next_actions = kwargs.fetch(:wants_next_actions, false)
       prompt ||= my_prompt

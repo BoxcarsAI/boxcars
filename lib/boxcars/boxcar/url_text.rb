@@ -3,7 +3,7 @@
 module Boxcars
   # A Boxcar that reads text from a URL.
   class URLText < Boxcar
-    # the description of this boxcar
+    # Default description for this boxcar.
     DESC = "useful when you want to get text from a URL."
 
     # Create a URL text extraction boxcar.
