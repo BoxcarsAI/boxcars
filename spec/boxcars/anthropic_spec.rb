@@ -27,6 +27,18 @@ RSpec.describe Boxcars::Anthropic do
       "usage" => { "input_tokens" => 15, "output_tokens" => 23 }
     }
   end
+  let(:anthropic_success_response_symbolized) do
+    {
+      id: "msg_01AgsP9Nyr82xWmc35n9YgZs",
+      type: "message",
+      role: "assistant",
+      content: [{ type: "text", text: "Why did the robot go to therapy? To de-stress and debug its feelings!" }],
+      model: "claude-3-5-sonnet-20240620",
+      stop_reason: "end_turn",
+      stop_sequence: nil,
+      usage: { input_tokens: 15, output_tokens: 23 }
+    }
+  end
   let(:anthropic_error_response_body) { { "type" => "error", "error" => { "type" => "invalid_request_error", "message" => "Invalid parameter." } } }
 
   let(:dummy_observability_backend) do
@@ -88,6 +100,19 @@ RSpec.describe Boxcars::Anthropic do
         expect(ai_output.first['content']).to include('Why did the robot go to therapy?')
 
         expect(props).not_to have_key(:$ai_error)
+      end
+
+      it 'tracks an llm_call event when the provider response uses symbol keys' do
+        allow(mock_anthropic_client).to receive(:messages).and_return(anthropic_success_response_symbolized)
+
+        engine.client(prompt: prompt, inputs: inputs, temperature: 0.7, max_tokens: 100)
+
+        props = dummy_observability_backend.tracked_events.first[:properties]
+        ai_output = JSON.parse(props[:$ai_output_choices])
+        expect(ai_output.first).to include("role" => "assistant")
+        expect(ai_output.first["content"]).to include("Why did the robot go to therapy?")
+        expect(props[:$ai_input_tokens]).to eq(15)
+        expect(props[:$ai_output_tokens]).to eq(23)
       end
     end
 

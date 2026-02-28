@@ -115,25 +115,26 @@ module Boxcars
     # Process the raw response from Anthropic API
     # rubocop:disable Metrics/AbcSize
     def process_anthropic_response(raw_response, response_data)
+      normalized_response = normalize_anthropic_payload(raw_response)
       response_data[:response_obj] = raw_response
-      response_data[:parsed_json] = raw_response # Already parsed by Anthropic gem
+      response_data[:parsed_json] = normalized_response
 
-      if raw_response && !raw_response["error"]
+      if normalized_response && !normalized_response["error"]
         response_data[:success] = true
         response_data[:status_code] = 200 # Inferred
         # Transform response to match expected format
-        raw_response['completion'] = raw_response.dig('content', 0, 'text')
-        raw_response['choices'] ||= [{ "text" => raw_response['completion'], "finish_reason" => raw_response["stop_reason"] }]
-        if raw_response["usage"].is_a?(Hash)
-          raw_response["usage"]["prompt_tokens"] ||= raw_response["usage"]["input_tokens"]
-          raw_response["usage"]["completion_tokens"] ||= raw_response["usage"]["output_tokens"]
-          raw_response["usage"]["total_tokens"] ||= raw_response["usage"]["prompt_tokens"].to_i +
-                                                    raw_response["usage"]["completion_tokens"].to_i
+        normalized_response["completion"] = normalized_response.dig("content", 0, "text")
+        normalized_response["choices"] ||= [{ "text" => normalized_response["completion"], "finish_reason" => normalized_response["stop_reason"] }]
+        if normalized_response["usage"].is_a?(Hash)
+          normalized_response["usage"]["prompt_tokens"] ||= normalized_response["usage"]["input_tokens"]
+          normalized_response["usage"]["completion_tokens"] ||= normalized_response["usage"]["output_tokens"]
+          normalized_response["usage"]["total_tokens"] ||= normalized_response["usage"]["prompt_tokens"].to_i +
+                                                           normalized_response["usage"]["completion_tokens"].to_i
         end
-        raw_response.delete('content')
+        normalized_response.delete("content")
       else
         response_data[:success] = false
-        err_details = raw_response["error"] if raw_response
+        err_details = normalized_response["error"] if normalized_response
         msg = err_details ? "#{err_details['type']}: #{err_details['message']}" : "Unknown Anthropic API Error"
         response_data[:error] ||= StandardError.new(msg)
       end
@@ -189,9 +190,16 @@ module Boxcars
 
     # Handle response body errors
     def handle_anthropic_response_body_error(response_obj)
-      err_details = response_obj&.dig("error")
+      normalized_response = normalize_anthropic_payload(response_obj)
+      err_details = normalized_response&.dig("error")
       msg = err_details ? "#{err_details['type']}: #{err_details['message']}" : "Unknown error from Anthropic API"
       raise Error, msg
+    end
+
+    def normalize_anthropic_payload(payload)
+      return nil unless payload.is_a?(Hash)
+
+      normalize_generate_response(payload)
     end
   end
   # rubocop:enable Metrics/ClassLength

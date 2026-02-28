@@ -24,6 +24,17 @@ RSpec.describe Boxcars::Cohere do
       }
     }
   end
+  let(:cohere_success_response_symbolized) do
+    {
+      text: "hola mundo",
+      meta: {
+        tokens: {
+          input_tokens: 5,
+          output_tokens: 2
+        }
+      }
+    }
+  end
 
   let(:mock_faraday_response) do
     instance_double(Faraday::Response,
@@ -95,6 +106,19 @@ RSpec.describe Boxcars::Cohere do
         expect(ai_output.first).to include("role" => "assistant", "content" => "hola mundo")
 
         expect(props).not_to have_key(:$ai_error)
+      end
+
+      it 'tracks a $ai_generation event when parsed response payload uses symbol keys' do
+        allow(JSON).to receive(:parse).and_call_original
+        allow(JSON).to receive(:parse).with(mock_faraday_response.body).and_return(cohere_success_response_symbolized)
+
+        engine.client(prompt: prompt, inputs: inputs, temperature: 0.7)
+
+        props = dummy_observability_backend.tracked_events.first[:properties]
+        ai_output = JSON.parse(props[:$ai_output_choices])
+        expect(ai_output.first).to include("role" => "assistant", "content" => "hola mundo")
+        expect(props[:$ai_input_tokens]).to eq(5)
+        expect(props[:$ai_output_tokens]).to eq(2)
       end
 
       it 'uses call-specific model params if provided' do

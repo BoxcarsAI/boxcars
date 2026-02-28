@@ -100,7 +100,7 @@ module Boxcars
       response_data[:status_code] = raw_response.status
 
       if raw_response.status == 200
-        parsed_json = JSON.parse(raw_response.body)
+        parsed_json = normalize_generate_response(JSON.parse(raw_response.body))
 
         if parsed_json["error"]
           response_data[:success] = false
@@ -183,7 +183,7 @@ module Boxcars
       msg = "Unknown error from Cohere API"
       if response_obj.respond_to?(:body)
         begin
-          parsed_body = JSON.parse(response_obj.body)
+          parsed_body = normalize_generate_response(JSON.parse(response_obj.body))
           msg = parsed_body["message"] || parsed_body["error"] || msg
         rescue JSON::ParserError
           msg = "HTTP #{response_obj.status}: #{response_obj.reason_phrase}"
