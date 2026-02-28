@@ -26,13 +26,6 @@ module Boxcars
           } }
     end
 
-    # run a ruby calculator question
-    # @param question [String] Ruby expression to evaluate.
-    # @return [Boxcars::Result] Execution result from the Ruby REPL helper.
-    def run(question)
-      run_result(question)
-    end
-
     # Execute one Ruby calculator request using the normalized Boxcar input contract.
     # @param inputs [Hash] Expected to contain `:question` (or `"question"`).
     # @return [Hash] `{ answer: Boxcars::Result }`.

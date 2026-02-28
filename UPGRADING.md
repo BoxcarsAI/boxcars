@@ -66,6 +66,32 @@ Boxcars.configure do |config|
 end
 ```
 
+## `run` Return Value Normalization for `RubyCalculator` and `URLText`
+
+`RubyCalculator#run` and `URLText#run` now follow the same `Boxcar#run` contract as other boxcars:
+they return the extracted answer value, not a `Boxcars::Result` wrapper.
+
+Before:
+
+```ruby
+Boxcars::RubyCalculator.new.run("1+2").answer
+Boxcars::URLText.new.run("https://example.com").answer
+```
+
+After:
+
+```ruby
+Boxcars::RubyCalculator.new.run("1+2")
+Boxcars::URLText.new.run("https://example.com")
+```
+
+If you need structured metadata (`status`, `explanation`, extra context), use `run_result`:
+
+```ruby
+result = Boxcars::URLText.new.run_result("https://example.com")
+result.answer
+```
+
 ## 1. Model Alias Migration (Do This First)
 
 Deprecated aliases still work in v0.9, but emit one-time warnings.

@@ -13,13 +13,6 @@ module Boxcars
       super
     end
 
-    # Get text from a url.
-    # @param url [String] The url
-    # @return [Boxcars::Result] Text extraction result (or error result).
-    def run(url)
-      run_result(url)
-    end
-
     # Execute one URL text fetch using the normalized Boxcar input contract.
     # @param inputs [Hash] Expected to contain `:question` (or `"question"`) with a URL.
     # @return [Hash] `{ answer: Boxcars::Result }`.
