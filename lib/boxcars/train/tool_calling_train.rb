@@ -72,7 +72,7 @@ module Boxcars
       responses_state = responses_runtime? ? { previous_response_id: nil, response_input: nil } : nil
 
       while should_continue?(iterations)
-        response = tool_call_response(conversation_messages, tool_specs, responses_state:)
+        response = normalize_response_payload(tool_call_response(conversation_messages, tool_specs, responses_state:))
         assistant_message = extract_assistant_message(response)
         conversation_messages << assistant_message
 
@@ -91,7 +91,7 @@ module Boxcars
           end
 
           if responses_state
-            responses_state[:previous_response_id] = response["id"] || response[:id]
+            responses_state[:previous_response_id] = response[:id]
             responses_state[:response_input] = response_tool_outputs
           end
 
@@ -149,60 +149,59 @@ module Boxcars
         return extract_responses_assistant_message(response)
       end
 
-      message = response.dig("choices", 0, "message") || response.dig(:choices, 0, :message)
+      message = response.dig(:choices, 0, :message)
       raise Boxcars::Error, "Tool-calling response missing assistant message" unless message.is_a?(Hash)
 
       normalize_message(message)
     end
 
     def responses_api_response?(response)
-      response.is_a?(Hash) && ((response.key?("output") && response["output"].is_a?(Array)) ||
-        (response.key?(:output) && response[:output].is_a?(Array)))
+      response.is_a?(Hash) && response[:output].is_a?(Array)
     end
 
     def extract_responses_assistant_message(response)
-      output_items = response["output"] || response[:output] || []
+      output_items = response[:output] || []
       tool_calls = []
       text_parts = []
 
       output_items.each do |item|
         next unless item.is_a?(Hash)
 
-        type = (item["type"] || item[:type]).to_s
+        type = item[:type].to_s
         case type
         when "function_call"
           tool_calls << {
-            id: item["id"] || item[:id] || item["call_id"] || item[:call_id],
+            id: item[:id] || item[:call_id],
             type: "function",
-            _responses_call_id: item["call_id"] || item[:call_id],
+            _responses_call_id: item[:call_id],
             function: {
-              name: item["name"] || item[:name],
-              arguments: item["arguments"] || item[:arguments] || "{}"
+              name: item[:name],
+              arguments: item[:arguments] || "{}"
             }
           }
         when "message"
-          content = item["content"] || item[:content]
+          content = item[:content]
           if content.is_a?(Array)
             content.each do |part|
               next unless part.is_a?(Hash)
 
-              part_type = (part["type"] || part[:type]).to_s
+              part_type = part[:type].to_s
               next unless %w[output_text text].include?(part_type)
 
-              text_val = part["text"] || part[:text]
+              text_val = part[:text]
               if text_val.is_a?(String)
                 text_parts << text_val
               elsif text_val.is_a?(Hash)
-                text_parts << (text_val["value"] || text_val[:value] || text_val["text"] || text_val[:text]).to_s
+                text_parts << (text_val[:value] || text_val[:text]).to_s
               end
             end
           end
         when "output_text"
-          text_parts << (item["text"] || item[:text] || item["content"] || item[:content]).to_s
+          text_parts << (item[:text] || item[:content]).to_s
         end
       end
 
-      output_text = response["output_text"] || response[:output_text]
+      output_text = response[:output_text]
       if output_text.is_a?(String)
         text_parts.unshift(output_text)
       elsif output_text.is_a?(Array)
@@ -210,7 +209,7 @@ module Boxcars
           if entry.is_a?(String)
             text_parts << entry
           elsif entry.is_a?(Hash)
-            text_parts << (entry["value"] || entry[:value] || entry["text"] || entry[:text] || entry["content"] || entry[:content]).to_s
+            text_parts << (entry[:value] || entry[:text] || entry[:content]).to_s
           end
         end
       end
@@ -356,6 +355,12 @@ module Boxcars
       end
 
       "No final answer returned."
+    end
+
+    def normalize_response_payload(response)
+      return response unless response.is_a?(Hash)
+
+      normalize_message_value(response)
     end
 
     def tool_call_name_to_boxcar
