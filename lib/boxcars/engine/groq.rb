@@ -51,7 +51,7 @@ module Boxcars
           client: clnt,
           api_request_params: api_request_params,
           response_data: response_data,
-          success_check: ->(raw) { raw["choices"] },
+          success_check: ->(raw) { raw[:choices] },
           unknown_error_message: "Unknown Groq API Error"
         )
       rescue StandardError => e

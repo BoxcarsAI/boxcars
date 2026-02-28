@@ -30,6 +30,20 @@ RSpec.describe Boxcars::GeminiAi do
       "usage" => { "prompt_tokens" => 10, "completion_tokens" => 1, "total_tokens" => 11 }
     }
   end
+  let(:gemini_chat_success_response_openai_style_symbolized) do
+    {
+      id: "gemini-chat-123",
+      object: "chat.completion",
+      created: Time.now.to_i,
+      model: "gemini-2.5-flash",
+      choices: [{
+        index: 0,
+        message: { role: "assistant", content: "Paris" },
+        finish_reason: "stop"
+      }],
+      usage: { prompt_tokens: 10, completion_tokens: 1, total_tokens: 11 }
+    }
+  end
   # More native-looking Gemini response (if the OpenAI client somehow returned this)
   let(:gemini_native_success_response) do
     {
@@ -106,6 +120,17 @@ RSpec.describe Boxcars::GeminiAi do
         expect(ai_output.first['content']).to eq('Paris')
 
         expect(props).not_to have_key(:$ai_error)
+      end
+
+      it 'tracks an $ai_generation event from symbol-key OpenAI-style responses' do
+        allow(mock_gemini_client).to receive(:chat_create).and_return(gemini_chat_success_response_openai_style_symbolized)
+
+        engine.client(prompt: prompt, inputs: inputs, temperature: 0.5)
+
+        props = dummy_observability_backend.tracked_events.first[:properties]
+        expect(props[:$ai_provider]).to eq('gemini')
+        expect(props[:$ai_input_tokens]).to eq(10)
+        expect(props[:$ai_output_tokens]).to eq(1)
       end
     end
 

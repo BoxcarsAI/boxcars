@@ -49,7 +49,7 @@ module Boxcars
           client: clnt,
           api_request_params: api_request_params,
           response_data: response_data,
-          success_check: ->(raw) { raw["choices"] || raw["candidates"] },
+          success_check: ->(raw) { raw[:choices] || raw[:candidates] },
           unknown_error_message: "Unknown Gemini API Error",
           preserve_existing_error: false
         )

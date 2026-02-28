@@ -30,6 +30,20 @@ RSpec.describe Boxcars::Groq do
       # "x_groq" => { "id" => "req_someid" } # Example of extra field Groq might return
     }
   end
+  let(:groq_chat_success_response_symbolized) do
+    {
+      id: "groq-chat-789",
+      object: "chat.completion",
+      created: Time.now.to_i,
+      model: "llama3-70b-8192",
+      choices: [{
+        index: 0,
+        message: { role: "assistant", content: "Groq is known for its LPU Inference Engine..." },
+        finish_reason: "stop"
+      }],
+      usage: { prompt_tokens: 15, completion_tokens: 50, total_tokens: 65 }
+    }
+  end
 
   let(:dummy_observability_backend) do
     Class.new do
@@ -92,6 +106,17 @@ RSpec.describe Boxcars::Groq do
         expect(props[:$ai_output_tokens]).to eq(50)
 
         expect(props).not_to have_key(:$ai_error)
+      end
+
+      it 'tracks an $ai_generation event when the provider response uses symbol keys' do
+        allow(mock_groq_client).to receive(:chat_create).and_return(groq_chat_success_response_symbolized)
+
+        engine.client(prompt: prompt, inputs: inputs, temperature: 0.6)
+
+        props = dummy_observability_backend.tracked_events.first[:properties]
+        expect(props[:$ai_provider]).to eq('groq')
+        expect(props[:$ai_input_tokens]).to eq(15)
+        expect(props[:$ai_output_tokens]).to eq(50)
       end
     end
 
