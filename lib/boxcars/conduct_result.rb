@@ -50,6 +50,7 @@ module Boxcars
     def warn_legacy_answer_access(key)
       return unless key == :answer || key == "answer"
       return unless self.class.emit_legacy_answer_access_warnings
+      return unless Boxcars.configuration.emit_deprecation_warnings
       return if self.class.instance_variable_get(:@warned_legacy_answer_access)
 
       Boxcars.warn("Deprecated conduct hash access `result[:answer].answer`; use `Boxcars::Result.extract(result)&.answer`")

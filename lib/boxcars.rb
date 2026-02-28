@@ -37,6 +37,7 @@ module Boxcars
       @log_prompts = ENV.fetch("LOG_PROMPTS", false)
       @log_generated = ENV.fetch("LOG_GEN", false)
       @strict_deprecated_model_aliases = false
+      self.emit_deprecation_warnings = true
       self.openai_official_require_native = ENV.fetch("OPENAI_OFFICIAL_REQUIRE_NATIVE", false)
     end
 
@@ -58,6 +59,14 @@ module Boxcars
 
     def openai_official_require_native=(value)
       @openai_official_require_native = normalize_boolean(value, attr_name: :openai_official_require_native)
+    end
+
+    def emit_deprecation_warnings
+      !!@emit_deprecation_warnings
+    end
+
+    def emit_deprecation_warnings=(value)
+      @emit_deprecation_warnings = normalize_boolean(value, attr_name: :emit_deprecation_warnings)
     end
 
     # @return [String] The OpenAI Access Token either from arg or env.

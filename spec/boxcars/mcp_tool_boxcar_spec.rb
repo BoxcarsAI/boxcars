@@ -107,10 +107,11 @@ RSpec.describe Boxcars::MCP do
       )
 
       result = boxcar.conduct({})
+      answer = Boxcars::Result.extract(result)
 
-      expect(result[:answer]).to be_a(Boxcars::Result)
-      expect(result[:answer].status).to eq(:error)
-      expect(result[:answer].answer).to eq("boom")
+      expect(answer).to be_a(Boxcars::Result)
+      expect(answer.status).to eq(:error)
+      expect(answer.answer).to eq("boom")
     end
   end
 end

@@ -218,5 +218,19 @@ RSpec.describe Boxcars::Boxcar do
       expect(result[:answer].answer).to eq("echo: hello")
       expect(Boxcars).to have_received(:warn).once
     end
+
+    it "does not warn for legacy answer access when global deprecation warnings are disabled" do
+      Boxcars::ConductResult.reset_deprecation_warnings!
+      Boxcars.configuration.emit_deprecation_warnings = false
+      allow(Boxcars).to receive(:warn)
+
+      boxcar = result_boxcar_class.new(description: "Result wrapper")
+      result = boxcar.conduct("hello")
+
+      expect(result[:answer].answer).to eq("echo: hello")
+      expect(Boxcars).not_to have_received(:warn)
+    ensure
+      Boxcars.configuration.emit_deprecation_warnings = true
+    end
   end
 end

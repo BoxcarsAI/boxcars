@@ -108,7 +108,7 @@ module Boxcars
     # @return [Boolean] True when answer is a hash containing a Boxcars::Result under :answer.
     # @deprecated Use `Boxcars::Result.valid_conduct_payload?` or `Boxcars::Result.extract`.
     def self.valid_answer?(answer)
-      unless @warned_valid_answer || !emit_deprecation_warnings
+      unless @warned_valid_answer || !deprecation_warnings_enabled?
         Boxcars.warn("Boxcars::Engines.valid_answer? is deprecated; use Boxcars::Result.valid_conduct_payload? or Boxcars::Result.extract")
         @warned_valid_answer = true
       end
@@ -130,7 +130,7 @@ module Boxcars
         raise Boxcars::ArgumentError, "#{message}. Set an explicit model name."
       end
 
-      return unless emit_deprecation_warnings
+      return unless deprecation_warnings_enabled?
       return if @warned_aliases[model_name]
 
       if Boxcars.logger
@@ -149,6 +149,10 @@ module Boxcars
 
     def self.strict_deprecated_aliases_enabled?
       strict_deprecated_aliases || Boxcars.configuration.strict_deprecated_model_aliases
+    end
+
+    def self.deprecation_warnings_enabled?
+      emit_deprecation_warnings && Boxcars.configuration.emit_deprecation_warnings
     end
   end
 end

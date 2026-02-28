@@ -83,14 +83,16 @@ RSpec.describe Boxcars::ActiveRecord do
 
     it "can return just the code" do
       VCR.use_cassette("ar6") do
-        code_results = boxcar3.conduct("count of comments from Sally?")[:answer].to_h
+        result = boxcar3.conduct("count of comments from Sally?")
+        code_results = Boxcars::Result.extract(result).to_h
         expect(code_results[:code]).to eq("Comment.where(user_id: User.find_by(name: 'Sally').id).count")
       end
     end
 
     it "can see the return data" do
       VCR.use_cassette("ar7") do
-        answer = boxcar.conduct("tickets asigned to Sally?")[:answer].to_answer
+        result = boxcar.conduct("tickets asigned to Sally?")
+        answer = Boxcars::Result.extract(result).to_answer
         expect(answer.count).to eq(Ticket.open.where(user: User.find_by(name: "Sally")).count)
       end
     end

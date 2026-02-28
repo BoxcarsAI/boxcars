@@ -59,6 +59,14 @@ end
 
 Legacy `result[:answer].answer` still works for now, but emits a one-time deprecation warning.
 
+If you need to silence deprecation warnings temporarily during rollout:
+
+```ruby
+Boxcars.configure do |config|
+  config.emit_deprecation_warnings = false
+end
+```
+
 ## 1. Model Alias Migration (Do This First)
 
 Deprecated aliases still work in v0.9, but emit one-time warnings.

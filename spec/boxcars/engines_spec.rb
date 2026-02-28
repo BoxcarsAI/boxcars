@@ -8,6 +8,7 @@ RSpec.describe Boxcars::Engines do
     described_class.strict_deprecated_aliases = false
     described_class.reset_deprecation_warnings!
     Boxcars.configuration.strict_deprecated_model_aliases = false
+    Boxcars.configuration.emit_deprecation_warnings = true
   end
 
   after do
@@ -15,6 +16,7 @@ RSpec.describe Boxcars::Engines do
     described_class.strict_deprecated_aliases = false
     described_class.reset_deprecation_warnings!
     Boxcars.configuration.strict_deprecated_model_aliases = false
+    Boxcars.configuration.emit_deprecation_warnings = true
   end
 
   describe ".engine" do
@@ -342,6 +344,16 @@ RSpec.describe Boxcars::Engines do
       described_class.valid_answer?({ answer: valid_result })
 
       expect(Boxcars).to have_received(:warn).once
+    end
+
+    it "does not emit warnings when global deprecation warnings are disabled" do
+      described_class.emit_deprecation_warnings = true
+      Boxcars.configuration.emit_deprecation_warnings = false
+      allow(Boxcars).to receive(:warn)
+
+      described_class.valid_answer?({ answer: valid_result })
+
+      expect(Boxcars).not_to have_received(:warn)
     end
   end
 end

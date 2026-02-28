@@ -65,6 +65,26 @@ RSpec.describe Boxcars::Configuration do
     end
   end
 
+  describe '#emit_deprecation_warnings' do
+    it 'defaults to true' do
+      expect(configuration.emit_deprecation_warnings).to be(true)
+    end
+
+    it 'accepts boolean-like assignment values' do
+      configuration.emit_deprecation_warnings = "no"
+      expect(configuration.emit_deprecation_warnings).to be(false)
+
+      configuration.emit_deprecation_warnings = "1"
+      expect(configuration.emit_deprecation_warnings).to be(true)
+    end
+
+    it 'raises on invalid assignment values' do
+      expect do
+        configuration.emit_deprecation_warnings = "maybe"
+      end.to raise_error(Boxcars::ConfigurationError, /must be a boolean-like value/)
+    end
+  end
+
   describe '#openai_access_token' do
     it 'uses OPENAI_ACCESS_TOKEN when set' do
       allow(ENV).to receive(:fetch).with("OPENAI_ACCESS_TOKEN", nil).and_return("token-from-access-token")

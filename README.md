@@ -349,6 +349,14 @@ end
 Boxcars::Engines.strict_deprecated_aliases = true
 ```
 
+To temporarily silence deprecation warnings during migration:
+
+```ruby
+Boxcars.configure do |config|
+  config.emit_deprecation_warnings = false
+end
+```
+
 #### OpenAI Client Setup (v0.9+)
 
 `Boxcars::Openai` and OpenAI-compatible providers use the official OpenAI client path.
