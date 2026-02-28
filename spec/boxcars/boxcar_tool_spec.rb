@@ -154,6 +154,16 @@ RSpec.describe Boxcars::Boxcar do
   end
 
   describe "key normalization" do
+    it "canonicalizes expected input keys for symbol-based call implementations" do
+      boxcar = Class.new(described_class) do
+        def call(inputs:)
+          { answer: "echo: #{inputs[:question]}" }
+        end
+      end.new(description: "Canonicalized input key support")
+
+      expect(boxcar.run("question" => "hello")).to eq("echo: hello")
+    end
+
     it "accepts string-keyed input hashes for #conduct" do
       boxcar = Class.new(described_class) do
         def call(inputs:)

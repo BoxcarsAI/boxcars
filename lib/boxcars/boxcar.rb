@@ -361,7 +361,8 @@ module Boxcars
         end
         inputs = { input_keys.first => inputs }
       end
-      validate_inputs(inputs:)
+      validated_inputs = validate_inputs(inputs:)
+      canonicalize_expected_input_keys(validated_inputs)
     end
 
     def input_value(inputs, key)
@@ -388,6 +389,19 @@ module Boxcars
       else
         [key]
       end
+    end
+
+    def canonicalize_expected_input_keys(inputs)
+      return inputs unless inputs.is_a?(Hash)
+
+      normalized = inputs.dup
+      input_keys.each do |key|
+        next if normalized.key?(key)
+
+        candidate = key_variants(key).find { |variant| normalized.key?(variant) }
+        normalized[key] = normalized[candidate] if candidate
+      end
+      normalized
     end
 
     # the default answer is the text passed in
