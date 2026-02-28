@@ -18,5 +18,10 @@ RSpec.describe Boxcars::VectorAnswer do
         expect(vector_answer.run("Will I get a laptop?")).to include("you will be provided with a laptop")
       end
     end
+
+    it "accepts string-keyed question inputs for prediction variables" do
+      extras = vector_answer.prediction_additional("question" => "Will I get a laptop?")
+      expect(extras[:search_content]).to eq(search_result)
+    end
   end
 end
