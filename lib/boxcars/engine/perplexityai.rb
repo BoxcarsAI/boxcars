@@ -80,9 +80,12 @@ module Boxcars
         handle_openai_compatible_standard_error(e, response_data)
         if defined?(Faraday::Error) && e.is_a?(Faraday::Error)
           response_data[:status_code] = e.response_status if e.respond_to?(:response_status)
-          response_data[:response_obj] = e.response if e.respond_to?(:response)
-          if e.respond_to?(:response) && e.response[:body].is_a?(Hash)
-            response_data[:parsed_json] = normalize_generate_response(e.response[:body])
+          if e.respond_to?(:response) && e.response.is_a?(Hash)
+            normalized_error_response = normalize_generate_response(e.response)
+            response_data[:response_obj] = e.response
+            response_data[:status_code] ||= normalized_error_response["status"]
+            error_body = normalized_error_response["body"]
+            response_data[:parsed_json] = error_body if error_body.is_a?(Hash)
           end
         end
       ensure
@@ -129,15 +132,17 @@ module Boxcars
     end
 
     def perplexity_handle_call_outcome(response_data:)
+      parsed_response = normalize_generate_response(response_data[:parsed_json]) if response_data[:parsed_json].is_a?(Hash)
+      parsed_response ||= {}
+
       if response_data[:error]
         Boxcars.error("PerplexityAI Error: #{response_data[:error].message} (#{response_data[:error].class.name})", :red)
         raise response_data[:error]
       elsif !response_data[:success]
-        err_details = response_data.dig(:parsed_json, "error")
+        err_details = parsed_response&.dig("error")
         msg = err_details ? "#{err_details['type']}: #{err_details['message']}" : "Unknown error from PerplexityAI API"
         raise Error, msg
       else
-        parsed_response = response_data[:parsed_json]
         unless parsed_response["choices"].is_a?(Array) && !parsed_response["choices"].empty?
           raise Error,
                 "PerplexityAI: No choices found in response"

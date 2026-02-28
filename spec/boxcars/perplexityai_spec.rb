@@ -32,6 +32,22 @@ RSpec.describe Boxcars::Perplexityai do
                     },
                     reason_phrase: "OK")
   end
+  let(:mock_faraday_response_symbolized_body) do
+    instance_double(Faraday::Response,
+                    success?: true,
+                    status: 200,
+                    body: {
+                      id: "perplexity-resp-123",
+                      model: "llama-3-sonar-large-32k-online",
+                      choices: [{
+                        index: 0,
+                        message: { role: "assistant", content: "AI is advancing rapidly..." },
+                        finish_reason: "stop"
+                      }],
+                      usage: { prompt_tokens: 10, completion_tokens: 50, total_tokens: 60 }
+                    },
+                    reason_phrase: "OK")
+  end
   let(:mock_faraday_error_response) do
     instance_double(Faraday::Response,
                     success?: false,
@@ -108,6 +124,18 @@ RSpec.describe Boxcars::Perplexityai do
         expect(props[:$ai_output_tokens]).to eq(50)
 
         expect(props).not_to have_key(:$ai_error)
+      end
+
+      it 'tracks an $ai_generation event when response payload uses symbol keys' do
+        allow(mock_faraday_connection).to receive(:post).with('/chat/completions').and_return(mock_faraday_response_symbolized_body)
+
+        engine.client(prompt: prompt, inputs: inputs, temperature: 0.3)
+
+        props = dummy_observability_backend.tracked_events.first[:properties]
+        ai_output = JSON.parse(props[:$ai_output_choices])
+        expect(ai_output.first).to include("role" => "assistant", "content" => "AI is advancing rapidly...")
+        expect(props[:$ai_input_tokens]).to eq(10)
+        expect(props[:$ai_output_tokens]).to eq(50)
       end
     end
 

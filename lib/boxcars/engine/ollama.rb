@@ -84,11 +84,13 @@ module Boxcars
     private
 
     def ollama_handle_call_outcome(response_data:)
+      normalized_response_obj = normalize_generate_response(response_data[:response_obj]) if response_data[:response_obj].is_a?(Hash)
+
       if response_data[:error]
         Boxcars.error("Ollama Error: #{response_data[:error].message} (#{response_data[:error].class.name})", :red)
         raise response_data[:error]
       elsif !response_data[:success]
-        err_details = response_data.dig(:response_obj, "error")
+        err_details = normalized_response_obj&.dig("error")
         msg = if err_details
                 err_details.is_a?(Hash) ? err_details['message'] : err_details.to_s
               else

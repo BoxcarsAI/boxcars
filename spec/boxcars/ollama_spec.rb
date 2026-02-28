@@ -28,6 +28,20 @@ RSpec.describe Boxcars::Ollama do
       "usage" => { "prompt_tokens" => 10, "completion_tokens" => 8, "total_tokens" => 18 } # Example usage
     }
   end
+  let(:ollama_chat_success_response_symbolized) do
+    {
+      id: "ollama-chat-456",
+      object: "chat.completion",
+      created: Time.now.to_i,
+      model: "llama3",
+      choices: [{
+        index: 0,
+        message: { role: "assistant", content: "Quantum physics is about tiny things acting weird." },
+        finish_reason: "stop"
+      }],
+      usage: { prompt_tokens: 10, completion_tokens: 8, total_tokens: 18 }
+    }
+  end
 
   let(:dummy_observability_backend) do
     Class.new do
@@ -91,6 +105,18 @@ RSpec.describe Boxcars::Ollama do
 
         expect(props).not_to have_key(:$ai_error)
       end
+
+      it 'tracks a $ai_generation event with symbol-key response payloads' do
+        allow(mock_ollama_client).to receive(:chat_create).and_return(ollama_chat_success_response_symbolized)
+
+        engine.client(prompt: prompt, inputs: inputs, temperature: 0.6)
+
+        props = dummy_observability_backend.tracked_events.first[:properties]
+        ai_output = JSON.parse(props[:$ai_output_choices])
+        expect(ai_output.first).to include("role" => "assistant", "content" => "Quantum physics is about tiny things acting weird.")
+        expect(props[:$ai_input_tokens]).to eq(10)
+        expect(props[:$ai_output_tokens]).to eq(8)
+      end
     end
 
     context 'when Ollama service is unavailable' do
@@ -142,6 +168,26 @@ RSpec.describe Boxcars::Ollama do
         expect(props[:$ai_error]).to eq("model 'unknown_model' not found, try pulling it first")
         expect(props[:$ai_provider]).to eq('ollama')
         expect(props[:$ai_http_status]).to eq(500) # Default for errors
+      end
+    end
+
+    context 'when Ollama returns an error payload with symbol keys' do
+      let(:ollama_error_response_symbolized) do
+        { error: "model 'unknown_model' not found, try pulling it first" }
+      end
+
+      before do
+        allow(mock_ollama_client).to receive(:chat_create).and_return(ollama_error_response_symbolized)
+      end
+
+      it 'raises the same error message and tracks observability fields' do
+        expect do
+          engine.client(prompt: prompt, inputs: inputs, model: "unknown_model")
+        end.to raise_error(Boxcars::Error, /model 'unknown_model' not found/)
+
+        props = dummy_observability_backend.tracked_events.first[:properties]
+        expect(props[:$ai_is_error]).to be true
+        expect(props[:$ai_error]).to eq("model 'unknown_model' not found, try pulling it first")
       end
     end
 
