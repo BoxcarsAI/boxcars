@@ -3,6 +3,7 @@
 require 'spec_helper'
 require 'boxcars/engine/cohere'
 require 'boxcars/prompt'
+require 'faraday'
 
 RSpec.describe Boxcars::Cohere do
   subject(:engine) { described_class.new(**engine_params) }

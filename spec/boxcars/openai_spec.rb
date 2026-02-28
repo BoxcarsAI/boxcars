@@ -43,6 +43,28 @@ RSpec.describe Boxcars::Openai do
       }
     )
   end
+  let(:openai_chat_symbolized_success_response) do
+    {
+      id: "chatcmpl-123",
+      object: "chat.completion",
+      created: 1_677_652_288,
+      model: "gpt-4o-mini",
+      choices: [{
+        index: 0,
+        message: {
+          role: "assistant",
+          content: "Your Daily Grind, Perfected."
+        },
+        finish_reason: "stop"
+      }],
+      usage: {
+        prompt_tokens: 9,
+        completion_tokens: 12,
+        total_tokens: 21,
+        prompt_tokens_details: { cached_tokens: 4 }
+      }
+    }
+  end
   let(:openai_completion_success_response) do
     {
       "id" => "cmpl-123",
@@ -157,6 +179,20 @@ RSpec.describe Boxcars::Openai do
         engine.client(prompt: prompt, inputs: inputs)
 
         props = dummy_observability_backend.tracked_events.first[:properties]
+        expect(props[:$ai_input_tokens]).to eq(9)
+        expect(props[:$ai_output_tokens]).to eq(12)
+        expect(props[:$ai_input_cached_tokens]).to eq(4)
+        expect(props[:$ai_input_uncached_tokens]).to eq(5)
+      end
+
+      it 'tracks observability fields from symbol-key responses' do
+        allow(mock_openai_client).to receive(:chat).and_return(openai_chat_symbolized_success_response)
+
+        engine.client(prompt: prompt, inputs: inputs)
+
+        props = dummy_observability_backend.tracked_events.first[:properties]
+        ai_output = JSON.parse(props[:$ai_output_choices])
+        expect(ai_output.first).to include("role" => "assistant", "content" => "Your Daily Grind, Perfected.")
         expect(props[:$ai_input_tokens]).to eq(9)
         expect(props[:$ai_output_tokens]).to eq(12)
         expect(props[:$ai_input_cached_tokens]).to eq(4)

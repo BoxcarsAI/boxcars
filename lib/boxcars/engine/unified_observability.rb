@@ -24,6 +24,8 @@ module Boxcars
 
     # Build standardized PostHog properties for any engine
     def build_unified_observability_properties(duration_ms:, current_params:, request_context:, response_data:, provider:)
+      normalized_response_data = normalize_response_data(response_data)
+
       # Convert duration from milliseconds to seconds for PostHog
       duration_seconds = duration_ms / 1000.0
 
@@ -31,12 +33,12 @@ module Boxcars
       ai_input = extract_ai_input(request_context, provider)
 
       # Extract token counts from response if available
-      input_tokens = extract_input_tokens(response_data, provider)
-      output_tokens = extract_output_tokens(response_data, provider)
-      cached_input_tokens = extract_cached_input_tokens(response_data, provider)
+      input_tokens = extract_input_tokens(normalized_response_data, provider)
+      output_tokens = extract_output_tokens(normalized_response_data, provider)
+      cached_input_tokens = extract_cached_input_tokens(normalized_response_data, provider)
 
       # Format output choices for PostHog
-      ai_output_choices = extract_output_choices(response_data, provider)
+      ai_output_choices = extract_output_choices(normalized_response_data, provider)
 
       # Generate a trace ID (PostHog requires this)
       trace_id = SecureRandom.uuid
@@ -51,9 +53,9 @@ module Boxcars
         '$ai_output_choices': ai_output_choices.to_json,
         '$ai_output_tokens': output_tokens,
         '$ai_latency': duration_seconds,
-        '$ai_http_status': extract_status_code(response_data) || (response_data[:success] ? 200 : 500),
+        '$ai_http_status': extract_status_code(normalized_response_data) || (normalized_response_data[:success] ? 200 : 500),
         '$ai_base_url': get_base_url_for_provider(provider),
-        '$ai_is_error': !response_data[:success],
+        '$ai_is_error': !normalized_response_data[:success],
         user_id:
       }
 
@@ -63,7 +65,7 @@ module Boxcars
       end
 
       # Add error details if present
-      properties[:$ai_error] = extract_error_message(response_data, provider) if response_data[:error] || !response_data[:success]
+      properties[:$ai_error] = extract_error_message(normalized_response_data, provider) if normalized_response_data[:error] || !normalized_response_data[:success]
 
       properties
     end
@@ -196,72 +198,59 @@ module Boxcars
 
     # Provider-specific token extraction with fallbacks
     def extract_input_tokens(response_data, provider)
-      # Only extract tokens from parsed JSON, not from raw response objects
-      return 0 unless response_data[:parsed_json]
-
-      response_body = response_data[:parsed_json]
+      response_body = parsed_response_body(response_data)
+      return 0 unless response_body
 
       case provider.to_s
       when 'anthropic'
-        response_body.dig("usage", "input_tokens") || 0
+        response_body.dig(:usage, :input_tokens) || 0
       when 'openai'
-        usage_value(response_body, %w[usage input_tokens], %i[usage input_tokens],
-                    %w[usage prompt_tokens], %i[usage prompt_tokens]) || 0
+        usage_value(response_body, %i[usage input_tokens], %i[usage prompt_tokens]) || 0
       when 'cohere'
-        response_body.dig("meta", "tokens", "input_tokens") ||
-          response_body.dig(:meta, :tokens, :input_tokens) ||
-          response_body.dig("meta", "billed_units", "input_tokens") ||
+        response_body.dig(:meta, :tokens, :input_tokens) ||
           response_body.dig(:meta, :billed_units, :input_tokens) ||
-          response_body.dig("token_count", "prompt_tokens") || 0
+          response_body.dig(:token_count, :prompt_tokens) || 0
       else
         # Try common locations
-        response_body.dig("usage", "prompt_tokens") ||
-          response_body.dig("usage", "input_tokens") ||
-          response_body.dig("meta", "tokens", "input_tokens") ||
-          response_body.dig("token_count", "prompt_tokens") ||
+        response_body.dig(:usage, :prompt_tokens) ||
+          response_body.dig(:usage, :input_tokens) ||
+          response_body.dig(:meta, :tokens, :input_tokens) ||
+          response_body.dig(:token_count, :prompt_tokens) ||
           0
       end
     end
 
     def extract_output_tokens(response_data, provider)
-      # Only extract tokens from parsed JSON, not from raw response objects
-      return 0 unless response_data[:parsed_json]
-
-      response_body = response_data[:parsed_json]
+      response_body = parsed_response_body(response_data)
+      return 0 unless response_body
 
       case provider.to_s
       when 'anthropic'
-        response_body.dig("usage", "output_tokens") || 0
+        response_body.dig(:usage, :output_tokens) || 0
       when 'openai'
-        usage_value(response_body, %w[usage output_tokens], %i[usage output_tokens],
-                    %w[usage completion_tokens], %i[usage completion_tokens]) || 0
+        usage_value(response_body, %i[usage output_tokens], %i[usage completion_tokens]) || 0
       when 'cohere'
-        response_body.dig("meta", "tokens", "output_tokens") ||
-          response_body.dig(:meta, :tokens, :output_tokens) ||
-          response_body.dig("meta", "billed_units", "output_tokens") ||
+        response_body.dig(:meta, :tokens, :output_tokens) ||
           response_body.dig(:meta, :billed_units, :output_tokens) ||
-          response_body.dig("token_count", "completion_tokens") || 0
+          response_body.dig(:token_count, :completion_tokens) || 0
       else
         # Try common locations
-        response_body.dig("usage", "completion_tokens") ||
-          response_body.dig("usage", "output_tokens") ||
-          response_body.dig("meta", "tokens", "output_tokens") ||
-          response_body.dig("token_count", "completion_tokens") ||
+        response_body.dig(:usage, :completion_tokens) ||
+          response_body.dig(:usage, :output_tokens) ||
+          response_body.dig(:meta, :tokens, :output_tokens) ||
+          response_body.dig(:token_count, :completion_tokens) ||
           0
       end
     end
 
     def extract_cached_input_tokens(response_data, provider)
-      return nil unless response_data[:parsed_json]
-
-      response_body = response_data[:parsed_json]
+      response_body = parsed_response_body(response_data)
+      return nil unless response_body
 
       case provider.to_s
       when 'openai'
         usage_value(response_body,
-                    %w[usage input_tokens_details cached_tokens],
                     %i[usage input_tokens_details cached_tokens],
-                    %w[usage prompt_tokens_details cached_tokens],
                     %i[usage prompt_tokens_details cached_tokens])
       end
     end
@@ -288,10 +277,8 @@ module Boxcars
 
     # Provider-specific output extraction with fallbacks
     def extract_output_choices(response_data, provider)
-      # Only extract output choices from parsed JSON, not from raw response objects
-      return [] unless response_data[:parsed_json]
-
-      response_body = response_data[:parsed_json]
+      response_body = parsed_response_body(response_data)
+      return [] unless response_body
 
       case provider.to_s
       when 'anthropic'
@@ -305,25 +292,25 @@ module Boxcars
 
     def extract_anthropic_output_choices(response_body)
       # Handle both original Anthropic format and transformed format
-      if response_body["content"].is_a?(Array)
+      if response_body[:content].is_a?(Array)
         # Original format from Anthropic API
-        content_text = response_body["content"].map { |c| c["text"] }.join("\n")
+        content_text = response_body[:content].filter_map { |content| content[:text] if content.is_a?(Hash) }.join("\n")
         [{ role: "assistant", content: content_text }]
-      elsif response_body["completion"]
+      elsif response_body[:completion]
         # Transformed format after Anthropic engine processing
-        [{ role: "assistant", content: response_body["completion"] }]
+        [{ role: "assistant", content: response_body[:completion] }]
       else
         []
       end
     end
 
     def extract_openai_output_choices(response_body)
-      if response_body["choices"]
-        response_body["choices"].map do |choice|
-          if choice.dig("message", "content")
-            { role: "assistant", content: choice.dig("message", "content") }
-          elsif choice["text"]
-            { role: "assistant", content: choice["text"] }
+      if response_body[:choices]
+        response_body[:choices].map do |choice|
+          if choice.is_a?(Hash) && choice.dig(:message, :content)
+            { role: "assistant", content: choice.dig(:message, :content) }
+          elsif choice.is_a?(Hash) && choice[:text]
+            { role: "assistant", content: choice[:text] }
           else
             choice
           end
@@ -335,29 +322,54 @@ module Boxcars
 
     def extract_generic_output_choices(response_body)
       # Handle different response formats
-      if response_body["choices"]
-        response_body["choices"].map do |choice|
-          if choice.dig("message", "content")
-            { role: "assistant", content: choice.dig("message", "content") }
-          elsif choice["text"]
-            { role: "assistant", content: choice["text"] }
+      if response_body[:choices]
+        response_body[:choices].map do |choice|
+          if choice.is_a?(Hash) && choice.dig(:message, :content)
+            { role: "assistant", content: choice.dig(:message, :content) }
+          elsif choice.is_a?(Hash) && choice[:text]
+            { role: "assistant", content: choice[:text] }
           else
             choice
           end
         end
-      elsif response_body["text"] || response_body[:text]
-        # Handle Cohere format (both string and symbol keys)
-        content = response_body["text"] || response_body[:text]
-        [{ role: "assistant", content: }]
-      elsif response_body["message"]
-        [{ role: "assistant", content: response_body["message"] }]
-      elsif response_body["candidates"]
-        response_body["candidates"].map do |candidate|
-          content = candidate.dig("content", "parts", 0, "text") || candidate.to_s
+      elsif response_body[:text]
+        [{ role: "assistant", content: response_body[:text] }]
+      elsif response_body[:message]
+        [{ role: "assistant", content: response_body[:message] }]
+      elsif response_body[:candidates]
+        response_body[:candidates].map do |candidate|
+          content = candidate.is_a?(Hash) ? (candidate.dig(:content, :parts, 0, :text) || candidate.to_s) : candidate.to_s
           { role: "assistant", content: }
         end
       else
         []
+      end
+    end
+
+    def parsed_response_body(response_data)
+      return nil unless response_data.is_a?(Hash)
+
+      parsed_json = response_data[:parsed_json]
+      parsed_json.is_a?(Hash) ? parsed_json : nil
+    end
+
+    def normalize_response_data(response_data)
+      return response_data unless response_data.is_a?(Hash)
+
+      response_data.merge(parsed_json: deep_symbolize_keys(response_data[:parsed_json]))
+    end
+
+    def deep_symbolize_keys(value)
+      case value
+      when Hash
+        value.each_with_object({}) do |(key, nested_value), symbolized|
+          normalized_key = key.is_a?(String) || key.is_a?(Symbol) ? key.to_sym : key
+          symbolized[normalized_key] = deep_symbolize_keys(nested_value)
+        end
+      when Array
+        value.map { |item| deep_symbolize_keys(item) }
+      else
+        value
       end
     end
 
