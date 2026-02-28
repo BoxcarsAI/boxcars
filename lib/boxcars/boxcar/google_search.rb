@@ -18,16 +18,6 @@ module Boxcars
       ::GoogleSearch.api_key = api_key
     end
 
-    # Get an answer from Google using the SerpAPI.
-    # @param question [String] The question to ask Google.
-    # @return [String, Hash] A best answer string, or a hash with answer text and source URL.
-    def run(question)
-      rv = search_answer(question)
-      Boxcars.info "Question: #{question}"
-      Boxcars.info "Answer: #{rv}"
-      rv
-    end
-
     # Execute one search request using the normalized Boxcar input contract.
     # @param inputs [Hash] Expected to contain `:question` (or `"question"`).
     # @return [Hash] `{ answer: ... }` where answer is a String or Hash.

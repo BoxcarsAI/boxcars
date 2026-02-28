@@ -92,6 +92,7 @@ module Boxcars
       rv = conduct(*, **)
       result = Result.extract(rv)
       return result.answer if result
+      return rv.output_for(output_keys[0]) if rv.respond_to?(:output_for)
       return rv[output_keys[0]] if rv.is_a?(Hash)
 
       rv

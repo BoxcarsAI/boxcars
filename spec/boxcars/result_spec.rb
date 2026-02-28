@@ -34,6 +34,15 @@ RSpec.describe Boxcars::Result do
       expect(described_class.extract(conduct_result)).to eq(result)
       expect(Boxcars).not_to have_received(:warn)
     end
+
+    it "returns nil from ConductResult with non-Result answer without warning" do
+      Boxcars::ConductResult.reset_deprecation_warnings!
+      allow(Boxcars).to receive(:warn)
+
+      conduct_result = Boxcars::ConductResult.new(answer: { "snippet" => "hello" }, input: "hello")
+      expect(described_class.extract(conduct_result)).to be_nil
+      expect(Boxcars).not_to have_received(:warn)
+    end
   end
 
   describe ".valid_conduct_payload?" do

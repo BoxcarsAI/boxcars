@@ -195,6 +195,15 @@ RSpec.describe Boxcars::Boxcar do
       expect(boxcar.run("hello")).to eq("value: hello")
     end
 
+    it "does not warn when #run returns non-Result outputs" do
+      Boxcars::ConductResult.reset_deprecation_warnings!
+      allow(Boxcars).to receive(:warn)
+
+      boxcar = custom_output_boxcar_class.new(description: "Custom output")
+      expect(boxcar.run("hello")).to eq("value: hello")
+      expect(Boxcars).not_to have_received(:warn)
+    end
+
     it "raises a clear error when #call does not return a hash" do
       boxcar = invalid_output_boxcar_class.new(description: "Invalid output")
 

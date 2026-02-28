@@ -46,6 +46,19 @@ module Boxcars
       candidate if candidate.is_a?(Boxcars::Result)
     end
 
+    # Read an output key from conduct payload without triggering deprecation
+    # warnings for legacy `[:answer]` hash access.
+    # @param key [Symbol,String] output key to fetch.
+    # @return [Object,nil]
+    def output_for(key)
+      return hash_read(key) if key?(key)
+
+      string_key = key.to_s
+      return hash_read(string_key) if key?(string_key)
+
+      nil
+    end
+
     private
 
     def warn_legacy_answer_access(key)

@@ -15,13 +15,6 @@ module Boxcars
       super
     end
 
-    # Get an answer from Wikipedia search results.
-    # @param question [String] The question to search.
-    # @return [String] The answer to the question.
-    def run(question)
-      fetch_answer(question)
-    end
-
     # Execute one Wikipedia search using the normalized Boxcar input contract.
     # @param inputs [Hash] Expected to contain `:question` (or `"question"`).
     # @return [Hash] `{ answer: String }`.

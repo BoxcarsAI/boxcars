@@ -77,8 +77,7 @@ module Boxcars
     def self.extract(value)
       return value if value.is_a?(Result)
       if value.respond_to?(:answer_result)
-        candidate = value.answer_result
-        return candidate if candidate.is_a?(Result)
+        return value.answer_result
       end
       return nil unless value.is_a?(Hash)
 
