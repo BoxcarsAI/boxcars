@@ -17,7 +17,7 @@ module Boxcars
     # @param inputs [Hash] Expected to contain `:question` (or `"question"`) with a URL.
     # @return [Hash] `{ answer: Boxcars::Result }`.
     def call(inputs:)
-      url = input_value(inputs, :question)
+      url = inputs[:question]
       parsed_url = URI.parse(url)
       { answer: do_encoding(get_answer(parsed_url)) }
     end

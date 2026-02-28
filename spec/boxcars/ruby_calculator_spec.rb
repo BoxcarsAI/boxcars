@@ -11,6 +11,10 @@ RSpec.describe Boxcars::RubyCalculator do
       expect(described_class.new.run("1+2")).to eq("3")
     end
 
+    it "accepts string-keyed question hashes via canonicalized inputs" do
+      expect(described_class.new.run("question" => "1+2")).to eq("3")
+    end
+
     it "can return structured result when needed" do
       result = described_class.new.run_result("1+2")
       expect(result).to be_a(Boxcars::Result)

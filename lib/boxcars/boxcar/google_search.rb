@@ -23,7 +23,7 @@ module Boxcars
     # @param inputs [Hash] Expected to contain `:question` (or `"question"`).
     # @return [Hash] `{ answer: ... }` where answer is a String or Hash.
     def call(inputs:)
-      question = input_value(inputs, :question)
+      question = inputs[:question]
       { answer: search_answer(question) }
     end
 

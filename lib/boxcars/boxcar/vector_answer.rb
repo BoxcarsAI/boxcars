@@ -27,7 +27,7 @@ module Boxcars
     # @param inputs [Hash] The inputs to use for the prediction.
     # @return [Hash] The additional variables for this boxcar.
     def prediction_additional(inputs)
-      { search_content: get_search_content(input_value(inputs, :question)) }.merge super
+      { search_content: get_search_content(inputs[:question]) }.merge super
     end
 
     # Prompt template used by this boxcar.
