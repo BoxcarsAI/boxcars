@@ -18,11 +18,15 @@ RSpec.describe Boxcars::EngineBoxcar do
 
   let(:echo_engine_class) do
     Class.new(Boxcars::Engine) do
+      attr_reader :last_stop
+
       def initialize(**kwargs)
+        @last_stop = nil
         super(description: "EchoEngine", **kwargs)
       end
 
-      def generate(prompts:, **_kwargs)
+      def generate(prompts:, stop: nil, **_kwargs)
+        @last_stop = stop
         generations = prompts.map do |_prompt, inputs|
           [Boxcars::Generation.new(text: inputs[:input].to_s)]
         end
@@ -80,5 +84,19 @@ RSpec.describe Boxcars::EngineBoxcar do
     expect do
       box.generate(input_list: [])
     end.to raise_error(Boxcars::ArgumentError, /requires at least one input hash/)
+  end
+
+  it "accepts string-keyed stop values when generating" do
+    prompt = Boxcars::Prompt.new(
+      template: "Q: %<input>s",
+      input_variables: [:input],
+      output_variables: [:answer]
+    )
+    engine = echo_engine_class.new
+    box = described_class.new(prompt: prompt, engine:, description: "test")
+
+    box.generate(input_list: [{ input: "one", "stop" => ["DONE"] }])
+
+    expect(engine.last_stop).to eq(["DONE"])
   end
 end

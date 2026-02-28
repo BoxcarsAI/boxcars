@@ -62,7 +62,7 @@ module Boxcars
     def generate(input_list:, current_conversation: nil)
       return super unless native_json_schema_generation_supported?
 
-      stop = input_list[0][:stop]
+      stop = input_value(input_list.first, :stop)
       the_prompt = current_conversation ? prompt.with_conversation(current_conversation) : prompt
       generations = []
       raw_responses = []

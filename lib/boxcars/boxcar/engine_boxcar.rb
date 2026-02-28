@@ -42,7 +42,7 @@ module Boxcars
         raise Boxcars::ArgumentError, "#{self.class}#generate requires at least one input hash"
       end
 
-      stop = input_list[0][:stop]
+      stop = input_value(input_list.first, :stop)
       the_prompt = current_conversation ? prompt.with_conversation(current_conversation) : prompt
       if input_list.length == 1 && engine.respond_to?(:generate_one)
         return engine.generate_one(prompt: the_prompt, inputs: input_list.first, stop:)

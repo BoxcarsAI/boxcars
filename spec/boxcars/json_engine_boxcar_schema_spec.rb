@@ -166,5 +166,21 @@ RSpec.describe Boxcars::JSONEngineBoxcar do
         }
       )
     end
+
+    it "accepts string-keyed stop values in native structured generation" do
+      schema = {
+        type: "object",
+        properties: { share_count: { type: "string" } },
+        required: ["share_count"],
+        additionalProperties: false
+      }
+      engine = native_structured_engine_class.new
+      boxcar = described_class.new(engine:, json_schema: schema)
+
+      boxcar.generate(input_list: [{ input: "extract shares", "stop" => ["DONE"] }])
+
+      expect(engine.calls.length).to eq(1)
+      expect(engine.calls.first[:kwargs][:stop]).to eq(["DONE"])
+    end
   end
 end
