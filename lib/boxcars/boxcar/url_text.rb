@@ -29,13 +29,6 @@ module Boxcars
       { answer: do_encoding(get_answer(parsed_url)) }
     end
 
-    # Execute multiple URL text fetches.
-    # @param input_list [Array<Hash>] Input hashes for `#call`.
-    # @return [Array<Hash>] One output hash per input hash.
-    def apply(input_list:)
-      input_list.map { |inputs| call(inputs:) }
-    end
-
     private
 
     def do_encoding(answer)

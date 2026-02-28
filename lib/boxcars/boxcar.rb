@@ -76,10 +76,11 @@ module Boxcars
     end
 
     # Apply the boxcar to a list of inputs.
+    # Override this when a subclass can batch requests more efficiently.
     # @param input_list [Array<Hash>] The list of inputs.
     # @return [Array<Hash>] One output hash per input hash.
     def apply(input_list:)
-      raise NotImplementedError
+      input_list.map { |inputs| call(inputs:) }
     end
 
     # Convenience wrapper around `conduct` that returns only the first output value.

@@ -23,13 +23,6 @@ module Boxcars
       { answer: fetch_answer(question) }
     end
 
-    # Execute multiple Wikipedia searches.
-    # @param input_list [Array<Hash>] Input hashes for `#call`.
-    # @return [Array<Hash>] One output hash per input hash.
-    def apply(input_list:)
-      input_list.map { |inputs| call(inputs:) }
-    end
-
     private
 
     def fetch_answer(question)

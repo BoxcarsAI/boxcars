@@ -26,13 +26,6 @@ module Boxcars
       { answer: search_answer(question) }
     end
 
-    # Execute multiple search requests.
-    # @param input_list [Array<Hash>] Input hashes for `#call`.
-    # @return [Array<Hash>] One output hash per input hash.
-    def apply(input_list:)
-      input_list.map { |inputs| call(inputs:) }
-    end
-
     # Get the location of an answer from Google using the SerpAPI.
     # @param question [String] The question to ask Google.
     # @return [String] The location found.

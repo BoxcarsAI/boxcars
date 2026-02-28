@@ -8,10 +8,6 @@ RSpec.describe Boxcars::Boxcar do
       def call(inputs:)
         { answer: inputs.inspect }
       end
-
-      def apply(input_list:)
-        input_list
-      end
     end
   end
 
@@ -144,15 +140,24 @@ RSpec.describe Boxcars::Boxcar do
     end
   end
 
+  describe "#apply" do
+    it "uses the default implementation to map each input through #call" do
+      boxcar = Class.new(described_class) do
+        def call(inputs:)
+          { answer: inputs[:question] || inputs["question"] }
+        end
+      end.new(description: "Default apply")
+
+      outputs = boxcar.apply(input_list: [{ question: "first" }, { "question" => "second" }])
+      expect(outputs).to eq([{ answer: "first" }, { answer: "second" }])
+    end
+  end
+
   describe "#run contract" do
     let(:result_boxcar_class) do
       Class.new(described_class) do
         def call(inputs:)
           { answer: Boxcars::Result.new(status: :ok, answer: "echo: #{inputs[:question]}", explanation: "ok") }
-        end
-
-        def apply(input_list:)
-          input_list.map { |inputs| call(inputs:) }
         end
       end
     end
@@ -166,10 +171,6 @@ RSpec.describe Boxcars::Boxcar do
         def call(inputs:)
           { foo: "value: #{inputs[:question]}" }
         end
-
-        def apply(input_list:)
-          input_list.map { |inputs| call(inputs:) }
-        end
       end
     end
 
@@ -177,10 +178,6 @@ RSpec.describe Boxcars::Boxcar do
       Class.new(described_class) do
         def call(inputs:)
           "not-a-hash: #{inputs[:question]}"
-        end
-
-        def apply(input_list:)
-          input_list
         end
       end
     end

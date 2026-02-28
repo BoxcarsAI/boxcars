@@ -41,13 +41,6 @@ module Boxcars
         parameters.keys
       end
 
-      # Execute multiple MCP tool calls.
-      # @param input_list [Array<Hash>] Input hashes for `#call`.
-      # @return [Array<Hash>] One output hash per input hash.
-      def apply(input_list:)
-        input_list.map { |inputs| call(inputs:) }
-      end
-
       # Prefer the MCP-provided schema over the legacy parameter map.
       # @return [Hash] JSON Schema compatible input schema.
       def parameters_json_schema

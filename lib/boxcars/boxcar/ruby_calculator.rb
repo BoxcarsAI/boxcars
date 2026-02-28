@@ -43,11 +43,5 @@ module Boxcars
       { answer: ruby_executor.call(code:) }
     end
 
-    # Execute multiple Ruby calculator requests.
-    # @param input_list [Array<Hash>] Input hashes for `#call`.
-    # @return [Array<Hash>] One output hash per input hash.
-    def apply(input_list:)
-      input_list.map { |inputs| call(inputs:) }
-    end
   end
 end
