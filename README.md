@@ -19,7 +19,7 @@ Inspired by LangChain, Boxcars brings a Ruby-first design that favors practical 
 
 - Tool composability by default: package domain logic as `Boxcar` objects and reuse them across assistants, jobs, and services.
 - Lower cognitive load for Ruby/Rails developers: one consistent programming model (`Boxcar`, `Train`, `Engine`) for controllers, jobs, and service objects instead of one-off wrappers per provider.
-- Multiple orchestration modes: keep legacy text ReAct (`Boxcars::ZeroShot`) or use native provider tool calling (`Boxcars::ToolCallingTrain`).
+- Multiple orchestration modes: keep legacy text ReAct (`Boxcars::ZeroShot`) or use native provider tool calling (`Boxcars::ToolTrain`).
 - Structured output paths: enforce JSON contracts with JSON Schema through `JSONEngineBoxcar`.
 - MCP-ready integration: connect MCP servers over stdio and merge MCP tools with local Boxcars in one tool-calling runtime.
 - Provider flexibility without a rewrite: use OpenAI, Anthropic, Groq, Gemini, Ollama, Perplexity, and more through shared engine patterns.
@@ -59,7 +59,7 @@ gem "gpt4all"
 All of these concepts are in a module named Boxcars:
 
 - Boxcar - an encapsulation that performs something of interest (such as search, math, SQL, an Active Record Query, or an API call to a service). A Boxcar can use an Engine (described below) to do its work, and if not specified but needed, the default Engine is used `Boxcars.engine`.
-- Train - Given a list of Boxcars and optionally an Engine, a Train breaks down a problem into pieces for individual Boxcars to solve. The individual results are then combined until a final answer is found. `Boxcars::ZeroShot` is the legacy text ReAct implementation, and `Boxcars::ToolCallingTrain` is the newer native tool-calling runtime.
+- Train - Given a list of Boxcars and optionally an Engine, a Train breaks down a problem into pieces for individual Boxcars to solve. The individual results are then combined until a final answer is found. `Boxcars::ZeroShot` is the legacy text ReAct implementation, and `Boxcars::ToolTrain` is the newer native tool-calling runtime.
 - Prompt - used by an Engine to generate text results. Our Boxcars have built-in prompts, but you have the flexibility to change or augment them if you so desire.
 - Engine - an entity that generates text from a Prompt. OpenAI's LLM text generator is the default Engine if no other is specified, and you can override the default engine if so desired (`Boxcars.configuration.default_engine`). We have an Engine for Anthropic's Claude API named `Boxcars::Anthropic`, and another Engine for local GPT named `Boxcars::Gpt4allEng` (requires the optional `gpt4all` gem).
 - VectorStore - a place to store and query vectors.
@@ -246,7 +246,7 @@ engine = Boxcars::Engines.engine(model: "gpt-4o")
 mcp_client = Boxcars::MCP.stdio(command: "npx", args: ["-y", "@modelcontextprotocol/server-filesystem", "/tmp"])
 
 begin
-  train = Boxcars::MCP.tool_calling_train(
+  train = Boxcars::MCP.tool_train(
     engine: engine,
     boxcars: [Boxcars::Calculator.new],
     clients: [mcp_client],
@@ -259,7 +259,7 @@ ensure
 end
 ```
 
-`Boxcars::MCP.tool_calling_train(...)` combines local Boxcars and MCP-discovered tools into a `Boxcars::ToolCallingTrain`.
+`Boxcars::MCP.tool_train(...)` combines local Boxcars and MCP-discovered tools into a `Boxcars::ToolTrain`.
 
 ### More Examples
 See [this](https://github.com/BoxcarsAI/boxcars/blob/main/notebooks/boxcars_examples.ipynb) Jupyter Notebook for more examples.
@@ -512,7 +512,7 @@ end
 Override the model for specific engine instances:
 
 ```ruby
-# Global default is gemini-flash, but use different models per boxcar
+# Global default is gemini-2.5-flash, but use different models per boxcar
 default_engine = Boxcars::Engines.engine                    # Uses global default
 gpt_engine = Boxcars::Engines.engine(model: "gpt-4o")       # Uses GPT-4o
 claude_engine = Boxcars::Engines.engine(model: "sonnet")    # Uses Claude Sonnet

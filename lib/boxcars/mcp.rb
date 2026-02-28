@@ -11,7 +11,7 @@ module Boxcars
       StdioClient.new(command:, args:, **kwargs).connect!
     end
 
-    # Build a ToolCallingTrain from local Boxcars plus tools discovered from
+    # Build a ToolTrain from local Boxcars plus tools discovered from
     # one or more MCP clients.
     #
     # @param engine [Boxcars::Engine] Tool-calling capable engine (required)
@@ -19,10 +19,10 @@ module Boxcars
     # @param clients [Array<Boxcars::MCP::Client>] MCP clients to discover tools from
     # @param client_name_prefixes [Hash,Integer=>String] Optional prefixes by client index or object_id
     # @param mcp_return_direct [Boolean] Whether discovered MCP boxcars return direct
-    # @param train_kwargs [Hash] Additional args for Boxcars::ToolCallingTrain
-    def self.tool_calling_train(engine:, boxcars: [], clients: [], client_name_prefixes: {}, mcp_return_direct: false, **train_kwargs)
-      unless defined?(Boxcars::ToolCallingTrain)
-        raise Boxcars::Error, "Boxcars::ToolCallingTrain is not loaded. Require 'boxcars' before using MCP helpers."
+    # @param train_kwargs [Hash] Additional args for Boxcars::ToolTrain
+    def self.tool_train(engine:, boxcars: [], clients: [], client_name_prefixes: {}, mcp_return_direct: false, **train_kwargs)
+      unless defined?(Boxcars::ToolTrain)
+        raise Boxcars::Error, "Boxcars::ToolTrain is not loaded. Require 'boxcars' before using MCP helpers."
       end
 
       combined_boxcars = Array(boxcars).dup
@@ -33,7 +33,12 @@ module Boxcars
         )
       end
 
-      Boxcars::ToolCallingTrain.new(boxcars: combined_boxcars, engine:, **train_kwargs)
+      Boxcars::ToolTrain.new(boxcars: combined_boxcars, engine:, **train_kwargs)
+    end
+
+    # Backwards-compatible helper alias for initial v0.10 naming.
+    def self.tool_calling_train(...)
+      tool_train(...)
     end
 
     def self.mcp_client_prefix(client, index, client_name_prefixes)

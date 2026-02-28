@@ -21,7 +21,7 @@ namespace :spec do
     spec/boxcars/engines_spec.rb
     spec/boxcars/engine/capabilities_spec.rb
     spec/boxcars/boxcar_tool_spec.rb
-    spec/boxcars/tool_calling_train_spec.rb
+    spec/boxcars/tool_train_spec.rb
     spec/boxcars/json_engine_boxcar_schema_spec.rb
     spec/boxcars/mcp_helpers_spec.rb
     spec/boxcars/mcp_stdio_client_spec.rb
@@ -49,6 +49,11 @@ namespace :spec do
   desc "Run notebook smoke specs (structure + migration setup compatibility)"
   task :notebooks_smoke do
     sh "bundle exec rspec #{NOTEBOOK_SMOKE_SPECS.join(' ')}"
+  end
+
+  desc "Run live smoke checks for all configured LLM providers (.env supported)"
+  task :llms_live do
+    sh "RUN_LIVE_LLM_SPECS=true NO_VCR=true bundle exec rspec spec/boxcars/llms_live_spec.rb"
   end
 
   desc "Run live notebook compatibility checks (requires OPENAI_ACCESS_TOKEN)"

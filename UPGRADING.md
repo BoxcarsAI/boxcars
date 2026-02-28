@@ -6,7 +6,7 @@ This guide covers the migration path for the modernization work added in v0.9 an
 
 v0.9 introduces:
 
-- Native tool-calling runtime via `Boxcars::ToolCallingTrain`
+- Native tool-calling runtime via `Boxcars::ToolTrain`
 - MCP as a first-class integration path
 - JSON Schema support for `JSONEngineBoxcar`
 - Deprecated model alias warnings with optional strict mode
@@ -151,7 +151,7 @@ Boxcars::Engines.strict_deprecated_aliases = true
 
 ## 3. Migrate ReAct/Text Trains to Native Tool Calling (Optional, Recommended)
 
-Existing `ZeroShot` / XML trains continue to work. `ToolCallingTrain` is the opt-in modern runtime.
+Existing `ZeroShot` / XML trains continue to work. `ToolTrain` is the opt-in modern runtime.
 
 ### Before (legacy text ReAct)
 
@@ -165,7 +165,7 @@ puts train.run("What is 12 * 9 and what is the weather in Austin?")
 
 ```ruby
 boxcars = [Boxcars::Calculator.new, Boxcars::GoogleSearch.new]
-train = Boxcars::ToolCallingTrain.new(
+train = Boxcars::ToolTrain.new(
   boxcars: boxcars,
   engine: Boxcars::Engines.engine(model: "gpt-4o")
 )
@@ -174,7 +174,7 @@ puts train.run("What is 12 * 9 and what is the weather in Austin?")
 
 ### Notes
 
-- `ToolCallingTrain` requires an engine that supports native tool-calling.
+- `ToolTrain` requires an engine that supports native tool-calling.
 - OpenAI chat models and OpenAI Responses API (`gpt-5` style) are supported by the current runtime path.
 
 ## 4. Add MCP Tools (Optional, Recommended)
@@ -189,7 +189,7 @@ mcp = Boxcars::MCP.stdio(
 )
 
 begin
-  train = Boxcars::MCP.tool_calling_train(
+  train = Boxcars::MCP.tool_train(
     engine: engine,
     boxcars: [Boxcars::Calculator.new],
     clients: [mcp],
@@ -236,7 +236,7 @@ boxcar = Boxcars::JSONEngineBoxcar.new(json_schema: schema, json_schema_strict: 
 
 1. Replace deprecated aliases in application code.
 2. Enable strict alias mode in CI.
-3. Migrate one workflow from `ZeroShot` to `ToolCallingTrain`.
+3. Migrate one workflow from `ZeroShot` to `ToolTrain`.
 4. Add MCP tools where they simplify app-specific integrations.
 5. Add JSON Schema to `JSONEngineBoxcar` uses that need reliable structure.
 6. Upgrade to v1.0 after strict mode stays green.
@@ -266,7 +266,7 @@ This shared factory seam is used by all OpenAI-compatible engines, so client wir
 
 - Prefer `Boxcars::Engines.engine(...)` or engine classes directly (`Boxcars::Openai`, `Boxcars::Groq`, etc.).
 - Avoid depending on the exact underlying client object class returned inside engine internals.
-- Prefer explicit model names and `ToolCallingTrain` for new builds.
+- Prefer explicit model names and `ToolTrain` for new builds.
 
 ### OpenAI client defaults (v0.10+)
 
@@ -362,7 +362,7 @@ OPENAI_ACCESS_TOKEN=... bundle exec rake spec:vcr_openai_refresh
 
 - `Boxcars::Openai` public constructor and `#run` behavior
 - `Boxcars::Engines.engine(model: ...)`
-- `ToolCallingTrain` usage
+- `ToolTrain` usage
 - `JSONEngineBoxcar` usage (including `json_schema:` support)
 - MCP + Boxcar composition APIs
 

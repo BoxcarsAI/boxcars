@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Boxcars::ToolCallingTrain do
+RSpec.describe Boxcars::ToolTrain do
   let(:calculator_boxcar_class) do
     Class.new(Boxcars::Boxcar) do
       def initialize(**kwargs)

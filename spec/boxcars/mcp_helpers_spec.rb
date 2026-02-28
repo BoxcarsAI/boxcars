@@ -68,20 +68,20 @@ RSpec.describe Boxcars::MCP do
     end
   end
 
-  it "builds a ToolCallingTrain from local Boxcars and MCP clients" do
+  it "builds a ToolTrain from local Boxcars and MCP clients" do
     client_a = fake_mcp_client_class.new(name: "alpha")
     client_b = fake_mcp_client_class.new(name: "beta")
     engine = fake_tool_engine_class.new
     local_boxcar = local_boxcar_class.new
 
-    train = described_class.tool_calling_train(
+    train = described_class.tool_train(
       engine: engine,
       boxcars: [local_boxcar],
       clients: [client_a, client_b],
       client_name_prefixes: { 0 => "Docs", 1 => "Files" }
     )
 
-    expect(train).to be_a(Boxcars::ToolCallingTrain)
+    expect(train).to be_a(Boxcars::ToolTrain)
     expect(train.boxcars.map(&:name)).to eq(["LocalTool", "Docs: alpha_tool", "Files: beta_tool"])
     expect(train.boxcars[1]).to be_a(Boxcars::MCP::ToolBoxcar)
     expect(train.boxcars[2]).to be_a(Boxcars::MCP::ToolBoxcar)
@@ -91,8 +91,17 @@ RSpec.describe Boxcars::MCP do
     client = fake_mcp_client_class.new(name: "alpha")
     engine = fake_tool_engine_class.new
 
-    train = described_class.tool_calling_train(engine:, clients: [client])
+    train = described_class.tool_train(engine:, clients: [client])
 
     expect(train.boxcars.map(&:name)).to eq(["MCP1: alpha_tool"])
+  end
+
+  it "keeps tool_calling_train as a compatibility alias" do
+    client = fake_mcp_client_class.new(name: "alpha")
+    engine = fake_tool_engine_class.new
+
+    train = described_class.tool_calling_train(engine:, clients: [client])
+
+    expect(train).to be_a(Boxcars::ToolTrain)
   end
 end

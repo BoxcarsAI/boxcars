@@ -4,7 +4,7 @@ require "json"
 
 module Boxcars
   # A Train runtime that uses native LLM tool-calling instead of text ReAct parsing.
-  class ToolCallingTrain < Train
+  class ToolTrain < Train
     attr_accessor :wants_next_actions
 
     # Lightweight prompt wrapper so engine adapters can send an exact message list.
@@ -381,4 +381,7 @@ module Boxcars
       )
     end
   end
+
+  # Backwards-compatible alias for the initial v0.10 naming.
+  ToolCallingTrain = ToolTrain
 end
