@@ -40,6 +40,8 @@ RSpec.configure do |c|
   end
 
   c.before do |example|
+    next if example.metadata[:live_env]
+
     otoken = example.metadata[:skip_tokens] ? nil : ENV.fetch("OPENAI_ACCESS_TOKEN", "abcdef")
     openai_api_key = example.metadata[:skip_tokens] ? nil : ENV.fetch("OPENAI_API_KEY", otoken)
     stoken = example.metadata[:skip_tokens] ? nil : ENV.fetch("SERPAPI_API_KEY", "abcdefg")

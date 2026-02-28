@@ -2,6 +2,21 @@
 
 ## [Unreleased]
 
+### Recent Updates
+
+- Tool-calling runtime naming simplified:
+  - `Boxcars::ToolTrain` is now the preferred class name.
+  - `Boxcars::MCP.tool_train(...)` is the preferred MCP helper.
+  - Compatibility aliases remain available for `ToolCallingTrain` / `tool_calling_train`.
+- Added live multi-provider smoke coverage:
+  - `spec/boxcars/llms_live_spec.rb` (opt-in via `RUN_LIVE_LLM_SPECS=true`)
+  - `rake spec:llms_live`
+  - Provider include/skip controls and per-provider timeout overrides for stable live runs.
+- Provider and extraction reliability updates:
+  - Cohere default model updated to `command-a-03-2025`.
+  - OpenAI-compatible answer extraction hardened for provider-specific message payload shapes.
+  - Live smoke defaults updated for Gemini/Google/Cerebras token budgets.
+
 ### Upgrade Guide (v0.9 -> v1.0 planned)
 
 This section tracks the modernization work that is being added in v0.9 with a compatibility window before v1.0 removals.

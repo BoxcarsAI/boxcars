@@ -16,6 +16,11 @@ v1.0 is expected to:
 - Remove deprecated model aliases
 - Prefer explicit model names (with a small curated alias set)
 
+## Provider Model Refresh Notes (v0.10.x)
+
+- Cohere retired legacy `command-r*` model IDs. Boxcars now defaults Cohere to `command-a-03-2025`.
+- If you pinned older Cohere IDs (`command-r`, `command-r-plus`, etc.), update to an available model in your Cohere account.
+
 ## Constructor Cleanup: `prompts:` Removed From Engine Initializers
 
 Engine constructors no longer accept a `prompts:` keyword argument.

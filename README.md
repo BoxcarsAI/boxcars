@@ -39,6 +39,7 @@ Notebook migration expectations for the OpenAI client migration are documented i
 ### Current Upgrade Notes (toward v1.0)
 
 - `Boxcars::Openai` now defaults to `gpt-5-mini` and uses the official OpenAI client path.
+- `Boxcars::Cohere` now defaults to `command-a-03-2025` (legacy `command-r*` model IDs were retired by Cohere).
 - Runtime ActiveSupport/ActiveRecord targets are now `~> 8.1`.
 - Swagger workflows now use Faraday guidance. `rest-client` is no longer a Boxcars runtime dependency.
 - `intelligence` and `gpt4all` are now optional dependencies:

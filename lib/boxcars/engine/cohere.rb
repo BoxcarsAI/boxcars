@@ -11,7 +11,7 @@ module Boxcars
 
     # The default parameters to use when asking the engine.
     DEFAULT_PARAMS = {
-      model: "command-r-plus",
+      model: "command-a-03-2025",
       max_tokens: 4000,
       max_input_tokens: 1000,
       temperature: 0.2
@@ -101,6 +101,7 @@ module Boxcars
 
       if raw_response.status == 200
         parsed_json = normalize_generate_response(JSON.parse(raw_response.body))
+        parsed_json["text"] ||= extract_cohere_text(parsed_json)
 
         if parsed_json["error"]
           response_data[:success] = false
@@ -112,9 +113,13 @@ module Boxcars
                                        []
                                      end
           input_tokens = parsed_json.dig("meta", "tokens", "input_tokens") ||
-                         parsed_json.dig("meta", "billed_units", "input_tokens")
+                         parsed_json.dig("meta", "billed_units", "input_tokens") ||
+                         parsed_json.dig("usage", "tokens", "input_tokens") ||
+                         parsed_json.dig("usage", "billed_units", "input_tokens")
           output_tokens = parsed_json.dig("meta", "tokens", "output_tokens") ||
-                          parsed_json.dig("meta", "billed_units", "output_tokens")
+                          parsed_json.dig("meta", "billed_units", "output_tokens") ||
+                          parsed_json.dig("usage", "tokens", "output_tokens") ||
+                          parsed_json.dig("usage", "billed_units", "output_tokens")
           if input_tokens || output_tokens
             parsed_json["usage"] ||= {
               "prompt_tokens" => input_tokens.to_i,
@@ -193,21 +198,76 @@ module Boxcars
     end
 
     def post_cohere_chat(params, api_key)
-      cohere_connection(api_key).post { |req| req.body = params.to_json }
+      v2_response = cohere_connection(api_key, version: :v2).post do |req|
+        req.body = cohere_v2_payload(params).to_json
+      end
+
+      return v2_response unless v2_response.status.to_i == 404
+
+      cohere_connection(api_key, version: :v1).post do |req|
+        req.body = cohere_v1_payload(params).to_json
+      end
     end
 
-    def cohere_connection(api_key)
-      Faraday.new('https://api.cohere.ai/v1/chat') do |faraday|
+    def cohere_connection(api_key, version:)
+      endpoint = version == :v2 ? 'https://api.cohere.com/v2/chat' : 'https://api.cohere.ai/v1/chat'
+      Faraday.new(endpoint) do |faraday|
         faraday.request :url_encoded
         faraday.headers['Authorization'] = "Bearer #{api_key}"
         faraday.headers['Content-Type'] = 'application/json'
       end
     end
 
+    def cohere_v2_payload(params)
+      payload = {
+        model: params[:model],
+        messages: [{ role: "user", content: params[:message].to_s }]
+      }
+
+      payload[:max_tokens] = params[:max_tokens] if params.key?(:max_tokens)
+      payload[:temperature] = params[:temperature] if params.key?(:temperature)
+      payload[:p] = params[:p] if params.key?(:p)
+      payload[:k] = params[:k] if params.key?(:k)
+      payload[:stop_sequences] = params[:stop_sequences] if params.key?(:stop_sequences)
+      payload
+    end
+
+    def cohere_v1_payload(params)
+      params
+    end
+
     def ensure_cohere_api_key!(api_key, error_class:, message:)
       return unless api_key.to_s.strip.empty?
 
       raise error_class, message
+    end
+
+    def extract_cohere_text(parsed_json)
+      text = parsed_json["text"]
+      return text if text.is_a?(String) && !text.strip.empty?
+
+      message_content = parsed_json.dig("message", "content")
+      case message_content
+      when String
+        stripped = message_content.strip
+        return stripped unless stripped.empty?
+      when Array
+        texts = message_content.filter_map do |part|
+          next unless part.is_a?(Hash)
+
+          if part["text"].is_a?(String)
+            part["text"]
+          elsif part["text"].is_a?(Hash)
+            part["text"]["value"] || part["text"]["text"]
+          elsif part["content"].is_a?(String)
+            part["content"]
+          end
+        end
+        joined = texts.join("\n").strip
+        return joined unless joined.empty?
+      end
+
+      nil
     end
 
     def parse_cohere_response_body(body)

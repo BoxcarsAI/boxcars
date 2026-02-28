@@ -276,13 +276,74 @@ module Boxcars
     def extract_answer_from_choices(choices)
       raise Error, "OpenAI: No choices found in response" unless choices.is_a?(Array) && choices.any?
 
-      content = choices.map { |c| c.dig("message", "content") }.compact
+      content = choices.filter_map do |choice|
+        extract_choice_message_text(choice)
+      end
       return content.join("\n").strip unless content.empty?
 
       text = choices.map { |c| c["text"] }.compact
       return text.join("\n").strip unless text.empty?
 
       raise Error, "OpenAI: Could not extract answer from choices"
+    end
+
+    def extract_choice_message_text(choice)
+      return nil unless choice.is_a?(Hash)
+
+      message = choice["message"]
+      return nil unless message.is_a?(Hash)
+
+      content = message["content"]
+      extract_text_from_message_content(content)
+    end
+
+    def extract_text_from_message_content(content)
+      case content
+      when String
+        stripped = content.strip
+        return stripped unless stripped.empty?
+      when Array
+        texts = content.filter_map do |part|
+          extract_text_from_message_part(part)
+        end
+        joined = texts.join("\n").strip
+        return joined unless joined.empty?
+      when Hash
+        text = content["text"] || content["content"] || content["value"]
+        if text.is_a?(String)
+          stripped = text.strip
+          return stripped unless stripped.empty?
+        end
+      end
+
+      nil
+    end
+
+    def extract_text_from_message_part(part)
+      return nil unless part.is_a?(Hash)
+
+      text = part["text"]
+      if text.is_a?(String)
+        stripped = text.strip
+        return stripped unless stripped.empty?
+      elsif text.is_a?(Hash)
+        value = text["value"] || text["text"]
+        if value.is_a?(String)
+          stripped = value.strip
+          return stripped unless stripped.empty?
+        end
+      end
+
+      # Some providers place text directly on the part.
+      %w[content value].each do |field|
+        value = part[field]
+        next unless value.is_a?(String)
+
+        stripped = value.strip
+        return stripped unless stripped.empty?
+      end
+
+      nil
     end
 
     def extract_answer_from_output(output_items) # rubocop:disable Metrics/PerceivedComplexity,Metrics/MethodLength

@@ -85,7 +85,7 @@ RSpec.describe Boxcars::Cohere do
 
         props = tracked_event[:properties]
         expect(props[:$ai_provider]).to eq("cohere")
-        expect(props[:$ai_model]).to eq("command-r-plus") # From DEFAULT_PARAMS
+        expect(props[:$ai_model]).to eq("command-a-03-2025") # From DEFAULT_PARAMS
         expect(props[:$ai_is_error]).to be false
         expect(props[:$ai_http_status]).to eq(200)
         expect(props[:$ai_base_url]).to eq("https://api.cohere.ai/v1")
