@@ -37,7 +37,7 @@ module Boxcars
     # @param inputs [Hash] Expected to contain `:question` (or `"question"`).
     # @return [Hash] `{ answer: Boxcars::Result }`.
     def call(inputs:)
-      question = inputs[:question] || inputs["question"]
+      question = input_value(inputs, :question)
       code = "puts(#{question})"
       ruby_executor = Boxcars::RubyREPL.new
       { answer: ruby_executor.call(code:) }

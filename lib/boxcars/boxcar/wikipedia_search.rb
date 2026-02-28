@@ -19,7 +19,7 @@ module Boxcars
     # @param inputs [Hash] Expected to contain `:question` (or `"question"`).
     # @return [Hash] `{ answer: String }`.
     def call(inputs:)
-      question = inputs[:question] || inputs["question"]
+      question = input_value(inputs, :question)
       { answer: fetch_answer(question) }
     end
 

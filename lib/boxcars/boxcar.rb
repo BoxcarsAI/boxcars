@@ -361,6 +361,12 @@ module Boxcars
       validate_inputs(inputs:)
     end
 
+    def input_value(inputs, key)
+      return nil unless inputs.is_a?(Hash)
+
+      inputs[key] || inputs[key.to_s]
+    end
+
     # the default answer is the text passed in
     def get_answer(text)
       Result.from_text(text)
