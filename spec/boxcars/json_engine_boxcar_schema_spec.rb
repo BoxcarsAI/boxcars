@@ -182,5 +182,20 @@ RSpec.describe Boxcars::JSONEngineBoxcar do
       expect(engine.calls.length).to eq(1)
       expect(engine.calls.first[:kwargs][:stop]).to eq(["DONE"])
     end
+
+    it "raises when native structured generation is called with an empty input list" do
+      schema = {
+        type: "object",
+        properties: { share_count: { type: "string" } },
+        required: ["share_count"],
+        additionalProperties: false
+      }
+      engine = native_structured_engine_class.new
+      boxcar = described_class.new(engine:, json_schema: schema)
+
+      expect do
+        boxcar.generate(input_list: [])
+      end.to raise_error(Boxcars::ArgumentError, /requires at least one input hash/)
+    end
   end
 end

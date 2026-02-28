@@ -61,6 +61,9 @@ module Boxcars
     # fall back to the existing prompt-driven JSON extraction flow.
     def generate(input_list:, current_conversation: nil)
       return super unless native_json_schema_generation_supported?
+      if input_list.empty?
+        raise Boxcars::ArgumentError, "#{self.class}#generate requires at least one input hash"
+      end
 
       stop = input_value(input_list.first, :stop)
       the_prompt = current_conversation ? prompt.with_conversation(current_conversation) : prompt
