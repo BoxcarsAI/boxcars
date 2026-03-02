@@ -172,7 +172,7 @@ GEM
       faraday-multipart (>= 1)
     ruby-progressbar (1.13.0)
     securerandom (0.4.1)
-    sequel (5.101.0)
+    sequel (5.102.0)
       bigdecimal
     sqlite3 (2.9.0-aarch64-linux-gnu)
     sqlite3 (2.9.0-aarch64-linux-musl)
@@ -227,7 +227,7 @@ DEPENDENCIES
   rubocop-rake (~> 0.7.1)
   rubocop-rspec (~> 3.2)
   ruby-anthropic (~> 0.4)
-  sequel (~> 5.0)
+  sequel (~> 5.102)
   sqlite3 (~> 2.0)
   vcr (~> 6.4.0)
   webmock (~> 3.26.1)
