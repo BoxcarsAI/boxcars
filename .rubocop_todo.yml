@@ -51,11 +51,12 @@ Metrics/MethodLength:
     - 'lib/boxcars/engines.rb'
     - 'lib/boxcars/train/tool_train.rb'
 
-# Offense count: 4
+# Offense count: 5
 # Configuration parameters: Max, CountKeywordArgs, MaxOptionalParameters.
 Metrics/ParameterLists:
   Exclude:
     - 'lib/boxcars/boxcar/json_engine_boxcar.rb'
+    - 'lib/boxcars/boxcar/sql_base.rb'
     - 'lib/boxcars/engine.rb'
     - 'lib/boxcars/engine/openai_compatible_chat_helpers.rb'
     - 'lib/boxcars/mcp/stdio_client.rb'

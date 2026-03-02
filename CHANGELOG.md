@@ -5,6 +5,7 @@
 ### Added
 
 - **`context:` parameter for ActiveRecord and SQL boxcars** — Pass runtime context (current user, tenant, permissions) into prompts so the LLM generates properly scoped queries. Available as a constructor keyword and an `attr_accessor` for per-request updates.
+- **Read-only mode for SQL boxcars** — `SQLBase` (and subclasses `SQLActiveRecord`, `SQLSequel`) now default to read-only, rejecting write SQL (`INSERT`, `UPDATE`, `DELETE`, `DROP`, etc.) with `Boxcars::SecurityError`. Pass `read_only: false` to allow writes, or provide an `approval_callback:` proc that receives the SQL string for custom approval logic.
 
 ## [0.10.3] - 2026-03-02
 

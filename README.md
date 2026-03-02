@@ -68,6 +68,25 @@ All of these concepts are in a module named Boxcars:
 ## Security
 Currently, our system is designed for individuals who already possess administrative privileges for their project. It is likely possible to manipulate the system's prompts to carry out malicious actions, but if you already have administrative access, you can perform such actions without requiring boxcars in the first place.
 
+### Read-Only Defaults for Data Boxcars
+
+Both `ActiveRecord` and the SQL boxcars (`SQLActiveRecord`, `SQLSequel`) default to **read-only mode**, rejecting write operations (INSERT, UPDATE, DELETE, DROP, etc.) with a `Boxcars::SecurityError`. This prevents LLM-generated code or SQL from accidentally modifying your database.
+
+To allow writes, either disable read-only mode or provide an approval callback:
+
+```ruby
+# Option 1: disable read-only (use with caution)
+sql = Boxcars::SQLActiveRecord.new(read_only: false)
+
+# Option 2: approval callback for write SQL
+sql = Boxcars::SQLActiveRecord.new(approval_callback: ->(sql) { puts "Approve? #{sql}"; true })
+
+# Option 3: approval callback for ActiveRecord (receives change count and code)
+ar = Boxcars::ActiveRecord.new(approval_callback: ->(changes, code) { changes < 5 })
+```
+
+When an `approval_callback` is provided, read-only defaults to `false` so the callback can decide. You can combine `read_only: true` with a callback to enforce read-only regardless.
+
 *Note:* We are actively seeking ways to improve our system's ability to identify and prevent any nefarious attempts from occurring. If you have any suggestions or recommendations, please feel free to share them with us by either finding an existing issue or creating a new one and providing us with your feedback.
 
 ## Installation
@@ -196,8 +215,8 @@ Boxcars ships with high-leverage tools you can compose immediately, and you can 
 - `GoogleSearch`: uses SERP API for live web lookup.
 - `WikipediaSearch`: uses Wikipedia API for fast factual retrieval.
 - `Calculator`: uses an engine to produce/execute Ruby math logic.
-- `SQL`: generates and executes SQL from prompts using your ActiveRecord connection.
-- `ActiveRecord`: generates and executes ActiveRecord code from prompts.
+- `SQL`: generates and executes SQL from prompts using your ActiveRecord connection. Read-only by default.
+- `ActiveRecord`: generates and executes ActiveRecord code from prompts. Read-only by default.
 - `Swagger`: consumes OpenAPI (YAML/JSON) to answer questions about and run against API endpoints. See [Swagger notebook examples](https://github.com/BoxcarsAI/boxcars/blob/main/notebooks/swagger_examples.ipynb).
 - `VectorStore` workflows: embed, persist, and retrieve context for RAG-like retrieval flows (see vector notebooks).
 

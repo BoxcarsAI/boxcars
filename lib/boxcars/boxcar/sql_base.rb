@@ -9,16 +9,25 @@ module Boxcars
     # Default description for this boxcar.
     SQLDESC = "useful for when you need to query a database for %<name>s."
     LOCKED_OUT_TABLES = %w[schema_migrations ar_internal_metadata].freeze
-    attr_accessor :connection, :the_tables, :context
+    # SQL keywords that indicate a write operation.
+    WRITE_SQL_KEYWORDS = %w[INSERT UPDATE DELETE DROP ALTER CREATE TRUNCATE REPLACE MERGE UPSERT
+                            GRANT REVOKE LOCK CALL EXEC EXECUTE].freeze
+
+    attr_accessor :connection, :the_tables, :context, :read_only, :approval_callback
 
     # @param connection [ActiveRecord::Connection] or [Sequel Object] The SQL connection to use for this boxcar.
     # @param tables [Array<String>] The tables to use for this boxcar. Will use all if nil.
     # @param except_tables [Array<String>] The tables to exclude from this boxcar. Will exclude none if nil.
+    # @param read_only [Boolean] Whether to restrict to read-only SQL. Defaults to true unless approval_callback is given.
+    # @param approval_callback [Proc] A function to call to approve write SQL. Receives the SQL string. Defaults to nil.
     # @param kwargs [Hash] Any other keyword arguments to pass to the parent class. This can include
     #   :name, :description, :prompt, :top_k, :stop, and :engine
-    def initialize(connection: nil, tables: nil, except_tables: nil, context: nil, **kwargs)
+    def initialize(connection: nil, tables: nil, except_tables: nil, context: nil, read_only: nil,
+                   approval_callback: nil, **kwargs)
       @context = context
       @connection = connection
+      @approval_callback = approval_callback
+      @read_only = read_only.nil? ? !approval_callback : read_only
       check_tables(tables, except_tables)
       kwargs[:name] ||= "Database"
       kwargs[:description] ||= format(SQLDESC, name:)
@@ -53,7 +62,38 @@ module Boxcars
       user("Question: %<question>s")
     ].freeze
 
+    # @return [Boolean] Whether this boxcar is in read-only mode.
+    def read_only?
+      read_only
+    end
+
     private
+
+    # Check if a SQL statement is safe (read-only) to run.
+    # Strips string literals first to avoid false positives on values like 'DELETE ME'.
+    # @param sql [String] The SQL statement to check.
+    # @return [Boolean] true if the SQL appears to be a read-only statement.
+    def sql_safe_to_run?(sql)
+      without_strings = sql.gsub(/'([^'\\]*(\\.[^'\\]*)*)'/, "''")
+      upper = without_strings.upcase
+      WRITE_SQL_KEYWORDS.none? { |kw| upper.match?(/\b#{kw}\b/) }
+    end
+
+    # Check if the SQL is approved for execution.
+    # @param sql [String] The SQL statement to check.
+    # @return [Boolean] true if approved.
+    def approved?(sql)
+      return true if sql_safe_to_run?(sql)
+
+      if read_only?
+        Boxcars.error("Cannot execute write SQL in read-only mode: #{sql}", :red)
+        return false
+      end
+
+      return approval_callback.call(sql) if approval_callback.is_a?(Proc)
+
+      true
+    end
 
     def check_tables(rtables, exceptions)
       requested_tables = nil
@@ -109,8 +149,12 @@ module Boxcars
       code = text[/^SQLQuery: (.*)/, 1]
       code = extract_code text.split('SQLQuery:').last.strip
       Boxcars.debug code, :yellow
+      raise Boxcars::SecurityError, "Permission to execute write SQL denied" unless approved?(code)
+
       output = clean_up_output(code)
       Result.new(status: :ok, answer: output, explanation: "Answer: #{output.to_json}", code:)
+    rescue Boxcars::SecurityError => e
+      raise e
     rescue StandardError => e
       Result.new(status: :error, answer: nil, explanation: "Error: #{e.message}", code:)
     end

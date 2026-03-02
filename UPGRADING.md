@@ -16,6 +16,22 @@ v1.0 is expected to:
 - Remove deprecated model aliases
 - Prefer explicit model names (with a small curated alias set)
 
+## SQL Boxcars Now Default to Read-Only (v0.10.x)
+
+`SQLBase`, `SQLActiveRecord`, and `SQLSequel` now default to **read-only mode**, matching the existing `ActiveRecord` boxcar behavior. LLM-generated write SQL (`INSERT`, `UPDATE`, `DELETE`, `DROP`, etc.) raises `Boxcars::SecurityError` unless explicitly allowed.
+
+If your app relies on SQL boxcars executing write statements, update your initialization:
+
+```ruby
+# Allow all writes (no approval gate)
+sql = Boxcars::SQLActiveRecord.new(read_only: false)
+
+# Or gate writes through a callback (read_only defaults to false when a callback is provided)
+sql = Boxcars::SQLActiveRecord.new(approval_callback: ->(sql) { your_approval_logic(sql) })
+```
+
+**Note:** The SQL approval callback receives a single `(sql)` argument (the SQL string), unlike the ActiveRecord callback which receives `(changes, code)`.
+
 ## Provider Model Refresh Notes (v0.10.x)
 
 - Cohere retired legacy `command-r*` model IDs. Boxcars now defaults Cohere to `command-a-03-2025`.
