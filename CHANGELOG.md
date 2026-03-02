@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Added
+
+- **`context:` parameter for ActiveRecord and SQL boxcars** — Pass runtime context (current user, tenant, permissions) into prompts so the LLM generates properly scoped queries. Available as a constructor keyword and an `attr_accessor` for per-request updates.
+
 ## [0.10.3] - 2026-03-02
 
 ### Added

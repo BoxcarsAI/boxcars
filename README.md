@@ -201,6 +201,24 @@ Boxcars ships with high-leverage tools you can compose immediately, and you can 
 - `Swagger`: consumes OpenAPI (YAML/JSON) to answer questions about and run against API endpoints. See [Swagger notebook examples](https://github.com/BoxcarsAI/boxcars/blob/main/notebooks/swagger_examples.ipynb).
 - `VectorStore` workflows: embed, persist, and retrieve context for RAG-like retrieval flows (see vector notebooks).
 
+#### Scoping ActiveRecord and SQL Queries with `context:`
+
+The `ActiveRecord` and `SQL` boxcars accept an optional `context:` parameter that injects runtime information (current user, tenant, permissions) into the LLM prompt so generated queries are properly scoped:
+
+```ruby
+ar = Boxcars::ActiveRecord.new(
+  models: [Ticket, Comment],
+  context: "The current user is User#42 (admin). Only return this user's records."
+)
+ar.run("How many open tickets do I have?")
+
+# Update context per-request
+ar.context = "The current user is User#99 (viewer)."
+ar.run("Show my recent comments")
+```
+
+When `context` is `nil` or blank, nothing extra is added to the prompt.
+
 ### Run a list of Boxcars
 ```ruby
 # run a Train for a calculator, and search using default Engine

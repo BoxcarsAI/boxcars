@@ -37,6 +37,39 @@ RSpec.describe Boxcars::ActiveRecord do
     end
   end
 
+  context "with context parameter" do
+    it "declares :context as a prompt dependency" do
+      boxcar = described_class.new
+      expect(boxcar.prompt.other_inputs).to include(:context)
+    end
+
+    it "includes context text in prompt when provided" do
+      boxcar = described_class.new(context: "Current user is User#42.")
+      additional = boxcar.prediction_additional({})
+      expect(additional[:context]).to include("Current user is User#42.")
+      expect(additional[:context]).to include("Additional context:")
+    end
+
+    it "produces empty string when context is nil" do
+      boxcar = described_class.new
+      additional = boxcar.prediction_additional({})
+      expect(additional[:context]).to eq("")
+    end
+
+    it "produces empty string when context is blank" do
+      boxcar = described_class.new(context: "   ")
+      additional = boxcar.prediction_additional({})
+      expect(additional[:context]).to eq("")
+    end
+
+    it "allows context to be updated via accessor" do
+      boxcar = described_class.new
+      boxcar.context = "Tenant: acme"
+      additional = boxcar.prediction_additional({})
+      expect(additional[:context]).to include("Tenant: acme")
+    end
+  end
+
   context "with sample helpdesk app some models" do
     boxcar = described_class.new(models: [Comment, Ticket, User])
     boxcar2 = described_class.new(models: [Comment, Ticket, User], approval_callback: ->(_count, _code) { true })

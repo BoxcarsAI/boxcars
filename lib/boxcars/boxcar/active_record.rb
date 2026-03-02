@@ -8,7 +8,7 @@ module Boxcars
     # Default description for this boxcar.
     ARDESC = "useful for when you need to query a database for an application named %<name>s."
     LOCKED_OUT_MODELS = %w[ActiveRecord::SchemaMigration ActiveRecord::InternalMetadata ApplicationRecord].freeze
-    attr_accessor :connection, :requested_models, :read_only, :approval_callback, :code_only
+    attr_accessor :connection, :requested_models, :read_only, :approval_callback, :code_only, :context
     attr_reader :except_models
 
     # @param models [Array<ActiveRecord::Model>] The models to use for this boxcar. Will use all if nil.
@@ -17,7 +17,8 @@ module Boxcars
     # @param approval_callback [Proc] A function to call to approve changes. Defaults to nil.
     # @param kwargs [Hash] Any other keyword arguments. These can include:
     #   :name, :description, :prompt, :except_models, :top_k, :stop, :code_only and :engine
-    def initialize(models: nil, except_models: nil, read_only: nil, approval_callback: nil, **kwargs)
+    def initialize(models: nil, except_models: nil, read_only: nil, approval_callback: nil, context: nil, **kwargs)
+      @context = context
       Boxcars::OptionalDependency.require!(
         "activerecord",
         feature: "Boxcars::ActiveRecord",
@@ -35,7 +36,9 @@ module Boxcars
 
     # @return [Hash] The additional variables for this boxcar.
     def prediction_additional(_inputs)
-      { model_info: }.merge super
+      ctx = @context.to_s.strip
+      context_str = ctx.empty? ? "" : "\n\nAdditional context:\n#{ctx}"
+      { model_info:, context: context_str }.merge super
     end
 
     CTEMPLATE = [
@@ -57,7 +60,8 @@ module Boxcars
            "Pay attention to use only the attribute names that you can see in the model description.\n",
            "Do not make up variable or attribute names, and do not share variables between the code in ARChanges and ARCode\n",
            "Be careful to not query for attributes that do not exist, and to use the format specified above.\n",
-           "Finally, try not to use print or puts in your code"
+           "Finally, try not to use print or puts in your code",
+           "%<context>s"
           ),
       user("Question: %<question>s")
     ].freeze
@@ -280,7 +284,7 @@ module Boxcars
       @my_prompt ||= ConversationPrompt.new(
         conversation: @conversation,
         input_variables: [:question],
-        other_inputs: [:top_k, :model_info],
+        other_inputs: [:top_k, :model_info, :context],
         output_variables: [:answer])
     end
   end

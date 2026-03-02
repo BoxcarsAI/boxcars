@@ -9,14 +9,15 @@ module Boxcars
     # Default description for this boxcar.
     SQLDESC = "useful for when you need to query a database for %<name>s."
     LOCKED_OUT_TABLES = %w[schema_migrations ar_internal_metadata].freeze
-    attr_accessor :connection, :the_tables
+    attr_accessor :connection, :the_tables, :context
 
     # @param connection [ActiveRecord::Connection] or [Sequel Object] The SQL connection to use for this boxcar.
     # @param tables [Array<String>] The tables to use for this boxcar. Will use all if nil.
     # @param except_tables [Array<String>] The tables to exclude from this boxcar. Will exclude none if nil.
     # @param kwargs [Hash] Any other keyword arguments to pass to the parent class. This can include
     #   :name, :description, :prompt, :top_k, :stop, and :engine
-    def initialize(connection: nil, tables: nil, except_tables: nil, **kwargs)
+    def initialize(connection: nil, tables: nil, except_tables: nil, context: nil, **kwargs)
+      @context = context
       @connection = connection
       check_tables(tables, except_tables)
       kwargs[:name] ||= "Database"
@@ -29,7 +30,9 @@ module Boxcars
 
     # @return [Hash] The additional variables for this boxcar.
     def prediction_additional(_inputs)
-      { schema:, dialect: }.merge super
+      ctx = @context.to_s.strip
+      context_str = ctx.empty? ? "" : "\n\nAdditional context:\n#{ctx}"
+      { schema:, dialect:, context: context_str }.merge super
     end
 
     CTEMPLATE = [
@@ -46,7 +49,7 @@ module Boxcars
            "SQLQuery: 'SQL Query to run'\n",
            "SQLResult: 'Result of the SQLQuery'\n",
            "Answer: 'Final answer here'"),
-      syst("Only use the following tables:\n%<schema>s"),
+      syst("Only use the following tables:\n%<schema>s%<context>s"),
       user("Question: %<question>s")
     ].freeze
 
@@ -130,7 +133,7 @@ module Boxcars
       @my_prompt ||= ConversationPrompt.new(
         conversation: @conversation,
         input_variables: [:question],
-        other_inputs: [:top_k, :dialect, :schema],
+        other_inputs: [:top_k, :dialect, :schema, :context],
         output_variables: [:answer])
     end
   end
