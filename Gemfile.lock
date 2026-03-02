@@ -172,7 +172,7 @@ GEM
       faraday-multipart (>= 1)
     ruby-progressbar (1.13.0)
     securerandom (0.4.1)
-    sequel (5.101.0)
+    sequel (5.102.0)
       bigdecimal
     sqlite3 (2.9.0-aarch64-linux-gnu)
     sqlite3 (2.9.0-aarch64-linux-musl)
