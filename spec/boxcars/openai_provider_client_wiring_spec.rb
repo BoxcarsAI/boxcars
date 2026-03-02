@@ -44,6 +44,17 @@ RSpec.describe "OpenAI-compatible provider client wiring" do # rubocop:disable R
                                                                 ))
   end
 
+  it "wires Ollama to a custom endpoint when uri_base is provided" do
+    allow(Boxcars::OpenAIClient).to receive(:build)
+
+    Boxcars::Ollama.provider_client(uri_base: "http://remote-ollama:9090/v1")
+
+    expect(Boxcars::OpenAIClient).to have_received(:build).with(hash_including(
+                                                                  access_token: "ollama-dummy-key",
+                                                                  uri_base: "http://remote-ollama:9090/v1"
+                                                                ))
+  end
+
   it "wires Google to the expected OpenAI-compatible endpoint" do
     allow(Boxcars.configuration).to receive(:gemini_api_key).with(gemini_api_key: nil).and_return("google-key")
     allow(Boxcars::OpenAIClient).to receive(:build)

@@ -8,30 +8,33 @@ module Boxcars
     include UnifiedObservability
     include OpenAICompatibleChatHelpers
 
-    attr_reader :ollama_params
+    attr_reader :ollama_params, :uri_base
 
     DEFAULT_PARAMS = {
       model: "llama3",
       temperature: 0.1,
       max_tokens: 4096
     }.freeze
+    DEFAULT_URI_BASE = "http://localhost:11434/v1"
     DEFAULT_NAME = "Ollama engine"
     DEFAULT_DESCRIPTION = "useful for when you need to use local AI to answer questions. " \
                           "You should ask targeted questions"
 
-    def initialize(name: DEFAULT_NAME, description: DEFAULT_DESCRIPTION, batch_size: 2, **kwargs)
+    # @param uri_base [String] Base URL for the Ollama API (default: http://localhost:11434/v1).
+    def initialize(name: DEFAULT_NAME, description: DEFAULT_DESCRIPTION, batch_size: 2, uri_base: DEFAULT_URI_BASE, **kwargs)
       raise ArgumentError, "unknown keyword: :prompts" if kwargs.key?(:prompts)
 
+      @uri_base = uri_base
       user_id = kwargs.delete(:user_id)
       @ollama_params = DEFAULT_PARAMS.merge(kwargs)
       super(description:, name:, batch_size:, user_id:)
     end
 
-    def self.provider_client
+    def self.provider_client(uri_base: DEFAULT_URI_BASE)
       # The OpenAI client expects an API key even for local endpoints.
       Boxcars::OpenAIClient.build(
         access_token: "ollama-dummy-key",
-        uri_base: "http://localhost:11434/v1"
+        uri_base: uri_base
       )
     end
 
@@ -43,7 +46,7 @@ module Boxcars
       api_request_params = nil
 
       begin
-        clnt = self.class.provider_client
+        clnt = self.class.provider_client(uri_base: @uri_base)
         api_request_params = prepare_openai_compatible_chat_request(current_prompt_object, inputs, current_params)
 
         log_messages_debug(api_request_params[:messages]) if Boxcars.configuration.log_prompts && api_request_params[:messages]

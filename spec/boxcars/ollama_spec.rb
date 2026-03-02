@@ -63,7 +63,7 @@ RSpec.describe Boxcars::Ollama do
     Boxcars.configuration.observability_backend = dummy_observability_backend
     # Mock the self.provider_client method to return our mock_ollama_client
     # No API key needed for Ollama usually, so no Boxcars.configuration mock for api_key.
-    allow(described_class).to receive(:provider_client).and_return(mock_ollama_client)
+    allow(described_class).to receive(:provider_client).with(uri_base: "http://localhost:11434/v1").and_return(mock_ollama_client)
   end
 
   describe 'observability integration with OpenAI client for Ollama' do
@@ -200,6 +200,38 @@ RSpec.describe Boxcars::Ollama do
         expect(dummy_observability_backend.tracked_events.size).to eq(1)
         expect(dummy_observability_backend.tracked_events.first[:event]).to eq('$ai_generation')
       end
+    end
+  end
+
+  describe 'custom uri_base' do
+    let(:custom_uri) { "http://my-ollama-server:8080/v1" }
+    let(:engine_params) { { uri_base: custom_uri } }
+
+    before do
+      allow(described_class).to receive(:provider_client).with(uri_base: custom_uri).and_return(mock_ollama_client)
+      allow(mock_ollama_client).to receive(:chat_create).and_return(ollama_chat_success_response)
+    end
+
+    it 'passes the custom uri_base to provider_client' do
+      engine.client(prompt: prompt, inputs: inputs)
+
+      expect(described_class).to have_received(:provider_client).with(uri_base: custom_uri)
+    end
+
+    it 'exposes the uri_base via attr_reader' do
+      expect(engine.uri_base).to eq(custom_uri)
+    end
+
+    it 'defaults uri_base to DEFAULT_URI_BASE' do
+      default_engine = described_class.new
+      expect(default_engine.uri_base).to eq(Boxcars::Ollama::DEFAULT_URI_BASE)
+    end
+
+    it 'tracks the custom base_url in observability' do
+      engine.client(prompt: prompt, inputs: inputs)
+
+      props = dummy_observability_backend.tracked_events.first[:properties]
+      expect(props[:$ai_base_url]).to eq(custom_uri)
     end
   end
 end
