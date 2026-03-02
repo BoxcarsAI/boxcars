@@ -34,9 +34,7 @@ module Boxcars
         def valid_vector_store?(vector_documents)
           vector_documents && vector_documents[:type] == :in_memory &&
             vector_documents[:vector_store].is_a?(Array) &&
-            vector_documents[:vector_store].all? do |doc|
-              doc.is_a?(Boxcars::VectorStore::Document)
-            end
+            vector_documents[:vector_store].all?(Boxcars::VectorStore::Document)
         end
 
         def search(query_vector, num_neighbors)

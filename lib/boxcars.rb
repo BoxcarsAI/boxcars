@@ -117,7 +117,7 @@ module Boxcars
     private
 
     def normalize_boolean(value, attr_name:)
-      return value if value == true || value == false
+      return value if [true, false].include?(value)
 
       normalized = value.to_s.strip.downcase
       return true if %w[1 true yes y on].include?(normalized)

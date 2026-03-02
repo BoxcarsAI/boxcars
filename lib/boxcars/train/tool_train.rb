@@ -18,7 +18,7 @@ module Boxcars
         { messages: @messages }
       end
 
-      def as_prompt(inputs: nil, **)
+      def as_prompt(_inputs: nil, **)
         { prompt: @messages.map { |m| "#{m[:role]}: #{message_content(m)}" }.join("\n") }
       end
 

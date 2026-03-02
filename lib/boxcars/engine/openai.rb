@@ -34,9 +34,9 @@ module Boxcars
                    **kwargs)
       raise ArgumentError, "unknown keyword: :prompts" if kwargs.key?(:prompts)
 
-      user_id          = kwargs.delete(:user_id)
+      user_id = kwargs.delete(:user_id)
       reject_deprecated_backend_kwargs!(kwargs)
-      @open_ai_params  = adjust_for_o_series!(DEFAULT_PARAMS.merge(kwargs))
+      @open_ai_params = adjust_for_o_series!(DEFAULT_PARAMS.merge(kwargs))
       super(description:, name:, batch_size:, user_id:)
     end
 

@@ -10,7 +10,8 @@ module Boxcars
       # Generic provider aliases are convenient but ambiguous and make pruning harder.
       "anthropic" => { replacement: "sonnet", remove_in: "3.0", reason: "generic provider alias" },
       "groq" => { replacement: "llama-3.3-70b-versatile", remove_in: "3.0", reason: "generic provider alias" },
-      "deepseek" => { replacement: "deepseek-r1-distill-llama-70b", remove_in: "3.0", reason: "provider-specific shortcut alias" },
+      "deepseek" => { replacement: "deepseek-r1-distill-llama-70b", remove_in: "3.0",
+                      reason: "provider-specific shortcut alias" },
       "mistral" => { replacement: "mistral-saba-24b", remove_in: "3.0", reason: "provider-specific shortcut alias" },
       "online" => { replacement: "sonar", remove_in: "3.0", reason: "ambiguous alias" },
       "huge" => { replacement: "sonar-pro", remove_in: "3.0", reason: "ambiguous alias" },
@@ -110,7 +111,10 @@ module Boxcars
     # @deprecated Use `Boxcars::Result.valid_conduct_payload?` or `Boxcars::Result.extract`.
     def self.valid_answer?(answer)
       unless @warned_valid_answer || !deprecation_warnings_enabled?
-        Boxcars.warn("Boxcars::Engines.valid_answer? is deprecated; use Boxcars::Result.valid_conduct_payload? or Boxcars::Result.extract (planned removal in v#{VALID_ANSWER_REMOVE_IN})")
+        Boxcars.warn(
+          "Boxcars::Engines.valid_answer? is deprecated; use Boxcars::Result.valid_conduct_payload? " \
+          "or Boxcars::Result.extract (planned removal in v#{VALID_ANSWER_REMOVE_IN})"
+        )
         @warned_valid_answer = true
       end
       Boxcars::Result.valid_conduct_payload?(answer)
@@ -127,9 +131,7 @@ module Boxcars
       message = "Deprecated model alias #{model_name.inspect} (#{reason}); use #{replacement.inspect} instead"
       message += " (planned removal in v#{remove_in})" if remove_in
 
-      if strict_deprecated_aliases_enabled?
-        raise Boxcars::ArgumentError, "#{message}. Set an explicit model name."
-      end
+      raise Boxcars::ArgumentError, "#{message}. Set an explicit model name." if strict_deprecated_aliases_enabled?
 
       return unless deprecation_warnings_enabled?
       return if @warned_aliases[model_name]

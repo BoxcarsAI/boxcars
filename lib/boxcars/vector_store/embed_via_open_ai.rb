@@ -27,7 +27,7 @@ module Boxcars
       attr_accessor :texts, :client, :model
 
       def validate_params(texts, client)
-        raise_error 'texts must be an array of strings' unless texts.is_a?(Array) && texts.all? { |text| text.is_a?(String) }
+        raise_error 'texts must be an array of strings' unless texts.is_a?(Array) && texts.all?(String)
         return if client.respond_to?(:embeddings_create) || client.respond_to?(:embeddings)
 
         raise_error 'openai_connection must support embeddings requests'

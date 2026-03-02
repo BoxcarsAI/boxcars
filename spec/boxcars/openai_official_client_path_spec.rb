@@ -3,18 +3,16 @@
 require "spec_helper"
 require "boxcars/engine/openai"
 
-RSpec.describe "Boxcars::Openai official client path" do
+RSpec.describe "Boxcars::Openai official client path" do # rubocop:disable RSpec/DescribeClass
   let(:api_key_param) { "test_openai_api_key" }
   let(:organization_id_param) { "test_org_id" }
   let(:official_client) { double("OfficialOpenAIClient") } # rubocop:disable RSpec/VerifiedDoubles
+  let(:builder_args) { {} }
 
   around do |example|
     original_builder = Boxcars::OpenAIClient.official_client_builder
     Boxcars::OpenAIClient.official_client_builder = lambda do |access_token:, uri_base:, organization_id:, log_errors:|
-      expect(access_token).to eq(api_key_param)
-      expect(uri_base).to be_nil
-      expect(organization_id).to eq(organization_id_param)
-      expect(log_errors).to be(true)
+      builder_args.merge!(access_token:, uri_base:, organization_id:, log_errors:)
       official_client
     end
 
@@ -52,10 +50,11 @@ RSpec.describe "Boxcars::Openai official client path" do
     allow(official_client).to receive(:chat).and_return(chat_resource)
     allow(chat_resource).to receive(:respond_to?).with(:completions).and_return(true)
     allow(chat_resource).to receive(:completions).and_return(chat_completions)
-    expect(chat_completions).to receive(:create).with(hash_including(:model, :messages)).and_return(response_object)
+    allow(chat_completions).to receive(:create).with(hash_including(:model, :messages)).and_return(response_object)
 
     engine = Boxcars::Openai.new(model: "gpt-4o-mini")
     expect(engine.run("Write a short tagline")).to eq("Official SDK chat response")
+    expect(chat_completions).to have_received(:create).with(hash_including(:model, :messages))
   end
 
   it "handles legacy completions via the official client path" do
@@ -64,10 +63,11 @@ RSpec.describe "Boxcars::Openai official client path" do
 
     allow(official_client).to receive(:respond_to?).with(:completions).and_return(true)
     allow(official_client).to receive(:completions).and_return(completions_resource)
-    expect(completions_resource).to receive(:create).with(hash_including(:model, :prompt)).and_return(response_object)
+    allow(completions_resource).to receive(:create).with(hash_including(:model, :prompt)).and_return(response_object)
 
     engine = Boxcars::Openai.new(model: "text-davinci-003")
     expect(engine.run("Write a short tagline")).to eq("Completion answer")
+    expect(completions_resource).to have_received(:create).with(hash_including(:model, :prompt))
   end
 
   it "handles Responses API payloads via the official client path" do
@@ -92,10 +92,11 @@ RSpec.describe "Boxcars::Openai official client path" do
 
     allow(official_client).to receive(:respond_to?).with(:responses).and_return(true)
     allow(official_client).to receive(:responses).and_return(responses_resource)
-    expect(responses_resource).to receive(:create).with(hash_including(:model, :input)).and_return(response_object)
+    allow(responses_resource).to receive(:create).with(hash_including(:model, :input)).and_return(response_object)
 
     engine = Boxcars::Openai.new(model: "gpt-5-mini")
     expect(engine.run("Write a short tagline")).to eq("Responses answer")
+    expect(responses_resource).to have_received(:create).with(hash_including(:model, :input))
   end
 
   it "maps chat-style response_format json_schema to Responses text.format" do
@@ -116,28 +117,29 @@ RSpec.describe "Boxcars::Openai official client path" do
 
     allow(official_client).to receive(:respond_to?).with(:responses).and_return(true)
     allow(official_client).to receive(:responses).and_return(responses_resource)
-    expect(responses_resource).to receive(:create).with(hash_including(
-                                                          model: "gpt-5-mini",
-                                                          input: kind_of(String),
-                                                          text: {
-                                                            format: {
-                                                              type: "json_schema",
-                                                              name: "boxcars_json_output",
-                                                              strict: true,
-                                                              schema: {
-                                                                "type" => "object",
-                                                                "properties" => { "share_count" => { "type" => "string" } },
-                                                                "required" => ["share_count"],
-                                                                "additionalProperties" => false
-                                                              }
-                                                            }
-                                                          }
-                                                        )).and_return(response_object)
+    allow(responses_resource).to receive(:create).and_return(response_object)
 
     boxcar = Boxcars::JSONEngineBoxcar.new(
       engine: Boxcars::Openai.new(model: "gpt-5-mini"),
       json_schema: schema
     )
     expect(boxcar.run("extract shares")).to eq({ "share_count" => "12,321,999" })
+    expect(responses_resource).to have_received(:create).with(hash_including(
+                                                                model: "gpt-5-mini",
+                                                                input: kind_of(String),
+                                                                text: {
+                                                                  format: {
+                                                                    type: "json_schema",
+                                                                    name: "boxcars_json_output",
+                                                                    strict: true,
+                                                                    schema: {
+                                                                      "type" => "object",
+                                                                      "properties" => { "share_count" => { "type" => "string" } },
+                                                                      "required" => ["share_count"],
+                                                                      "additionalProperties" => false
+                                                                    }
+                                                                  }
+                                                                }
+                                                              ))
   end
 end

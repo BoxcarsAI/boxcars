@@ -93,8 +93,11 @@ module Boxcars
         hash_payload = payload.is_a?(Hash) ? payload : { "content" => payload }
         is_error = hash_payload["isError"] || hash_payload[:isError] || hash_payload["is_error"] || hash_payload[:is_error]
 
-        if (structured = hash_payload["structuredContent"] || hash_payload[:structuredContent] || hash_payload["structured_content"] || hash_payload[:structured_content])
-          return is_error ? Result.from_error(stringify_for_error(structured)) : Result.new(status: :ok, answer: structured, explanation: structured)
+        structured = hash_payload["structuredContent"] || hash_payload[:structuredContent] ||
+                     hash_payload["structured_content"] || hash_payload[:structured_content]
+        if structured
+          return is_error ? Result.from_error(stringify_for_error(structured)) : Result.new(status: :ok, answer: structured,
+                                                                                            explanation: structured)
         end
 
         if (content = hash_payload["content"] || hash_payload[:content])

@@ -4,8 +4,8 @@ module Boxcars
   module MCP
     # Converts MCP tool descriptors into Boxcar wrappers.
     class ToolRegistry
-      def self.boxcars_from_client(client, **kwargs)
-        new(client:).boxcars(**kwargs)
+      def self.boxcars_from_client(client, **)
+        new(client:).boxcars(**)
       end
 
       attr_reader :client

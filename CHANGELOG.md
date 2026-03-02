@@ -2,6 +2,21 @@
 
 ## [Unreleased]
 
+## [0.10.3] - 2026-03-02
+
+### Added
+
+- **Ollama `uri_base` option** — `Boxcars::Ollama.new(uri_base: "http://my-server:8080/v1")` to point at a remote or custom Ollama endpoint instead of the default `localhost:11434`. Observability tracking reflects the configured URL.
+
+### Fixed
+
+- Resolved all Rubocop offenses (48 offenses fixed, stale `.rubocop_todo.yml` entries pruned).
+- Fixed `sql_base_spec.rb` test failure (`NameError: uninitialized constant Connection`).
+
+### Maintenance
+
+- Bumped dev dependencies: `sequel` 5.101.0 → 5.102.0, `sqlite3` 2.9.0 → 2.9.1.
+
 ### Recent Updates
 
 - Tool-calling runtime naming simplified:

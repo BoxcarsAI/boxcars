@@ -421,7 +421,7 @@ module Boxcars
       when 'perplexity_ai'
         'https://api.perplexity.ai'
       when 'ollama'
-        'http://localhost:11434/v1'
+        respond_to?(:uri_base) ? uri_base : 'http://localhost:11434/v1'
       else
         "https://api.#{provider}.com/v1"
       end

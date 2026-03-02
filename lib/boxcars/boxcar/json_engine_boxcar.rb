@@ -43,9 +43,7 @@ module Boxcars
           %<wanted_data>s
           }
       SYSPR
-      if json_schema
-        stock_prompt += "\nYour output MUST conform to this JSON Schema:\n```json\n#{render_json_schema}\n```\n"
-      end
+      stock_prompt += "\nYour output MUST conform to this JSON Schema:\n```json\n#{render_json_schema}\n```\n" if json_schema
       stock_prompt += "\n\nImportant:\n#{important}\n" unless important.to_s.empty?
 
       sprompt = format(stock_prompt, wanted_data:, data_description:)
@@ -61,9 +59,7 @@ module Boxcars
     # fall back to the existing prompt-driven JSON extraction flow.
     def generate(input_list:, current_conversation: nil)
       return super unless native_json_schema_generation_supported?
-      if input_list.empty?
-        raise Boxcars::ArgumentError, "#{self.class}#generate requires at least one input hash"
-      end
+      raise Boxcars::ArgumentError, "#{self.class}#generate requires at least one input hash" if input_list.empty?
 
       stop = input_value(input_list.first, :stop)
       the_prompt = current_conversation ? prompt.with_conversation(current_conversation) : prompt
@@ -137,9 +133,7 @@ module Boxcars
       errors.concat(validate_type(types, data, path)) if types
       return errors if errors.any?
 
-      if schema.key?("enum")
-        errors << "#{path}: expected one of #{schema['enum'].inspect}" unless schema["enum"].include?(data)
-      end
+      errors << "#{path}: expected one of #{schema['enum'].inspect}" if schema.key?("enum") && !schema["enum"].include?(data)
 
       if data.is_a?(Hash)
         errors.concat(validate_object_schema(schema, data, path:))
@@ -194,7 +188,7 @@ module Boxcars
       when nil
         nil
       when Array
-        type.map { |t| t.to_s }
+        type.map(&:to_s)
       else
         [type.to_s]
       end
@@ -213,7 +207,7 @@ module Boxcars
       when "number"
         data.is_a?(Numeric)
       when "boolean"
-        data == true || data == false
+        [true, false].include?(data)
       when "null"
         data.nil?
       else
