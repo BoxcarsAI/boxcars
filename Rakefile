@@ -78,9 +78,7 @@ namespace :spec do
       end
     end
 
-    if token.empty?
-      raise "OPENAI_ACCESS_TOKEN is required for spec:vcr_openai_refresh (env var or .env)"
-    end
+    raise "OPENAI_ACCESS_TOKEN is required for spec:vcr_openai_refresh (env var or .env)" if token.empty?
 
     sh "NO_VCR=true bundle exec rspec #{VCR_OPENAI_REFRESH_SPECS.join(' ')}"
   end

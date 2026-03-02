@@ -3,12 +3,12 @@
 module Boxcars
   # Model Context Protocol integration namespace.
   module MCP
-    def self.boxcars_from_client(client, **kwargs)
-      ToolRegistry.boxcars_from_client(client, **kwargs)
+    def self.boxcars_from_client(client, **)
+      ToolRegistry.boxcars_from_client(client, **)
     end
 
-    def self.stdio(command:, args: [], **kwargs)
-      StdioClient.new(command:, args:, **kwargs).connect!
+    def self.stdio(command:, args: [], **)
+      StdioClient.new(command:, args:, **).connect!
     end
 
     # Build a ToolTrain from local Boxcars plus tools discovered from
@@ -45,7 +45,7 @@ module Boxcars
       client_name_prefixes[index] ||
         client_name_prefixes[client.object_id] ||
         client_name_prefixes[client] ||
-        (Array(client_name_prefixes.values_at(:default, "default")).compact.first) ||
+        Array(client_name_prefixes.values_at(:default, "default")).compact.first ||
         "MCP#{index + 1}"
     end
     private_class_method :mcp_client_prefix

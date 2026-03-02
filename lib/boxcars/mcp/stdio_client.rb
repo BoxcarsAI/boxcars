@@ -124,13 +124,11 @@ module Boxcars
         return unless @stderr
 
         @stderr_thread = Thread.new do
-          begin
-            while (line = @stderr.gets)
-              @stderr_buffer << line
-            end
-          rescue StandardError
-            nil
+          while (line = @stderr.gets)
+            @stderr_buffer << line
           end
+        rescue StandardError
+          nil
         end
       end
 
@@ -185,6 +183,7 @@ module Boxcars
             if msg.key?("error") && msg["error"]
               raise Boxcars::Error, "MCP error for request #{request_id}: #{msg['error'].inspect}"
             end
+
             return msg
           end
 
@@ -199,7 +198,10 @@ module Boxcars
         raise Boxcars::Error, "MCP message missing Content-Length header" unless content_length && content_length >= 0
 
         body = @stdout.read(content_length)
-        raise Boxcars::Error, "MCP stdio stream closed while reading message body#{stderr_suffix}" if body.nil? || body.bytesize != content_length
+        if body.nil? || body.bytesize != content_length
+          raise Boxcars::Error,
+                "MCP stdio stream closed while reading message body#{stderr_suffix}"
+        end
 
         JSON.parse(body)
       rescue JSON::ParserError => e
@@ -232,13 +234,13 @@ module Boxcars
 
         status = @process_wait_thread&.value
         code = status&.exitstatus
-        raise Boxcars::Error, "MCP process exited#{code ? " (#{code})" : ''}#{stderr_suffix}"
+        raise Boxcars::Error, "MCP process exited#{" (#{code})" if code}#{stderr_suffix}"
       end
 
-      def with_timeout(seconds)
+      def with_timeout(seconds, &)
         return yield if seconds.nil?
 
-        Timeout.timeout(seconds) { yield }
+        Timeout.timeout(seconds, &)
       rescue Timeout::Error
         raise Boxcars::Error, "MCP request timed out after #{seconds}s#{stderr_suffix}"
       end

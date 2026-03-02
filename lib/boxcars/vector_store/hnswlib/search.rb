@@ -45,7 +45,7 @@ module Boxcars
           raise_arugment_error('vector_store is nil') unless vector_documents[:vector_store]
           raise_arugment_error('vector_store must be an array') unless vector_documents[:vector_store].is_a?(Array)
 
-          unless vector_documents[:vector_store].all? { |doc| doc.is_a?(Document) }
+          unless vector_documents[:vector_store].all?(Document)
             raise_arugment_error('vector_store must be an array of Document objects')
           end
 

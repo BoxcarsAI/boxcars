@@ -53,9 +53,7 @@ module Boxcars
         end
 
         def valid_vector_store?(pg_vectors)
-          pg_vectors.all? do |doc|
-            doc.is_a?(Boxcars::VectorStore::Document)
-          end
+          pg_vectors.all?(Boxcars::VectorStore::Document)
         rescue TypeError => e
           raise_argument_error(e.message)
         end
