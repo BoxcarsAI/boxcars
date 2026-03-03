@@ -2,10 +2,21 @@
 
 ## [Unreleased]
 
+## [0.10.5] - 2026-03-03
+
 ### Added
 
+- **`StationAgent`** — Agent abstraction with instructions/tools DSL, agent-as-tool nesting, lifecycle callbacks (`on_tool_call`, `on_tool_result`, `on_complete`), and handoff support.
+- **`AgentRunner`** — Orchestrator that follows agent-to-agent handoff chains with configurable `max_handoffs`.
+- **`AgentEvent` and event streaming** — Real-time agent lifecycle events via `on_event` callback and `run_stream` method (block and Enumerator forms).
 - **`context:` parameter for ActiveRecord and SQL boxcars** — Pass runtime context (current user, tenant, permissions) into prompts so the LLM generates properly scoped queries. Available as a constructor keyword and an `attr_accessor` for per-request updates.
 - **Read-only mode for SQL boxcars** — `SQLBase` (and subclasses `SQLActiveRecord`, `SQLSequel`) now default to read-only, rejecting write SQL (`INSERT`, `UPDATE`, `DELETE`, `DROP`, etc.) with `Boxcars::SecurityError`. Pass `read_only: false` to allow writes, or provide an `approval_callback:` proc that receives the SQL string for custom approval logic.
+
+### Documentation
+
+- **Boxcars Guide** (`docs/boxcars_guide.md`) — New comprehensive guide covering Engines, Boxcars, Trains, MCP, Observability, and configuration.
+- **Agents Guide** (`docs/agents_guide.md`) — New guide for StationAgent, AgentRunner, handoffs, and event streaming.
+- **Slimmed README** — Rewritten as a concise landing page with quick-start examples and links to dedicated guides.
 
 ## [0.10.3] - 2026-03-02
 
