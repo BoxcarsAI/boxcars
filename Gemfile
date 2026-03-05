@@ -24,7 +24,7 @@ group :development, :test do
   gem "ruby-anthropic", "~> 0.4"
   gem "debug", "~> 1.9"
   gem "rspec", "~> 3.13"
-  gem "rubocop", "~> 1.67"
+  gem "rubocop", "~> 1.85"
   gem "vcr", "~> 6.4.0"
   gem "webmock", "~> 3.26.1"
   gem "rubocop-rake", "~> 0.7.1"
