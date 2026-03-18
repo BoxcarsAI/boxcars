@@ -192,7 +192,7 @@ GEM
     unicode-emoji (4.2.0)
     uri (1.1.1)
     vcr (6.4.0)
-    webmock (3.26.1)
+    webmock (3.26.2)
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
@@ -230,7 +230,7 @@ DEPENDENCIES
   sequel (~> 5.0)
   sqlite3 (~> 2.0)
   vcr (~> 6.4.0)
-  webmock (~> 3.26.1)
+  webmock (~> 3.26.2)
 
 BUNDLED WITH
    2.5.20
