@@ -11,7 +11,7 @@ gem "sqlite3", "~> 2.0"
 gem "activerecord", "~> 8.1"
 gem "activesupport", "~> 8.1"
 gem "pg", "~> 1.5"
-gem "pgvector", "~> 0.3.2"
+gem "pgvector", "~> 0.3.3"
 
 group :development, :test do
   # Optional runtime provider/tooling gems kept here for local development + CI.
