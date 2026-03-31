@@ -98,7 +98,8 @@ module Boxcars
     # @return [Boxcars::Engine] An instance of the appropriate engine class
     def self.json_engine(model: nil, **kw_args)
       default_options = { temperature: 0.1 }
-      name = model.to_s
+      effective_model = model || Boxcars.configuration.default_model || DEFAULT_MODEL
+      name = effective_model.to_s
       blocked = name.start_with?("gpt-5", "llama") || name.match?(/sonnet|opus|sonar/)
       default_options[:response_format] = { type: "json_object" } unless blocked
       options = default_options.merge(kw_args)

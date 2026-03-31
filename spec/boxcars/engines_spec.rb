@@ -15,6 +15,7 @@ RSpec.describe Boxcars::Engines do
     described_class.emit_deprecation_warnings = true
     described_class.strict_deprecated_aliases = false
     described_class.reset_deprecation_warnings!
+    Boxcars.configuration.default_model = nil
     Boxcars.configuration.strict_deprecated_model_aliases = false
     Boxcars.configuration.emit_deprecation_warnings = true
   end
@@ -223,7 +224,27 @@ RSpec.describe Boxcars::Engines do
   end
 
   describe ".json_engine" do
-    it "creates engine with JSON response format" do
+    it "does not add response_format for explicit gpt-5 models" do
+      allow(Boxcars::Openai).to receive(:new)
+      described_class.json_engine(model: "gpt-5.4-mini")
+      expect(Boxcars::Openai).to have_received(:new).with(
+        model: "gpt-5.4-mini",
+        temperature: 0.1
+      )
+    end
+
+    it "does not add response_format for configured default gpt-5 models" do
+      Boxcars.configuration.default_model = "gpt-5.4-mini"
+
+      allow(Boxcars::Openai).to receive(:new)
+      described_class.json_engine
+      expect(Boxcars::Openai).to have_received(:new).with(
+        model: "gpt-5.4-mini",
+        temperature: 0.1
+      )
+    end
+
+    it "still adds JSON response_format for non-blocked models" do
       allow(Boxcars::Openai).to receive(:new)
       described_class.json_engine(model: "gpt-4o")
       expect(Boxcars::Openai).to have_received(:new).with(
