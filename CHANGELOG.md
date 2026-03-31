@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## [0.10.7] - 2026-03-31
+
+### Fixed
+
+- `Boxcars::Engines.json_engine` now resolves the effective model before deciding whether to add `response_format`, so configured default `gpt-5.x` models follow the existing blocked path the same way explicit `gpt-5.x` models do.
+
 ## [0.10.5] - 2026-03-03
 
 ### Added
