@@ -2,6 +2,16 @@
 
 ## [Unreleased]
 
+## [0.10.8] - 2026-04-06
+
+### Fixed
+
+- Cleaned up the `Boxcars::MultiBackend` spec helpers to remove duplicate anonymous backend method definitions and clear the remaining `Lint/DuplicateMethods` RuboCop warnings.
+
+### Maintenance
+
+- Refreshed `Gemfile.lock` for the `0.10.8` release, including patch and minor dependency updates across the development bundle.
+
 ## [0.10.7] - 2026-03-31
 
 ### Fixed

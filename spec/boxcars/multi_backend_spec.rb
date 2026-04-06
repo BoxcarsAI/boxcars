@@ -5,7 +5,7 @@ require 'boxcars/observability_backends/multi_backend'
 require 'boxcars/observability_backend' # For dummy backends
 
 RSpec.describe Boxcars::MultiBackend do
-  let(:dummy_backend_one) do
+  let(:tracking_backend_class) do
     Class.new do
       include Boxcars::ObservabilityBackend
 
@@ -18,24 +18,11 @@ RSpec.describe Boxcars::MultiBackend do
       def track(event:, properties:)
         @tracked_events << { event: event, properties: properties }
       end
-    end.new
+    end
   end
 
-  let(:dummy_backend_two) do
-    Class.new do
-      include Boxcars::ObservabilityBackend
-
-      attr_reader :tracked_events
-
-      def initialize
-        @tracked_events = []
-      end
-
-      def track(event:, properties:)
-        @tracked_events << { event: event, properties: properties }
-      end
-    end.new
-  end
+  let(:dummy_backend_one) { tracking_backend_class.new }
+  let(:dummy_backend_two) { tracking_backend_class.new }
 
   let(:failing_backend) do
     Class.new do
