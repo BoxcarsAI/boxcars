@@ -90,7 +90,7 @@ GEM
       racc (~> 1.4)
     nokogiri (1.19.2-x86_64-linux-musl)
       racc (~> 1.4)
-    openai (0.57.0)
+    openai (0.58.0)
       base64
       cgi
       connection_pool
