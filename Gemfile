@@ -6,7 +6,7 @@ source "https://rubygems.org"
 gemspec
 
 gem "dotenv", "~> 3.1"
-gem "rake", "~> 13.2"
+gem "rake", "~> 13.4"
 gem "sqlite3", "~> 2.0"
 gem "activerecord", "~> 8.1"
 gem "activesupport", "~> 8.1"
