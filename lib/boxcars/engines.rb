@@ -100,7 +100,7 @@ module Boxcars
       default_options = { temperature: 0.1 }
       effective_model = model || Boxcars.configuration.default_model || DEFAULT_MODEL
       name = effective_model.to_s
-      blocked = name.start_with?("gpt-5", "llama") || name.match?(/sonnet|opus|sonar/)
+      blocked = name.start_with?("gpt-5", "llama") || name.match?(/sonnet|opus|haiku|sonar/)
       default_options[:response_format] = { type: "json_object" } unless blocked
       options = default_options.merge(kw_args)
       engine(model:, **options)

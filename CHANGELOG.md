@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## [0.10.9] - 2026-04-30
+
+### Fixed
+
+- `Boxcars::Engines.json_engine` no longer sends OpenAI-style `response_format` parameters to Anthropic Haiku models.
+
 ## [0.10.8] - 2026-04-06
 
 ### Fixed

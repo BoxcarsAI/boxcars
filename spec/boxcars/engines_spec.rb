@@ -272,6 +272,15 @@ RSpec.describe Boxcars::Engines do
       )
     end
 
+    it "removes response_format for haiku models" do
+      allow(Boxcars::Anthropic).to receive(:new)
+      described_class.json_engine(model: "claude-haiku-4-5")
+      expect(Boxcars::Anthropic).to have_received(:new).with(
+        model: "claude-haiku-4-5",
+        temperature: 0.1
+      )
+    end
+
     it "removes response_format for llama models" do
       allow(Boxcars::Groq).to receive(:new)
       described_class.json_engine(model: "llama-3.3-70b-versatile")
