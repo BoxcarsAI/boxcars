@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## [0.10.10] - 2026-05-07
+
+### Fixed
+
+- Anthropic responses now extract and join all text-bearing content blocks, including Claude responses where `thinking` blocks precede the final text block.
+
 ## [0.10.9] - 2026-04-30
 
 ### Fixed

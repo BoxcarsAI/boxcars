@@ -114,6 +114,67 @@ RSpec.describe Boxcars::Anthropic do
         expect(props[:$ai_input_tokens]).to eq(15)
         expect(props[:$ai_output_tokens]).to eq(23)
       end
+
+      it 'extracts text when a thinking block precedes the text block' do
+        json_text = '{"answer":"Austin","rationale":"Strong venues","ranked_items":[]}'
+        response = anthropic_success_response.merge(
+          "content" => [
+            { "type" => "thinking", "thinking" => "..." },
+            { "type" => "text", "text" => json_text }
+          ],
+          "usage" => { "input_tokens" => 11, "output_tokens" => 7 }
+        )
+        allow(mock_anthropic_client).to receive(:messages).and_return(response)
+
+        result = engine.client(prompt: prompt, inputs: inputs)
+
+        expect(result["completion"]).to eq(json_text)
+        expect(result.dig("choices", 0, "text")).to eq(json_text)
+        expect(result.dig("usage", "prompt_tokens")).to eq(11)
+        expect(result.dig("usage", "completion_tokens")).to eq(7)
+        expect(result.dig("usage", "total_tokens")).to eq(18)
+      end
+
+      it 'joins multiple text-bearing content blocks' do
+        sdk_text_block = Struct.new(:text).new("third")
+        response = anthropic_success_response.merge(
+          "content" => [
+            { type: "text", text: "first" },
+            "second",
+            sdk_text_block
+          ]
+        )
+        allow(mock_anthropic_client).to receive(:messages).and_return(response)
+
+        result = engine.client(prompt: prompt, inputs: inputs)
+
+        expect(result["completion"]).to eq("first\nsecond\nthird")
+        expect(result.dig("choices", 0, "text")).to eq("first\nsecond\nthird")
+      end
+
+      it 'records an error when a successful response contains no text blocks' do
+        response = anthropic_success_response.merge(
+          "content" => [
+            { "type" => "thinking", "thinking" => "..." }
+          ]
+        )
+        allow(mock_anthropic_client).to receive(:messages).and_return(response)
+
+        expect do
+          engine.client(prompt: prompt, inputs: inputs)
+        end.to raise_error(Boxcars::Error, /no text content/)
+
+        props = dummy_observability_backend.tracked_events.first[:properties]
+        expect(props[:$ai_is_error]).to be true
+        expect(props[:$ai_error]).to match(/no text content/)
+      end
+
+      it 'keeps extracting existing simple text-first responses' do
+        result = engine.client(prompt: prompt, inputs: inputs)
+
+        expect(result["completion"]).to eq("Why did the robot go to therapy? To de-stress and debug its feelings!")
+        expect(result.dig("choices", 0, "text")).to eq("Why did the robot go to therapy? To de-stress and debug its feelings!")
+      end
     end
 
     context 'when API key is missing (ConfigurationError)' do

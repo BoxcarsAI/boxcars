@@ -118,18 +118,21 @@ module Boxcars
       response_data[:parsed_json] = normalized_response
 
       if normalized_response && !normalized_response["error"]
-        response_data[:success] = true
         response_data[:status_code] = 200 # Inferred
+        normalize_anthropic_usage!(normalized_response)
+
         # Transform response to match expected format
-        normalized_response["completion"] = normalized_response.dig("content", 0, "text")
+        normalized_response["completion"] = extract_anthropic_completion(normalized_response)
+
+        if normalized_response["completion"].empty?
+          response_data[:success] = false
+          response_data[:error] ||= Error.new("Anthropic response contained no text content")
+          return
+        end
+
+        response_data[:success] = true
         normalized_response["choices"] ||= [{ "text" => normalized_response["completion"],
                                               "finish_reason" => normalized_response["stop_reason"] }]
-        if normalized_response["usage"].is_a?(Hash)
-          normalized_response["usage"]["prompt_tokens"] ||= normalized_response["usage"]["input_tokens"]
-          normalized_response["usage"]["completion_tokens"] ||= normalized_response["usage"]["output_tokens"]
-          normalized_response["usage"]["total_tokens"] ||= normalized_response["usage"]["prompt_tokens"].to_i +
-                                                           normalized_response["usage"]["completion_tokens"].to_i
-        end
         normalized_response.delete("content")
       else
         response_data[:success] = false
@@ -137,6 +140,33 @@ module Boxcars
         msg = err_details ? "#{err_details['type']}: #{err_details['message']}" : "Unknown Anthropic API Error"
         response_data[:error] ||= StandardError.new(msg)
       end
+    end
+
+    def extract_anthropic_completion(normalized_response)
+      content = normalized_response["content"]
+      blocks = content.is_a?(Array) ? content : [content]
+
+      blocks.filter_map { |block| extract_anthropic_text_block(block) }.join("\n").strip
+    end
+
+    def extract_anthropic_text_block(block)
+      case block
+      when String
+        block
+      when Hash
+        block["text"] || block[:text]
+      else
+        block.text if block.respond_to?(:text)
+      end
+    end
+
+    def normalize_anthropic_usage!(normalized_response)
+      return unless normalized_response["usage"].is_a?(Hash)
+
+      normalized_response["usage"]["prompt_tokens"] ||= normalized_response["usage"]["input_tokens"]
+      normalized_response["usage"]["completion_tokens"] ||= normalized_response["usage"]["output_tokens"]
+      normalized_response["usage"]["total_tokens"] ||= normalized_response["usage"]["prompt_tokens"].to_i +
+                                                       normalized_response["usage"]["completion_tokens"].to_i
     end
 
     # Handle errors from Anthropic API calls
