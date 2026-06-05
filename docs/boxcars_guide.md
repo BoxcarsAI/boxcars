@@ -179,6 +179,27 @@ engine.run("Write a one-line summary")
 
 Groq, Gemini, Ollama, Google, Cerebras, and Together all use the same official OpenAI client path with provider-specific base URLs.
 
+For enterprise deployments, the same OpenAI-compatible path can point at an
+internal model gateway or AI control plane. For example, Tuning Engines users can
+set an inference key and base URL while keeping regular OpenAI behavior as the
+default fallback:
+
+```ruby
+Boxcars.configure do |config|
+  config.openai_official_client_builder = lambda do |access_token:, uri_base:, organization_id:, log_errors:|
+    OpenAI::Client.new(
+      api_key: ENV.fetch("TUNING_ENGINES_INFERENCE_KEY", access_token),
+      base_url: ENV.fetch("OPENAI_BASE_URL", uri_base),
+      organization: organization_id
+    )
+  end
+end
+```
+
+This is useful when model calls need centralized routing, audit trails,
+guardrails, approval workflows, or cost controls before reaching the final model
+provider.
+
 #### Custom Client Builder
 
 If you want explicit control over the official SDK client shape:
