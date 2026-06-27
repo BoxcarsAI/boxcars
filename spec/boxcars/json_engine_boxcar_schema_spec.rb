@@ -88,8 +88,8 @@ RSpec.describe Boxcars::JSONEngineBoxcar do
       result = boxcar.get_answer('{"share_count":123,"unexpected":"x"}')
 
       expect(result.status).to eq(:error)
-      expect(result.answer).to match(/JSON schema validation error/)
-      expect(result.answer).to match(/\$\.share_count: expected string/)
+      expect(result.answer).to include('JSON schema validation error')
+      expect(result.answer).to include('$.share_count: expected string')
     end
 
     it "can allow schema violations when strict validation is disabled" do

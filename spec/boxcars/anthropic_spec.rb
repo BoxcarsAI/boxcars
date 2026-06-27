@@ -63,6 +63,72 @@ RSpec.describe Boxcars::Anthropic do
     allow(Anthropic::Client).to receive(:new).with(access_token: api_key_param).and_return(mock_anthropic_client)
   end
 
+  describe 'Opus 4.7 request parameter compatibility' do
+    it 'omits default unsupported sampling params from the final request params' do
+      captured_params = nil
+      allow(mock_anthropic_client).to receive(:messages) do |parameters:|
+        captured_params = parameters
+        anthropic_success_response
+      end
+
+      described_class.new(model: "claude-opus-4-7").client(prompt: prompt, inputs: inputs)
+
+      expect(captured_params).to include(model: "claude-opus-4-7")
+      expect(captured_params).not_to include(:temperature, :top_p, :top_k)
+    end
+
+    it 'omits explicit unsupported sampling params from the final request params' do
+      captured_params = nil
+      allow(mock_anthropic_client).to receive(:messages) do |parameters:|
+        captured_params = parameters
+        anthropic_success_response
+      end
+
+      described_class.new(
+        model: "claude-opus-4-7",
+        temperature: 0,
+        top_p: 0.5,
+        top_k: 10
+      ).client(prompt: prompt, inputs: inputs)
+
+      expect(captured_params).to include(model: "claude-opus-4-7")
+      expect(captured_params).not_to include(:temperature, :top_p, :top_k)
+    end
+
+    it 'omits unsupported sampling params for Opus 4.7 snapshot and variant ids' do
+      captured_params = nil
+      allow(mock_anthropic_client).to receive(:messages) do |parameters:|
+        captured_params = parameters
+        anthropic_success_response
+      end
+
+      described_class.new(
+        model: "claude-opus-4-7-20260501",
+        temperature: 0,
+        top_p: 0.5,
+        top_k: 10
+      ).client(prompt: prompt, inputs: inputs)
+
+      expect(captured_params).to include(model: "claude-opus-4-7-20260501")
+      expect(captured_params).not_to include(:temperature, :top_p, :top_k)
+    end
+
+    it 'preserves the existing default temperature for older Claude models' do
+      captured_params = nil
+      allow(mock_anthropic_client).to receive(:messages) do |parameters:|
+        captured_params = parameters
+        anthropic_success_response
+      end
+
+      described_class.new(model: "claude-3-5-sonnet-20240620").client(prompt: prompt, inputs: inputs)
+
+      expect(captured_params).to include(
+        model: "claude-3-5-sonnet-20240620",
+        temperature: 0.1
+      )
+    end
+  end
+
   describe 'observability integration with direct Anthropic client usage' do
     context 'when API call is successful' do
       before do
@@ -166,7 +232,7 @@ RSpec.describe Boxcars::Anthropic do
 
         props = dummy_observability_backend.tracked_events.first[:properties]
         expect(props[:$ai_is_error]).to be true
-        expect(props[:$ai_error]).to match(/no text content/)
+        expect(props[:$ai_error]).to include('no text content')
       end
 
       it 'keeps extracting existing simple text-first responses' do
@@ -193,7 +259,7 @@ RSpec.describe Boxcars::Anthropic do
 
         props = tracked_event[:properties]
         expect(props[:$ai_is_error]).to be true
-        expect(props[:$ai_error]).to match(/Anthropic API key not set/)
+        expect(props[:$ai_error]).to include('Anthropic API key not set')
         expect(props[:$ai_provider]).to eq('anthropic')
         expect(props[:$ai_http_status]).to eq(500)
       end
