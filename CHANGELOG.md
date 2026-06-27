@@ -2,6 +2,16 @@
 
 ## [Unreleased]
 
+## [0.10.11] - 2026-06-26
+
+### Fixed
+
+- Anthropic Opus 4.7 requests now omit unsupported sampling parameters (`temperature`, `top_p`, and `top_k`) while preserving existing defaults for older Claude models.
+
+### Maintenance
+
+- Refreshed bundled dependencies and applied RuboCop autocorrections for the release.
+
 ## [0.10.10] - 2026-05-07
 
 ### Fixed

@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    boxcars (0.10.10)
+    boxcars (0.10.11)
 
 GEM
   remote: https://rubygems.org/
