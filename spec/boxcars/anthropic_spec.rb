@@ -232,7 +232,7 @@ RSpec.describe Boxcars::Anthropic do
 
         props = dummy_observability_backend.tracked_events.first[:properties]
         expect(props[:$ai_is_error]).to be true
-        expect(props[:$ai_error]).to match(/no text content/)
+        expect(props[:$ai_error]).to include('no text content')
       end
 
       it 'keeps extracting existing simple text-first responses' do
@@ -259,7 +259,7 @@ RSpec.describe Boxcars::Anthropic do
 
         props = tracked_event[:properties]
         expect(props[:$ai_is_error]).to be true
-        expect(props[:$ai_error]).to match(/Anthropic API key not set/)
+        expect(props[:$ai_error]).to include('Anthropic API key not set')
         expect(props[:$ai_provider]).to eq('anthropic')
         expect(props[:$ai_http_status]).to eq(500)
       end

@@ -139,7 +139,7 @@ RSpec.describe Boxcars::Ollama do
 
         props = tracked_event[:properties]
         expect(props[:$ai_is_error]).to be true
-        expect(props[:$ai_error]).to match(/Connection refused/)
+        expect(props[:$ai_error]).to include('Connection refused')
         expect(props[:$ai_provider]).to eq('ollama')
         expect(props[:$ai_http_status]).to eq(500) # Default for errors
       end

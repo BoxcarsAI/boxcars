@@ -48,7 +48,7 @@ RSpec.describe Boxcars::EngineBoxcar do
       expect(rv).to be_a(Hash)
       expect(rv.keys).to include(:answer)
       # After retries, EngineBoxcar returns an error string; ensure it indicates empty response
-      expect(rv[:answer].to_s).to match(/Empty response from engine/)
+      expect(rv[:answer].to_s).to include('Empty response from engine')
     end.not_to raise_error
   end
 

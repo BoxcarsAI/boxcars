@@ -152,7 +152,7 @@ RSpec.describe Boxcars::Perplexityai do
         expect(dummy_observability_backend.tracked_events.size).to eq(1)
         props = dummy_observability_backend.tracked_events.first[:properties]
         expect(props[:$ai_is_error]).to be true
-        expect(props[:$ai_error]).to match(/Perplexity API key not set/)
+        expect(props[:$ai_error]).to include('Perplexity API key not set')
         expect(props[:$ai_provider]).to eq('perplexity_ai')
         expect(props[:$ai_http_status]).to eq(500)
       end

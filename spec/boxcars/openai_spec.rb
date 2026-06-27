@@ -235,7 +235,7 @@ RSpec.describe Boxcars::Openai do
         expect(props[:$ai_provider]).to eq("openai")
         expect(props[:$ai_model]).to eq("text-davinci-003")
         expect(props[:$ai_is_error]).to be false
-        expect(props[:$ai_input]).to match(/Write a tagline for a coffee shop/)
+        expect(props[:$ai_input]).to include('Write a tagline for a coffee shop')
       end
     end
 
@@ -252,7 +252,7 @@ RSpec.describe Boxcars::Openai do
         expect(dummy_observability_backend.tracked_events.size).to eq(1)
         props = dummy_observability_backend.tracked_events.first[:properties]
         expect(props[:$ai_is_error]).to be true
-        expect(props[:$ai_error]).to match(/OpenAI API key not set/)
+        expect(props[:$ai_error]).to include('OpenAI API key not set')
         expect(props[:$ai_provider]).to eq("openai")
       end
     end

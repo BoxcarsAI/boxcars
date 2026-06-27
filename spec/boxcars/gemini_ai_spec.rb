@@ -180,7 +180,7 @@ RSpec.describe Boxcars::GeminiAi do
 
         expect(tracked_event[:event]).to eq('$ai_generation')
         expect(props[:$ai_is_error]).to be true
-        expect(props[:$ai_error]).to match(/Gemini API key not set/)
+        expect(props[:$ai_error]).to include('Gemini API key not set')
         expect(props[:$ai_provider]).to eq('gemini')
       end
     end
