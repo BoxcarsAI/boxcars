@@ -2,9 +2,21 @@
 
 ## [Unreleased]
 
+## [0.10.13] - 2026-08-04
+
 ### Added
 
 - Added `Boxcars::Configuration#default_model_options` for applying shared engine options when the configured or built-in default model is used. Per-call options take precedence, and configured defaults are not passed to explicit models.
+
+### Maintenance
+
+- Refreshed bundled dependencies, including Active Record, OpenAI, RuboCop, and Sequel.
+
+## [0.10.12] - 2026-07-20
+
+### Maintenance
+
+- Updated development dependency constraints and refreshed bundled dependencies, including OpenAI, PostHog, RuboCop, and Sequel.
 
 ## [0.10.11] - 2026-06-26
 
