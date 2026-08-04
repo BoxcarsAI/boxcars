@@ -29,13 +29,14 @@ module Boxcars
   class Configuration
     attr_writer :openai_access_token, :serpapi_api_key, :groq_api_key, :cerebras_api_key, :perplexity_api_key
     attr_accessor :organization_id, :logger, :log_prompts, :log_generated, :default_train, :default_engine, :default_model,
-                  :observability_backend, :strict_deprecated_model_aliases
+                  :default_model_options, :observability_backend, :strict_deprecated_model_aliases
 
     def initialize
       @organization_id = nil
       @logger = Rails.logger if defined?(Rails)
       @log_prompts = ENV.fetch("LOG_PROMPTS", false)
       @log_generated = ENV.fetch("LOG_GEN", false)
+      @default_model_options = {}
       @strict_deprecated_model_aliases = false
       self.emit_deprecation_warnings = true
       self.openai_official_require_native = ENV.fetch("OPENAI_OFFICIAL_REQUIRE_NATIVE", false)

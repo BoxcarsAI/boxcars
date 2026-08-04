@@ -9,6 +9,7 @@ RSpec.describe Boxcars::Engines do
     described_class.reset_deprecation_warnings!
     Boxcars.configuration.strict_deprecated_model_aliases = false
     Boxcars.configuration.emit_deprecation_warnings = true
+    Boxcars.configuration.default_model_options = {}
   end
 
   after do
@@ -16,6 +17,7 @@ RSpec.describe Boxcars::Engines do
     described_class.strict_deprecated_aliases = false
     described_class.reset_deprecation_warnings!
     Boxcars.configuration.default_model = nil
+    Boxcars.configuration.default_model_options = {}
     Boxcars.configuration.strict_deprecated_model_aliases = false
     Boxcars.configuration.emit_deprecation_warnings = true
   end
@@ -167,6 +169,40 @@ RSpec.describe Boxcars::Engines do
       allow(Boxcars::Openai).to receive(:new)
       described_class.engine(model: "gpt-4o", temperature: 0.5, max_tokens: 100)
       expect(Boxcars::Openai).to have_received(:new).with(model: "gpt-4o", temperature: 0.5, max_tokens: 100)
+    end
+
+    it "passes configured options to the default model" do
+      Boxcars.configuration.default_model = "gpt-5.6-luna"
+      Boxcars.configuration.default_model_options = { reasoning_effort: "high", temperature: 0.5 }
+
+      allow(Boxcars::Openai).to receive(:new)
+      described_class.engine
+      expect(Boxcars::Openai).to have_received(:new).with(
+        model: "gpt-5.6-luna",
+        reasoning_effort: "high",
+        temperature: 0.5
+      )
+    end
+
+    it "lets call options override configured default model options" do
+      Boxcars.configuration.default_model = "gpt-5.6-luna"
+      Boxcars.configuration.default_model_options = { reasoning_effort: "high", temperature: 0.5 }
+
+      allow(Boxcars::Openai).to receive(:new)
+      described_class.engine(reasoning_effort: "low", temperature: 0.2)
+      expect(Boxcars::Openai).to have_received(:new).with(
+        model: "gpt-5.6-luna",
+        reasoning_effort: "low",
+        temperature: 0.2
+      )
+    end
+
+    it "does not pass configured default model options to an explicit model" do
+      Boxcars.configuration.default_model_options = { reasoning_effort: "high" }
+
+      allow(Boxcars::Openai).to receive(:new)
+      described_class.engine(model: "gpt-4o")
+      expect(Boxcars::Openai).to have_received(:new).with(model: "gpt-4o")
     end
   end
 
@@ -342,6 +378,45 @@ RSpec.describe Boxcars::Engines do
         model: "gpt-4o",
         temperature: 0.5,
         max_tokens: 100,
+        response_format: { type: "json_object" }
+      )
+    end
+
+    it "passes configured options to the default JSON model" do
+      Boxcars.configuration.default_model = "gpt-5.6-luna"
+      Boxcars.configuration.default_model_options = { reasoning_effort: "high", max_tokens: 100 }
+
+      allow(Boxcars::Openai).to receive(:new)
+      described_class.json_engine
+      expect(Boxcars::Openai).to have_received(:new).with(
+        model: "gpt-5.6-luna",
+        reasoning_effort: "high",
+        max_tokens: 100,
+        temperature: 0.1
+      )
+    end
+
+    it "lets JSON call options override configured default model options" do
+      Boxcars.configuration.default_model = "gpt-5.6-luna"
+      Boxcars.configuration.default_model_options = { reasoning_effort: "high" }
+
+      allow(Boxcars::Openai).to receive(:new)
+      described_class.json_engine(reasoning_effort: "low")
+      expect(Boxcars::Openai).to have_received(:new).with(
+        model: "gpt-5.6-luna",
+        reasoning_effort: "low",
+        temperature: 0.1
+      )
+    end
+
+    it "does not pass configured default model options to an explicit JSON model" do
+      Boxcars.configuration.default_model_options = { reasoning_effort: "high" }
+
+      allow(Boxcars::Openai).to receive(:new)
+      described_class.json_engine(model: "gpt-4o")
+      expect(Boxcars::Openai).to have_received(:new).with(
+        model: "gpt-4o",
+        temperature: 0.1,
         response_format: { type: "json_object" }
       )
     end
