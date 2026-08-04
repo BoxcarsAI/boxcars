@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Added
+
+- Added `Boxcars::Configuration#default_model_options` for applying shared engine options when the configured or built-in default model is used. Per-call options take precedence, and configured defaults are not passed to explicit models.
+
 ## [0.10.11] - 2026-06-26
 
 ### Fixed

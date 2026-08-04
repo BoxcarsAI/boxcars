@@ -16,6 +16,17 @@ RSpec.describe Boxcars::Configuration do
     end
   end
 
+  describe '#default_model_options' do
+    it 'can be set and retrieved' do
+      configuration.default_model_options = { reasoning_effort: 'high' }
+      expect(configuration.default_model_options).to eq(reasoning_effort: 'high')
+    end
+
+    it 'defaults to an empty hash' do
+      expect(configuration.default_model_options).to eq({})
+    end
+  end
+
   describe '#openai_official_client_builder' do
     it 'accepts nil' do
       configuration.openai_official_client_builder = nil
@@ -105,14 +116,17 @@ RSpec.describe Boxcars::Configuration do
     after do
       # Reset configuration after each test
       Boxcars.configuration.default_model = nil
+      Boxcars.configuration.default_model_options = {}
     end
 
-    it 'allows setting default_model through configuration block' do
+    it 'allows setting default model and options through configuration block' do
       Boxcars.configure do |config|
-        config.default_model = 'claude-sonnet-4-0'
+        config.default_model = 'gpt-5.6-luna'
+        config.default_model_options = { reasoning_effort: 'high' }
       end
 
-      expect(Boxcars.configuration.default_model).to eq('claude-sonnet-4-0')
+      expect(Boxcars.configuration.default_model).to eq('gpt-5.6-luna')
+      expect(Boxcars.configuration.default_model_options).to eq(reasoning_effort: 'high')
     end
   end
 
@@ -120,6 +134,7 @@ RSpec.describe Boxcars::Configuration do
     after do
       # Reset configuration after each test
       Boxcars.configuration.default_model = nil
+      Boxcars.configuration.default_model_options = {}
     end
 
     it 'uses configured default_model when no model specified' do

@@ -39,7 +39,8 @@ Use a Rails initializer for defaults, then call Boxcars from normal service obje
 ```ruby
 # config/initializers/boxcars.rb
 Boxcars.configure do |config|
-  config.default_model = "gpt-5-mini"
+  config.default_model = "gpt-5.6-luna"
+  config.default_model_options = { reasoning_effort: "high" }
   config.log_prompts = Rails.env.development?
 end
 ```
@@ -279,24 +280,47 @@ If you need a softer rollout during migration, use `json_schema_strict: false` a
 
 #### Global Configuration
 
-Set a global default model used by `Boxcars::Engines.engine()` when no model is specified:
+Set a global default model and options used by `Boxcars::Engines.engine()` and
+`Boxcars::Engines.json_engine()` when no model is specified:
 
 ```ruby
-# Set the default model globally
-Boxcars.configuration.default_model = "gpt-4o"
+Boxcars.configure do |config|
+  config.default_model = "gpt-5.6-luna"
+  config.default_model_options = { reasoning_effort: "high" }
+end
 
-# Now all engines created without specifying a model will use GPT-4o
-engine = Boxcars::Engines.engine  # Uses gpt-4o
-calc = Boxcars::Calculator.new    # Uses gpt-4o via default engine
+# Uses gpt-5.6-luna with reasoning_effort: "high"
+engine = Boxcars::Engines.engine
 ```
+
+`default_model_options` defaults to an empty hash. Options passed directly to
+the factory override configured defaults:
+
+```ruby
+# Uses reasoning_effort: "low"
+engine = Boxcars::Engines.engine(reasoning_effort: "low")
+```
+
+Passing an explicit model bypasses `default_model_options`, preventing options
+intended for one provider or model from leaking into another:
+
+```ruby
+# Uses gpt-4o without the configured reasoning_effort option
+engine = Boxcars::Engines.engine(model: "gpt-4o")
+json_engine = Boxcars::Engines.json_engine(model: "gpt-4o")
+```
+
+For `json_engine`, the helper's JSON-specific defaults and explicit call options
+take precedence over `default_model_options`.
 
 #### Configuration Block
 
 ```ruby
 Boxcars.configure do |config|
-  config.default_model = "sonnet"  # Use Claude Sonnet as default
-  config.logger = Rails.logger     # Set custom logger
-  config.log_prompts = true        # Enable prompt logging
+  config.default_model = "gpt-5.6-luna"
+  config.default_model_options = { reasoning_effort: "high" }
+  config.logger = Rails.logger  # Set custom logger
+  config.log_prompts = true     # Enable prompt logging
 end
 ```
 
@@ -333,6 +357,10 @@ end
 1. **Explicit model parameter**: `Boxcars::Engines.engine(model: "gpt-4o")`
 2. **Global configuration**: `Boxcars.configuration.default_model`
 3. **Built-in default**: `"gemini-2.5-flash"`
+
+When no model is passed, configured `default_model_options` are merged with the
+call's options, with call options winning. When a model is passed explicitly,
+configured default options are not merged.
 
 #### Supported Model Aliases for default_model
 
