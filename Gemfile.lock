@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    boxcars (0.10.13)
+    boxcars (0.10.14)
 
 GEM
   remote: https://rubygems.org/
@@ -42,7 +42,7 @@ GEM
     diff-lcs (1.6.2)
     dotenv (3.2.0)
     drb (2.2.3)
-    erb (6.0.6)
+    erb (6.0.7)
     event_stream_parser (1.0.0)
     faraday (2.14.3)
       faraday-net_http (>= 2.0, < 3.5)
@@ -89,7 +89,7 @@ GEM
       racc (~> 1.4)
     nokogiri (1.19.4-x86_64-linux-musl)
       racc (~> 1.4)
-    openai (0.77.0)
+    openai (0.77.1)
       base64
       cgi
       connection_pool
