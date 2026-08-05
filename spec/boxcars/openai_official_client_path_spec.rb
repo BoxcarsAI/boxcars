@@ -52,9 +52,9 @@ RSpec.describe "Boxcars::Openai official client path" do # rubocop:disable RSpec
     allow(chat_resource).to receive(:completions).and_return(chat_completions)
     allow(chat_completions).to receive(:create).with(hash_including(:model, :messages)).and_return(response_object)
 
-    engine = Boxcars::Openai.new(model: "gpt-4o-mini")
+    engine = Boxcars::Openai.new(model: "gpt-4o-mini", max_tokens: 321)
     expect(engine.run("Write a short tagline")).to eq("Official SDK chat response")
-    expect(chat_completions).to have_received(:create).with(hash_including(:model, :messages))
+    expect(chat_completions).to have_received(:create).with(hash_including(:model, :messages, max_tokens: 321))
   end
 
   it "handles legacy completions via the official client path" do
@@ -97,6 +97,52 @@ RSpec.describe "Boxcars::Openai official client path" do # rubocop:disable RSpec
     engine = Boxcars::Openai.new(model: "gpt-5-mini")
     expect(engine.run("Write a short tagline")).to eq("Responses answer")
     expect(responses_resource).to have_received(:create).with(hash_including(:model, :input))
+  end
+
+  describe "Responses API token limits" do
+    let(:responses_resource) { double("OfficialResponsesResource") } # rubocop:disable RSpec/VerifiedDoubles
+    let(:response_object) do
+      double( # rubocop:disable RSpec/VerifiedDoubles
+        "OfficialResponsesResponse",
+        to_h: {
+          id: "resp_token_limits",
+          output_text: "Responses answer"
+        }
+      )
+    end
+    let(:request_parameters) { [] }
+
+    before do
+      allow(official_client).to receive(:respond_to?).with(:responses).and_return(true)
+      allow(official_client).to receive(:responses).and_return(responses_resource)
+      allow(responses_resource).to receive(:create) do |**parameters|
+        request_parameters << parameters
+        response_object
+      end
+    end
+
+    it "omits max_output_tokens by default" do
+      engine = Boxcars::Openai.new(model: "gpt-5-mini")
+
+      expect(engine.run("Write a short tagline")).to eq("Responses answer")
+      expect(request_parameters.last).not_to include(:max_tokens, :max_output_tokens)
+    end
+
+    it "maps an explicit max_tokens value to max_output_tokens" do
+      engine = Boxcars::Openai.new(model: "gpt-5-mini", max_tokens: 654)
+
+      expect(engine.run("Write a short tagline")).to eq("Responses answer")
+      expect(request_parameters.last).to include(max_output_tokens: 654)
+      expect(request_parameters.last).not_to have_key(:max_tokens)
+    end
+
+    it "respects an explicit max_output_tokens value" do
+      engine = Boxcars::Openai.new(model: "gpt-5-mini", max_output_tokens: 987)
+
+      expect(engine.run("Write a short tagline")).to eq("Responses answer")
+      expect(request_parameters.last).to include(max_output_tokens: 987)
+      expect(request_parameters.last).not_to have_key(:max_tokens)
+    end
   end
 
   it "maps chat-style response_format json_schema to Responses text.format" do

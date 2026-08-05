@@ -105,7 +105,7 @@ http_interactions:
         input data.\nYour job is to extract information as described below.\n\nYour
         Output must be valid JSON with no lead in or post answer text in the output
         format below:\n\nOutput Format:\n  {\n  \"share_count\": \"the number of shares\"\n  }\n\nuser:
-        { at last count, there were 12,321,999 shares total }","max_output_tokens":4096}'
+        { at last count, there were 12,321,999 shares total }"}'
     headers:
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
@@ -136,7 +136,7 @@ http_interactions:
       X-Stainless-Timeout:
       - '600.0'
       Content-Length:
-      - '395'
+      - '370'
   response:
     status:
       code: 200
@@ -205,7 +205,7 @@ http_interactions:
           "frequency_penalty": 0.0,
           "incomplete_details": null,
           "instructions": null,
-          "max_output_tokens": 4096,
+          "max_output_tokens": null,
           "max_tool_calls": null,
           "model": "gpt-5-mini-2025-08-07",
           "output": [
@@ -277,7 +277,7 @@ http_interactions:
         input data.\nYour job is to extract information as described below.\n\nYour
         Output must be valid JSON with no lead in or post answer text in the output
         format below:\n\nOutput Format:\n  {\n  \"share_count\": \"the number of shares\"\n  }\n"},{"role":"user","content":"{
-        at last count, there were 12,321,999 shares total }"}],"model":"gpt-4o-mini","temperature":0.1,"max_tokens":4096,"stop":["Answer:"]}'
+        at last count, there were 12,321,999 shares total }"}],"model":"gpt-4o-mini","temperature":0.1,"stop":["Answer:"]}'
     headers:
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3

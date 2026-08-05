@@ -609,7 +609,7 @@ http_interactions:
         action_input.\nFinally, if you can deduct the answer from the question or
         observations, you can jump to final_answer and give me the answer.\n</training>\nuser:
         <question>The number of comments from John for open tickets multiplied by
-        pi to 5 decimal places.</question>\nassistant: ","max_output_tokens":4096}'
+        pi to 5 decimal places.</question>\nassistant: "}'
     headers:
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
@@ -640,7 +640,7 @@ http_interactions:
       X-Stainless-Timeout:
       - '600.0'
       Content-Length:
-      - '1984'
+      - '1959'
   response:
     status:
       code: 200
@@ -709,7 +709,7 @@ http_interactions:
           "frequency_penalty": 0.0,
           "incomplete_details": null,
           "instructions": null,
-          "max_output_tokens": 4096,
+          "max_output_tokens": null,
           "max_tool_calls": null,
           "model": "gpt-5-mini-2025-08-07",
           "output": [

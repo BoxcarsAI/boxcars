@@ -129,7 +129,7 @@ http_interactions:
         TABLE comments (\n id INTEGER NOT NULL,\n content TEXT NULL,\n user_id INTEGER
         NULL,\n ticket_id INTEGER NULL,\n created_at datetime(6) NOT NULL,\n updated_at
         datetime(6) NOT NULL\n);\nuser: Question: how many comments are there from
-        John?","max_output_tokens":4096}'
+        John?"}'
     headers:
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
@@ -160,7 +160,7 @@ http_interactions:
       X-Stainless-Timeout:
       - '600.0'
       Content-Length:
-      - '1569'
+      - '1544'
   response:
     status:
       code: 200
@@ -229,7 +229,7 @@ http_interactions:
           "frequency_penalty": 0.0,
           "incomplete_details": null,
           "instructions": null,
-          "max_output_tokens": 4096,
+          "max_output_tokens": null,
           "max_tool_calls": null,
           "model": "gpt-5-mini-2025-08-07",
           "output": [
@@ -325,7 +325,7 @@ http_interactions:
         = users.id WHERE users.name = ''''John'''' LIMIT 5;''\": syntax error:\n''SELECT
         COUNT(*) AS count FROM comments JOIN users ON comments.user_id = users.id
         WHERE users.name = ''''John'''' LIMIT 5;''\n^\nSQLResult: ''[(0,)]''\nAnswer:
-        ''There are 0 comments from John.''","max_output_tokens":4096}'
+        ''There are 0 comments from John.''"}'
     headers:
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
@@ -356,7 +356,7 @@ http_interactions:
       X-Stainless-Timeout:
       - '600.0'
       Content-Length:
-      - '2196'
+      - '2171'
   response:
     status:
       code: 200
@@ -425,7 +425,7 @@ http_interactions:
           "frequency_penalty": 0.0,
           "incomplete_details": null,
           "instructions": null,
-          "max_output_tokens": 4096,
+          "max_output_tokens": null,
           "max_tool_calls": null,
           "model": "gpt-5-mini-2025-08-07",
           "output": [
@@ -537,7 +537,7 @@ http_interactions:
         AS count FROM comments JOIN users ON comments.user_id = users.id WHERE users.name
         = ''''John'''' LIMIT 5''\": syntax error:\n''SELECT COUNT(*) AS count FROM
         comments JOIN users ON comments.user_id = users.id WHERE users.name = ''''John''''
-        LIMIT 5''\n^\nSQLResult: ''[(0,)]''\nAnswer: ''There are 0 comments from John.''","max_output_tokens":4096}'
+        LIMIT 5''\n^\nSQLResult: ''[(0,)]''\nAnswer: ''There are 0 comments from John.''"}'
     headers:
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
@@ -568,7 +568,7 @@ http_interactions:
       X-Stainless-Timeout:
       - '600.0'
       Content-Length:
-      - '3447'
+      - '3422'
   response:
     status:
       code: 200
@@ -637,7 +637,7 @@ http_interactions:
           "frequency_penalty": 0.0,
           "incomplete_details": null,
           "instructions": null,
-          "max_output_tokens": 4096,
+          "max_output_tokens": null,
           "max_tool_calls": null,
           "model": "gpt-5-mini-2025-08-07",
           "output": [
@@ -774,7 +774,7 @@ http_interactions:
         JOIN users ON comments.user_id = users.id WHERE users.name = ''''John''''
         LIMIT 5''\": syntax error:\n''SELECT COUNT(*) AS count FROM comments JOIN
         users ON comments.user_id = users.id WHERE users.name = ''''John'''' LIMIT
-        5''\n^\nSQLResult: ''[(0,)]''\nAnswer: ''There are 0 comments from John.''","max_output_tokens":4096}'
+        5''\n^\nSQLResult: ''[(0,)]''\nAnswer: ''There are 0 comments from John.''"}'
     headers:
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
@@ -805,7 +805,7 @@ http_interactions:
       X-Stainless-Timeout:
       - '600.0'
       Content-Length:
-      - '5322'
+      - '5297'
   response:
     status:
       code: 200
@@ -874,7 +874,7 @@ http_interactions:
           "frequency_penalty": 0.0,
           "incomplete_details": null,
           "instructions": null,
-          "max_output_tokens": 4096,
+          "max_output_tokens": null,
           "max_tool_calls": null,
           "model": "gpt-5-mini-2025-08-07",
           "output": [
@@ -962,7 +962,7 @@ http_interactions:
         TABLE comments (\n id INTEGER NOT NULL,\n content TEXT NULL,\n user_id INTEGER
         NULL,\n ticket_id INTEGER NULL,\n created_at datetime(6) NOT NULL,\n updated_at
         datetime(6) NOT NULL\n);"},{"role":"user","content":"Question: how many comments
-        are there from John?"}],"model":"gpt-4o-mini","temperature":0.1,"max_tokens":4096,"stop":["SQLResult:"]}'
+        are there from John?"}],"model":"gpt-4o-mini","temperature":0.1,"stop":["SQLResult:"]}'
     headers:
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
@@ -1119,7 +1119,7 @@ http_interactions:
         = \"John\"''"},{"role":"user","content":"Error: SQLite3::SQLException: near
         \"''SELECT COUNT(*) AS comment_count FROM comments c JOIN users u ON c.user_id
         = u.id WHERE u.name = \"John\"''\": syntax error:\n''SELECT COUNT(*) AS comment_count
-        FROM comments c JOIN users u ON c.user_id = u.id WHERE u.name = \"John\"''\n^"}],"model":"gpt-4o-mini","temperature":0.1,"max_tokens":4096,"stop":["SQLResult:"]}'
+        FROM comments c JOIN users u ON c.user_id = u.id WHERE u.name = \"John\"''\n^"}],"model":"gpt-4o-mini","temperature":0.1,"stop":["SQLResult:"]}'
     headers:
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
@@ -1288,7 +1288,7 @@ http_interactions:
         near \"''SELECT COUNT(*) AS comment_count FROM comments WHERE user_id = (SELECT
         id FROM users WHERE name = \"John\")''\": syntax error:\n''SELECT COUNT(*)
         AS comment_count FROM comments WHERE user_id = (SELECT id FROM users WHERE
-        name = \"John\")''\n^"}],"model":"gpt-4o-mini","temperature":0.1,"max_tokens":4096,"stop":["SQLResult:"]}'
+        name = \"John\")''\n^"}],"model":"gpt-4o-mini","temperature":0.1,"stop":["SQLResult:"]}'
     headers:
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
@@ -1474,7 +1474,7 @@ http_interactions:
         \"John\")''"},{"role":"user","content":"Error: SQLite3::SQLException: near
         \"''SELECT COUNT(*) FROM comments WHERE user_id = (SELECT id FROM users WHERE
         name = \"John\")''\": syntax error:\n''SELECT COUNT(*) FROM comments WHERE
-        user_id = (SELECT id FROM users WHERE name = \"John\")''\n^"}],"model":"gpt-4o-mini","temperature":0.1,"max_tokens":4096,"stop":["SQLResult:"]}'
+        user_id = (SELECT id FROM users WHERE name = \"John\")''\n^"}],"model":"gpt-4o-mini","temperature":0.1,"stop":["SQLResult:"]}'
     headers:
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3

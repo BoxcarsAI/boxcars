@@ -9,6 +9,15 @@ require "boxcars/engine/cerebras"
 require "boxcars/engine/together"
 
 RSpec.describe "OpenAI-compatible provider client wiring" do # rubocop:disable RSpec/DescribeClass
+  it "keeps provider-specific token defaults unchanged" do
+    expect(Boxcars::Groq::DEFAULT_PARAMS[:max_tokens]).to eq(4096)
+    expect(Boxcars::GeminiAi::DEFAULT_PARAMS).not_to have_key(:max_tokens)
+    expect(Boxcars::Ollama::DEFAULT_PARAMS[:max_tokens]).to eq(4096)
+    expect(Boxcars::Google::DEFAULT_PARAMS[:max_tokens]).to eq(4096)
+    expect(Boxcars::Cerebras::DEFAULT_PARAMS[:max_tokens]).to eq(4096)
+    expect(Boxcars::Together::DEFAULT_PARAMS[:max_tokens]).to eq(4096)
+  end
+
   it "wires Groq to the expected OpenAI-compatible endpoint" do
     allow(Boxcars.configuration).to receive(:groq_api_key).with(groq_api_key: nil).and_return("groq-key")
     allow(Boxcars::OpenAIClient).to receive(:build)
