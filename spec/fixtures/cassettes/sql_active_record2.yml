@@ -136,7 +136,7 @@ http_interactions:
         TABLE comments (\n id INTEGER NOT NULL,\n content TEXT NULL,\n user_id INTEGER
         NULL,\n ticket_id INTEGER NULL,\n created_at datetime(6) NOT NULL,\n updated_at
         datetime(6) NOT NULL\n);\nuser: Question: What is the last comment for the
-        first post?","max_output_tokens":4096}'
+        first post?"}'
     headers:
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
@@ -167,7 +167,7 @@ http_interactions:
       X-Stainless-Timeout:
       - '600.0'
       Content-Length:
-      - '1575'
+      - '1550'
   response:
     status:
       code: 200
@@ -236,7 +236,7 @@ http_interactions:
           "frequency_penalty": 0.0,
           "incomplete_details": null,
           "instructions": null,
-          "max_output_tokens": 4096,
+          "max_output_tokens": null,
           "max_tool_calls": null,
           "model": "gpt-5-mini-2025-08-07",
           "output": [
@@ -373,7 +373,7 @@ http_interactions:
         JOIN users ON comments.user_id = users.id WHERE users.name = ''''John''''
         LIMIT 5''\": syntax error:\n''SELECT COUNT(*) AS count FROM comments JOIN
         users ON comments.user_id = users.id WHERE users.name = ''''John'''' LIMIT
-        5''\n^\nSQLResult: ''[(0,)]''\nAnswer: ''There are 0 comments from John.''","max_output_tokens":4096}'
+        5''\n^\nSQLResult: ''[(0,)]''\nAnswer: ''There are 0 comments from John.''"}'
     headers:
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
@@ -404,7 +404,7 @@ http_interactions:
       X-Stainless-Timeout:
       - '600.0'
       Content-Length:
-      - '5328'
+      - '5303'
   response:
     status:
       code: 200
@@ -473,7 +473,7 @@ http_interactions:
           "frequency_penalty": 0.0,
           "incomplete_details": null,
           "instructions": null,
-          "max_output_tokens": 4096,
+          "max_output_tokens": null,
           "max_tool_calls": null,
           "model": "gpt-5-mini-2025-08-07",
           "output": [
@@ -622,7 +622,7 @@ http_interactions:
         c.content, u.name, c.created_at FROM comments c JOIN users u ON c.user_id
         = u.id WHERE c.ticket_id = (SELECT id FROM tickets ORDER BY created_at ASC
         LIMIT 1) ORDER BY c.created_at DESC LIMIT 1''\n^\nSQLResult: ''[]''\nAnswer:
-        ''No comments were found for the first post.''","max_output_tokens":4096}'
+        ''No comments were found for the first post.''"}'
     headers:
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
@@ -653,7 +653,7 @@ http_interactions:
       X-Stainless-Timeout:
       - '600.0'
       Content-Length:
-      - '6221'
+      - '6196'
   response:
     status:
       code: 200
@@ -722,7 +722,7 @@ http_interactions:
           "frequency_penalty": 0.0,
           "incomplete_details": null,
           "instructions": null,
-          "max_output_tokens": 4096,
+          "max_output_tokens": null,
           "max_tool_calls": null,
           "model": "gpt-5-mini-2025-08-07",
           "output": [
@@ -894,7 +894,7 @@ http_interactions:
         1;''\": syntax error:\n''SELECT c.content, u.name, c.created_at FROM comments
         c JOIN users u ON c.user_id = u.id WHERE c.ticket_id = (SELECT id FROM tickets
         ORDER BY created_at ASC LIMIT 1) ORDER BY c.created_at DESC LIMIT 1;''\n^\nSQLResult:
-        ''[]''\nAnswer: ''No comments were found for the first post.''","max_output_tokens":4096}'
+        ''[]''\nAnswer: ''No comments were found for the first post.''"}'
     headers:
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
@@ -925,7 +925,7 @@ http_interactions:
       X-Stainless-Timeout:
       - '600.0'
       Content-Length:
-      - '8010'
+      - '7985'
   response:
     status:
       code: 200
@@ -994,7 +994,7 @@ http_interactions:
           "frequency_penalty": 0.0,
           "incomplete_details": null,
           "instructions": null,
-          "max_output_tokens": 4096,
+          "max_output_tokens": null,
           "max_tool_calls": null,
           "model": "gpt-5-mini-2025-08-07",
           "output": [
@@ -1201,7 +1201,7 @@ http_interactions:
         1;''\": syntax error:\n''SELECT c.content, u.name, c.created_at FROM comments
         c JOIN users u ON c.user_id = u.id WHERE c.ticket_id = (SELECT id FROM tickets
         ORDER BY created_at ASC LIMIT 1) ORDER BY c.created_at DESC LIMIT 1;''\n^\nSQLResult:
-        ''[]''\nAnswer: ''No comments were found for the first post.''","max_output_tokens":4096}'
+        ''[]''\nAnswer: ''No comments were found for the first post.''"}'
     headers:
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
@@ -1232,7 +1232,7 @@ http_interactions:
       X-Stainless-Timeout:
       - '600.0'
       Content-Length:
-      - '10695'
+      - '10670'
   response:
     status:
       code: 200
@@ -1301,7 +1301,7 @@ http_interactions:
           "frequency_penalty": 0.0,
           "incomplete_details": null,
           "instructions": null,
-          "max_output_tokens": 4096,
+          "max_output_tokens": null,
           "max_tool_calls": null,
           "model": "gpt-5-mini-2025-08-07",
           "output": [
@@ -1423,7 +1423,7 @@ http_interactions:
         \"John\")''"},{"role":"user","content":"Error: SQLite3::SQLException: near
         \"''SELECT COUNT(*) FROM comments WHERE user_id = (SELECT id FROM users WHERE
         name = \"John\")''\": syntax error:\n''SELECT COUNT(*) FROM comments WHERE
-        user_id = (SELECT id FROM users WHERE name = \"John\")''\n^"}],"model":"gpt-4o-mini","temperature":0.1,"max_tokens":4096,"stop":["SQLResult:"]}'
+        user_id = (SELECT id FROM users WHERE name = \"John\")''\n^"}],"model":"gpt-4o-mini","temperature":0.1,"stop":["SQLResult:"]}'
     headers:
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
@@ -1617,7 +1617,7 @@ http_interactions:
         = (SELECT id FROM tickets ORDER BY created_at ASC LIMIT 1) ORDER BY created_at
         DESC LIMIT 1''\": syntax error:\n''SELECT content FROM comments WHERE ticket_id
         = (SELECT id FROM tickets ORDER BY created_at ASC LIMIT 1) ORDER BY created_at
-        DESC LIMIT 1''\n^"}],"model":"gpt-4o-mini","temperature":0.1,"max_tokens":4096,"stop":["SQLResult:"]}'
+        DESC LIMIT 1''\n^"}],"model":"gpt-4o-mini","temperature":0.1,"stop":["SQLResult:"]}'
     headers:
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
@@ -1825,7 +1825,7 @@ http_interactions:
         = (SELECT id FROM tickets ORDER BY created_at LIMIT 1) ORDER BY created_at
         DESC LIMIT 1''\": syntax error:\n''SELECT content FROM comments WHERE ticket_id
         = (SELECT id FROM tickets ORDER BY created_at LIMIT 1) ORDER BY created_at
-        DESC LIMIT 1''\n^"}],"model":"gpt-4o-mini","temperature":0.1,"max_tokens":4096,"stop":["SQLResult:"]}'
+        DESC LIMIT 1''\n^"}],"model":"gpt-4o-mini","temperature":0.1,"stop":["SQLResult:"]}'
     headers:
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
@@ -2054,7 +2054,7 @@ http_interactions:
         = (SELECT id FROM tickets ORDER BY created_at LIMIT 1) ORDER BY created_at
         DESC LIMIT 1''\": syntax error:\n''SELECT content FROM comments WHERE ticket_id
         = (SELECT id FROM tickets ORDER BY created_at LIMIT 1) ORDER BY created_at
-        DESC LIMIT 1''\n^"}],"model":"gpt-4o-mini","temperature":0.1,"max_tokens":4096,"stop":["SQLResult:"]}'
+        DESC LIMIT 1''\n^"}],"model":"gpt-4o-mini","temperature":0.1,"stop":["SQLResult:"]}'
     headers:
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3

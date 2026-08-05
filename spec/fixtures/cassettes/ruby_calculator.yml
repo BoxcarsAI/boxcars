@@ -365,7 +365,7 @@ http_interactions:
         action_input.\nFinally, if you can deduct the answer from the question or
         observations, you can jump to final_answer and give me the answer.\n</training>\nuser:
         <question>what is 2.173 to the power of 22.1 then diveded by 27.2?</question>\nassistant:
-        ","max_output_tokens":4096}'
+        "}'
     headers:
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
@@ -396,7 +396,7 @@ http_interactions:
       X-Stainless-Timeout:
       - '600.0'
       Content-Length:
-      - '1470'
+      - '1445'
   response:
     status:
       code: 200
@@ -465,7 +465,7 @@ http_interactions:
           "frequency_penalty": 0.0,
           "incomplete_details": null,
           "instructions": null,
-          "max_output_tokens": 4096,
+          "max_output_tokens": null,
           "max_tool_calls": null,
           "model": "gpt-5-mini-2025-08-07",
           "output": [
@@ -569,7 +569,7 @@ http_interactions:
         and end tags for each element.\nAlso make sure to specify arguments for the
         action_input.\nFinally, if you can deduct the answer from the question or
         observations, you can jump to final_answer and give me the answer.\n</training>"},{"role":"user","content":"<question>what
-        is 2.173 to the power of 22.1 then diveded by 27.2?</question>"},{"role":"assistant","content":""}],"model":"gpt-4o-mini","temperature":0.1,"max_tokens":4096,"stop":["\n<observation>"]}'
+        is 2.173 to the power of 22.1 then diveded by 27.2?</question>"},{"role":"assistant","content":""}],"model":"gpt-4o-mini","temperature":0.1,"stop":["\n<observation>"]}'
     headers:
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
@@ -722,7 +722,7 @@ http_interactions:
         <question>what is 2.173 to the power of 22.1 then divided by 27.2?</question>\n<thought>I
         need to calculate 2.173 raised to the power of 22.1 and then divide the result
         by 27.2. I will first compute the power operation.</thought>\n<action>RubyCalculator</action>\n<action_input>2.173
-        ** 22.1</action_input>\n<observation>Answer: 28120300.133535936</observation>\n"}],"model":"gpt-4o-mini","temperature":0.1,"max_tokens":4096,"stop":["\n<observation>"]}'
+        ** 22.1</action_input>\n<observation>Answer: 28120300.133535936</observation>\n"}],"model":"gpt-4o-mini","temperature":0.1,"stop":["\n<observation>"]}'
     headers:
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
@@ -878,7 +878,7 @@ http_interactions:
         ** 22.1</action_input>\n<observation>Answer: 28120300.133535936</observation>\n
         <thought>Now that I have the result of 2.173 raised to the power of 22.1,
         I will divide this result by 27.2.</thought>\n<action>RubyCalculator</action>\n<action_input>28120300.133535936
-        / 27.2</action_input>\n<observation>Answer: 1033834.5637329388</observation>\n"}],"model":"gpt-4o-mini","temperature":0.1,"max_tokens":4096,"stop":["\n<observation>"]}'
+        / 27.2</action_input>\n<observation>Answer: 1033834.5637329388</observation>\n"}],"model":"gpt-4o-mini","temperature":0.1,"stop":["\n<observation>"]}'
     headers:
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3

@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- OpenAI requests no longer impose an implicit 4,096-token output limit. Callers can continue to set `max_tokens` or `max_output_tokens` explicitly.
+
 ## [0.10.13] - 2026-08-04
 
 ### Added

@@ -90,7 +90,7 @@ http_interactions:
         is a hard example:\nthe user asks: What is 37593 * 67?\nyour answer: ```ruby\nputs(37593
         * 67)\n```\n```output\n2518731\n```\nAnswer: 2518731"},{"role":"system","content":"basic
         example:\nuser asks: What is 2518731 + 0?\nyou answer: Answer: 2518731"},{"role":"system","content":"Begin."},{"role":"user","content":"question:
-        What is pi squared to 7 decimal places?"}],"model":"gpt-4o-mini","temperature":0.1,"max_tokens":4096,"stop":["```output"]}'
+        What is pi squared to 7 decimal places?"}],"model":"gpt-4o-mini","temperature":0.1,"stop":["```output"]}'
     headers:
       Content-Type:
       - application/json
@@ -200,7 +200,7 @@ http_interactions:
         * 67)\n```\n```output\n2518731\n```\nAnswer: 2518731"},{"role":"system","content":"basic
         example:\nuser asks: What is 2518731 + 0?\nyou answer: Answer: 2518731"},{"role":"system","content":"Begin."},{"role":"user","content":"question:
         What is pi squared to 7 decimal places?"},{"role":"assistant","content":"```ruby\nputs(Math::PI**2).round(7)\n```"},{"role":"user","content":"undefined
-        method `round'' for nil:NilClass"}],"model":"gpt-4o-mini","temperature":0.1,"max_tokens":4096,"stop":["```output"]}'
+        method `round'' for nil:NilClass"}],"model":"gpt-4o-mini","temperature":0.1,"stop":["```output"]}'
     headers:
       Content-Type:
       - application/json
@@ -461,7 +461,7 @@ http_interactions:
         * 67)\n```\n```output\n2518731\n```\nAnswer: 2518731"},{"role":"system","content":"basic
         example:\nuser asks: What is 2518731 + 0?\nyou answer: Answer: 2518731"},{"role":"system","content":"Begin."},{"role":"user","content":"question:
         What is the square root of 9.8696044?"},{"role":"assistant","content":"```ruby\nputs(Math::PI**2).round(7)\n```"},{"role":"user","content":"undefined
-        method `round'' for nil:NilClass"}],"model":"gpt-4o-mini","temperature":0.1,"max_tokens":4096,"stop":["```output"]}'
+        method `round'' for nil:NilClass"}],"model":"gpt-4o-mini","temperature":0.1,"stop":["```output"]}'
     headers:
       Content-Type:
       - application/json
@@ -572,7 +572,7 @@ http_interactions:
         example:\nuser asks: What is 2518731 + 0?\nyou answer: Answer: 2518731"},{"role":"system","content":"Begin."},{"role":"user","content":"question:
         What is the square root of 9.8696044?"},{"role":"assistant","content":"```ruby\nputs(Math::PI**2).round(7)\n```"},{"role":"user","content":"undefined
         method `round'' for nil:NilClass"},{"role":"assistant","content":"```ruby\nputs(Math.sqrt(9.8696044)\n```"},{"role":"user","content":"The
-        code you gave me did not print a result"}],"model":"gpt-4o-mini","temperature":0.1,"max_tokens":4096,"stop":["```output"]}'
+        code you gave me did not print a result"}],"model":"gpt-4o-mini","temperature":0.1,"stop":["```output"]}'
     headers:
       Content-Type:
       - application/json
@@ -760,7 +760,7 @@ http_interactions:
         example:\nthe user asks: What is 37593 * 67?\nyour answer: ```ruby\nputs(37593
         * 67)\n```\n```output\n2518731\n```\nAnswer: 2518731\nsystem: basic example:\nuser
         asks: What is 2518731 + 0?\nyou answer: Answer: 2518731\nsystem: Begin.\nuser:
-        question: What is pi squared to 7 decimal places?","max_output_tokens":4096}'
+        question: What is pi squared to 7 decimal places?"}'
     headers:
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
@@ -791,7 +791,7 @@ http_interactions:
       X-Stainless-Timeout:
       - '600.0'
       Content-Length:
-      - '1176'
+      - '1151'
   response:
     status:
       code: 200
@@ -860,7 +860,7 @@ http_interactions:
           "frequency_penalty": 0.0,
           "incomplete_details": null,
           "instructions": null,
-          "max_output_tokens": 4096,
+          "max_output_tokens": null,
           "max_tool_calls": null,
           "model": "gpt-5-mini-2025-08-07",
           "output": [
@@ -942,7 +942,7 @@ http_interactions:
         example:\nthe user asks: What is 37593 * 67?\nyour answer: ```ruby\nputs(37593
         * 67)\n```\n```output\n2518731\n```\nAnswer: 2518731\nsystem: basic example:\nuser
         asks: What is 2518731 + 0?\nyou answer: Answer: 2518731\nsystem: Begin.\nuser:
-        question: What is the square root of 9.8696044?","max_output_tokens":4096}'
+        question: What is the square root of 9.8696044?"}'
     headers:
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
@@ -973,7 +973,7 @@ http_interactions:
       X-Stainless-Timeout:
       - '600.0'
       Content-Length:
-      - '1174'
+      - '1149'
   response:
     status:
       code: 200
@@ -1042,7 +1042,7 @@ http_interactions:
           "frequency_penalty": 0.0,
           "incomplete_details": null,
           "instructions": null,
-          "max_output_tokens": 4096,
+          "max_output_tokens": null,
           "max_tool_calls": null,
           "model": "gpt-5-mini-2025-08-07",
           "output": [

@@ -16,8 +16,7 @@ module Boxcars
 
     DEFAULT_PARAMS = {
       model: "gpt-4o-mini",
-      temperature: 0.1,
-      max_tokens: 4096
+      temperature: 0.1
     }.freeze
 
     DEFAULT_NAME        = "OpenAI engine"

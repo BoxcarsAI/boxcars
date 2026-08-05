@@ -11,7 +11,7 @@ http_interactions:
         info.\n- **Workplace**: \nwe''ve built a pretty nice office to make sure you
         like being at Blendle HQ.\n```\n\nUsing the above, just answer the question
         as if you were answering directly."},{"role":"user","content":"Will I get
-        a laptop?"}],"model":"gpt-4o-mini","temperature":0.1,"max_tokens":4096,"stop":["```output"]}'
+        a laptop?"}],"model":"gpt-4o-mini","temperature":0.1,"stop":["```output"]}'
     headers:
       Content-Type:
       - application/json
@@ -128,7 +128,7 @@ http_interactions:
         work, we provide you with a laptop that suits your job. HR will give you further
         info.\n- **Workplace**: \nwe''ve built a pretty nice office to make sure you
         like being at Blendle HQ.\n```\n\nUsing the above, just answer the question
-        as if you were answering directly.\nuser: Will I get a laptop?","max_output_tokens":4096}'
+        as if you were answering directly.\nuser: Will I get a laptop?"}'
     headers:
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
@@ -159,7 +159,7 @@ http_interactions:
       X-Stainless-Timeout:
       - '600.0'
       Content-Length:
-      - '484'
+      - '459'
   response:
     status:
       code: 200
@@ -228,7 +228,7 @@ http_interactions:
           "frequency_penalty": 0.0,
           "incomplete_details": null,
           "instructions": null,
-          "max_output_tokens": 4096,
+          "max_output_tokens": null,
           "max_tool_calls": null,
           "model": "gpt-5-mini-2025-08-07",
           "output": [
@@ -302,7 +302,7 @@ http_interactions:
         info.\n- **Workplace**: \nwe''ve built a pretty nice office to make sure you
         like being at Blendle HQ.\n```\n\nUsing the above, just answer the question
         as if you were answering directly."},{"role":"user","content":"Will I get
-        a laptop?"}],"model":"gpt-4o-mini","temperature":0.1,"max_tokens":4096,"stop":["```output"]}'
+        a laptop?"}],"model":"gpt-4o-mini","temperature":0.1,"stop":["```output"]}'
     headers:
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3

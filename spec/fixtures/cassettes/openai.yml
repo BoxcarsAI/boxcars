@@ -5,7 +5,7 @@ http_interactions:
     uri: https://api.openai.com/v1/chat/completions
     body:
       encoding: UTF-8
-      string: '{"messages":[{"role":"user","content":"write a haiku about love"}],"model":"gpt-4o-mini","temperature":0.1,"max_tokens":4096}'
+      string: '{"messages":[{"role":"user","content":"write a haiku about love"}],"model":"gpt-4o-mini","temperature":0.1}'
     headers:
       Content-Type:
       - application/json

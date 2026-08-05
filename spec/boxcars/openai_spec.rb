@@ -140,6 +140,10 @@ RSpec.describe Boxcars::Openai do
       expect(described_class.new.default_params[:model]).to eq("gpt-4o-mini")
     end
 
+    it "does not impose a default token limit" do
+      expect(described_class.new.default_params).not_to include(:max_tokens, :max_output_tokens)
+    end
+
     it "rejects legacy prompts kwarg" do
       expect { described_class.new(prompts: [prompt]) }.to raise_error(Boxcars::ArgumentError, /prompts/)
     end

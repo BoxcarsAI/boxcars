@@ -404,7 +404,7 @@ http_interactions:
         if you can deduct the answer from the question or observation, you can start
         with \"Final Answer:\" and give me the answer.\nBegin!\nuser: Question: What
         is pi times the square root of the average high temperature in Austin TX in
-        January?\nassistant: Thought: ","max_output_tokens":4096}'
+        January?\nassistant: Thought: "}'
     headers:
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
@@ -435,7 +435,7 @@ http_interactions:
       X-Stainless-Timeout:
       - '600.0'
       Content-Length:
-      - '1209'
+      - '1184'
   response:
     status:
       code: 200
@@ -504,7 +504,7 @@ http_interactions:
           "frequency_penalty": 0.0,
           "incomplete_details": null,
           "instructions": null,
-          "max_output_tokens": 4096,
+          "max_output_tokens": null,
           "max_tool_calls": null,
           "model": "gpt-5-mini-2025-08-07",
           "output": [
