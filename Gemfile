@@ -7,7 +7,7 @@ gemspec
 
 gem "dotenv", "~> 3.1"
 gem "rake", "~> 13.2"
-gem "sqlite3", "~> 2.0"
+gem "sqlite3", "~> 2.9"
 gem "activerecord", "~> 8.1"
 gem "activesupport", "~> 8.1"
 gem "pg", "~> 1.5"
