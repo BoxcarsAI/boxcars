@@ -31,6 +31,7 @@ GEM
     ast (2.4.3)
     base64 (0.3.0)
     bigdecimal (4.1.2)
+    cgi (0.5.2)
     concurrent-ruby (1.3.8)
     connection_pool (3.0.2)
     crack (1.0.1)
@@ -90,10 +91,11 @@ GEM
       racc (~> 1.4)
     nokogiri (1.19.4-x86_64-linux-musl)
       racc (~> 1.4)
-    openai (0.83.0)
-      connection_pool (>= 2.2.3)
-      logger
-    parallel (2.1.0)
+    openai (0.75.0)
+      base64
+      cgi
+      connection_pool
+    parallel (1.28.0)
     parser (3.3.12.0)
       ast (~> 2.4.1)
       racc
@@ -211,7 +213,8 @@ DEPENDENCIES
   google_search_results (~> 2.2)
   hnswlib (~> 0.9.0)
   nokogiri (~> 1.18)
-  openai (>= 0.30)
+  openai (>= 0.30, < 0.76)
+  parallel (< 2)
   pg (~> 1.5)
   pgvector (~> 0.3.2)
   posthog-ruby
