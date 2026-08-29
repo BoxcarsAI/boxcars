@@ -11,6 +11,7 @@
 
 ### Changed
 
+- Raised the minimum supported Ruby version from 3.2 to 3.3, matching the current official OpenAI Ruby SDK.
 - Updated the curated `sonnet` and `opus` aliases to Claude Sonnet 5 and Claude Opus 5.
 - Claude Sonnet 5, Opus 5, and Fable 5 requests now omit unsupported `temperature`, `top_p`, and `top_k` parameters.
 
@@ -22,7 +23,7 @@
 ### Maintenance
 
 - Declared `logger` as a runtime dependency because Ruby 4 no longer bundles it as a default gem.
-- Refreshed bundled dependencies for Ruby 4 compatibility, including OpenAI, PostHog, RuboCop, SQLite, and WebMock, and updated the lockfile to Bundler 4.
+- Refreshed bundled dependencies for Ruby 3.3+ and Ruby 4 compatibility, including OpenAI, PostHog, RuboCop, SQLite, and WebMock, and updated the lockfile to Bundler 4.
 
 ## [0.10.14] - 2026-08-04
 

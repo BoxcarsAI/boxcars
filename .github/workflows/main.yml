@@ -22,7 +22,6 @@ jobs:
           - '4.0'
           - '3.4'
           - '3.3'
-          - '3.2'
     steps:
     - uses: actions/checkout@v7
     - name: Set up Ruby ${{ matrix.ruby-version }}
@@ -140,7 +139,7 @@ jobs:
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
       with:
-        ruby-version: '3.2'
+        ruby-version: '3.3'
         bundler-cache: true
     - name: Run RuboCop
       run: bundle exec rake rubocop

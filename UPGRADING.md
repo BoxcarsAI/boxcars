@@ -15,7 +15,11 @@ v1.0:
 
 - Remove deprecated model aliases
 - Prefer explicit model names (with a small curated alias set)
-- Support Ruby 4 while retaining Ruby 3.2 as the minimum version
+- Require Ruby 3.3 or newer, with Ruby 4 fully supported
+
+## Ruby 3.3 or Newer Is Required
+
+Boxcars 1.0 drops Ruby 3.2 support and requires Ruby 3.3 or newer. Upgrade your Ruby runtime before installing Boxcars 1.0. Applications that must remain on Ruby 3.2 should stay on Boxcars 0.10.x and OpenAI Ruby SDK 0.75.x, the final compatible release line.
 
 ## SQL Boxcars Now Default to Read-Only (v0.10.x)
 

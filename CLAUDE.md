@@ -57,5 +57,5 @@ Orchestrator that runs a series of boxcars using an engine. Three implementation
 
 - Rubocop with `rubocop-rspec` and `rubocop-rake` plugins
 - Max line length: 130 (excluded for specs)
-- Target Ruby: 3.2+
+- Target Ruby: 3.3+
 - Provider gems are optional — core has zero runtime dependencies; providers are loaded on demand via `OptionalDependency`
