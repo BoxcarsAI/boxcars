@@ -23,6 +23,8 @@ group :development, :test do
   gem "sequel", "~> 5.106"
   gem "ruby-anthropic", "~> 0.4"
   gem "debug", "~> 1.9"
+  # RDoc 8 pulls RBS 4, which requires Ruby 3.3 and breaks the Ruby 3.2 CI lane.
+  gem "rdoc", "< 8", require: false
   gem "rspec", "~> 3.13"
   gem "rubocop", "~> 1.88"
   gem "vcr", "~> 6.4.0"
