@@ -3,7 +3,7 @@
 # Boxcars is a framework for running a series of tools to get an answer to a question.
 module Boxcars
   # A Boxcar that interprets a prompt and executes Active Record code to get answers.
-  # rubocop:disable Metrics/ClassLength
+  # rubocop:disable-next Metrics/ClassLength
   class ActiveRecord < EngineBoxcar
     # Default description for this boxcar.
     ARDESC = "useful for when you need to query a database for an application named %<name>s."
@@ -172,9 +172,8 @@ module Boxcars
       new_code = new_code.gsub(/\b(puts|print)\b/, '')
 
       proc do
-        # rubocop:disable Security/Eval
+        # rubocop:disable-next Security/Eval
         eval(new_code, binding)
-        # rubocop:enable Security/Eval
       end.call
     end
 
@@ -288,5 +287,4 @@ module Boxcars
         output_variables: [:answer])
     end
   end
-  # rubocop:enable Metrics/ClassLength
 end

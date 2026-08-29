@@ -55,6 +55,7 @@ RSpec.configure do |c|
     log_prompts = ENV.fetch("LOG_PROMPTS", false)
     log_generated = ENV.fetch("LOG_GEN", false)
     http_p = ENV.fetch('http_proxy', nil)
+    allow(ENV).to receive(:fetch).and_call_original
     allow(ENV).to receive(:fetch).with("OPENAI_ACCESS_TOKEN", nil).and_return(otoken)
     allow(ENV).to receive(:fetch).with("OPENAI_API_KEY", nil).and_return(openai_api_key)
     allow(ENV).to receive(:fetch).with("SERPAPI_API_KEY", nil).and_return(stoken)

@@ -6,7 +6,7 @@ require 'securerandom'
 module Boxcars
   # Unified observability module that provides PostHog-centric tracking for all engines
   # Uses standardized $ai_* properties as defined by PostHog's LLM observability spec
-  # rubocop:disable Metrics/ModuleLength
+  # rubocop:disable-next Metrics/ModuleLength
   module UnifiedObservability
     private
 
@@ -486,5 +486,4 @@ module Boxcars
         (response_data[:response_obj].respond_to?(:status) ? response_data[:response_obj].status : nil)
     end
   end
-  # rubocop:enable Metrics/ModuleLength
 end
