@@ -2,6 +2,29 @@
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-08-28
+
+### Added
+
+- Added Ruby 4.0 to the supported CI test matrix and made Ruby 4.0.6 the default development runtime.
+- Added explicit engine-factory routing for the Cerebras `gpt-oss-120b` and Together AI `Qwen/Qwen2.5-VL-72B-Instruct` model IDs.
+
+### Changed
+
+- Raised the minimum supported Ruby version from 3.2 to 3.3, matching the current official OpenAI Ruby SDK.
+- Updated the curated `sonnet` and `opus` aliases to Claude Sonnet 5 and Claude Opus 5.
+- Claude Sonnet 5, Opus 5, and Fable 5 requests now omit unsupported `temperature`, `top_p`, and `top_k` parameters.
+
+### Removed
+
+- Removed the deprecated model aliases `anthropic`, `groq`, `deepseek`, `mistral`, `online`, `huge`, `online_huge`, `sonar-huge`, `sonar_huge`, `sonar_pro`, `flash`, `gemini-flash`, `gemini-pro`, `cerebras`, and `qwen`.
+- Removed the obsolete strict-mode configuration used to detect deprecated model aliases. The curated `sonnet`, `opus`, `sonar`, and `sonar-pro` aliases remain supported.
+
+### Maintenance
+
+- Declared `logger` as a runtime dependency because Ruby 4 no longer bundles it as a default gem.
+- Refreshed bundled dependencies for Ruby 3.3+ and Ruby 4 compatibility, including OpenAI, PostHog, RuboCop, SQLite, and WebMock, and updated the lockfile to Bundler 4.
+
 ## [0.10.14] - 2026-08-04
 
 ### Fixed

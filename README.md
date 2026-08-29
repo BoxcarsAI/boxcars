@@ -46,6 +46,8 @@ All of these concepts are in a module named Boxcars:
 
 ## Installation
 
+Boxcars requires Ruby 3.3 or newer.
+
 Add this line to your application's Gemfile:
 
 ```ruby

@@ -28,11 +28,10 @@ RSpec.describe Boxcars::MultiBackend do
     Class.new do
       include Boxcars::ObservabilityBackend
 
-      # rubocop: disable Lint/UnusedMethodArgument
+      # rubocop: disable-next Lint/UnusedMethodArgument
       def track(event:, properties:)
         raise StandardError, "This backend intentionally fails."
       end
-      # rubocop: enable Lint/UnusedMethodArgument
     end.new
   end
 

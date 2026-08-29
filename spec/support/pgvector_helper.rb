@@ -3,7 +3,7 @@
 require 'pg'
 
 module PgvectorHelper
-  # rubocop:disable Style/FetchEnvVar
+  # rubocop:disable-next Style/FetchEnvVar
   def conn
     @conn ||= if ENV['GITHUB_ACTIONS']
                 PG.connect(dbname: "boxcars_test")
@@ -11,7 +11,6 @@ module PgvectorHelper
                 PG::Connection.new(ENV['DATABASE_URL'])
               end
   end
-  # rubocop:enable Style/FetchEnvVar
 
   def create_items_table
     unless conn.exec("SELECT 1 FROM pg_extension WHERE extname = 'vector'").any?

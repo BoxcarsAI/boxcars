@@ -93,35 +93,38 @@ perplexity_engine = Boxcars::Engines.engine(model: "sonar")
 #### Supported Model Aliases
 
 **OpenAI Models:**
-- Any OpenAI model ID from the [OpenAI pricing/models page](https://developers.openai.com/api/pricing) (for example `"gpt-5-mini"`, `"gpt-5"`, `"o1"`, `"o3"`) creates `Boxcars::Openai` engines
+- Any OpenAI model ID from the [OpenAI pricing/models page](https://developers.openai.com/api/pricing) (for example `"gpt-5.6-sol"`, `"gpt-5.6-terra"`, `"gpt-5.6-luna"`, `"o1"`, or `"o3"`) creates `Boxcars::Openai` engines
 
 **Anthropic Models:**
-- `"anthropic"`, `"sonnet"` - Creates `Boxcars::Anthropic` with Claude Sonnet
-- `"opus"` - Creates `Boxcars::Anthropic` with Claude Opus
+- `"sonnet"` - Creates `Boxcars::Anthropic` with `claude-sonnet-5`
+- `"opus"` - Creates `Boxcars::Anthropic` with `claude-opus-5`
+- `"claude-fable-5"` - Creates `Boxcars::Anthropic` with Claude Fable 5
 - `"claude-3-5-sonnet"`, etc. - Any model starting with "claude-"
 
+Use the full model IDs for Sol, Terra, Luna, and Fable; their short names are not Boxcars aliases.
+
 **Groq Models:**
-- `"groq"` - Creates `Boxcars::Groq` with Llama 3.3 70B
-- `"deepseek"` - Creates `Boxcars::Groq` with DeepSeek R1
-- `"mistral"` - Creates `Boxcars::Groq` with Mistral
+- `"llama-3.3-70b-versatile"` - Creates `Boxcars::Groq` with Llama 3.3 70B
 - Models starting with `"mistral-"`, `"meta-llama/"`, or `"deepseek-"`
 
 **Gemini Models:**
-- `"flash"`, `"gemini-flash"` - Creates `Boxcars::GeminiAi` with Gemini 2.5 Flash
-- `"gemini-pro"` - Creates `Boxcars::GeminiAi` with Gemini 2.5 Pro
 - Any model starting with `"gemini-"`
 
 **Perplexity Models:**
-- `"online"`, `"sonar"` - Creates `Boxcars::Perplexityai` with Sonar
-- `"sonar-pro"`, `"huge"` - Creates `Boxcars::Perplexityai` with Sonar Pro
+- `"sonar"` - Creates `Boxcars::Perplexityai` with Sonar
+- `"sonar-pro"` - Creates `Boxcars::Perplexityai` with Sonar Pro
 - Models containing `"-sonar-"`
+
+**Cerebras Models:**
+- `"gpt-oss-120b"` - Creates `Boxcars::Cerebras`
 
 **Together AI Models:**
 - `"together-model-name"` - Creates `Boxcars::Together` (strips "together-" prefix)
+- `"Qwen/Qwen2.5-VL-72B-Instruct"` - Creates `Boxcars::Together`
 
-#### Alias Deprecations (Migration to v1.0)
+#### Aliases Removed in v1.0
 
-Some older aliases are still supported but emit a one-time deprecation warning (per process):
+The following aliases were deprecated in v0.9 and v0.10 and are removed in v1.0:
 
 - `"anthropic"` (use `"sonnet"`)
 - `"groq"` (use an explicit model like `"llama-3.3-70b-versatile"`)
@@ -130,26 +133,7 @@ Some older aliases are still supported but emit a one-time deprecation warning (
 - `"flash"` / `"gemini-flash"` / `"gemini-pro"` (use explicit Gemini models)
 - `"deepseek"`, `"mistral"`, `"cerebras"`, `"qwen"` (use explicit model names)
 
-`"sonar"` and `"sonar-pro"` remain supported curated aliases.
-
-Enable strict mode to raise an error instead of warning on deprecated aliases:
-
-```ruby
-Boxcars.configure do |config|
-  config.strict_deprecated_model_aliases = true
-end
-
-# or:
-Boxcars::Engines.strict_deprecated_aliases = true
-```
-
-Temporarily silence deprecation warnings during migration:
-
-```ruby
-Boxcars.configure do |config|
-  config.emit_deprecation_warnings = false
-end
-```
+`"sonnet"`, `"opus"`, `"sonar"`, and `"sonar-pro"` remain supported curated aliases. See [UPGRADING.md](../UPGRADING.md) for the complete replacement table.
 
 #### Passing Additional Parameters
 

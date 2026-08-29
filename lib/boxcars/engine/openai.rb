@@ -356,7 +356,7 @@ module Boxcars
         when "output_text"
           content = i["content"]
           if content.is_a?(Array)
-            # rubocop:disable Metrics/BlockNesting
+            # rubocop:disable-next Metrics/BlockNesting
             texts << content.filter_map { |c|
               if c.is_a?(Hash)
                 if c["text"].is_a?(String)
@@ -366,7 +366,6 @@ module Boxcars
                 end
               end
             }.join
-            # rubocop:enable Metrics/BlockNesting
           elsif content.is_a?(String)
             texts << content
           end

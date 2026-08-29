@@ -1,6 +1,6 @@
 # Upgrading Boxcars (v0.9 -> v1.0)
 
-This guide covers the migration path for the modernization work added in v0.9 and the planned alias removals in v1.0.
+This guide covers the migration path from Boxcars v0.9 and v0.10 to v1.0.
 
 ## Summary
 
@@ -11,10 +11,15 @@ v0.9 introduces:
 - JSON Schema support for `JSONEngineBoxcar`
 - Deprecated model alias warnings with optional strict mode
 
-v1.0 is expected to:
+v1.0:
 
 - Remove deprecated model aliases
 - Prefer explicit model names (with a small curated alias set)
+- Require Ruby 3.3 or newer, with Ruby 4 fully supported
+
+## Ruby 3.3 or Newer Is Required
+
+Boxcars 1.0 drops Ruby 3.2 support and requires Ruby 3.3 or newer. Upgrade your Ruby runtime before installing Boxcars 1.0. Applications that must remain on Ruby 3.2 should stay on Boxcars 0.10.x and OpenAI Ruby SDK 0.75.x, the final compatible release line.
 
 ## SQL Boxcars Now Default to Read-Only (v0.10.x)
 
@@ -115,7 +120,7 @@ result.answer
 
 ## 1. Model Alias Migration (Do This First)
 
-Deprecated aliases still work in v0.9, but emit one-time warnings.
+The aliases below emitted one-time warnings in v0.9 and v0.10 and are removed in v1.0. Using one now raises `Boxcars::ArgumentError` with an `Unknown model` message.
 
 ### Kept curated aliases (not deprecated)
 
@@ -123,6 +128,10 @@ Deprecated aliases still work in v0.9, but emit one-time warnings.
 - `sonar-pro`
 - `sonnet`
 - `opus`
+
+In v1.0, `sonnet` targets `claude-sonnet-5` and `opus` targets `claude-opus-5`. These Claude 5 models do not accept
+custom `temperature`, `top_p`, or `top_k` values, so Boxcars removes those options before sending the request. Use an
+explicit older Claude model ID if your application depends on custom sampling values.
 
 ### Replace deprecated aliases
 
@@ -148,27 +157,14 @@ Prefer explicit model names in app code:
 
 ```ruby
 Boxcars::Engines.engine(model: "gpt-4o")
-Boxcars::Engines.engine(model: "claude-sonnet-4-0")
+Boxcars::Engines.engine(model: "claude-sonnet-5")
 Boxcars::Engines.engine(model: "gemini-2.5-flash")
 Boxcars::Engines.engine(model: "sonar-pro")
 ```
 
-## 2. Enable Strict Alias Mode in CI
+## 2. Verify Removed Aliases in CI
 
-Use this to fail builds when deprecated aliases are used.
-
-```ruby
-# config/initializers/boxcars.rb
-Boxcars.configure do |config|
-  config.strict_deprecated_model_aliases = ENV["CI"] == "true"
-end
-```
-
-Or enforce globally in tests:
-
-```ruby
-Boxcars::Engines.strict_deprecated_aliases = true
-```
+No strict-mode setting is needed in v1.0. Removed aliases fail during engine construction, so normal application tests catch any remaining uses.
 
 ## 3. Migrate ReAct/Text Trains to Native Tool Calling (Optional, Recommended)
 
@@ -260,7 +256,7 @@ boxcar = Boxcars::JSONEngineBoxcar.new(json_schema: schema, json_schema_strict: 
 3. Migrate one workflow from `ZeroShot` to `ToolTrain`.
 4. Add MCP tools where they simplify app-specific integrations.
 5. Add JSON Schema to `JSONEngineBoxcar` uses that need reliable structure.
-6. Upgrade to v1.0 after strict mode stays green.
+6. Upgrade to v1.0 after the application test suite passes with explicit models or curated aliases.
 
 ## 7. Known Ongoing Modernization Work
 

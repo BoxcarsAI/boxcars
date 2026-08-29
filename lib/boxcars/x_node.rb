@@ -32,9 +32,8 @@ module Boxcars
       doc = Nokogiri::XML.parse(xml)
       if doc.errors.any?
         Boxcars.debug("XML: #{xml}", :yellow)
-        # rubocop:disable Lint/Debugger
+        # rubocop:disable-next Lint/Debugger
         debugger if ENV.fetch("DEBUG_XML", false)
-        # rubocop:enable Lint/Debugger
         raise XmlError, "XML is not valid: #{doc.errors.map { |e| "#{e.line}:#{e.column} #{e.message}" }}"
       end
       XNode.new(doc.root)
@@ -53,9 +52,8 @@ module Boxcars
     end
 
     def xtext(path)
-      # rubocop:disable Style/SafeNavigationChainLength
+      # rubocop:disable-next Style/SafeNavigationChainLength
       rv = xpath(path)&.text&.gsub(/[[:space:]]+/, " ")&.strip
-      # rubocop:enable Style/SafeNavigationChainLength
       return nil if rv.empty?
 
       rv

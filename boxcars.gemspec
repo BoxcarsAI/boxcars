@@ -12,9 +12,8 @@ Gem::Specification.new do |spec|
   spec.description = "You simply set an OpenAI key, give a number of Boxcars to a Train, and magic ensues when you run it."
   spec.homepage = "https://github.com/BoxcarsAI/boxcars"
   spec.license = "MIT"
-  spec.required_ruby_version = ">= 3.2.0"
+  spec.required_ruby_version = ">= 3.3.0"
 
-  spec.metadata["homepage_uri"] = spec.homepage
   spec.metadata["source_code_uri"] = spec.homepage
   spec.metadata["changelog_uri"] = "https://github.com/BoxcarsAI/boxcars/blob/main/CHANGELOG.md"
   spec.metadata["rubygems_mfa_required"] = "true"
@@ -31,6 +30,8 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   # runtime dependencies
+  spec.add_dependency "logger"
+
   # Provider/tooling gems are optional and loaded on use.
 
   # For more information and examples about making a new gem, checkout our

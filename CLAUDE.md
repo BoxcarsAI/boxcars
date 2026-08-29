@@ -39,7 +39,7 @@ Orchestrator that runs a series of boxcars using an engine. Three implementation
 - **XMLTrain** (`lib/boxcars/train/xml_train.rb`) — XML-based structured outputs
 
 ### Engine Factory (`lib/boxcars/engines.rb`)
-`Boxcars::Engines.engine(model:)` creates the right engine from a model name or alias. Default model: `"gemini-2.5-flash"`. Curated aliases include `"sonnet"`, `"opus"`, `"sonar"`, `"sonar-pro"`. Many legacy aliases are deprecated (see `DEPRECATED_MODEL_ALIASES`).
+`Boxcars::Engines.engine(model:)` creates the right engine from a model name or alias. Default model: `"gemini-2.5-flash"`. Curated aliases are `"sonnet"`, `"opus"`, `"sonar"`, and `"sonar-pro"`; legacy aliases were removed in v1.0.
 
 ### Other Key Components
 - **MCP** (`lib/boxcars/mcp/`) — Model Context Protocol integration for external tool servers
@@ -57,5 +57,5 @@ Orchestrator that runs a series of boxcars using an engine. Three implementation
 
 - Rubocop with `rubocop-rspec` and `rubocop-rake` plugins
 - Max line length: 130 (excluded for specs)
-- Target Ruby: 3.2+
+- Target Ruby: 3.3+
 - Provider gems are optional — core has zero runtime dependencies; providers are loaded on demand via `OptionalDependency`

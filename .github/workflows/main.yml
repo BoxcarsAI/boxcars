@@ -19,11 +19,11 @@ jobs:
       fail-fast: false
       matrix:
         ruby-version:
+          - '4.0'
           - '3.4'
           - '3.3'
-          - '3.2'
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v7
     - name: Set up Ruby ${{ matrix.ruby-version }}
       uses: ruby/setup-ruby@v1
       with:
@@ -49,7 +49,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v7
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
       with:
@@ -62,7 +62,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v7
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
       with:
@@ -75,7 +75,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v7
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
       with:
@@ -88,7 +88,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v7
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
       with:
@@ -101,7 +101,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v7
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
       with:
@@ -112,18 +112,20 @@ jobs:
 
   notebook-live-check:
     runs-on: ubuntu-latest
-    if: ${{ (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && secrets.OPENAI_ACCESS_TOKEN != '' }}
+    if: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
+    env:
+      OPENAI_ACCESS_TOKEN: ${{ secrets.OPENAI_ACCESS_TOKEN }}
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v7
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
       with:
         ruby-version: '3.4'
         bundler-cache: true
     - name: Run live notebook compatibility checks
+      if: ${{ env.OPENAI_ACCESS_TOKEN != '' }}
       env:
-        OPENAI_ACCESS_TOKEN: ${{ secrets.OPENAI_ACCESS_TOKEN }}
         OPENAI_CLIENT_BACKEND: official_openai
         OPENAI_OFFICIAL_REQUIRE_NATIVE: ${{ vars.OPENAI_OFFICIAL_REQUIRE_NATIVE }}
         NOTEBOOKS_LIVE_REQUIRE_NATIVE: ${{ vars.NOTEBOOKS_LIVE_REQUIRE_NATIVE }}
@@ -133,37 +135,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v7
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
       with:
-        ruby-version: '3.2'
+        ruby-version: '3.3'
         bundler-cache: true
     - name: Run RuboCop
       run: bundle exec rake rubocop
-
-  publish-rubygem:
-    runs-on: ubuntu-latest
-    name: Publish Ruby Gem
-    needs: [specs, openai-backend-parity, openai-backend-parity-official, modernization, notebook-smoke, minimal-dependencies, rubocop]
-
-    steps:
-    - name: publish gem
-      uses: actions/checkout@v3
-    - name: Set up Ruby
-      uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: '3.2'
-        bundler-cache: true
-    - run: |
-        mkdir -p $HOME/.gem
-        touch $HOME/.gem/credentials
-        chmod 0600 $HOME/.gem/credentials
-        printf -- "---\n:rubygems_api_key: ${GEM_HOST_API_KEY}\n" > $HOME/.gem/credentials
-        gem build *.gemspec
-        gem push *.gem
-      env:
-        # Make sure to update the secret name
-        # if yours isn't named RUBYGEMS_AUTH_TOKEN
-        GEM_HOST_API_KEY: "${{secrets.RUBYGEMS_AUTH_TOKEN}}"
-      if: ${{ steps.release.outputs.release_created }}

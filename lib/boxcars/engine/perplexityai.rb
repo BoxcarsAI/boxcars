@@ -26,7 +26,7 @@ module Boxcars
       super(description:, name:, batch_size:, user_id:)
     end
 
-    # rubocop:disable Metrics/MethodLength
+    # rubocop:disable-next Metrics/MethodLength
     def client(prompt:, inputs: {}, perplexity_api_key: nil, **kwargs)
       start_time = Time.now
       response_data = { response_obj: nil, parsed_json: nil, success: false, error: nil, status_code: nil }
@@ -108,7 +108,6 @@ module Boxcars
 
       perplexity_handle_call_outcome(response_data:)
     end
-    # rubocop:enable Metrics/MethodLength
 
     def default_params
       @perplexity_params
