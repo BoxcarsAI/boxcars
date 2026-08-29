@@ -40,19 +40,33 @@ RSpec.describe Boxcars::Engines do
     it "creates Anthropic engine for sonnet alias" do
       allow(Boxcars::Anthropic).to receive(:new)
       described_class.engine(model: "sonnet")
-      expect(Boxcars::Anthropic).to have_received(:new).with(model: "claude-sonnet-4-0")
+      expect(Boxcars::Anthropic).to have_received(:new).with(model: "claude-sonnet-5")
     end
 
     it "creates Anthropic engine for opus alias" do
       allow(Boxcars::Anthropic).to receive(:new)
       described_class.engine(model: "opus")
-      expect(Boxcars::Anthropic).to have_received(:new).with(model: "claude-opus-4-0")
+      expect(Boxcars::Anthropic).to have_received(:new).with(model: "claude-opus-5")
     end
 
     it "creates Anthropic engine for claude models" do
       allow(Boxcars::Anthropic).to receive(:new)
       described_class.engine(model: "claude-3-5-sonnet")
       expect(Boxcars::Anthropic).to have_received(:new).with(model: "claude-3-5-sonnet")
+    end
+
+    it "creates Anthropic engine for the explicit Fable model" do
+      allow(Boxcars::Anthropic).to receive(:new)
+      described_class.engine(model: "claude-fable-5")
+      expect(Boxcars::Anthropic).to have_received(:new).with(model: "claude-fable-5")
+    end
+
+    %w[gpt-5.6-sol gpt-5.6-terra gpt-5.6-luna].each do |model|
+      it "creates OpenAI engine for the explicit #{model} model" do
+        allow(Boxcars::Openai).to receive(:new)
+        described_class.engine(model:)
+        expect(Boxcars::Openai).to have_received(:new).with(model:)
+      end
     end
 
     it "creates Groq engine for mistral models" do
@@ -129,6 +143,13 @@ RSpec.describe Boxcars::Engines do
       it "rejects the removed #{removed_alias} alias" do
         expect { described_class.engine(model: removed_alias) }
           .to raise_error(Boxcars::ArgumentError, "Unknown model: #{removed_alias}")
+      end
+    end
+
+    %w[sol terra luna fable].each do |short_name|
+      it "does not define a #{short_name} shorthand alias" do
+        expect { described_class.engine(model: short_name) }
+          .to raise_error(Boxcars::ArgumentError, "Unknown model: #{short_name}")
       end
     end
 
@@ -212,7 +233,7 @@ RSpec.describe Boxcars::Engines do
       allow(Boxcars::Anthropic).to receive(:new)
       described_class.json_engine(model: "sonnet")
       expect(Boxcars::Anthropic).to have_received(:new).with(
-        model: "claude-sonnet-4-0",
+        model: "claude-sonnet-5",
         temperature: 0.1
       )
     end
@@ -221,7 +242,7 @@ RSpec.describe Boxcars::Engines do
       allow(Boxcars::Anthropic).to receive(:new)
       described_class.json_engine(model: "opus")
       expect(Boxcars::Anthropic).to have_received(:new).with(
-        model: "claude-opus-4-0",
+        model: "claude-opus-5",
         temperature: 0.1
       )
     end
@@ -231,6 +252,15 @@ RSpec.describe Boxcars::Engines do
       described_class.json_engine(model: "claude-haiku-4-5")
       expect(Boxcars::Anthropic).to have_received(:new).with(
         model: "claude-haiku-4-5",
+        temperature: 0.1
+      )
+    end
+
+    it "removes response_format for explicit Fable models" do
+      allow(Boxcars::Anthropic).to receive(:new)
+      described_class.json_engine(model: "claude-fable-5")
+      expect(Boxcars::Anthropic).to have_received(:new).with(
+        model: "claude-fable-5",
         temperature: 0.1
       )
     end

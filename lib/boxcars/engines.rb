@@ -29,9 +29,9 @@ module Boxcars
       when /^(gpt-|o\d($|-))/
         Boxcars::Openai.new(model:, **kw_args)
       when "sonnet"
-        Boxcars::Anthropic.new(model: "claude-sonnet-4-0", **kw_args)
-      when "opus", "claude-opus-4-0"
-        Boxcars::Anthropic.new(model: "claude-opus-4-0", **kw_args)
+        Boxcars::Anthropic.new(model: "claude-sonnet-5", **kw_args)
+      when "opus"
+        Boxcars::Anthropic.new(model: "claude-opus-5", **kw_args)
       when /claude-/
         Boxcars::Anthropic.new(model:, **kw_args)
       when "llama-3.3-70b-versatile"
@@ -63,7 +63,7 @@ module Boxcars
       default_options = { temperature: 0.1 }
       effective_model = model || Boxcars.configuration.default_model || DEFAULT_MODEL
       name = effective_model.to_s
-      blocked = name.start_with?("gpt-5", "llama") || name.match?(/sonnet|opus|haiku|sonar/)
+      blocked = name.start_with?("gpt-5", "llama", "claude-") || name.match?(/sonnet|opus|haiku|sonar/)
       default_options[:response_format] = { type: "json_object" } unless blocked
       options = default_options.merge(kw_args)
       engine(model:, **options)

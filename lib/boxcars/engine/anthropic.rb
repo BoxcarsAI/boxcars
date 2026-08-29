@@ -15,8 +15,13 @@ module Boxcars
       max_tokens: 4096,
       temperature: 0.1
     }.freeze
-    OPUS_4_7_MODEL_PREFIX = "claude-opus-4-7"
-    OPUS_4_7_UNSUPPORTED_SAMPLING_PARAMS = %i[temperature top_p top_k].freeze
+    MODELS_WITHOUT_SAMPLING_PARAMS = %w[
+      claude-opus-4-7
+      claude-sonnet-5
+      claude-opus-5
+      claude-fable-5
+    ].freeze
+    UNSUPPORTED_SAMPLING_PARAMS = %i[temperature top_p top_k].freeze
 
     # The default name of the engine.
     DEFAULT_NAME = "Anthropic engine"
@@ -29,7 +34,7 @@ module Boxcars
       raise ArgumentError, "unknown keyword: :prompts" if kwargs.key?(:prompts)
 
       user_id = kwargs.delete(:user_id)
-      @llm_params = remove_opus_4_7_unsupported_sampling_params(DEFAULT_PARAMS.merge(kwargs))
+      @llm_params = remove_unsupported_sampling_params(DEFAULT_PARAMS.merge(kwargs))
       super(description:, name:, batch_size: 20, user_id:)
     end
 
@@ -85,7 +90,7 @@ module Boxcars
       params[:stop_sequences] = params.delete(:stop) if params.key?(:stop)
       params[:system] = params[:messages].shift[:content] if params.dig(:messages, 0, :role) == :system
       params[:messages].pop if params[:messages].last[:content].nil? || params[:messages].last[:content].strip.empty?
-      remove_opus_4_7_unsupported_sampling_params(params)
+      remove_unsupported_sampling_params(params)
       combine_assistant(params)
     end
 
@@ -114,18 +119,21 @@ module Boxcars
 
     private
 
-    def remove_opus_4_7_unsupported_sampling_params(params)
-      return params unless opus_4_7_model?(params[:model] || params["model"])
+    def remove_unsupported_sampling_params(params)
+      return params unless sampling_params_unsupported?(params[:model] || params["model"])
 
-      OPUS_4_7_UNSUPPORTED_SAMPLING_PARAMS.each do |key|
+      UNSUPPORTED_SAMPLING_PARAMS.each do |key|
         params.delete(key)
         params.delete(key.to_s)
       end
       params
     end
 
-    def opus_4_7_model?(model)
-      model.to_s.start_with?(OPUS_4_7_MODEL_PREFIX)
+    def sampling_params_unsupported?(model)
+      model_name = model.to_s
+      MODELS_WITHOUT_SAMPLING_PARAMS.any? do |base_model|
+        model_name == base_model || model_name.start_with?("#{base_model}-")
+      end
     end
 
     # Process the raw response from Anthropic API

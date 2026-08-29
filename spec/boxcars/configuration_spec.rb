@@ -158,7 +158,7 @@ RSpec.describe Boxcars::Configuration do
 
       allow(Boxcars::Anthropic).to receive(:new)
       Boxcars::Engines.engine(model: 'sonnet')
-      expect(Boxcars::Anthropic).to have_received(:new).with(model: 'claude-sonnet-4-0')
+      expect(Boxcars::Anthropic).to have_received(:new).with(model: 'claude-sonnet-5')
     end
   end
 end

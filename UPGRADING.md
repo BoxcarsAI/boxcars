@@ -125,6 +125,10 @@ The aliases below emitted one-time warnings in v0.9 and v0.10 and are removed in
 - `sonnet`
 - `opus`
 
+In v1.0, `sonnet` targets `claude-sonnet-5` and `opus` targets `claude-opus-5`. These Claude 5 models do not accept
+custom `temperature`, `top_p`, or `top_k` values, so Boxcars removes those options before sending the request. Use an
+explicit older Claude model ID if your application depends on custom sampling values.
+
 ### Replace deprecated aliases
 
 - `anthropic` -> `sonnet`
@@ -149,7 +153,7 @@ Prefer explicit model names in app code:
 
 ```ruby
 Boxcars::Engines.engine(model: "gpt-4o")
-Boxcars::Engines.engine(model: "claude-sonnet-4-0")
+Boxcars::Engines.engine(model: "claude-sonnet-5")
 Boxcars::Engines.engine(model: "gemini-2.5-flash")
 Boxcars::Engines.engine(model: "sonar-pro")
 ```

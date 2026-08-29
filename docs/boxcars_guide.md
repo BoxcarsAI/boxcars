@@ -93,12 +93,15 @@ perplexity_engine = Boxcars::Engines.engine(model: "sonar")
 #### Supported Model Aliases
 
 **OpenAI Models:**
-- Any OpenAI model ID from the [OpenAI pricing/models page](https://developers.openai.com/api/pricing) (for example `"gpt-5-mini"`, `"gpt-5"`, `"o1"`, `"o3"`) creates `Boxcars::Openai` engines
+- Any OpenAI model ID from the [OpenAI pricing/models page](https://developers.openai.com/api/pricing) (for example `"gpt-5.6-sol"`, `"gpt-5.6-terra"`, `"gpt-5.6-luna"`, `"o1"`, or `"o3"`) creates `Boxcars::Openai` engines
 
 **Anthropic Models:**
-- `"sonnet"` - Creates `Boxcars::Anthropic` with Claude Sonnet
-- `"opus"` - Creates `Boxcars::Anthropic` with Claude Opus
+- `"sonnet"` - Creates `Boxcars::Anthropic` with `claude-sonnet-5`
+- `"opus"` - Creates `Boxcars::Anthropic` with `claude-opus-5`
+- `"claude-fable-5"` - Creates `Boxcars::Anthropic` with Claude Fable 5
 - `"claude-3-5-sonnet"`, etc. - Any model starting with "claude-"
+
+Use the full model IDs for Sol, Terra, Luna, and Fable; their short names are not Boxcars aliases.
 
 **Groq Models:**
 - `"llama-3.3-70b-versatile"` - Creates `Boxcars::Groq` with Llama 3.3 70B

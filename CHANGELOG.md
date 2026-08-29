@@ -9,6 +9,11 @@
 - Added Ruby 4.0 to the supported CI test matrix and made Ruby 4.0.6 the default development runtime.
 - Added explicit engine-factory routing for the Cerebras `gpt-oss-120b` and Together AI `Qwen/Qwen2.5-VL-72B-Instruct` model IDs.
 
+### Changed
+
+- Updated the curated `sonnet` and `opus` aliases to Claude Sonnet 5 and Claude Opus 5.
+- Claude Sonnet 5, Opus 5, and Fable 5 requests now omit unsupported `temperature`, `top_p`, and `top_k` parameters.
+
 ### Removed
 
 - Removed the deprecated model aliases `anthropic`, `groq`, `deepseek`, `mistral`, `online`, `huge`, `online_huge`, `sonar-huge`, `sonar_huge`, `sonar_pro`, `flash`, `gemini-flash`, `gemini-pro`, `cerebras`, and `qwen`.

@@ -63,7 +63,28 @@ RSpec.describe Boxcars::Anthropic do
     allow(Anthropic::Client).to receive(:new).with(access_token: api_key_param).and_return(mock_anthropic_client)
   end
 
-  describe 'Opus 4.7 request parameter compatibility' do
+  describe 'request parameter compatibility' do
+    %w[claude-sonnet-5 claude-opus-5 claude-fable-5].each do |model|
+      it "omits unsupported sampling params for #{model}" do
+        captured_params = nil
+        allow(mock_anthropic_client).to receive(:messages) do |parameters:|
+          captured_params = parameters
+          anthropic_success_response
+        end
+
+        described_class.new(model:).client(
+          prompt:,
+          inputs:,
+          temperature: 0,
+          top_p: 0.5,
+          top_k: 10
+        )
+
+        expect(captured_params).to include(model:)
+        expect(captured_params).not_to include(:temperature, :top_p, :top_k)
+      end
+    end
+
     it 'omits default unsupported sampling params from the final request params' do
       captured_params = nil
       allow(mock_anthropic_client).to receive(:messages) do |parameters:|
@@ -111,6 +132,18 @@ RSpec.describe Boxcars::Anthropic do
 
       expect(captured_params).to include(model: "claude-opus-4-7-20260501")
       expect(captured_params).not_to include(:temperature, :top_p, :top_k)
+    end
+
+    it 'does not treat unrelated model names as Claude 5 snapshots' do
+      captured_params = nil
+      allow(mock_anthropic_client).to receive(:messages) do |parameters:|
+        captured_params = parameters
+        anthropic_success_response
+      end
+
+      described_class.new(model: "claude-sonnet-50", temperature: 0.4).client(prompt:, inputs:)
+
+      expect(captured_params).to include(model: "claude-sonnet-50", temperature: 0.4)
     end
 
     it 'preserves the existing default temperature for older Claude models' do
