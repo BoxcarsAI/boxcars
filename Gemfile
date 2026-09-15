@@ -26,7 +26,7 @@ group :development, :test do
   gem "rspec", "~> 3.13"
   gem "rubocop", "~> 1.88"
   gem "vcr", "~> 6.4.0"
-  gem "webmock", "~> 3.26.1"
+  gem "webmock", "~> 3.26.4"
   gem "rubocop-rake", "~> 0.7.1"
   gem "rubocop-rspec", "~> 3.2"
   gem "posthog-ruby", require: false
