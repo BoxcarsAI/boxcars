@@ -16,7 +16,7 @@ gem "pgvector", "~> 0.3.2"
 group :development, :test do
   # Optional runtime provider/tooling gems kept here for local development + CI.
   gem "openai", ">= 0.30"
-  gem "faraday", "~> 2.0"
+  gem "faraday", "~> 2.14"
   gem "google_search_results", "~> 2.2"
   gem "hnswlib", "~> 0.9.0"
   gem "nokogiri", "~> 1.18"
