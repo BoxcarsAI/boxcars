@@ -12,6 +12,8 @@ gem "activerecord", "~> 8.1"
 gem "activesupport", "~> 8.1"
 gem "pg", "~> 1.5"
 gem "pgvector", "~> 0.3.2"
+# pg 1.6 and google_search_results 2.2 still use JSON parsing options removed in JSON 3.
+gem "json", "~> 2.21"
 
 group :development, :test do
   # Optional runtime provider/tooling gems kept here for local development + CI.
