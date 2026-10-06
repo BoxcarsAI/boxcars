@@ -15,6 +15,8 @@ module Boxcars
       max_tokens: 4096,
       temperature: 0.1
     }.freeze
+    # Includes versioned IDs such as claude-opus-5-5. Omit sampling parameters as
+    # recommended by https://platform.claude.com/docs/en/models/opus-5-5/migration-guide.
     MODELS_WITHOUT_SAMPLING_PARAMS = %w[
       claude-opus-4-7
       claude-sonnet-5
@@ -31,6 +33,7 @@ module Boxcars
 
     # Initializes an Anthropic engine instance.
     def initialize(name: DEFAULT_NAME, description: DEFAULT_DESCRIPTION, **kwargs)
+      kwargs = kwargs.transform_keys(&:to_sym)
       raise ArgumentError, "unknown keyword: :prompts" if kwargs.key?(:prompts)
 
       user_id = kwargs.delete(:user_id)
@@ -47,7 +50,7 @@ module Boxcars
     def client(prompt:, inputs: {}, **kwargs)
       start_time = Time.now
       response_data = { response_obj: nil, parsed_json: nil, success: false, error: nil, status_code: nil }
-      current_params = llm_params.merge(kwargs)
+      current_params = llm_params.merge(kwargs.transform_keys(&:to_sym))
       current_prompt_object = prompt
       api_request_params = nil
 

@@ -162,6 +162,111 @@ RSpec.describe Boxcars::Anthropic do
     end
   end
 
+  describe 'Opus sampling compatibility' do
+    let(:requests) { [] }
+    let(:sampling) { { temperature: 0.2, top_p: 0.5, top_k: 10 } }
+
+    before do
+      allow(mock_anthropic_client).to receive(:messages) do |parameters:|
+        requests << parameters
+        anthropic_success_response
+      end
+    end
+
+    %w[claude-opus-4-7 claude-opus-5-5 claude-opus-5-5-20261001].each do |model|
+      %i[engine json_engine].each do |factory|
+        ["default", "explicit", "string-keyed"].each do |parameter_style|
+          it "omits #{parameter_style} sampling options for #{model} through #{factory}" do
+            options = case parameter_style
+                      when "default" then {}
+                      when "explicit" then sampling
+                      else sampling.transform_keys(&:to_s)
+                      end
+            configured_engine = Boxcars::Engines.public_send(factory, model:, **options)
+
+            expect(configured_engine.llm_params).not_to include(:temperature, :top_p, :top_k, "temperature", "top_p", "top_k")
+            configured_engine.client(prompt:, inputs:)
+
+            expect(requests.last).to include(model:)
+            expect(requests.last).not_to include(:temperature, :top_p, :top_k, "temperature", "top_p", "top_k", :response_format)
+          end
+        end
+      end
+    end
+
+    it 'uses a string-keyed constructor model when filtering sampling options' do
+      options = { "model" => "claude-opus-5-5", **sampling.transform_keys(&:to_s) }.freeze
+      configured_engine = described_class.new(**options)
+
+      expect(configured_engine.llm_params).to include(model: "claude-opus-5-5")
+      expect(configured_engine.llm_params).not_to include(:temperature, :top_p, :top_k, "temperature", "top_p", "top_k", "model")
+      configured_engine.client(prompt:, inputs:)
+
+      expect(requests.last).to include(model: "claude-opus-5-5")
+      expect(requests.last).not_to include(:temperature, :top_p, :top_k, "temperature", "top_p", "top_k", "model")
+    end
+
+    %w[claude-opus-4-7 claude-opus-5-5].each do |model|
+      [false, true].each do |string_keys|
+        it "filters per-request model and sampling overrides for #{model} (string keys: #{string_keys})" do
+          configured_engine = described_class.new(model: "claude-opus-4-6", **sampling)
+          original_params = configured_engine.llm_params.dup
+          overrides = { model:, **sampling }
+          overrides = overrides.transform_keys(&:to_s) if string_keys
+          overrides.freeze
+
+          configured_engine.client(prompt:, inputs:, **overrides)
+
+          expect(requests.last).to include(model:)
+          expect(requests.last).not_to include(:temperature, :top_p, :top_k, "temperature", "top_p", "top_k", "model")
+          expect(configured_engine.llm_params).to eq(original_params)
+        end
+      end
+    end
+
+    it 'filters sampling overrides even when the model does not change' do
+      configured_engine = described_class.new(model: "claude-opus-5-5")
+      configured_engine.client(prompt:, inputs:, **sampling, **sampling.transform_keys(&:to_s))
+
+      expect(requests.last).not_to include(:temperature, :top_p, :top_k, "temperature", "top_p", "top_k")
+    end
+
+    it 'preserves explicit sampling when a request switches to a supporting model' do
+      configured_engine = described_class.new(model: "claude-opus-5-5")
+      configured_engine.client(prompt:, inputs:, **{ "model" => "claude-opus-4-6", **sampling.transform_keys(&:to_s) })
+
+      expect(requests.last).to include(model: "claude-opus-4-6", temperature: 0.2, top_p: 0.5, top_k: 10)
+      expect(requests.last).not_to include("model", "temperature", "top_p", "top_k")
+      expect(configured_engine.llm_params).to include(model: "claude-opus-5-5")
+    end
+
+    it 'preserves sampling for supporting models and unrelated model names' do
+      %w[claude-opus-4-6 claude-opus-4-70 claude-opus-50].each do |model|
+        described_class.new(model:, **sampling).client(prompt:, inputs:, temperature: 0.3)
+
+        expect(requests.last).to include(model:, temperature: 0.3, top_p: 0.5, top_k: 10)
+      end
+    end
+
+    it 'returns schema-valid JSON through the JSON engine boxcar path' do
+      allow(mock_anthropic_client).to receive(:messages) do |parameters:|
+        requests << parameters
+        anthropic_success_response.merge("content" => [
+                                           { "type" => "thinking", "thinking" => "" },
+                                           { "type" => "text", "text" => '{"answer":"OK"}' }
+                                         ])
+      end
+      configured_engine = Boxcars::Engines.json_engine(model: "claude-opus-5-5", **sampling)
+      boxcar = Boxcars::JSONEngineBoxcar.new(
+        engine: configured_engine,
+        json_schema: { type: "object", properties: { answer: { type: "string" } }, required: ["answer"], additionalProperties: false }
+      )
+
+      expect(boxcar.run("Reply with OK")).to eq("answer" => "OK")
+      expect(requests.last).not_to include(:temperature, :top_p, :top_k, :response_format)
+    end
+  end
+
   describe 'observability integration with direct Anthropic client usage' do
     context 'when API call is successful' do
       before do

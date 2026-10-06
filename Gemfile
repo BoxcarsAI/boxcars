@@ -12,11 +12,13 @@ gem "activerecord", "~> 8.1"
 gem "activesupport", "~> 8.1"
 gem "pg", "~> 1.5"
 gem "pgvector", "~> 0.3.2"
+# pg 1.6 and google_search_results 2.2 still use JSON parsing options removed in JSON 3.
+gem "json", "~> 2.21"
 
 group :development, :test do
   # Optional runtime provider/tooling gems kept here for local development + CI.
   gem "openai", ">= 0.30"
-  gem "faraday", "~> 2.0"
+  gem "faraday", "~> 2.14"
   gem "google_search_results", "~> 2.2"
   gem "hnswlib", "~> 0.9.0"
   gem "nokogiri", "~> 1.18"
@@ -24,7 +26,7 @@ group :development, :test do
   gem "ruby-anthropic", "~> 0.4"
   gem "debug", "~> 1.9"
   gem "rspec", "~> 3.13"
-  gem "rubocop", "~> 1.88"
+  gem "rubocop", "~> 1.91"
   gem "vcr", "~> 6.4.0"
   gem "webmock", "~> 3.26.4"
   gem "rubocop-rake", "~> 0.7.1"

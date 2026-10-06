@@ -2,6 +2,17 @@
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-10-06
+
+### Fixed
+
+- Anthropic engine options now normalize string keys before merging defaults and request overrides, so sampling compatibility uses the requested model. Opus 4.7 and Opus 5 models (including Opus 5.5) omit `temperature`, `top_p`, and `top_k` through both normal and JSON engine paths; models that support sampling retain their supplied values.
+
+### Maintenance
+
+- Updated OpenAI to 0.95.0, PostHog to 3.26.0, Active Record to 8.1.4, Faraday to 2.14.4, and RuboCop to 1.91.0 in the development bundle.
+- Kept the development bundle on JSON 2.x because the current PostgreSQL and Google Search clients use parsing options removed in JSON 3.
+
 ## [1.0.0] - 2026-08-28
 
 ### Added
