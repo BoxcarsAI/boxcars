@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    boxcars (1.0.0)
+    boxcars (1.0.1)
       logger
 
 GEM
