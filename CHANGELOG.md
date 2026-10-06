@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- Anthropic engine options now normalize string keys before merging defaults and request overrides, so sampling compatibility uses the requested model. Opus 4.7 and Opus 5 models (including Opus 5.5) omit `temperature`, `top_p`, and `top_k` through both normal and JSON engine paths; models that support sampling retain their supplied values.
+
 ## [1.0.0] - 2026-08-28
 
 ### Added
