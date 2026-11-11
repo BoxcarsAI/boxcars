@@ -21,7 +21,7 @@ group :development, :test do
   gem "faraday", "~> 2.14"
   gem "google_search_results", "~> 2.2"
   gem "hnswlib", "~> 0.9.0"
-  gem "nokogiri", "~> 1.18"
+  gem "nokogiri", "~> 1.19"
   gem "sequel", "~> 5.108"
   gem "ruby-anthropic", "~> 0.4"
   gem "debug", "~> 1.9"
